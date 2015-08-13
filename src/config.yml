@@ -1,0 +1,93 @@
+ZenchantmentsConfigVersion:
+  - 1.0.0
+#   Edit each value to change the relative probability of obtaining each enchantment. 0 = no probability, -1 = disabled
+enchantments:
+  - Anthropomorphism 1
+  - Arborist 1
+  - Archaeology 1
+  - Blaze's Curse 1
+  - Blizzard 1
+  - Bounce 1
+  - Combustion 1
+  - Conversion 1
+  - Extraction 1
+  - Fire 1
+  - Firestorm 1
+  - Fireworks 1
+  - Force 1
+  - Germination 1
+  - Glide 1
+  - Gluttony 1
+  - Gold Rush 1
+  - Grab 1
+  - Green Thumb 1
+  - Gust 1
+  - Harvest 1
+  - Ice Aspect 1
+  - Jump 1
+  - Laser 1
+  - Level 1
+  - Long Cast 1
+  - Lumber 1
+  - Magnetism 1
+  - Meador 1
+  - Mow 1
+  - Mystery Fish 1
+  - Night Vision 1
+  - Persephone 1
+  - Pierce 1
+  - Plough 1
+  - Potion Resistance 1
+  - Potion 1
+  - Quick Shot 1
+  - Rainbow 1
+  - Rainbow Slam 1
+  - Reaper 1
+  - Saturation 1
+  - Short Cast 1
+  - Shred 1
+  - Siphon 1
+  - Speed 1
+  - Stationary 1
+  - Switch 1
+  - Terraformer 1
+  - Tracer 1
+  - Transformation 1
+  - Variety 1
+  - Vortex 1
+  - Weight 1
+#  Edit this value to change which arrows are enabled and disabled
+elemental_arrows:
+  - Command Arrow: true
+  - Derp Arrow: true
+  - Euphoria Arrow: true
+  - Exploding Arrow: true
+  - Ice Arrow: true
+  - Grenade Arrow: true
+  - Harpoon Arrow: true
+  - Bouncifying Arrow: true
+  - Leech Arrow: true
+  - Poisoned Arrow: true
+  - Teleport Arrow: true
+  - Fast Arrow: true
+  - Supersonic Arrow: true
+  - Web Arrow: true
+  - Lightning Arrow: true
+#  Edit this value to change the overall probability of obtaining all custom enchantments.
+probability:
+  - 25
+#  Edit this value to change the maximum number of custom enchantments possible per item.
+max_enchants_per_tool:
+  - 4
+#  Edit this value to determine if the Laser enchantment works in dispensers.
+laser_in_dispensers:
+  - true
+#  Edit this value to determine if player speeds are reset upon login. Though incredibly rare, this ensures that players are not stuck in faster/slower speeds due to enchantments like Meador, Speed, or Weight.
+reset_speed_on_login:
+  - true
+#  Edit this value to determine if Force or Rainbow slam work on players.
+force_rainbow_slam_players:
+  - true
+#  Edit this value to determine what the Shred enchantment drops. (all, block (no ores), or none)
+item_drop_shred:
+  - all
