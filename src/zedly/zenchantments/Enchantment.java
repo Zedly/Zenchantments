@@ -1091,15 +1091,17 @@ public class Enchantment {
                         if (ent instanceof LivingEntity) {
                             LivingEntity e = (LivingEntity) ent;
                             if (!e.equals(player)) {
-                                EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(player, e, DamageCause.ENTITY_ATTACK, (double) (1 + (level * 2)));
-                                Bukkit.getPluginManager().callEvent(evt);
-                                LivingEntity theE = (LivingEntity) evt.getEntity();
-                                theE.setLastDamageCause(evt);
-                                if (!evt.isCancelled()) {
-                                    if (Storage.rnd.nextInt(20) == 6) {
-                                        Utilities.addUnbreaking(player.getItemInHand(), 1, player);
+                                if (!(e instanceof Player) || Storage.laser_pvp) {
+                                    EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(player, e, DamageCause.ENTITY_ATTACK, (double) (1 + (level * 2)));
+                                    Bukkit.getPluginManager().callEvent(evt);
+                                    LivingEntity theE = (LivingEntity) evt.getEntity();
+                                    theE.setLastDamageCause(evt);
+                                    if (!evt.isCancelled()) {
+                                        if (Storage.rnd.nextInt(20) == 6) {
+                                            Utilities.addUnbreaking(player.getItemInHand(), 1, player);
+                                        }
+                                        theE.damage((double) (1 + (level * 2)));
                                     }
-                                    theE.damage((double) (1 + (level * 2)));
                                 }
                             }
                         }
@@ -1111,15 +1113,20 @@ public class Enchantment {
         @Override
         public void onEntityInteract(PlayerInteractEntityEvent evt, int level) {
             if (!evt.getPlayer().isSneaking()) {
+                Storage.laserTimes.put(evt.getPlayer(), System.nanoTime());
                 Shoot(evt.getRightClicked().getLocation(), evt.getPlayer(), level);
             }
         }
 
         @Override
         public void onBlockInteract(PlayerInteractEvent evt, int level) {
+            if (Storage.laserTimes.containsKey(evt.getPlayer()) && System.nanoTime() - Storage.laserTimes.get(evt.getPlayer()) < 500000000) {
+                Storage.laserTimes.remove(evt.getPlayer());
+                return;
+            }
             boolean b = false;
-            for (Enchantment e : Utilities.getEnchant(evt.getPlayer().getItemInHand()).keySet()){
-                if (e.loreName.equals("Lumber")){
+            for (Enchantment e : Utilities.getEnchant(evt.getPlayer().getItemInHand()).keySet()) {
+                if (e.loreName.equals("Lumber")) {
                     b = true;
                 }
             }

@@ -52,6 +52,7 @@ public class Storage {
     public static HashMap<Player, Double> sneakGlide = new HashMap<>();
     public static boolean fallBool = false;
     public static HashMap<Guardian, Player> guardianMove = new HashMap<>();
+    public static HashMap<Player, Long> laserTimes = new HashMap<>();
     
     //config variables
     public static double enchantRarity;
@@ -62,6 +63,7 @@ public class Storage {
     public static boolean reset_speed_on_login;
     public static boolean force_rainbow_slam_players;
     public static int item_drop_shred;
+    public static boolean laser_pvp;
 
     public static final Material[] swords = new Material[]{WOOD_SWORD, STONE_SWORD, GOLD_SWORD, IRON_SWORD, DIAMOND_SWORD};
     public static final Material[] picks = new Material[]{WOOD_PICKAXE, STONE_PICKAXE, GOLD_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE};

@@ -91,3 +91,6 @@ force_rainbow_slam_players:
 #  Edit this value to determine what the Shred enchantment drops. (all, block (no ores), or none)
 item_drop_shred:
   - all
+#  Edit this value to determine if the Laser enchantment damages players.
+laser_pvp:
+  - true

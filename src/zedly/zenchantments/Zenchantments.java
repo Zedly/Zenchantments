@@ -133,6 +133,12 @@ public class Zenchantments extends JavaPlugin {
             default:
                 Storage.item_drop_shred = 0;
         }
+        //Laser PVP Variable
+        try {
+            Storage.laser_pvp = (Boolean.parseBoolean(zenchantments.getConfig().getList("laser_pvp").get(0).toString()));
+        } catch (NumberFormatException e) {
+            Storage.laser_pvp = true;
+        }
         //Load Enchantment Classes
         for (Class cl : Storage.Enchantments) {
             try {
