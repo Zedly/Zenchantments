@@ -2,7 +2,7 @@ package zedly.zenchantments;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import org.bukkit.Bukkit;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.LivingEntity;
@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -31,7 +32,7 @@ public class EnchantmentWatcher implements Listener {
     public boolean onBlockBreak(BlockBreakEvent evt) {
         if (!evt.isCancelled()) {
             if (evt.getBlock().getType() != AIR) {
-                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(evt.getPlayer().getItemInHand());
+                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(evt.getPlayer().getItemInHand());
                 if (!evt.getPlayer().getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
                     for (Enchantment ench : map.keySet()) {
                         if (Utilities.enchTF(evt.getPlayer(), ench)) {
@@ -46,7 +47,7 @@ public class EnchantmentWatcher implements Listener {
 
     @EventHandler(ignoreCancelled = false)
     public boolean onBlockInteract(PlayerInteractEvent evt) {
-        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(evt.getPlayer().getItemInHand());
+        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(evt.getPlayer().getItemInHand());
         if (!evt.getPlayer().getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
             for (Enchantment ench : map.keySet()) {
                 if (Utilities.enchTF(evt.getPlayer(), ench)) {
@@ -59,7 +60,7 @@ public class EnchantmentWatcher implements Listener {
 
     @EventHandler
     public boolean onEntityInteract(PlayerInteractEntityEvent evt) {
-        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(evt.getPlayer().getItemInHand());
+        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(evt.getPlayer().getItemInHand());
         if (!evt.getPlayer().getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
             for (Enchantment ench : map.keySet()) {
                 if (Utilities.enchTF(evt.getPlayer(), ench)) {
@@ -74,7 +75,7 @@ public class EnchantmentWatcher implements Listener {
     public boolean onEntityKill(EntityDeathEvent evt) {
         if (evt.getEntity() != null && evt.getEntity().getKiller() != null) {
             if (evt.getEntity().getKiller() instanceof Player) {
-                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(evt.getEntity().getKiller().getItemInHand());
+                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(evt.getEntity().getKiller().getItemInHand());
                 if (!evt.getEntity().getKiller().getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
                     for (Enchantment ench : map.keySet()) {
                         if (Utilities.enchTF((Player) evt.getEntity().getKiller(), ench)) {
@@ -93,7 +94,7 @@ public class EnchantmentWatcher implements Listener {
             if (evt.getDamager() instanceof Player) {
                 if (evt.getEntity() instanceof LivingEntity) {
                     for (ItemStack stk : Utilities.getRelevant(((Player) evt.getDamager()))) {
-                        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(stk);
+                        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
                         if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
                             for (Enchantment ench : map.keySet()) {
                                 if (Utilities.enchTF((Player) evt.getDamager(), ench)) {
@@ -108,7 +109,7 @@ public class EnchantmentWatcher implements Listener {
         if (evt.getEntity() != null) {
             if (evt.getEntity() instanceof Player) {
                 for (ItemStack stk : Utilities.getRelevant(((Player) evt.getEntity()))) {
-                    LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(stk);
+                    LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
                     if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
                         for (Enchantment ench : map.keySet()) {
                             if (Utilities.enchTF((Player) evt.getEntity(), ench)) {
@@ -127,7 +128,7 @@ public class EnchantmentWatcher implements Listener {
         if (evt.getEntity() != null) {
             if (evt.getEntity() instanceof Player) {
                 for (ItemStack stk : Utilities.getRelevant(((Player) evt.getEntity()))) {
-                    LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(stk);
+                    LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
                     if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
                         for (Enchantment ench : map.keySet()) {
                             if (Utilities.enchTF((Player) evt.getEntity(), ench)) {
@@ -144,7 +145,7 @@ public class EnchantmentWatcher implements Listener {
     @EventHandler
     public boolean onPlayerFish(PlayerFishEvent evt) {
         if (evt.getPlayer() != null) {
-            LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(evt.getPlayer().getItemInHand());
+            LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(evt.getPlayer().getItemInHand());
             if (!evt.getPlayer().getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
                 for (Enchantment ench : map.keySet()) {
                     if (Utilities.enchTF(evt.getPlayer(), ench)) {
@@ -160,7 +161,7 @@ public class EnchantmentWatcher implements Listener {
     public boolean onHungerChange(FoodLevelChangeEvent evt) {
         if (evt.getEntity() instanceof Player) {
             for (ItemStack stk : Utilities.getRelevant((Player) evt.getEntity())) {
-                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(stk);
+                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
                 if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
                     for (Enchantment ench : map.keySet()) {
                         if (Utilities.enchTF((Player) evt.getEntity(), ench)) {
@@ -176,7 +177,7 @@ public class EnchantmentWatcher implements Listener {
     @EventHandler
     public boolean onShear(PlayerShearEntityEvent evt) {
         if (evt.getPlayer() != null && evt.getEntity() != null) {
-            LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(evt.getPlayer().getItemInHand());
+            LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(evt.getPlayer().getItemInHand());
             if (!evt.getPlayer().getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
                 for (Enchantment ench : map.keySet()) {
                     if (Utilities.enchTF(evt.getPlayer(), ench)) {
@@ -192,7 +193,7 @@ public class EnchantmentWatcher implements Listener {
     public boolean onProjectileHit(ProjectileHitEvent evt) {
         if (evt.getEntity().getShooter() != null) {
             if (evt.getEntity().getShooter() instanceof Player) {
-                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(((Player) evt.getEntity().getShooter()).getItemInHand());
+                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(((Player) evt.getEntity().getShooter()).getItemInHand());
                 if (!((Player) evt.getEntity().getShooter()).getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
                     for (Enchantment ench : map.keySet()) {
                         if (Utilities.enchTF((Player) evt.getEntity().getShooter(), ench)) {
@@ -208,7 +209,7 @@ public class EnchantmentWatcher implements Listener {
     @EventHandler
     public boolean onEntityShootBow(EntityShootBowEvent evt) {
         if (evt.getEntity() instanceof Player) {
-            LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(((Player) evt.getEntity()).getItemInHand());
+            LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(((Player) evt.getEntity()).getItemInHand());
             if (!((Player) evt.getEntity()).getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
                 for (Enchantment ench : map.keySet()) {
                     if (Utilities.enchTF((Player) evt.getEntity(), ench)) {
@@ -228,7 +229,7 @@ public class EnchantmentWatcher implements Listener {
                 int test = 0;
                 for (ItemStack stk : Utilities.getRelevant(((Player) ent))) {
                     if (test == 0) {
-                        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(stk);
+                        LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
                         if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
                             for (Enchantment ench : map.keySet()) {
                                 ench.onPotionSplash(evt, map.get(ench));
@@ -247,12 +248,29 @@ public class EnchantmentWatcher implements Listener {
         if (evt.getEntity() != null) {
             if (evt.getEntity().getShooter() != null) {
                 if (evt.getEntity().getShooter() instanceof Player) {
-                    LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchant(((Player) evt.getEntity().getShooter()).getItemInHand());
+                    LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(((Player) evt.getEntity().getShooter()).getItemInHand());
                     if (!((Player) evt.getEntity().getShooter()).getItemInHand().getType().equals(Material.ENCHANTED_BOOK)) {
                         for (Enchantment ench : map.keySet()) {
                             if (Utilities.enchTF((Player) evt.getEntity().getShooter(), ench)) {
                                 ench.onProjectileLaunch(evt, map.get(ench));
                             }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    @EventHandler
+    public boolean onDeath(PlayerDeathEvent evt) {
+        for (ItemStack stk : ArrayUtils.addAll(evt.getEntity().getInventory().getArmorContents(), evt.getEntity().getInventory().getContents())) {
+            LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
+            if (stk != null) {
+                if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
+                    for (Enchantment ench : map.keySet()) {
+                        if (Utilities.enchTF(evt.getEntity(), ench)) {
+                            ench.onPlayerDeath(evt, map.get(ench));
                         }
                     }
                 }

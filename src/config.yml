@@ -1,78 +1,333 @@
 ZenchantmentsConfigVersion:
-  - 1.0.0
+  - 1.1.0
 #   Edit each value to change the relative probability of obtaining each enchantment. 0 = no probability, -1 = disabled
+#   Edit the tool types to change what enchantments can be found on certain tools. I cannot guarantee compatibility with all configurations.
+#   (Axe, Shovel, Sword, Pickaxe, Rod, Shears, Bow, Lighter, Hoe, Helmet, Chestplate, Leggings, Boots, All) 
 enchantments:
-  - Anthropomorphism 1
-  - Arborist 1
-  - Archaeology 1
-  - Blaze's Curse 1
-  - Blizzard 1
-  - Bounce 1
-  - Combustion 1
-  - Conversion 1
-  - Extraction 1
-  - Fire 1
-  - Firestorm 1
-  - Fireworks 1
-  - Force 1
-  - Germination 1
-  - Glide 1
-  - Gluttony 1
-  - Gold Rush 1
-  - Grab 1
-  - Green Thumb 1
-  - Gust 1
-  - Harvest 1
-  - Ice Aspect 1
-  - Jump 1
-  - Laser 1
-  - Level 1
-  - Long Cast 1
-  - Lumber 1
-  - Magnetism 1
-  - Meador 1
-  - Mow 1
-  - Mystery Fish 1
-  - Night Vision 1
-  - Persephone 1
-  - Pierce 1
-  - Plough 1
-  - Potion Resistance 1
-  - Potion 1
-  - Quick Shot 1
-  - Rainbow 1
-  - Rainbow Slam 1
-  - Reaper 1
-  - Saturation 1
-  - Short Cast 1
-  - Shred 1
-  - Siphon 1
-  - Speed 1
-  - Stationary 1
-  - Switch 1
-  - Terraformer 1
-  - Tracer 1
-  - Transformation 1
-  - Variety 1
-  - Vortex 1
-  - Weight 1
+# Regular Enchantments
+  - Anthropomorphism:
+      Probability: 1
+      Tools: Pickaxe
+      Name: Anthropomorphism
+      Max Level: 1
+  - Arborist:
+      Probability: 1
+      Tools: Axe
+      Name: Arborist
+      Max Level: 3
+  - Archaeology:
+      Probability: 1
+      Tools: Pickaxe, Shovel
+      Name: Archaeology
+      Max Level: 3
+  - Bind:
+      Probability: 1
+      Tools: All
+      Name: Bind
+      Max Level: 1
+  - Blaze's Curse:
+      Probability: 1
+      Tools: Chestplate
+      Name: Blaze's Curse
+      Max Level: 1
+  - Blizzard:
+      Probability: 1
+      Tools: Bow
+      Name: Blizzard
+      Max Level: 3
+  - Bounce:
+      Probability: 1
+      Tools: Boots
+      Name: Bounce
+      Max Level: 5
+  - Combustion:
+      Probability: 1
+      Tools: Chestplate
+      Name: Combustion
+      Max Level: 4
+  - Conversion:
+      Probability: 1
+      Tools: Sword
+      Name: Conversion
+      Max Level: 1
+  - Extraction:
+      Probability: 1
+      Tools: Pickaxe
+      Name: Extraction
+      Max Level: 3
+  - Fire:
+      Probability: 1
+      Tools: Pickaxe, Shovel, Axe
+      Name: Fire
+      Max Level: 1
+  - Firestorm:
+      Probability: 1
+      Tools: Bow
+      Name: Firestorm
+      Max Level: 3
+  - Fireworks:
+      Probability: 1
+      Tools: Bow
+      Name: Fireworks
+      Max Level: 4
+  - Force:
+      Probability: 1
+      Tools: Sword
+      Name: Force
+      Max Level: 3
+  - Fuse:
+      Probability: 1
+      Tools: Bow
+      Name: Fuse
+      Max Level: 1
+  - Germination:
+      Probability: 1
+      Tools: Hoe
+      Name: Germination
+      Max Level: 3
+  - Glide:
+      Probability: 1
+      Tools: Leggings
+      Name: Glide
+      Max Level: 3
+  - Gluttony:
+      Probability: 1
+      Tools: Helmet
+      Name: Gluttony
+      Max Level: 1
+  - Gold Rush:
+      Probability: 1
+      Tools: Shovel
+      Name: Gold Rush
+      Max Level: 3
+  - Grab:
+      Probability: 1
+      Tools: Pickaxe, Shovel, Axe
+      Name: Grab
+      Max Level: 1
+  - Green Thumb:
+      Probability: 1
+      Tools: Leggings
+      Name: Green Thumb
+      Max Level: 3
+  - Gust:
+      Probability: 1
+      Tools: Sword
+      Name: Gust
+      Max Level: 1
+  - Harvest:
+      Probability: 1
+      Tools: Hoe
+      Name: Harvest
+      Max Level: 3
+  - Ice Aspect:
+      Probability: 1
+      Tools: Sword
+      Name: Ice Aspect
+      Max Level: 2
+  - Jump:
+      Probability: 1
+      Tools: Boots
+      Name: Jump
+      Max Level: 4
+  - Laser:
+      Probability: 1
+      Tools: Pickaxe, Axe
+      Name: Laser
+      Max Level: 3
+  - Level:
+      Probability: 1
+      Tools: Bow, Sword, Pickaxe
+      Name: Level
+      Max Level: 3
+  - Long Cast:
+      Probability: 1
+      Tools: Rod
+      Name: Long Cast
+      Max Level: 2
+  - Lumber:
+      Probability: 1
+      Tools: Axe
+      Name: Lumber
+      Max Level: 1
+  - Magnetism:
+      Probability: 1
+      Tools: Leggings
+      Name: Magnetism
+      Max Level: 1
+  - Meador:
+      Probability: 1
+      Tools: Boots
+      Name: Meador
+      Max Level: 1
+  - Mow:
+      Probability: 1
+      Tools: Shears
+      Name: Mow
+      Max Level: 1
+  - Mystery Fish:
+      Probability: 1
+      Tools: Rod
+      Name: Mystery Fish
+      Max Level: 1
+  - Night Vision:
+      Probability: 1
+      Tools: Helmet
+      Name: Night Vision
+      Max Level: 1
+  - Persephone:
+      Probability: 1
+      Tools: Hoe
+      Name: Persephone
+      Max Level: 3
+  - Pierce:
+      Probability: 1
+      Tools: Pickaxe
+      Name: Pierce
+      Max Level: 1
+  - Plough:
+      Probability: 1
+      Tools: Hoe
+      Name: Plough
+      Max Level: 3
+  - Potion:
+      Probability: 1
+      Tools: Bow
+      Name: Potion
+      Max Level: 3
+  - Potion Resistance:
+      Probability: 1
+      Tools: Helmet, Chestplate, Leggings, Boots
+      Name: Potion Resistance
+      Max Level: 4
+  - Quick Shot:
+      Probability: 1
+      Tools: Bow
+      Name: Quick Shot
+      Max Level: 1
+  - Rainbow:
+      Probability: 1
+      Tools: Shears
+      Name: Rainbow
+      Max Level: 1
+  - Rainbow Slam:
+      Probability: 1
+      Tools: Sword
+      Name: Rainbow Slam
+      Max Level: 4
+  - Reaper:
+      Probability: 1
+      Tools: Bow, Sword
+      Name: Reaper
+      Max Level: 4
+  - Saturation:
+      Probability: 1
+      Tools: Leggings
+      Name: Saturation
+      Max Level: 3
+  - Short Cast:
+      Probability: 1
+      Tools: Rod
+      Name: Short Cast
+      Max Level: 2
+  - Shred:
+      Probability: 1
+      Tools: Pickaxe, Shovel
+      Name: Shred
+      Max Level: 5
+  - Siphon:
+      Probability: 1
+      Tools: Sword, Bow
+      Name: Siphon
+      Max Level: 4
+  - Speed:
+      Probability: 1
+      Tools: Boots
+      Name: Speed
+      Max Level: 4
+  - Stationary:
+      Probability: 1
+      Tools: Bow, Sword
+      Name: Stationary
+      Max Level: 1
+  - Switch:
+      Probability: 1
+      Tools: Pickaxe
+      Name: Switch
+      Max Level: 1
+  - Terraformer:
+      Probability: 1
+      Tools: Shovel
+      Name: Terraformer
+      Max Level: 1
+  - Tracer:
+      Probability: 1
+      Tools: Bow
+      Name: Tracer
+      Max Level: 4
+  - Transformation:
+      Probability: 1
+      Tools: Sword
+      Name: Transformation
+      Max Level: 3
+  - Variety:
+      Probability: 1
+      Tools: Axe
+      Name: Variety
+      Max Level: 1
+  - Vortex:
+      Probability: 1
+      Tools: Sword, Bow
+      Name: Vortex
+      Max Level: 1
+  - Weight:
+      Probability: 1
+      Tools: Boots
+      Name: Weight
+      Max Level: 4
+# Admin Enchantments
+  - Apocalypse:
+      Probability: 0
+      Tools: Bow
+      Name: Apocalypse
+      Max Level: 1
+  - Ethereal:
+      Probability: 0
+      Tools: All
+      Name: Ethereal
+      Max Level: 1
+  - Fire Walker:
+      Probability: 0
+      Tools: Boots
+      Name: Fire Walker
+      Max Level: 1
+  - Missile:
+      Probability: 0
+      Tools: Bow
+      Name: Missile
+      Max Level: 1
+  - Water Walker:
+      Probability: 0
+      Tools: Boots
+      Name: Water Walker
+      Max Level: 1
 #  Edit this value to change which arrows are enabled and disabled
 elemental_arrows:
+  - Bouncifying Arrow: true
   - Command Arrow: true
   - Derp Arrow: true
   - Euphoria Arrow: true
   - Exploding Arrow: true
-  - Ice Arrow: true
+  - Fast Arrow: true
   - Grenade Arrow: true
   - Harpoon Arrow: true
-  - Bouncifying Arrow: true
+  - Ice Arrow: true
   - Leech Arrow: true
-  - Poisoned Arrow: true
-  - Teleport Arrow: true
-  - Fast Arrow: true
-  - Supersonic Arrow: true
-  - Web Arrow: true
   - Lightning Arrow: true
+  - Poisoned Arrow: true
+  - Supersonic Arrow: true
+  - Teleport Arrow: true
+  - Web Arrow: true
 #  Edit this value to change the overall probability of obtaining all custom enchantments.
 probability:
   - 25
@@ -93,4 +348,7 @@ item_drop_shred:
   - all
 #  Edit this value to determine if the Laser enchantment damages players.
 laser_pvp:
+  - true
+#  Edit this value to determine if the Fuse enchantment breaks blocks.
+fuse_blockbreak:
   - true

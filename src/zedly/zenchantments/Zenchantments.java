@@ -1,12 +1,19 @@
 package zedly.zenchantments;
+//For Bukkit & Spigot 1.8.X
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import static org.bukkit.Material.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -22,14 +29,13 @@ public class Zenchantments extends JavaPlugin {
         //Register Events, Start Processes, Run Methods
         this.saveDefaultConfig();
         Storage.zenchantments = this;
-        Storage.version = Bukkit.getServer().getPluginManager().getPlugin("Zenchantments").getDescription().getVersion();
-        getServer().getPluginManager().registerEvents(new Actions(), this);
-        getServer().getPluginManager().registerEvents(new EnchantmentWatcher(), this);
+        Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
         getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new ContinuousEffects(), 1, 5);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new FastEffects(), 1, 1);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new HFEffects(), 2, 2);
         getServer().getPluginManager().registerEvents(new ArrowWatcher(), this);
+        getServer().getPluginManager().registerEvents(new EnchantmentWatcher(), this);
+        getServer().getPluginManager().registerEvents(new Watcher(), this);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new HFEffects(), 1, 1);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new MFEffects(), 1, 5);
         //Load Arrow Recipes
         System.out.println("Loading " + Storage.ArrowTypes.size() + " Arrow classes...");
         ItemStack is = new ItemStack(ARROW);
@@ -76,18 +82,13 @@ public class Zenchantments extends JavaPlugin {
             }
         }
         //Check if Config is Up To Date
-        if (!zenchantments.getConfig().getList("ZenchantmentsConfigVersion").get(0).equals(Storage.version)) {
-        }
-        //Load Individual Enchantment Configs
-        for (int x = 0; x < zenchantments.getConfig().getList("enchantments").size(); x++) {
-            String str = "" + zenchantments.getConfig().getList("enchantments").get(x);
-            float number = 1;
-            String enchant = str.subSequence(0, str.lastIndexOf(" ")).toString().replace(" ", "").toLowerCase();
+        if (!zenchantments.getConfig().getList("ZenchantmentsConfigVersion").get(0).equals("1.1.0")) {
+            File file = new File("plugins/Zenchantments/config.yml");
             try {
-                number = Float.parseFloat(str.subSequence(str.lastIndexOf(" ") + 1, str.length()).toString());
-            } catch (NumberFormatException e) {
+                Files.delete(file.toPath());
+            } catch (IOException ex) {
             }
-            Storage.enchantLevels.put(enchant, number);
+            this.saveDefaultConfig();
         }
         //Load Enchantment Probablility Variable
         try {
@@ -119,6 +120,12 @@ public class Zenchantments extends JavaPlugin {
         } catch (NumberFormatException e) {
             Storage.force_rainbow_slam_players = true;
         }
+        //Load Fuse Block Explode Variable
+        try {
+            Storage.fuse_blockbreak = (Boolean.parseBoolean(zenchantments.getConfig().getList("fuse_blockbreak").get(0).toString()));
+        } catch (NumberFormatException e) {
+            Storage.fuse_blockbreak = true;
+        }
         //Load Item Drop Shred Variable
         switch (zenchantments.getConfig().getList("item_drop_shred").get(0).toString()) {
             case "all":
@@ -139,29 +146,114 @@ public class Zenchantments extends JavaPlugin {
         } catch (NumberFormatException e) {
             Storage.laser_pvp = true;
         }
+        //Load Individual Enchantment Configs
+        HashMap<String, ArrayList<String>> tempConfigs = new HashMap<>();
+        for (int x = 0; x < zenchantments.getConfig().getList("enchantments").size(); x++) {
+            String rawConfig = ("" + zenchantments.getConfig().getList("enchantments").get(x)).replace("}", "").replace("{", "");
+            String[] p = rawConfig.replace(", ", ",").split("=");
+            ArrayList<String> parts = new ArrayList<>();
+            parts.add(p[2].split(",")[0]);
+            parts.add(p[4].split(",")[0]);
+            parts.add(p[5].split(",")[0]);
+            for (int i = 0; i < p[3].split(",").length - 1; i++) {
+                parts.add(p[3].split(",")[i]);
+            }
+            tempConfigs.put(rawConfig.subSequence(0, rawConfig.indexOf("=")).toString().replace(" ", "").toLowerCase(), parts);
+        }
         //Load Enchantment Classes
-        for (Class cl : Storage.Enchantments) {
+        for (Class cl : Enchantment.class.getClasses()) {
             try {
                 Enchantment ench = (Enchantment) cl.newInstance();
-                if (Storage.enchantLevels.containsKey(ench.loreName.replace(" ", "").toLowerCase())) {
-                    Storage.enchantClass.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
+                if (tempConfigs.containsKey(ench.loreName.toLowerCase().replace(" ", ""))) {
+                    ArrayList<String> conf = tempConfigs.get(ench.loreName.toLowerCase().replace(" ", ""));
+                    float probability = 1;
+                    try {
+                        probability = Float.parseFloat(conf.get(0));
+                    } catch (NumberFormatException e) {
+                    }
+                    ench.chance = probability;
+                    if (ench.chance != -1) {
+                        Storage.originalEnchantClasses.put(ench.loreName, ench);
+                        Storage.originalEnchantClassesReverse.put(ench, ench.loreName);
+                    }
+                    ench.loreName = conf.get(1);
+                    int max = 1;
+                    try {
+                        max = Integer.parseInt(conf.get(2));
+                    } catch (NumberFormatException e) {
+                    }
+                    ench.maxLevel = max;
+                    Object[] m = null;
+                    for (int i = 3; i < conf.size(); i++) {
+                        switch (conf.get(i)) {
+                            case "Axe":
+                                m = ArrayUtils.addAll(m, Storage.axes);
+                                break;
+                            case "Shovel":
+                                m = ArrayUtils.addAll(m, Storage.spades);
+                                break;
+                            case "Sword":
+                                m = ArrayUtils.addAll(m, Storage.swords);
+                                break;
+                            case "Pickaxe":
+                                m = ArrayUtils.addAll(m, Storage.picks);
+                                break;
+                            case "Rod":
+                                m = ArrayUtils.addAll(m, Storage.rods);
+                                break;
+                            case "Shears":
+                                m = ArrayUtils.addAll(m, Storage.shears);
+                                break;
+                            case "Bow":
+                                m = ArrayUtils.addAll(m, Storage.bows);
+                                break;
+                            case "Lighter":
+                                m = ArrayUtils.addAll(m, Storage.lighters);
+                                break;
+                            case "Hoe":
+                                m = ArrayUtils.addAll(m, Storage.hoes);
+                                break;
+                            case "Helmet":
+                                m = ArrayUtils.addAll(m, Storage.helmets);
+                                break;
+                            case "Chestplate":
+                                m = ArrayUtils.addAll(m, Storage.chestplates);
+                                break;
+                            case "Leggings":
+                                m = ArrayUtils.addAll(m, Storage.leggings);
+                                break;
+                            case "Boots":
+                                m = ArrayUtils.addAll(m, Storage.boots);
+                                break;
+                            case "All":
+                                m = ArrayUtils.addAll(m, Storage.axes);
+                                m = ArrayUtils.addAll(m, Storage.spades);
+                                m = ArrayUtils.addAll(m, Storage.swords);
+                                m = ArrayUtils.addAll(m, Storage.picks);
+                                m = ArrayUtils.addAll(m, Storage.rods);
+                                m = ArrayUtils.addAll(m, Storage.shears);
+                                m = ArrayUtils.addAll(m, Storage.bows);
+                                m = ArrayUtils.addAll(m, Storage.lighters);
+                                m = ArrayUtils.addAll(m, Storage.hoes);
+                                m = ArrayUtils.addAll(m, Storage.helmets);
+                                m = ArrayUtils.addAll(m, Storage.chestplates);
+                                m = ArrayUtils.addAll(m, Storage.leggings);
+                                m = ArrayUtils.addAll(m, Storage.boots);
+                                break;
+                        }
+                    }
+                    ench.enchantable = (Material[]) m;
                 }
-                Storage.enchantClassU.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
+                if (ench.chance != -1) {
+                    Storage.allEnchantClasses.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
+                }
+                if (ench.chance != 0 && ench.chance != -1) {
+                    Storage.enchantClasses.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
+                }
             } catch (InstantiationException | IllegalAccessException ex) {
             }
         }
-        //Apply Enchantment Configs
-        for (Entry ent : Storage.enchantLevels.entrySet()) {
-            String key = (String) ent.getKey();
-            Float value = (Float) ent.getValue();
-            if (Storage.enchantClass.containsKey(key)) {
-                Storage.enchantClass.get(key).chance = value;
-            }
-            if (value == -1) {
-                Storage.enchantClassU.remove(key);
-                Storage.enchantClass.remove(key);
-            }
-        }
+
         PlayerConfig.loadConfigs();
     }
 
@@ -187,10 +279,16 @@ public class Zenchantments extends JavaPlugin {
             e.remove();
             anthIT.remove();
         }
+        Iterator webIT = Storage.webs.iterator();
+        while (webIT.hasNext()) {
+            Block b = (Block) webIT.next();
+            b.setType(AIR);
+            webIT.remove();
+        }
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
-        return Commands.onCommand(sender, command, commandlabel, args);
+        return CommandProcessor.onCommand(sender, command, commandlabel, args);
     }
 }

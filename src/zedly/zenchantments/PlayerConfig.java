@@ -26,8 +26,8 @@ public class PlayerConfig {
                     UUID playerID = UUID.fromString(enchantments[0]);
                     HashSet<Enchantment> finalEnchants = new HashSet<>();
                     for (int i = 1; i < enchantments.length; i++) {
-                        if (Storage.enchantClassU.containsKey(enchantments[i].replace(" ", "").toLowerCase())) {
-                            Enchantment ench = (Enchantment) Storage.enchantClassU.get(enchantments[i].replace(" ", "").toLowerCase());
+                        if (Storage.allEnchantClasses.containsKey(enchantments[i].replace(" ", "").toLowerCase())) {
+                            Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(enchantments[i].replace(" ", "").toLowerCase());
                             finalEnchants.add(ench);
                         }
                     }

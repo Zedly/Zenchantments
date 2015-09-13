@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
@@ -33,8 +32,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
+import particles.ParticleEffect;
 
-public class Actions implements Listener {
+public class Watcher implements Listener {
 
     @EventHandler
     public void onLaserDispense(BlockDispenseEvent evt) {
@@ -44,54 +44,52 @@ public class Actions implements Listener {
         if (evt.getBlock().getType() == DISPENSER) {
             ItemStack stk = (ItemStack) evt.getItem();
             if (stk != null) {
-                if (ArrayUtils.contains(Storage.picks, stk.getType())) {
-                    if (!Storage.enchantClassU.containsKey("laser")) {
-                        return;
+                if (!Storage.originalEnchantClasses.containsKey("Laser")) {
+                    return;
+                }
+                Enchantment ench = (Enchantment) Storage.originalEnchantClasses.get("Laser");
+                if (Utilities.getEnchants(stk).containsKey(ench)) {
+                    evt.setCancelled(true);
+                    BlockState state = evt.getBlock().getState();
+                    String str = "" + state.getData();
+                    Block blk = evt.getBlock();
+                    int level = Utilities.getEnchants(stk).get(ench);
+                    int range = 6 + (level * 3);
+                    if (str.contains("UP")) {
+                        blk = evt.getBlock().getRelative(BlockFace.UP, range);
+                    } else if (str.contains("DOWN")) {
+                        blk = evt.getBlock().getRelative(BlockFace.DOWN, range);
+                    } else if (str.contains("SOUTH")) {
+                        blk = evt.getBlock().getRelative(BlockFace.SOUTH, range);
+                    } else if (str.contains("NORTH")) {
+                        blk = evt.getBlock().getRelative(BlockFace.NORTH, range);
+                    } else if (str.contains("WEST")) {
+                        blk = evt.getBlock().getRelative(BlockFace.WEST, range);
+                    } else if (str.contains("EAST")) {
+                        blk = evt.getBlock().getRelative(BlockFace.EAST, range);
                     }
-                    Enchantment ench = (Enchantment) Storage.enchantClassU.get("laser");
-                    if (Utilities.getEnchant(stk).containsKey(ench)) {
-                        evt.setCancelled(true);
-                        BlockState state = evt.getBlock().getState();
-                        String str = "" + state.getData();
-                        Block blk = evt.getBlock();
-                        int level = Utilities.getEnchant(stk).get(ench);
-                        int range = 6 + (level * 3);
-                        if (str.contains("UP")) {
-                            blk = evt.getBlock().getRelative(BlockFace.UP, range);
-                        } else if (str.contains("DOWN")) {
-                            blk = evt.getBlock().getRelative(BlockFace.DOWN, range);
-                        } else if (str.contains("SOUTH")) {
-                            blk = evt.getBlock().getRelative(BlockFace.SOUTH, range);
-                        } else if (str.contains("NORTH")) {
-                            blk = evt.getBlock().getRelative(BlockFace.NORTH, range);
-                        } else if (str.contains("WEST")) {
-                            blk = evt.getBlock().getRelative(BlockFace.WEST, range);
-                        } else if (str.contains("EAST")) {
-                            blk = evt.getBlock().getRelative(BlockFace.EAST, range);
-                        }
-                        Location play = Utilities.getCenter(evt.getBlock().getLocation());
-                        Location target = Utilities.getCenter(blk.getLocation());
-                        play.setY(play.getY() - .5);
-                        target.setY(target.getY() + .5);
-                        Location c = play;
-                        c.setY(c.getY() + 1.1);
-                        double d = target.distance(c);
-                        for (int i = 0; i < (int) d * 5; i++) {
-                            Location tempLoc = target.clone();
-                            tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
-                            tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
-                            tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                            blk.getWorld().spigot().playEffect(tempLoc, Effect.COLOURED_DUST, 0, 1, 0f, 0f, 0f, 10f, 1, 32);
-                            for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
-                                if (ent.getLocation().distance(tempLoc) < .75) {
-                                    if (ent instanceof LivingEntity) {
-                                        EntityDamageEvent event = new EntityDamageEvent(ent, EntityDamageEvent.DamageCause.FIRE, (double) (1 + (level * 2)));
-                                        Bukkit.getPluginManager().callEvent(event);
-                                        LivingEntity theE = (LivingEntity) event.getEntity();
-                                        theE.setLastDamageCause(event);
-                                        if (!event.isCancelled()) {
-                                            theE.damage((double) (1 + (level * 2)));
-                                        }
+                    Location play = Utilities.getCenter(evt.getBlock().getLocation());
+                    Location target = Utilities.getCenter(blk.getLocation());
+                    play.setY(play.getY() - .5);
+                    target.setY(target.getY() + .5);
+                    Location c = play;
+                    c.setY(c.getY() + 1.1);
+                    double d = target.distance(c);
+                    for (int i = 0; i < (int) d * 5; i++) {
+                        Location tempLoc = target.clone();
+                        tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
+                        tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
+                        tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
+                        ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                        for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
+                            if (ent.getLocation().distance(tempLoc) < .75) {
+                                if (ent instanceof LivingEntity) {
+                                    EntityDamageEvent event = new EntityDamageEvent(ent, EntityDamageEvent.DamageCause.FIRE, (double) (1 + (level * 2)));
+                                    Bukkit.getPluginManager().callEvent(event);
+                                    LivingEntity theE = (LivingEntity) event.getEntity();
+                                    theE.setLastDamageCause(event);
+                                    if (!event.isCancelled()) {
+                                        theE.damage((double) (1 + (level * 2)));
                                     }
                                 }
                             }
@@ -174,10 +172,10 @@ public class Actions implements Listener {
         for (int l = 1; l <= max; l++) {
             float totalChance = 0;
             HashSet<Enchantment> enchs = new HashSet<>();
-            for (Enchantment ench : Storage.enchantClass.values()) {
+            for (Enchantment ench : Storage.enchantClasses.values()) {
                 boolean b = true;
                 for (Enchantment e : enchAdd) {
-                    if (ArrayUtils.contains(ench.conflicting, e.loreName) || enchAdd.contains(ench)) {
+                    if (ArrayUtils.contains(ench.conflicting, Storage.originalEnchantClassesReverse.get(e)) || enchAdd.contains(ench)) {
                         b = false;
                     }
                 }
@@ -226,14 +224,15 @@ public class Actions implements Listener {
                 if (evt.getCurrentItem().hasItemMeta()) {
                     if (evt.getCurrentItem().getItemMeta().hasLore()) {
                         Player player = (Player) evt.getWhoClicked();
-                        for (Enchantment e : Utilities.getEnchant(evt.getCurrentItem()).keySet()) {
-                            if (e.loreName.equals("Jump") || e.loreName.equals("Meador")) {
+                        for (Enchantment e : Utilities.getEnchants(evt.getCurrentItem()).keySet()) {
+                            String realName = Storage.originalEnchantClassesReverse.get(e);
+                            if (realName.equals("Jump") || realName.equals("Meador")) {
                                 player.removePotionEffect(PotionEffectType.JUMP);
                             }
-                            if (e.loreName.equals("Night Vision")) {
+                            if (realName.equals("Night Vision")) {
                                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
                             }
-                            if (e.loreName.equals("Weight")) {
+                            if (realName.equals("Weight")) {
                                 player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
                             }
                         }

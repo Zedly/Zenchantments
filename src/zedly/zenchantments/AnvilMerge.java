@@ -28,8 +28,8 @@ public class AnvilMerge implements Listener {
             @Override
             public void run() {
                 InventoryView view = evt.getView();
-                HashMap<Enchantment, Integer> result = Utilities.getEnchant(view.getItem(0));
-                HashMap<Enchantment, Integer> item2 = Utilities.getEnchant(view.getItem(1));
+                HashMap<Enchantment, Integer> result = Utilities.getEnchants(view.getItem(0));
+                HashMap<Enchantment, Integer> item2 = Utilities.getEnchants(view.getItem(1));
                 HashMap<Enchantment, Integer> temp = new HashMap<>();
                 for (Enchantment e : item2.keySet()) {
                     if (result.keySet().contains(e)) {
@@ -50,7 +50,7 @@ public class AnvilMerge implements Listener {
                             }
                         } else {
                             for (Enchantment e1 : result.keySet()) {
-                                if (ArrayUtils.contains(e1.conflicting, e.loreName)) {
+                                if (ArrayUtils.contains(e1.conflicting, Storage.originalEnchantClassesReverse.get(e))) {
                                     b = true;
                                 }
                                 if (!ArrayUtils.contains(e.enchantable, view.getItem(0).getType())) {

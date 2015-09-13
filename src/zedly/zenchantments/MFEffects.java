@@ -11,27 +11,26 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class ContinuousEffects implements Runnable {
+public class MFEffects implements Runnable {
 
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (ItemStack stk : player.getInventory().getArmorContents()) {
                 if (stk != null) {
-                    HashMap<Enchantment, Integer> map = Utilities.getEnchant(stk);
+                    HashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
                     for (Enchantment ench : map.keySet()) {
                         ench.onScan(player, map.get(ench));
                     }
                 }
             }
             if (player.getItemInHand() != null) {
-                HashMap<Enchantment, Integer> map = Utilities.getEnchant(player.getItemInHand());
+                HashMap<Enchantment, Integer> map = Utilities.getEnchants(player.getItemInHand());
                 for (Enchantment ench : map.keySet()) {
                     ench.onScanHand(player, map.get(ench));
                 }
             }
         }
-
         Iterator iceIT = Storage.waterLocs.keySet().iterator();
         while (iceIT.hasNext()) {
             Location location = (Location) iceIT.next();
@@ -40,7 +39,6 @@ public class ContinuousEffects implements Runnable {
                 iceIT.remove();
             }
         }
-
         Iterator fireIT = Storage.fireLocs.keySet().iterator();
         while (fireIT.hasNext()) {
             Location location = (Location) fireIT.next();
@@ -49,7 +47,6 @@ public class ContinuousEffects implements Runnable {
                 fireIT.remove();
             }
         }
-
         Iterator speedIt = Storage.speed.iterator();
         while (speedIt.hasNext()) {
             Player player = (Player) speedIt.next();
@@ -59,10 +56,11 @@ public class ContinuousEffects implements Runnable {
             }
             boolean check = false;
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                HashMap<Enchantment, Integer> map = Utilities.getEnchant(stk);
+                HashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
                 String[] lores = new String[]{"Weight", "Speed", "Meador"};
                 for (Enchantment ench : map.keySet()) {
-                    if (ArrayUtils.contains(lores, ench.loreName)) {
+                    String realName = Storage.originalEnchantClassesReverse.get(ench);
+                    if (ArrayUtils.contains(lores, Storage.originalEnchantClassesReverse.get(ench))) {
                         check = true;
                     }
                 }

@@ -38,9 +38,10 @@ public class Storage {
     public static final HashSet<LivingEntity> derpingEntities;
     public static final Random rnd;
     public static ArrayList<Class> ArrowTypes = new ArrayList<Class>(Arrays.asList(Arrow.class.getClasses()));
-    public static Class[] Enchantments = Enchantment.class.getClasses();
-    public static LinkedHashMap<String, Enchantment> enchantClass = new LinkedHashMap<>();
-    public static LinkedHashMap<String, Enchantment> enchantClassU = new LinkedHashMap<>();
+    public static LinkedHashMap<String, Enchantment> enchantClasses = new LinkedHashMap<>();
+    public static LinkedHashMap<String, Enchantment> allEnchantClasses = new LinkedHashMap<>();
+    public static LinkedHashMap<String, Enchantment> originalEnchantClasses = new LinkedHashMap<>();
+    public static LinkedHashMap<Enchantment, String> originalEnchantClassesReverse = new LinkedHashMap<>();
     public static Map<String, Arrow> arrowClass = new HashMap<>();
     public static final HashSet<Block> webs;
     public static final HashMap<Entity, Arrow> killedEntities = new HashMap<>();
@@ -56,7 +57,6 @@ public class Storage {
     
     //config variables
     public static double enchantRarity;
-    public static LinkedHashMap<String, Float> enchantLevels = new LinkedHashMap<>();
     public static int max_enchants_per_item;
     public static HashMap<UUID, HashSet<Enchantment>> playerSettings= new HashMap<>();
     public static boolean laser_in_dispensers;
@@ -64,6 +64,7 @@ public class Storage {
     public static boolean force_rainbow_slam_players;
     public static int item_drop_shred;
     public static boolean laser_pvp;
+    public static boolean fuse_blockbreak;
 
     public static final Material[] swords = new Material[]{WOOD_SWORD, STONE_SWORD, GOLD_SWORD, IRON_SWORD, DIAMOND_SWORD};
     public static final Material[] picks = new Material[]{WOOD_PICKAXE, STONE_PICKAXE, GOLD_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE};
@@ -78,7 +79,7 @@ public class Storage {
     public static final Material[] shears = new Material[]{SHEARS};
     public static final Material[] lighters = new Material[]{FLINT_AND_STEEL};
     public static final Material[] rods = new Material[]{FISHING_ROD};
-
+    
     static {
         lightnings = new ArrayList<>();
         advancedProjectiles = new HashMap<>();

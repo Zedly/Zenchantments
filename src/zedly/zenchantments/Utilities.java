@@ -327,7 +327,7 @@ public class Utilities {
         return stacks;
     }
 
-    public static LinkedHashMap<Enchantment, Integer> getEnchant(ItemStack stack) {
+    public static LinkedHashMap<Enchantment, Integer> getEnchants(ItemStack stack) {
         LinkedHashMap<Enchantment, Integer> map = new LinkedHashMap<>();
         if (stack != null) {
             if (stack.hasItemMeta()) {
@@ -340,8 +340,8 @@ public class Utilities {
                         }
                         Integer level = Utilities.getNumber(rawEnchant.substring(index1 + 1));
                         String enchant = rawEnchant.substring(2, index1);
-                        if (Storage.enchantClassU.containsKey(enchant.replace(" ", "").toLowerCase())) {
-                            Enchantment ench = (Enchantment) Storage.enchantClassU.get(enchant.replace(" ", "").toLowerCase());
+                        if (Storage.allEnchantClasses.containsKey(enchant.replace(" ", "").toLowerCase())) {
+                            Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(enchant.replace(" ", "").toLowerCase());
                             map.put(ench, level);
                         }
                     }
@@ -350,7 +350,7 @@ public class Utilities {
         }
         LinkedHashMap<Enchantment, Integer> finalmap = new LinkedHashMap<>();
         for (String s : new String[]{"Lumber", "Shred", "Mow", "Extraction"}) {
-            Enchantment e = (Enchantment) Storage.enchantClassU.get(s.replace(" ", "").toLowerCase());
+            Enchantment e = (Enchantment) Storage.originalEnchantClasses.get(s);
             if (map.containsKey(e)) {
                 finalmap.put(e, map.get(e));
                 map.remove(e);
@@ -363,8 +363,8 @@ public class Utilities {
     public static ArrayList<Enchantment> getEnchants(String[] raw) {
         ArrayList<Enchantment> enchants = new ArrayList<>();
         for (String s : raw) {
-            if (Storage.enchantClassU.containsKey(s.replace(" ", "").toLowerCase())) {
-                Enchantment ench = (Enchantment) Storage.enchantClassU.get(s.replace(" ", "").toLowerCase());
+            if (Storage.allEnchantClasses.containsKey(s.replace(" ", "").toLowerCase())) {
+                Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(s.replace(" ", "").toLowerCase());
                 enchants.add(ench);
             }
         }

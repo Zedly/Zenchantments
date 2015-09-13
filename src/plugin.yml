@@ -1,49 +1,51 @@
 name: Zenchantments
 main: zedly.zenchantments.Zenchantments
-version: 1.0.0
+version: 1.1.0
 commands:
-  ench:
-    description: Gives basic access; /ench help.
-    usage: /ench
-    default: true
   arrow:
     description: Gives basic access; /arrow help.
     usage: /arrow
     default: true
-
+  ench:
+    description: Gives basic access; /ench help.
+    usage: /ench
+    default: true
 permissions:
-  zenchantments.command.enchant:
-    description: Enchants the item the user is holding
-    default: false
-  zenchantments.command.onoff:
-    description: Enables or disables certain custom enchantments for the user
-    default: false
   zenchantments.command.arrow:
     description: Sets the arrow the user is holding to the desired Elemental Arrow
     default: false
+  zenchantments.item.arrows:
+    description: Allows for use of Elemental Arrows
+    default: false
+  zenchantments.command.enchant:
+    description: Enchants the item the user is holding
+    default: false
+  zenchantments.enchant.get:
+    description: Allows for obtaining custom enchantments
+    default: true
+  zenchantments.command.give:
+    description: Allows for giving new, enchanted items to selected players
+    default: true
   zenchantments.command.info:
     description: Returns descriptions of the enchantments or arrow in hand
     default: false
   zenchantments.command.list:
     description: Returns a list of enchantments and arrows
     default: false
-  zenchantments.item.arrows:
-    description: Allows for use of Elemental Arrows
+  zenchantments.command.onoff:
+    description: Enables or disables certain custom enchantments for the user
     default: false
   zenchantments.enchant.use:
     description: Allows for use of custom enchantments
     default: true
-  zenchantments.enchant.get:
-    description: Allows for obtaining custom enchantments
-    default: true
-    
   zenchantments.*:
     children:
-      zenchantments.command.enchant: true
       zenchantments.command.arrow: true
-      zenchantments.command.info: true
       zenchantments.item.arrows: true
-      zenchantments.command.onoff: true
-      zenchantments.command.list: true
-      zenchantments.enchant.use: true
+      zenchantments.command.enchant: true
       zenchantments.enchant.get: true
+      zenchantments.command.give: true
+      zenchantments.command.info: true
+      zenchantments.command.list: true
+      zenchantments.command.onoff: true
+      zenchantments.enchant.use: true

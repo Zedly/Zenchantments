@@ -2,11 +2,12 @@ package zedly.zenchantments;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
+import org.bukkit.ChatColor;
 import static org.bukkit.GameMode.CREATIVE;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,6 +40,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -53,6 +55,7 @@ import static org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE;
 import static org.bukkit.potion.PotionEffectType.JUMP;
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
 import org.bukkit.util.Vector;
+import particles.ParticleEffect;
 import static zedly.zenchantments.Storage.rnd;
 import static zedly.zenchantments.Storage.speed;
 
@@ -106,6 +109,9 @@ public class Enchantment {
     }
 
     public void onProjectileLaunch(ProjectileLaunchEvent evt, int level) {
+    }
+
+    public void onPlayerDeath(PlayerDeathEvent evt, int level) {
     }
 
     public void onScan(Player player, int level) {
@@ -165,7 +171,7 @@ public class Enchantment {
                     if (Storage.anthMobs.get(blk).equals(player)) {
                         Storage.anthMobs2.add(blk);
                         toRemove.add(blk);
-                        blk.setVelocity(player.getTargetBlock(null, 7).getLocation().subtract(player.getLocation()).toVector().multiply(.25));
+                        blk.setVelocity(player.getTargetBlock((HashSet<Byte>) null, 7).getLocation().subtract(player.getLocation()).toVector().multiply(.25));
                     }
                 }
                 for (FallingBlock blk : toRemove) {
@@ -239,6 +245,64 @@ public class Enchantment {
                 }
             }
         }
+    }
+
+    public static class Bind extends Enchantment {
+
+        public Bind() {
+            maxLevel = 1;
+            loreName = "Bind";
+            chance = 0;
+            enchantable = (Material[]) ArrayUtils.addAll(Storage.axes, ArrayUtils.addAll(Storage.boots, ArrayUtils.addAll(Storage.bows, ArrayUtils.addAll(Storage.chestplates, ArrayUtils.addAll(Storage.helmets, ArrayUtils.addAll(Storage.hoes, ArrayUtils.addAll(Storage.leggings, ArrayUtils.addAll(Storage.lighters, ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.rods, ArrayUtils.addAll(Storage.shears, ArrayUtils.addAll(Storage.spades, Storage.swords))))))))))));
+            conflicting = new String[]{};
+            description = "Keeps items with this enchantment in your inventory after death";
+        }
+
+        @Override
+        public void onPlayerDeath(final PlayerDeathEvent evt, int level) {
+            final ArrayList<ItemStack> contents = new ArrayList<>();
+            final ArrayList<ItemStack> armorContents = new ArrayList<>();
+            for (ItemStack stk : evt.getEntity().getInventory().getContents()) {
+                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
+                if (stk != null) {
+                    if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
+                        if (Utilities.getEnchants(stk).containsKey(this)) {
+                            contents.add(stk);
+                        }
+                    }
+                }
+            }
+            for (ItemStack stk : evt.getEntity().getInventory().getArmorContents()) {
+                LinkedHashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
+                if (stk != null) {
+                    if (!stk.getType().equals(Material.ENCHANTED_BOOK)) {
+                        if (Utilities.getEnchants(stk).containsKey(this)) {
+                            armorContents.add(stk);
+                        }
+                    }
+                }
+            }
+            evt.getDrops().removeAll(contents);
+            evt.getDrops().removeAll(armorContents);
+            ItemStack[] preContents = new ItemStack[contents.size()];
+            for (int i = 0; i < contents.size(); i++) {
+                preContents[i] = contents.get(i);
+            }
+            ItemStack[] preArmorContents = new ItemStack[armorContents.size()];
+            for (int i = 0; i < armorContents.size(); i++) {
+                preArmorContents[i] = armorContents.get(i);
+            }
+            final ItemStack[] finalContents = preContents;
+            final ItemStack[] finalArmorContents = preArmorContents;
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                @Override
+                public void run() {
+                    evt.getEntity().getInventory().setContents(finalContents);
+                    evt.getEntity().getInventory().setArmorContents(finalArmorContents);
+                }
+            }, 1);
+        }
+
     }
 
     public static class BlazesCurse extends Enchantment {
@@ -395,7 +459,7 @@ public class Enchantment {
                                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                                     @Override
                                     public void run() {
-                                        player.getWorld().spigot().playEffect(Utilities.getCenter(player.getLocation()), Effect.HEART, 0, 1, .5f, .5f, .5f, .1f, 10, 16);
+                                        ParticleEffect.HEART.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(player.getLocation()), 32);
                                     }
                                 }, ((i * 5) + 1));
                             }
@@ -429,7 +493,7 @@ public class Enchantment {
                 for (int x = 0; x < Storage.rnd.nextInt(level + 1) + 1; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(GOLD_INGOT));
                 }
-                evt.getBlock().getLocation().getWorld().spigot().playEffect(Utilities.getCenter(evt.getBlock().getLocation()), Effect.FLAME, 0, 1, .5f, .5f, .5f, .1f, 10, 16);
+                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
             } else if (evt.getBlock().getType() == IRON_ORE) {
                 Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
                 evt.setCancelled(true);
@@ -437,7 +501,7 @@ public class Enchantment {
                 for (int x = 0; x < Storage.rnd.nextInt(level + 1) + 1; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(IRON_INGOT));
                 }
-                evt.getBlock().getLocation().getWorld().spigot().playEffect(Utilities.getCenter(evt.getBlock().getLocation()), Effect.FLAME, 0, 1, .5f, .5f, .5f, .1f, 10, 16);
+                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
             }
         }
     }
@@ -497,7 +561,7 @@ public class Enchantment {
                 Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
-                evt.getBlock().getLocation().getWorld().spigot().playEffect(Utilities.getCenter(evt.getBlock().getLocation()), Effect.FLAME, 0, 1, .5f, .5f, .5f, .1f, 10, 16);
+                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
                 for (int x = 0; x < 4; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(CLAY_BRICK));
                 }
@@ -516,7 +580,7 @@ public class Enchantment {
                 }
                 for (double i = height - 1; i >= evt.getBlock().getLocation().getY(); i--) {
                     location.setY(i);
-                    evt.getBlock().getLocation().getWorld().spigot().playEffect(Utilities.getCenter(evt.getBlock().getLocation()), Effect.FLAME, 0, 1, .5f, .5f, .5f, .1f, 10, 16);
+                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
                     evt.getBlock().setType(AIR);
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
                 }
@@ -526,7 +590,7 @@ public class Enchantment {
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack((mat), 1, itemInfo));
-                evt.getBlock().getLocation().getWorld().spigot().playEffect(Utilities.getCenter(evt.getBlock().getLocation()), Effect.FLAME, 0, 1, .5f, .5f, .5f, .1f, 10, 16);
+                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
             }
         }
     }
@@ -648,6 +712,26 @@ public class Enchantment {
         }
     }
 
+    public static class Fuse extends Enchantment {
+
+        public Fuse() {
+            maxLevel = 1;
+            loreName = "Fuse";
+            chance = 0;
+            enchantable = Storage.bows;
+            conflicting = new String[]{};
+            description = "Instantly ignites anything explosive";
+        }
+
+        @Override
+        public void onEntityShootBow(EntityShootBowEvent evt, int level) {
+            Arrow.ArrowEnchantFuse arrow = new Arrow.ArrowEnchantFuse();
+            arrow.entity = (Projectile) evt.getProjectile();
+            Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
+        }
+
+    }
+
     public static class Germination extends Enchantment {
 
         public Germination() {
@@ -686,7 +770,7 @@ public class Enchantment {
                                         } else {
                                             Utilities.grow(block.getRelative(x, y, z));
                                         }
-                                        evt.getPlayer().getWorld().spigot().playEffect(Utilities.getCenter(block.getRelative(x, y, z).getLocation()), Effect.HAPPY_VILLAGER, 0, 1, .3f, .3f, .3f, 1f, 30, 16);
+                                        ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 30, Utilities.getCenter(block.getRelative(x, y, z).getLocation()), 32);
                                         evt.getPlayer().updateInventory();
                                         if (Storage.rnd.nextInt(10) == 3) {
                                             Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
@@ -741,13 +825,13 @@ public class Enchantment {
                 player.setFallDistance(6 - level);
                 Location l = player.getLocation().clone();
                 l.setY(l.getY() - 3);
-                player.getLocation().getWorld().spigot().playEffect(l, Effect.CLOUD, 0, 1, 0, 0, 0, .1f, 1, 32);
+                ParticleEffect.CLOUD.display(0, 0, 0, .1f, 1, l, 32);
             }
             if (Storage.rnd.nextInt(5 * level) == 5) {
                 ItemStack[] s = player.getInventory().getArmorContents();
                 for (int i = 0; i < 4; i++) {
                     if (s[i] != null) {
-                        HashMap<Enchantment, Integer> map = Utilities.getEnchant(s[i]);
+                        HashMap<Enchantment, Integer> map = Utilities.getEnchants(s[i]);
                         if (map.containsKey(this)) {
                             Utilities.addUnbreaking(s[i], 1);
                         }
@@ -912,7 +996,7 @@ public class Enchantment {
                                     block.getRelative(x, y, z).setData(data);
                                 }
                                 if (test) {
-                                    loc.getWorld().spigot().playEffect(Utilities.getCenter(block.getRelative(x, y + 1, z).getLocation()), Effect.HAPPY_VILLAGER, 0, 1, .3f, .3f, .3f, 1f, 20, 16);
+                                    ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 20, Utilities.getCenter(block.getRelative(x, y + 1, z).getLocation()), 32);
                                 }
                                 if (test) {
                                     int chc = rnd.nextInt(50);
@@ -920,7 +1004,7 @@ public class Enchantment {
                                         ItemStack[] s = player.getInventory().getArmorContents();
                                         for (int i = 0; i < 4; i++) {
                                             if (s[i] != null) {
-                                                HashMap<Enchantment, Integer> map = Utilities.getEnchant(s[i]);
+                                                HashMap<Enchantment, Integer> map = Utilities.getEnchants(s[i]);
                                                 if (map.containsKey(this)) {
                                                     Utilities.addUnbreaking(s[i], 1);
                                                 }
@@ -955,7 +1039,7 @@ public class Enchantment {
         public void onBlockInteract(final PlayerInteractEvent evt, int level) {
             if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
                 if (evt.getPlayer().getHealth() > 2) {
-                    final Block blk = evt.getPlayer().getTargetBlock(null, 10);
+                    final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 10);
                     evt.getPlayer().setVelocity(blk.getLocation().toVector().subtract(evt.getPlayer().getLocation().toVector()).multiply(.25));
                     evt.getPlayer().setFallDistance(0);
                     EntityDamageEvent event = new EntityDamageEvent(evt.getPlayer(), DamageCause.MAGIC, 2);
@@ -1040,6 +1124,7 @@ public class Enchantment {
         public void onHitting(EntityDamageByEntityEvent evt, int level) {
             if (!evt.isCancelled()) {
                 ((LivingEntity) evt.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40 + (level * 40), (level * 2)));
+                ParticleEffect.HEART.display(1f, 2f, 1f, .1f, 10, Utilities.getCenter(Utilities.getCenter(evt.getEntity().getLocation())), 32);
             }
         }
     }
@@ -1085,7 +1170,7 @@ public class Enchantment {
                 tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
                 tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
                 tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                blk.getWorld().spigot().playEffect(tempLoc, Effect.COLOURED_DUST, 0, 1, 0f, 0f, 0f, 10f, 1, 32);
+                ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
                 for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getEntities()) {
                     if (ent.getLocation().distance(tempLoc) < 1.5) {
                         if (ent instanceof LivingEntity) {
@@ -1114,7 +1199,8 @@ public class Enchantment {
         public void onEntityInteract(PlayerInteractEntityEvent evt, int level) {
             if (!evt.getPlayer().isSneaking()) {
                 Storage.laserTimes.put(evt.getPlayer(), System.nanoTime());
-                Shoot(evt.getRightClicked().getLocation(), evt.getPlayer(), level);
+                final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 6 + (level * 3)).getRelative(0, 0, 0);
+                Shoot(blk.getLocation(), evt.getPlayer(), level);
             }
         }
 
@@ -1125,13 +1211,14 @@ public class Enchantment {
                 return;
             }
             boolean b = false;
-            for (Enchantment e : Utilities.getEnchant(evt.getPlayer().getItemInHand()).keySet()) {
-                if (e.loreName.equals("Lumber")) {
+            for (Enchantment e : Utilities.getEnchants(evt.getPlayer().getItemInHand()).keySet()) {
+                String realName = Storage.originalEnchantClassesReverse.get(e);
+                if (realName.equals("Lumber")) {
                     b = true;
                 }
             }
             if ((!evt.getPlayer().isSneaking() || b) && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
-                final Block blk = evt.getPlayer().getTargetBlock(null, 6 + (level * 3)).getRelative(0, 0, 0);
+                final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 6 + (level * 3)).getRelative(0, 0, 0);
                 Shoot(blk.getLocation(), evt.getPlayer(), level);
                 int[] nobreak = new int[]{0, 7, 23, 52, 54, 61, 62, 63, 64, 68, 69, 71, 77, 90, 96, 107, 116, 117, 119, 120, 130, 137, 138, 143, 145, 146, 158, 166, 167, 183, 184, 185, 186, 187, 193, 194, 195, 196, 197};
                 if (ArrayUtils.contains(nobreak, blk.getTypeId())) {
@@ -1213,7 +1300,7 @@ public class Enchantment {
         @Override
         public void onProjectileLaunch(ProjectileLaunchEvent evt, int level) {
             if (evt.getEntity().getType() == EntityType.FISHING_HOOK) {
-                evt.getEntity().setVelocity(evt.getEntity().getVelocity().normalize().multiply(1.9 + (level - 1.2)));
+                evt.getEntity().setVelocity(evt.getEntity().getVelocity().normalize().multiply(Math.min(1.9 + (level - 1.2), 2.7)));
             }
         }
     }
@@ -1336,8 +1423,8 @@ public class Enchantment {
 
         @Override
         public void onScan(Player player, int level) {
-            player.setWalkSpeed(.5f + (level * .05f));
-            player.setFlySpeed(.5f + (level * .05f));
+            player.setWalkSpeed(Math.min(.5f + (level * .05f), 1));
+            player.setFlySpeed(Math.min(.5f + (level * .05f), 1));
             speed.add(player);
             player.removePotionEffect(JUMP);
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 610, (level + 2)));
@@ -1608,7 +1695,6 @@ public class Enchantment {
         }
 
         @Override
-        @SuppressWarnings("empty-statement")
         public void onBlockBreak(final BlockBreakEvent evt, int level) {
             //1 = normal; 2 = wide; 3 = deep; 4 = tall; 5 = ore
             if (!Storage.pierceModes.containsKey(evt.getPlayer())) {
@@ -1824,9 +1910,9 @@ public class Enchantment {
                 if (ent instanceof Player) {
                     int effect = 0;
                     for (ItemStack stk : ((Player) ent).getInventory().getArmorContents()) {
-                        for (Enchantment e : Utilities.getEnchant(stk).keySet()) {
+                        for (Enchantment e : Utilities.getEnchants(stk).keySet()) {
                             if (e.equals(this)) {
-                                effect += Utilities.getEnchant(stk).get(e);
+                                effect += Utilities.getEnchants(stk).get(e);
                             }
                         }
                     }
@@ -1937,7 +2023,7 @@ public class Enchantment {
                             loc.setY(loc.getY() + (j1 / 100));
                             loc.setX(loc.getX() + Math.sin(Math.toRadians(j1)) * j1 / 330);
                             loc.setZ(loc.getZ() + Math.cos(Math.toRadians(j1)) * j1 / 330);
-                            ent.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 1, 0, 0, 0, 10f, 1, 32);
+                            ParticleEffect.REDSTONE.display(0, 0, 0, 10f, 1, loc, 32);
                             loc.setY(loc.getY() + 1.3);
                             ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
                             ent.setFallDistance(-20 + ((level * 2) + 8));
@@ -2144,7 +2230,7 @@ public class Enchantment {
                                                         limit = (float) ((level) + 3 + r);
                                                     }
                                                     int timer = (int) (counter / (l * 1.6));
-                                                    if (Utilities.getEnchant(player.getItemInHand()).size() > 1 && Storage.item_drop_shred != 2) {
+                                                    if (Utilities.getEnchants(player.getItemInHand()).size() > 1 && Storage.item_drop_shred != 2) {
                                                         timer = 1;
                                                     }
                                                     if (block.getRelative(x, y, z).getLocation().distanceSquared(block.getLocation()) < limit) {
@@ -2264,8 +2350,8 @@ public class Enchantment {
 
         @Override
         public void onScan(Player player, int level) {
-            player.setWalkSpeed((.05f * level) + .2f);
-            player.setFlySpeed((.05f * level) + .2f);
+            player.setWalkSpeed(Math.min((.05f * level) + .2f, 1));
+            player.setFlySpeed(Math.min((.05f * level) + .2f, 1));
             speed.add(player);
         }
     }
@@ -2338,6 +2424,9 @@ public class Enchantment {
                             break;
                         }
                     }
+                }
+                if (mat == AIR) {
+                    return;
                 }
                 if (mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
                     bt = 14;
@@ -2515,7 +2604,7 @@ public class Enchantment {
                             evt.setCancelled(true);
                         }
                         int newPosition = position + 1 - 2 * (position % 2);
-                        evt.getEntity().getLocation().getWorld().spigot().playEffect(Utilities.getCenter(evt.getEntity().getLocation()), Effect.CLOUD, 0, 1, .5f, 2f, .5f, .1f, 70, 16);
+                        ParticleEffect.HEART.display(.5f, 2f, .5f, .1f, 70, Utilities.getCenter(evt.getEntity().getLocation()), 32);
                         evt.getEntity().remove();
                         ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(), entityTypes[newPosition]);
                     }
@@ -2673,7 +2762,7 @@ public class Enchantment {
         public void onScan(Player player, int level) {
             for (ItemStack s : player.getInventory().getArmorContents()) {
                 if (s != null) {
-                    HashMap<Enchantment, Integer> map = Utilities.getEnchant(s);
+                    HashMap<Enchantment, Integer> map = Utilities.getEnchants(s);
                     if (map.containsKey(Enchantment.Ethereal.this)) {
                         s.setDurability((short) 0);
                     }
