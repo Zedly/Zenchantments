@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import static org.bukkit.GameMode.CREATIVE;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,8 +16,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import static zedly.zenchantments.Storage.rnd;
 
 public class Utilities {
@@ -371,6 +376,20 @@ public class Utilities {
         return enchants;
     }
 
+    public static Enchantment getEnchant(String raw) {
+        Enchantment e = null;
+        int index1 = raw.lastIndexOf(" ");
+        if (index1 == -1) {
+            return e;
+        }
+        Integer level = Utilities.getNumber(raw.substring(index1 + 1));
+        String enchant = raw.substring(2, index1);
+        if (Storage.allEnchantClasses.containsKey(enchant.replace(" ", "").toLowerCase())) {
+            e = Storage.allEnchantClasses.get(enchant.replace(" ", "").toLowerCase());
+        }
+        return e;
+    }
+
     public static Location getCenter(Location loc) {
         double x = loc.getX();
         double z = loc.getZ();
@@ -527,4 +546,88 @@ public class Utilities {
     public static void eventEnd(Player p, String e) {
         Storage.duringEvents.get(p).remove(e);
     }
+
+    public static boolean canDamage(Entity damager, Entity entity) {
+        if (!Storage.damagingPlayer.contains(damager)) {
+            Storage.damagingPlayer.add(damager);
+            EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(damager, entity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1);
+            Bukkit.getPluginManager().callEvent(evt);
+            Storage.damagingPlayer.remove(damager);
+            return !evt.isCancelled();
+        }
+        return false;
+    }
+
+    public static ItemStack addDescriptions(ItemStack stk, Enchantment delete) {
+        stk = removeDescriptions(stk, delete);
+        if (stk != null) {
+            if (stk.hasItemMeta()) {
+                if (stk.getItemMeta().hasLore()) {
+                    ItemMeta meta = stk.getItemMeta();
+                    List<String> lore = new ArrayList<>();
+                    for (String s : meta.getLore()) {
+                        lore.add(s);
+                        Enchantment e = getEnchant(s);
+                        if (e != null) {
+                            String str = e.description;
+                            int start = 0;
+                            int counter = 0;
+                            for (int i = 0; i < str.toCharArray().length; i++) {
+                                if (counter > 30) {
+                                    if (str.toCharArray()[i - 1] == ' ') {
+                                        lore.add(Storage.descriptionColor + str.substring(start, i));
+                                        counter = 0;
+                                        start = i;
+                                    }
+                                }
+                                counter++;
+                            }
+                            lore.add(Storage.descriptionColor + str.substring(start));
+                        }
+                    }
+                    meta.setLore(lore);
+                    stk.setItemMeta(meta);
+                }
+            }
+        }
+        return stk;
+    }
+
+    public static ItemStack removeDescriptions(ItemStack stk, Enchantment delete) {
+        if (stk != null) {
+            if (stk.hasItemMeta()) {
+                if (stk.getItemMeta().hasLore()) {
+                    ItemMeta meta = stk.getItemMeta();
+                    List<String> lore = new ArrayList<>();
+                    Enchantment current = null;
+                    for (String s : meta.getLore()) {
+                        Enchantment e = getEnchant(s);
+                        if (e != null) {
+                            current = e;
+                        }
+                        if (current == null) {
+                            if (delete != null) {
+                                if (!delete.description.contains(ChatColor.stripColor(s))) {
+                                    lore.add(s);
+                                }
+                            } else {
+                                lore.add(s);
+                            }
+                        } else if (delete != null) {
+                            if (!delete.description.contains(ChatColor.stripColor(s)) && !current.description.contains(ChatColor.stripColor(s))) {
+                                lore.add(s);
+                            }
+                        } else if (!current.description.contains(ChatColor.stripColor(s))) {
+                            lore.add(s);
+                        }
+                    }
+                    meta.setLore(lore);
+                    stk.setItemMeta(meta);
+                    return stk;
+                }
+            }
+        }
+        return stk;
+    }
+
 }

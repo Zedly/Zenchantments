@@ -1,5 +1,5 @@
 ZenchantmentsConfigVersion:
-  - 1.1.0
+  - 1.2.0
 #   Edit each value to change the relative probability of obtaining each enchantment. 0 = no probability, -1 = disabled
 #   Edit the tool types to change what enchantments can be found on certain tools. I cannot guarantee compatibility with all configurations.
 #   (Axe, Shovel, Sword, Pickaxe, Rod, Shears, Bow, Lighter, Hoe, Helmet, Chestplate, Leggings, Boots, All) 
@@ -311,7 +311,7 @@ enchantments:
       Tools: Boots
       Name: Water Walker
       Max Level: 1
-#  Edit this value to change which arrows are enabled and disabled
+#  Determines which arrows are enabled and disabled
 elemental_arrows:
   - Bouncifying Arrow: true
   - Command Arrow: true
@@ -328,27 +328,27 @@ elemental_arrows:
   - Supersonic Arrow: true
   - Teleport Arrow: true
   - Web Arrow: true
-#  Edit this value to change the overall probability of obtaining all custom enchantments.
-probability:
-  - 25
-#  Edit this value to change the maximum number of custom enchantments possible per item.
-max_enchants_per_tool:
-  - 4
-#  Edit this value to determine if the Laser enchantment works in dispensers.
-laser_in_dispensers:
-  - true
-#  Edit this value to determine if player speeds are reset upon login. Though incredibly rare, this ensures that players are not stuck in faster/slower speeds due to enchantments like Meador, Speed, or Weight.
-reset_speed_on_login:
-  - true
-#  Edit this value to determine if Force or Rainbow slam work on players.
-force_rainbow_slam_players:
-  - true
-#  Edit this value to determine what the Shred enchantment drops. (all, block (no ores), or none)
-item_drop_shred:
-  - all
-#  Edit this value to determine if the Laser enchantment damages players.
-laser_pvp:
-  - true
-#  Edit this value to determine if the Fuse enchantment breaks blocks.
-fuse_blockbreak:
-  - true
+#  Changes the overall probability of obtaining all custom enchantments
+probability: 25
+#  Changes the maximum number of custom enchantments possible per item
+max_enchants_per_tool: 4
+#  Determines if the Laser enchantment works in dispensers
+laser_in_dispensers: true
+#  Determines if player speeds are reset upon login
+reset_speed_on_login: true
+#  Determines if Force or Rainbow slam work on players
+force_rainbow_slam_players: true
+#  Determines what the Shred enchantment drops (all, block (no ores), or none)
+item_drop_shred: all
+#  Determines if the Laser enchantment damages players
+laser_pvp: true
+#  Determines if the Fuse enchantment breaks blocks
+fuse_blockbreak: true
+#  Determines if the Missile enchantment breaks blocks
+missile_blockbreak: true
+#  Determines if the Apocalypse enchantment breaks blocks
+apocalypse_blockbreak: true
+#  Determines if the enchantment descriptions show up in lore
+lore_descriptions : false
+#  Determines the color of enchantment descriptions shown in lore
+description_color: a

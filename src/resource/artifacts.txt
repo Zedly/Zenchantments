@@ -1,0 +1,800 @@
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..230
+  Enabled: true
+    @Item
+      Item ID: 258
+      Item Data: 0
+      Lore: Iron Age
+      Name: §cIron Battle Axe
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..230
+  Enabled: true
+    @Item
+      Item ID: 256
+      Item Data: 0
+      Lore: Iron Age
+      Name: §bIron Work Shovel
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..230
+  Enabled: true
+    @Item
+      Item ID: 257
+      Item Data: 0
+      Lore: Iron Age
+      Name: §eIron Work Pickaxe
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..230
+  Enabled: true
+    @Item
+      Item ID: 292
+      Item Data: 0
+      Lore: Iron Age
+      Name: §aFarmer's Hoe
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..230
+  Enabled: true
+    @Item
+      Item ID: 267
+      Item Data: 0
+      Lore: Iron Age
+      Name: §eBarbarian Sword
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..218
+  Enabled: true
+    @Item
+      Item ID: 359
+      Item Data: 0
+      Lore: Iron Age
+      Name: §dSheep Shears
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 325
+      Item Data: 0
+      Lore: Iron Age
+      Name: §9Milk Bucket
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 340
+      Item Data: 0
+      Lore: Iron Age
+      Name: §6The Torah
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 339
+      Item Data: 0
+      Lore: Iron Age
+      Name: §eRoman Message
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 386
+      Item Data: 0
+      Lore: Iron Age
+      Name: §5Priest's Workbook
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 61
+      Item Data: 0
+      Lore: Iron Age
+      Name: §8Peasant's Stove
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..364
+  Enabled: true
+    @Item
+      Item ID: 261
+      Item Data: 0
+      Lore: Iron Age
+      Name: §aAdvanced Long Bow
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..364
+  Enabled: true
+    @Item
+      Item ID: 261
+      Item Data: 0
+      Lore: Iron Age
+      Name: §2Advanced Short Bow
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 30..145
+  Enabled: true
+    @Item
+      Item ID: 302
+      Item Data: 0
+      Lore: Iron Age
+      Name: §1Knight's Helmet
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 385
+      Item Data: 0
+      Lore: Iron Age
+      Name: §eThe Holy Hand Grenade of Antioch
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 321
+      Item Data: 0
+      Lore: Iron Age
+      Name: §9Early Painting
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 339
+      Item Data: 0
+      Lore: Iron Age
+      Name: §cModernized Calendar
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 340
+      Item Data: 0
+      Lore: Iron Age
+      Name: §bBasic Arithmetic
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 339
+      Item Data: 0
+      Lore: Iron Age
+      Name: §eStar Map
+@Artifact
+  Probability: 1
+  Discovery Range: 41..255
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 345
+      Item Data: 0
+      Lore: Iron Age
+      Name: §6Early Compass
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 10..20
+  Enabled: true
+    @Item
+      Item ID: 283
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eBronze Sword
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 390
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §bWater Jug
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 20..92
+  Enabled: true
+    @Item
+      Item ID: 315
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §6Bronze Chestplate
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 10..20
+  Enabled: true
+    @Item
+      Item ID: 286
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eBronze Axe
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 339
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §cEarly Letter
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 340
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §aEgyptian Manuscript
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 333
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §dEarly Wood Ship
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 379
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eAlchemist's Table
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 338
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §2Egyptian Reeds
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 281
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §cEarly Fruit Bowl
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 371
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eGold Coin
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 282
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §aFarmers' Meal
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 352
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §4Pharoh's Bone
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 352
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eMammoth Bone
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 45
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §cEarly Dried Brick
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 58
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §8Mason's Table
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 374
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eCracked Glass Bottle
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 20..44
+  Enabled: true
+    @Item
+      Item ID: 346
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §9Early Fisherman's Rod
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 339
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eInaccurate Calendar
+@Artifact
+  Probability: 1
+  Discovery Range: 31..40
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 347
+      Item Data: 0
+      Lore: Bronze Age
+      Name: §eEarly Sun Dial
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..121
+  Enabled: true
+    @Item
+      Item ID: 275
+      Item Data: 0
+      Lore: Stone Age
+      Name: §8Slate Axe
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..121
+  Enabled: true
+    @Item
+      Item ID: 272
+      Item Data: 0
+      Lore: Stone Age
+      Name: §bBrittle Stone Sword
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..374
+  Enabled: true
+    @Item
+      Item ID: 261
+      Item Data: 0
+      Lore: Stone Age
+      Name: §dEarly Long Bow
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..374
+  Enabled: true
+    @Item
+      Item ID: 261
+      Item Data: 0
+      Lore: Stone Age
+      Name: §eExperimental Bow
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..49
+  Enabled: true
+    @Item
+      Item ID: 290
+      Item Data: 0
+      Lore: Stone Age
+      Name: §6Poor Farmer's Hoe
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..121
+  Enabled: true
+    @Item
+      Item ID: 291
+      Item Data: 0
+      Lore: Stone Age
+      Name: §5Advanced Stone Hoe
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 390
+      Item Data: 0
+      Lore: Stone Age
+      Name: §9Early Pottery
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 281
+      Item Data: 0
+      Lore: Stone Age
+      Name: §3Rain Bowl
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 295
+      Item Data: 0
+      Lore: Stone Age
+      Name: §aEarly Wheat Seeds
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..54
+  Enabled: true
+    @Item
+      Item ID: 259
+      Item Data: 0
+      Lore: Stone Age
+      Name: §cFire Starter
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 50
+      Item Data: 0
+      Lore: Stone Age
+      Name: §eStone Miner's Torch
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 69
+      Item Data: 0
+      Lore: Stone Age
+      Name: §6Early Experimental Lever
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 10..70
+  Enabled: true
+    @Item
+      Item ID: 299
+      Item Data: 0
+      Lore: Stone Age
+      Name: §aCow Hide Jacket
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 347
+      Item Data: 0
+      Lore: Stone Age
+      Name: §eEarly Sun Dial
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 329
+      Item Data: 0
+      Lore: Stone Age
+      Name: §6Leather Saddle
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 420
+      Item Data: 0
+      Lore: Stone Age
+      Name: §eAncient Rope
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 339
+      Item Data: 0
+      Lore: Stone Age
+      Name: §cIllegible Gibberish
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 358
+      Item Data: 0
+      Lore: Stone Age
+      Name: §2Very Inaccurate Map
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 321
+      Item Data: 0
+      Lore: Stone Age
+      Name: §bSymbols on Cow Hide
+@Artifact
+  Probability: 1
+  Discovery Range: 16..30
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 363
+      Item Data: 0
+      Lore: Stone Age
+      Name: §4Mammoth Meat
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 351
+      Item Data: 15
+      Lore: Prehistoric
+      Name: §cCrushed Dinosaur Bone
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 361
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §5Cretaceous Period Seeds
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 362
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §6Triassic Period Seeds
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 6
+      Item Data: 2
+      Lore: Prehistoric
+      Name: §8Mesozoic Sapling
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 6
+      Item Data: 1
+      Lore: Prehistoric
+      Name: §9Paleozoic Sapling
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 106
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §5Precambrian Plant
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 351
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §dCretaceous Squid Remains
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 370
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §1Megalodon Tooth
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 381
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §cDinosaur Eye
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 40
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §6Prototaxite
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 397
+      Item Data: 2
+      Lore: Prehistoric
+      Name: §aAncient Alien Skull
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 397
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §eDinosaur Skull
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 341
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §3Corallinaceae
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 344
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §eUnhatched Dinosaur Egg
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 352
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §9Camptosaurus Fossil
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 352
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §bKentrosaurus Fossil
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 394
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §eFossilized Herb
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 352
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §3Stegosaurus Fossil
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 31
+      Item Data: 0
+      Lore: Prehistoric
+      Name: §2Fossilized Grass
+@Artifact
+  Probability: 1
+  Discovery Range: 0..15
+  Damage Range: 0..0
+  Enabled: true
+    @Item
+      Item ID: 31
+      Item Data: 2
+      Lore: Prehistoric
+      Name: §2Fossilized Fern

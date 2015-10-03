@@ -16,6 +16,13 @@ public class MFEffects implements Runnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            for (ItemStack stk : (ItemStack[]) ArrayUtils.addAll(player.getInventory().getArmorContents(), player.getInventory().getContents())) {
+                if (Storage.descriptions) {
+                    Utilities.addDescriptions(stk, null);
+                } else {
+                    Utilities.removeDescriptions(stk, null);
+                }
+            }
             for (ItemStack stk : player.getInventory().getArmorContents()) {
                 if (stk != null) {
                     HashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);

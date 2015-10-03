@@ -12,7 +12,7 @@ public class PlayerConfig {
     public static void loadConfigs() {
         File file = new File("plugins/Zenchantments/PlayerSettings.txt");
         if (!file.exists()) {
-            System.err.println("PlayerSettings file does not exist! That's fine though.");
+            System.err.println("PlayerSettings file does not exist!");
         } else {
             byte[] rawData = new byte[(int) file.length()];
             try {

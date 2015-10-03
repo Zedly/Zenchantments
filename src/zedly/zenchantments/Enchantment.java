@@ -56,6 +56,7 @@ import static org.bukkit.potion.PotionEffectType.JUMP;
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
 import org.bukkit.util.Vector;
 import particles.ParticleEffect;
+import particles.ParticleEffect.BlockData;
 import static zedly.zenchantments.Storage.rnd;
 import static zedly.zenchantments.Storage.speed;
 
@@ -241,7 +242,7 @@ public class Enchantment {
         public void onBlockBreak(BlockBreakEvent evt, int level) {
             if ((evt.getBlock().getType() == STONE || evt.getBlock().getType() == DIRT) && !evt.isCancelled()) {
                 if (Storage.rnd.nextInt((int) (300 / level)) == 20) {
-                    ArchDrop.Drop(evt.getBlock());
+                    Artifact.drop(evt.getBlock());
                 }
             }
         }
@@ -431,7 +432,9 @@ public class Enchantment {
             } else {
                 ent = evt.getDamager();
             }
-            ent.setFireTicks(50 * level);
+            if (Utilities.canDamage(ent, evt.getEntity())) {
+                ent.setFireTicks(50 * level);
+            }
         }
     }
 
@@ -524,9 +527,9 @@ public class Enchantment {
             }
             Material mat = AIR;
             short itemInfo = 0;
+            short s = evt.getBlock().getData();
             if (ArrayUtils.contains(Storage.picks, evt.getPlayer().getItemInHand().getType())) {
                 if (evt.getBlock().getType() == STONE) {
-                    short s = evt.getBlock().getData();
                     if (s == 1 || s == 3 || s == 5) {
                         s++;
                         mat = STONE;
@@ -542,6 +545,8 @@ public class Enchantment {
                     mat = GOLD_INGOT;
                 } else if (evt.getBlock().getType() == COBBLESTONE) {
                     mat = STONE;
+                } else if (evt.getBlock().getType() == SPONGE && s == 1) {
+                    mat = SPONGE;
                 } else if (evt.getBlock().getType() == MOSSY_COBBLESTONE) {
                     mat = SMOOTH_BRICK;
                     itemInfo = 1;
@@ -682,7 +687,7 @@ public class Enchantment {
                         }
                         for (Entity ent : nearEnts) {
                             boolean tester = true;
-                            if (ent instanceof Player && Storage.force_rainbow_slam_players) {
+                            if (ent instanceof Player && Storage.forceSlamPlayers) {
                                 tester = false;
                             }
                             if (ent instanceof LivingEntity) {
@@ -702,7 +707,9 @@ public class Enchantment {
                                     if (vect.getY() < -1) {
                                         vect.setY(-1);
                                     }
-                                    ent.setVelocity(vect);
+                                    if (Utilities.canDamage(evt.getPlayer(), ent)) {
+                                        ent.setVelocity(vect);
+                                    }
                                 }
                             }
                         }
@@ -1122,9 +1129,9 @@ public class Enchantment {
 
         @Override
         public void onHitting(EntityDamageByEntityEvent evt, int level) {
-            if (!evt.isCancelled()) {
+            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 ((LivingEntity) evt.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40 + (level * 40), (level * 2)));
-                ParticleEffect.HEART.display(1f, 2f, 1f, .1f, 10, Utilities.getCenter(Utilities.getCenter(evt.getEntity().getLocation())), 32);
+                ParticleEffect.CLOUD.display(1f, 2f, 1f, .1f, 10, Utilities.getCenter(Utilities.getCenter(evt.getEntity().getLocation())), 32);
             }
         }
     }
@@ -1176,7 +1183,7 @@ public class Enchantment {
                         if (ent instanceof LivingEntity) {
                             LivingEntity e = (LivingEntity) ent;
                             if (!e.equals(player)) {
-                                if (!(e instanceof Player) || Storage.laser_pvp) {
+                                if (!(e instanceof Player) || Storage.laserPVP) {
                                     EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(player, e, DamageCause.ENTITY_ATTACK, (double) (1 + (level * 2)));
                                     Bukkit.getPluginManager().callEvent(evt);
                                     LivingEntity theE = (LivingEntity) evt.getEntity();
@@ -2004,12 +2011,15 @@ public class Enchantment {
 
         @Override
         public void onEntityInteract(final PlayerInteractEntityEvent evt, final int level) {
-            if ((evt.getRightClicked() instanceof Monster) || (Storage.force_rainbow_slam_players && evt.getRightClicked() instanceof Player)) {
+            if (!Utilities.canDamage(evt.getPlayer(), evt.getRightClicked())) {
+                return;
+            }
+            if ((evt.getRightClicked() instanceof Monster) || (Storage.forceSlamPlayers && evt.getRightClicked() instanceof Player)) {
                 Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 9, evt.getPlayer());
                 final LivingEntity ent = (LivingEntity) evt.getRightClicked();
                 final Location l = ent.getLocation().clone();
                 ent.teleport(l);
-                for (int i = 0; i < 2000; i++) {
+                for (int i = 0; i < 1200; i++) {
                     final float j = i;
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                         @Override
@@ -2026,19 +2036,29 @@ public class Enchantment {
                             ParticleEffect.REDSTONE.display(0, 0, 0, 10f, 1, loc, 32);
                             loc.setY(loc.getY() + 1.3);
                             ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
-                            ent.setFallDistance(-20 + ((level * 2) + 8));
+                            ent.setFallDistance(-10 + ((level * 2) + 8));
                         }
-                    }, (int) (i / 20));
+                    }, (int) (i / 40));
                 }
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ent.isDead()) {
-                            return;
+                final ArrayList<Integer> tester = new ArrayList<>();
+                tester.add(1);
+                for (int i = 0; i < 3; i++) {
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                        @Override
+                        public void run() {
+                            ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.3));
+                            if (ent.isOnGround() && tester.size() == 1) {
+                                tester.clear();
+                                Location ground = ent.getLocation().clone();
+                                ground.setY(l.getY() - 1);
+                                for (int c = 0; c < 1000; c++) {
+                                    Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math.toRadians(c))).multiply(.75);
+                                    ParticleEffect.BLOCK_DUST.display(new BlockData(ground.getBlock().getType(), ground.getBlock().getData()), v, 1, Utilities.getCenter(l), 32);
+                                }
+                            }
                         }
-                        ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.2));
-                    }
-                }, 110);
+                    }, 35 + (i * 5));
+                }
             }
         }
     }
@@ -2063,7 +2083,7 @@ public class Enchantment {
 
         @Override
         public void onHitting(EntityDamageByEntityEvent evt, int level) {
-            if (!evt.isCancelled()) {
+            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 ((LivingEntity) evt.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, (10 + (level * 20)), level));
                 ((LivingEntity) evt.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (10 + (level * 20)), level));
             }
@@ -2116,7 +2136,7 @@ public class Enchantment {
             chance = 0;
             enchantable = (Material[]) ArrayUtils.addAll(Storage.picks, Storage.spades);
             conflicting = new String[]{"Pierce", "Switch"};
-            description = "Breaks the blocks within a radius of the original block mined but does not drop them";
+            description = "Breaks the blocks within a radius of the original block mined";
         }
 
         @Override
@@ -2230,7 +2250,7 @@ public class Enchantment {
                                                         limit = (float) ((level) + 3 + r);
                                                     }
                                                     int timer = (int) (counter / (l * 1.6));
-                                                    if (Utilities.getEnchants(player.getItemInHand()).size() > 1 && Storage.item_drop_shred != 2) {
+                                                    if (Utilities.getEnchants(player.getItemInHand()).size() > 1 && Storage.shredDrops != 2) {
                                                         timer = 1;
                                                     }
                                                     if (block.getRelative(x, y, z).getLocation().distanceSquared(block.getLocation()) < limit) {
@@ -2242,14 +2262,14 @@ public class Enchantment {
                                                                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        if (Storage.item_drop_shred == 1) {
+                                                                        if (Storage.shredDrops == 1) {
                                                                             Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
                                                                             if (ArrayUtils.contains(ores, event.getBlock().getType())) {
                                                                                 event.getBlock().setType(STONE);
                                                                             } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
                                                                                 event.getBlock().setType(NETHERRACK);
                                                                             }
-                                                                        } else if (Storage.item_drop_shred == 2) {
+                                                                        } else if (Storage.shredDrops == 2) {
                                                                             event.getBlock().setType(AIR);
                                                                         }
                                                                         if (event.getBlock().getType() == GRASS) {
@@ -2309,21 +2329,19 @@ public class Enchantment {
 
         @Override
         public void onHitting(EntityDamageByEntityEvent evt, int level) {
-            if (!evt.isCancelled()) {
-                if (evt.getDamager() instanceof Player) {
-                    Player p = (Player) evt.getDamager();
-                    LivingEntity ent = (LivingEntity) evt.getEntity();
-                    int difference = level;
-                    if (Storage.rnd.nextInt(4) == 2) {
-                        while (difference > 0) {
-                            if (p.getHealth() < 20) {
-                                p.setHealth(p.getHealth() + 1);
-                            }
-                            if (ent.getHealth() > 2) {
-                                ent.setHealth(ent.getHealth() - 1);
-                            }
-                            difference--;
+            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+                Player p = (Player) evt.getDamager();
+                LivingEntity ent = (LivingEntity) evt.getEntity();
+                int difference = level;
+                if (Storage.rnd.nextInt(4) == 2) {
+                    while (difference > 0) {
+                        if (p.getHealth() < 20) {
+                            p.setHealth(p.getHealth() + 1);
                         }
+                        if (ent.getHealth() > 2) {
+                            ent.setHealth(ent.getHealth() - 1);
+                        }
+                        difference--;
                     }
                 }
             }
@@ -2369,7 +2387,7 @@ public class Enchantment {
 
         @Override
         public void onHitting(EntityDamageByEntityEvent evt, int level) {
-            if (!evt.isCancelled()) {
+            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 if (evt.getEntity() instanceof LivingEntity) {
                     LivingEntity ent = (LivingEntity) evt.getEntity();
                     if (evt.getDamage() < ent.getHealth()) {

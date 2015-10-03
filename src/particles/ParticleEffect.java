@@ -498,11 +498,6 @@ public enum ParticleEffect {
 
         private static final long serialVersionUID = 3203085387160737484L;
 
-        /**
-         * Construct a new particle data exception
-         *
-         * @param message Message that will be logged
-         */
         public ParticleDataException(String message) {
             super(message);
         }
@@ -512,11 +507,6 @@ public enum ParticleEffect {
 
         private static final long serialVersionUID = 3203085387160737484L;
 
-        /**
-         * Construct a new particle color exception
-         *
-         * @param message Message that will be logged
-         */
         public ParticleColorException(String message) {
             super(message);
         }
@@ -526,11 +516,6 @@ public enum ParticleEffect {
 
         private static final long serialVersionUID = 3203085387160737484L;
 
-        /**
-         * Construct a new particle version exception
-         *
-         * @param message Message that will be logged
-         */
         public ParticleVersionException(String message) {
             super(message);
         }

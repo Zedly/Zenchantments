@@ -28,8 +28,8 @@ public class AnvilMerge implements Listener {
             @Override
             public void run() {
                 InventoryView view = evt.getView();
-                HashMap<Enchantment, Integer> result = Utilities.getEnchants(view.getItem(0));
-                HashMap<Enchantment, Integer> item2 = Utilities.getEnchants(view.getItem(1));
+                HashMap<Enchantment, Integer> result = Utilities.getEnchants(Utilities.removeDescriptions(view.getItem(0), null));
+                HashMap<Enchantment, Integer> item2 = Utilities.getEnchants(Utilities.removeDescriptions(view.getItem(1), null));
                 HashMap<Enchantment, Integer> temp = new HashMap<>();
                 for (Enchantment e : item2.keySet()) {
                     if (result.keySet().contains(e)) {
@@ -73,12 +73,12 @@ public class AnvilMerge implements Listener {
                 ItemMeta m = stk.getItemMeta();
                 ArrayList<String> s = new ArrayList<>();
                 ArrayList<Enchantment> toGo = new ArrayList<>();
-                for (Enchantment e : temp.keySet()){
+                for (Enchantment e : temp.keySet()) {
                     toGo.add(e);
                 }
                 Collections.shuffle(toGo);
-                for (Enchantment e : toGo){
-                    if (result.size() < Storage.max_enchants_per_item){
+                for (Enchantment e : toGo) {
+                    if (result.size() < Storage.maxEnchants) {
                         result.put(e, temp.get(e));
                     }
                 }
@@ -87,7 +87,7 @@ public class AnvilMerge implements Listener {
                 }
                 m.setLore(s);
                 stk.setItemMeta(m);
-                view.setItem(2, stk);
+                view.setItem(2, Storage.descriptions ? Utilities.addDescriptions(stk, null) : stk);
             }
         }, 1);
     }

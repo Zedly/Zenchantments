@@ -24,23 +24,19 @@ import static zedly.zenchantments.Storage.zenchantments;
 
 public class Zenchantments extends JavaPlugin {
 
-    @Override
-    public void onEnable() {
-        //Register Events, Start Processes, Run Methods
-        this.saveDefaultConfig();
-        Storage.zenchantments = this;
-        Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
-        getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
-        getServer().getPluginManager().registerEvents(new ArrowWatcher(), this);
-        getServer().getPluginManager().registerEvents(new EnchantmentWatcher(), this);
-        getServer().getPluginManager().registerEvents(new Watcher(), this);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new HFEffects(), 1, 1);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new MFEffects(), 1, 5);
-        //Load Arrow Recipes
-        System.out.println("Loading " + Storage.ArrowTypes.size() + " Arrow classes...");
-        ItemStack is = new ItemStack(ARROW);
-        ItemMeta meta = is.getItemMeta();
-        //Remove Arrows
+    public static void enable() {
+        Storage.zenchantments.saveDefaultConfig();
+        Artifact.loadConfig();
+        PlayerConfig.loadConfigs();
+        Storage.zenchantments.reloadConfig();
+        Storage.enchantClasses.clear();
+        Storage.allEnchantClasses.clear();
+        Storage.arrowLores.clear();
+        Storage.projectileTable.clear();
+        Storage.arrowClass.clear();
+        Storage.originalEnchantClasses.clear();
+        Storage.originalEnchantClassesReverse.clear();
+        Storage.descriptionColor = ChatColor.GREEN;
         for (int x = zenchantments.getConfig().getList("elemental_arrows").size() - 1; x >= 0; x--) {
             String str = "" + zenchantments.getConfig().getList("elemental_arrows").get(x);
             boolean b;
@@ -64,6 +60,8 @@ public class Zenchantments extends JavaPlugin {
             Storage.ArrowTypes.removeAll(toRemove);
         }
         //Load Arrows & Recipes
+        ItemStack is = new ItemStack(ARROW);
+        ItemMeta meta = is.getItemMeta();
         for (Class cl : Storage.ArrowTypes) {
             try {
                 Arrow ar = (Arrow) cl.newInstance();
@@ -72,7 +70,8 @@ public class Zenchantments extends JavaPlugin {
                     lore.add(ChatColor.AQUA + ar.getName());
                     meta.setLore(lore);
                     is.setItemMeta(meta);
-                    getServer().addRecipe(ar.getRecipe(is));
+                    Bukkit.getServer().addRecipe(ar.getRecipe(is));
+                    Storage.arrowLores.add(ar.getRecipe(is).getResult().getItemMeta().getLore().get(0));
                 }
                 if (ar.getName() != null) {
                     Storage.projectileTable.put(ar.getName(), ar.getClass());
@@ -81,70 +80,35 @@ public class Zenchantments extends JavaPlugin {
             } catch (InstantiationException | IllegalAccessException ex) {
             }
         }
-        //Check if Config is Up To Date
-        if (!zenchantments.getConfig().getList("ZenchantmentsConfigVersion").get(0).equals("1.1.0")) {
-            File file = new File("plugins/Zenchantments/config.yml");
-            try {
-                Files.delete(file.toPath());
-            } catch (IOException ex) {
-            }
-            this.saveDefaultConfig();
+        //Load Variables
+        
+        int rarity = (int) zenchantments.getConfig().get("probability");
+        Storage.enchantRarity = ((double) rarity / 100.0);
+        Storage.maxEnchants = (int) zenchantments.getConfig().get("max_enchants_per_tool");
+        Storage.laserDispenser = (boolean) zenchantments.getConfig().get("laser_in_dispensers");
+        Storage.loginSpeedReset = (boolean) zenchantments.getConfig().get("reset_speed_on_login");
+        Storage.forceSlamPlayers = (boolean) zenchantments.getConfig().get("force_rainbow_slam_players");
+        Storage.laserPVP = (boolean) zenchantments.getConfig().get("laser_pvp");
+        Storage.fuseBreak = (boolean) zenchantments.getConfig().get("fuse_blockbreak");
+        Storage.missileBreak = (boolean) zenchantments.getConfig().get("missile_blockbreak");
+        Storage.apocalypseBreak = (boolean) zenchantments.getConfig().get("apocalypse_blockbreak");
+        Storage.descriptions = (boolean) zenchantments.getConfig().get("lore_descriptions");
+        ChatColor color = ChatColor.getByChar("" + zenchantments.getConfig().get("description_color"));
+        if (color != null) {
+            Storage.descriptionColor = color;
         }
-        //Load Enchantment Probablility Variable
-        try {
-            Storage.enchantRarity = (Double.parseDouble(zenchantments.getConfig().getList("probability").get(0).toString()) / 100);
-        } catch (NumberFormatException e) {
-            Storage.enchantRarity = .25f;
-        }
-        //Load Max Enchantments Variable
-        try {
-            Storage.max_enchants_per_item = (Integer.parseInt(zenchantments.getConfig().getList("max_enchants_per_tool").get(0).toString()));
-        } catch (NumberFormatException e) {
-            Storage.max_enchants_per_item = 4;
-        }
-        //Load Laser Dispenser Variable
-        try {
-            Storage.laser_in_dispensers = (Boolean.parseBoolean(zenchantments.getConfig().getList("laser_in_dispensers").get(0).toString()));
-        } catch (NumberFormatException e) {
-            Storage.laser_in_dispensers = true;
-        }
-        //Load Reset Player Speeds Variable
-        try {
-            Storage.reset_speed_on_login = (Boolean.parseBoolean(zenchantments.getConfig().getList("reset_speed_on_login").get(0).toString()));
-        } catch (NumberFormatException e) {
-            Storage.reset_speed_on_login = true;
-        }
-        //Load Force & Rainbow Slam Variable
-        try {
-            Storage.force_rainbow_slam_players = (Boolean.parseBoolean(zenchantments.getConfig().getList("force_rainbow_slam_players").get(0).toString()));
-        } catch (NumberFormatException e) {
-            Storage.force_rainbow_slam_players = true;
-        }
-        //Load Fuse Block Explode Variable
-        try {
-            Storage.fuse_blockbreak = (Boolean.parseBoolean(zenchantments.getConfig().getList("fuse_blockbreak").get(0).toString()));
-        } catch (NumberFormatException e) {
-            Storage.fuse_blockbreak = true;
-        }
-        //Load Item Drop Shred Variable
-        switch (zenchantments.getConfig().getList("item_drop_shred").get(0).toString()) {
+        switch ((String) zenchantments.getConfig().get("item_drop_shred")) {
             case "all":
-                Storage.item_drop_shred = 0;
+                Storage.shredDrops = 0;
                 break;
             case "block":
-                Storage.item_drop_shred = 1;
+                Storage.shredDrops = 1;
                 break;
             case "none":
-                Storage.item_drop_shred = 2;
+                Storage.shredDrops = 2;
                 break;
             default:
-                Storage.item_drop_shred = 0;
-        }
-        //Laser PVP Variable
-        try {
-            Storage.laser_pvp = (Boolean.parseBoolean(zenchantments.getConfig().getList("laser_pvp").get(0).toString()));
-        } catch (NumberFormatException e) {
-            Storage.laser_pvp = true;
+                Storage.shredDrops = 0;
         }
         //Load Individual Enchantment Configs
         HashMap<String, ArrayList<String>> tempConfigs = new HashMap<>();
@@ -253,8 +217,63 @@ public class Zenchantments extends JavaPlugin {
             } catch (InstantiationException | IllegalAccessException ex) {
             }
         }
+        System.out.println("Loaded " + Storage.ArrowTypes.size() + " arrow classes...");
+        System.out.println("Loaded " + Storage.enchantClasses.size() + " enchantment classes...");
+        System.out.println("Zenchantments successfully reloaded.");
+    }
 
-        PlayerConfig.loadConfigs();
+    @Override
+    public void onEnable() {
+        Storage.zenchantments = this;
+        this.saveDefaultConfig();
+        //Check versioning
+        String version;
+        try {
+            version = (String) zenchantments.getConfig().getList("ZenchantmentsConfigVersion").get(0);
+        } catch (NullPointerException e) {
+            version = (String) zenchantments.getConfig().get("ZenchantmentsConfigVersion");
+        }
+        switch (version) {
+            case "1.0.0":
+            case "1.0.1":
+            case "1.0.2":
+                File file = new File("plugins/Zenchantments/config.yml");
+                try {
+                    Files.delete(file.toPath());
+                } catch (IOException ex) {
+                }
+                this.saveDefaultConfig();
+                break;
+            case "1.1.0":
+                this.getConfig().set("ZenchantmentsConfigVersion", "1.2.0");
+                this.getConfig().set("probability", zenchantments.getConfig().getList("probability").get(0));
+                this.getConfig().set("max_enchants_per_tool", zenchantments.getConfig().getList("max_enchants_per_tool").get(0));
+                this.getConfig().set("laser_in_dispensers", zenchantments.getConfig().getList("laser_in_dispensers").get(0));
+                this.getConfig().set("reset_speed_on_login", zenchantments.getConfig().getList("reset_speed_on_login").get(0));
+                this.getConfig().set("force_rainbow_slam_players", zenchantments.getConfig().getList("force_rainbow_slam_players").get(0));
+                this.getConfig().set("item_drop_shred", zenchantments.getConfig().getList("item_drop_shred").get(0));
+                this.getConfig().set("laser_pvp", zenchantments.getConfig().getList("laser_pvp").get(0));
+                this.getConfig().set("fuse_blockbreak", zenchantments.getConfig().getList("fuse_blockbreak").get(0));
+                this.getConfig().createSection("missile_blockbreak");
+                this.getConfig().set("missile_blockbreak", true);
+                this.getConfig().createSection("apocalypse_blockbreak");
+                this.getConfig().set("apocalypse_blockbreak", true);
+                this.getConfig().createSection("lore_descriptions");
+                this.getConfig().set("lore_descriptions", false);
+                this.getConfig().createSection("description_color");
+                this.getConfig().set("description_color", "a");
+                this.saveConfig();
+                break;
+        }
+        //register events, start processes, run methods, load configs
+        enable();
+        Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
+        getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
+        getServer().getPluginManager().registerEvents(new ArrowWatcher(), this);
+        getServer().getPluginManager().registerEvents(new EnchantmentWatcher(), this);
+        getServer().getPluginManager().registerEvents(new Watcher(), this);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new HFEffects(), 1, 1);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new MFEffects(), 1, 5);
     }
 
     @Override

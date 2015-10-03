@@ -26,6 +26,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -38,7 +39,7 @@ public class Watcher implements Listener {
 
     @EventHandler
     public void onLaserDispense(BlockDispenseEvent evt) {
-        if (!Storage.laser_in_dispensers) {
+        if (!Storage.laserDispenser) {
             return;
         }
         if (evt.getBlock().getType() == DISPENSER) {
@@ -111,7 +112,7 @@ public class Watcher implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent evt) {
-        if (Storage.reset_speed_on_login) {
+        if (Storage.loginSpeedReset) {
             evt.getPlayer().setWalkSpeed(.2f);
             evt.getPlayer().setFlySpeed(.1f);
         }
@@ -161,7 +162,7 @@ public class Watcher implements Listener {
 
     @EventHandler
     public void onEnchantItem(EnchantItemEvent evt) {
-        int max = Math.min(Storage.max_enchants_per_item, 3);
+        int max = Math.min(Storage.maxEnchants, 3);
         if (!evt.getEnchanter().hasPermission("zenchantments.enchant.get")) {
             return;
         }
@@ -169,6 +170,11 @@ public class Watcher implements Listener {
             return;
         }
         HashSet<Enchantment> enchAdd = new HashSet<>();
+        ItemMeta meta = evt.getItem().getItemMeta();
+        LinkedList<String> lore = new LinkedList<>();
+        if (meta.hasLore()) {
+            lore.addAll(meta.getLore());
+        }
         for (int l = 1; l <= max; l++) {
             float totalChance = 0;
             HashSet<Enchantment> enchs = new HashSet<>();
@@ -189,14 +195,8 @@ public class Watcher implements Listener {
             for (Enchantment ench : enchs) {
                 running += ench.chance;
                 if (running > decision) {
-                    ItemMeta meta = evt.getItem().getItemMeta();
-                    LinkedList<String> lore = new LinkedList<>();
-                    if (meta.hasLore()) {
-                        lore.addAll(meta.getLore());
-                    }
                     String level = Utilities.getRomanString(Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost()));
                     lore.add(ChatColor.GRAY + ench.loreName + " " + level);
-                    meta.setLore(lore);
                     if (evt.getItem().getType().equals(BOOK)) {
                         evt.getEnchantsToAdd().clear();
                         int i;
@@ -209,12 +209,15 @@ public class Watcher implements Listener {
                         }
                         evt.getEnchantsToAdd().put(DURABILITY, i);
                     }
-                    evt.getItem().setItemMeta(meta);
                     enchAdd.add(ench);
                     break;
                 }
             }
         }
+        meta.setLore(lore);
+        evt.getItem().setItemMeta(meta);
+        ItemStack toSet = Storage.descriptions ? Utilities.addDescriptions(evt.getItem().clone(), null) : evt.getItem();
+        evt.getItem().setItemMeta(toSet.getItemMeta());
     }
 
     @EventHandler
@@ -236,6 +239,19 @@ public class Watcher implements Listener {
                                 player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onArrowCraft(CraftItemEvent evt) {
+        if (!evt.getWhoClicked().hasPermission("zenchantments.arrow.craft")) {
+            if (evt.getRecipe().getResult().hasItemMeta()) {
+                if (evt.getRecipe().getResult().getItemMeta().hasLore()) {
+                    if (Storage.arrowLores.contains(evt.getRecipe().getResult().getItemMeta().getLore().get(0))) {
+                        evt.setCancelled(true);
                     }
                 }
             }

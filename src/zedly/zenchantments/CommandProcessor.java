@@ -68,7 +68,7 @@ public class CommandProcessor {
         ItemMeta meta = stack.getItemMeta();
         meta.setLore(lore);
         stack.setItemMeta(meta);
-        return stack;
+        return Storage.descriptions ? Utilities.addDescriptions(stack, enchantment) : stack;
     }
 
     public static boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
@@ -82,6 +82,14 @@ public class CommandProcessor {
         switch (cmd) {
             case "ench":
                 switch (lArgs) {
+                    case "reload":
+                        if (!sender.hasPermission("zenchantments.command.reload")) {
+                            player.sendMessage(Storage.logo + "You do not have permission to do this!");
+                            return true;
+                        }
+                        player.sendMessage(Storage.logo + "Reloaded Zenchantments.");
+                        Zenchantments.enable();
+                        break;
                     case "give":
                         if (!sender.hasPermission("zenchantments.command.give")) {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
