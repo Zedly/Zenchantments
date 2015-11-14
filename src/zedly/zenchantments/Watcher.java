@@ -8,8 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import static org.bukkit.enchantments.Enchantment.DURABILITY;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -18,8 +16,9 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -29,9 +28,11 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
 import particles.ParticleEffect;
 
@@ -39,59 +40,44 @@ public class Watcher implements Listener {
 
     @EventHandler
     public void onLaserDispense(BlockDispenseEvent evt) {
-        if (!Storage.laserDispenser) {
-            return;
-        }
+        Config config = Config.get(evt.getBlock().getWorld());
         if (evt.getBlock().getType() == DISPENSER) {
-            ItemStack stk = (ItemStack) evt.getItem();
+            ItemStack stk = evt.getItem();
             if (stk != null) {
-                if (!Storage.originalEnchantClasses.containsKey("Laser")) {
+                CustomEnchantment ench = null;
+                for (CustomEnchantment e : config.getEnchants().values()) {
+                    if (e.getClass().equals(CustomEnchantment.Laser.class)) {
+                        ench = e;
+                    }
+                }
+                if (ench == null) {
                     return;
                 }
-                Enchantment ench = (Enchantment) Storage.originalEnchantClasses.get("Laser");
-                if (Utilities.getEnchants(stk).containsKey(ench)) {
-                    evt.setCancelled(true);
-                    BlockState state = evt.getBlock().getState();
-                    String str = "" + state.getData();
-                    Block blk = evt.getBlock();
-                    int level = Utilities.getEnchants(stk).get(ench);
-                    int range = 6 + (level * 3);
-                    if (str.contains("UP")) {
-                        blk = evt.getBlock().getRelative(BlockFace.UP, range);
-                    } else if (str.contains("DOWN")) {
-                        blk = evt.getBlock().getRelative(BlockFace.DOWN, range);
-                    } else if (str.contains("SOUTH")) {
-                        blk = evt.getBlock().getRelative(BlockFace.SOUTH, range);
-                    } else if (str.contains("NORTH")) {
-                        blk = evt.getBlock().getRelative(BlockFace.NORTH, range);
-                    } else if (str.contains("WEST")) {
-                        blk = evt.getBlock().getRelative(BlockFace.WEST, range);
-                    } else if (str.contains("EAST")) {
-                        blk = evt.getBlock().getRelative(BlockFace.EAST, range);
-                    }
-                    Location play = Utilities.getCenter(evt.getBlock().getLocation());
-                    Location target = Utilities.getCenter(blk.getLocation());
-                    play.setY(play.getY() - .5);
-                    target.setY(target.getY() + .5);
-                    Location c = play;
-                    c.setY(c.getY() + 1.1);
-                    double d = target.distance(c);
-                    for (int i = 0; i < (int) d * 5; i++) {
-                        Location tempLoc = target.clone();
-                        tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
-                        tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
-                        tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                        ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
-                        for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
-                            if (ent.getLocation().distance(tempLoc) < .75) {
-                                if (ent instanceof LivingEntity) {
-                                    EntityDamageEvent event = new EntityDamageEvent(ent, EntityDamageEvent.DamageCause.FIRE, (double) (1 + (level * 2)));
-                                    Bukkit.getPluginManager().callEvent(event);
-                                    LivingEntity theE = (LivingEntity) event.getEntity();
-                                    theE.setLastDamageCause(event);
-                                    if (!event.isCancelled()) {
-                                        theE.damage((double) (1 + (level * 2)));
-                                    }
+                evt.setCancelled(true);
+                int level = config.getEnchants(stk).get(ench);
+                int range = 6 + (level * 3);
+                Block blk = evt.getBlock().getRelative(((Dispenser) evt.getBlock().getState().getData()).getFacing(), range);
+                Location play = Utilities.getCenter(evt.getBlock().getLocation());
+                Location target = Utilities.getCenter(blk.getLocation());
+                play.setY(play.getY() - .5);
+                target.setY(target.getY() + .5);
+                Location c = play;
+                c.setY(c.getY() + 1.1);
+                double d = target.distance(c);
+                for (int i = 0; i < (int) d * 5; i++) {
+                    Location tempLoc = target.clone();
+                    tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
+                    tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
+                    tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
+                    ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                    for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
+                        if (ent.getLocation().distance(tempLoc) < .75) {
+                            if (ent instanceof LivingEntity) {
+                                EntityDamageEvent event = new EntityDamageEvent(ent, EntityDamageEvent.DamageCause.FIRE, (double) (1 + (level * 2)));
+                                Bukkit.getPluginManager().callEvent(event);
+                                ent.setLastDamageCause(event);
+                                if (!event.isCancelled()) {
+                                    ((LivingEntity) ent).damage((double) (1 + (level * 2)));
                                 }
                             }
                         }
@@ -110,28 +96,20 @@ public class Watcher implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(PlayerJoinEvent evt) {
-        if (Storage.loginSpeedReset) {
-            evt.getPlayer().setWalkSpeed(.2f);
-            evt.getPlayer().setFlySpeed(.1f);
-        }
-    }
-
     @EventHandler
     public void onItemSpawn(final ItemSpawnEvent evt) {
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
             @Override
             public void run() {
-                for (Block block : Storage.grabbedBlocks.keySet()) {
+                for (Block block : Storage.grabLocs.keySet()) {
                     Location loc = evt.getEntity().getLocation();
                     for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
                         if (e instanceof ExperienceOrb) {
-                            e.teleport(Storage.grabbedBlocks.get(block));
+                            e.teleport(Storage.grabLocs.get(block));
                         }
                     }
                     if (block.getLocation().getBlockX() == loc.getBlockX() && block.getLocation().getBlockY() == loc.getBlockY() && block.getLocation().getBlockZ() == loc.getBlockZ()) {
-                        evt.getEntity().teleport(Storage.grabbedBlocks.get(block));
+                        evt.getEntity().teleport(Storage.grabLocs.get(block));
                         evt.getEntity().setPickupDelay(0);
                     }
                 }
@@ -162,14 +140,15 @@ public class Watcher implements Listener {
 
     @EventHandler
     public void onEnchantItem(EnchantItemEvent evt) {
-        int max = Math.min(Storage.maxEnchants, 3);
+        Config config = Config.get(evt.getEnchantBlock().getWorld());
+        int max = Math.min(config.getMaxEnchants(), 3);
         if (!evt.getEnchanter().hasPermission("zenchantments.enchant.get")) {
             return;
         }
         if (evt.getItem().getType() == FISHING_ROD && evt.getExpLevelCost() <= 4) {
             return;
         }
-        HashSet<Enchantment> enchAdd = new HashSet<>();
+        HashSet<CustomEnchantment> enchAdd = new HashSet<>();
         ItemMeta meta = evt.getItem().getItemMeta();
         LinkedList<String> lore = new LinkedList<>();
         if (meta.hasLore()) {
@@ -177,11 +156,11 @@ public class Watcher implements Listener {
         }
         for (int l = 1; l <= max; l++) {
             float totalChance = 0;
-            HashSet<Enchantment> enchs = new HashSet<>();
-            for (Enchantment ench : Storage.enchantClasses.values()) {
+            HashSet<CustomEnchantment> enchs = new HashSet<>();
+            for (CustomEnchantment ench : config.getEnchants().values()) {
                 boolean b = true;
-                for (Enchantment e : enchAdd) {
-                    if (ArrayUtils.contains(ench.conflicting, Storage.originalEnchantClassesReverse.get(e)) || enchAdd.contains(ench)) {
+                for (CustomEnchantment e : enchAdd) {
+                    if (ArrayUtils.contains(ench.conflicting, e.getClass()) || enchAdd.contains(ench) || e.chance <= 0) {
                         b = false;
                     }
                 }
@@ -190,9 +169,9 @@ public class Watcher implements Listener {
                     totalChance += ench.chance;
                 }
             }
-            double decision = (Storage.rnd.nextFloat() * totalChance) / Math.pow(Storage.enchantRarity, l);
+            double decision = (Storage.rnd.nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), l);
             float running = 0;
-            for (Enchantment ench : enchs) {
+            for (CustomEnchantment ench : enchs) {
                 running += ench.chance;
                 if (running > decision) {
                     String level = Utilities.getRomanString(Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost()));
@@ -216,7 +195,7 @@ public class Watcher implements Listener {
         }
         meta.setLore(lore);
         evt.getItem().setItemMeta(meta);
-        ItemStack toSet = Storage.descriptions ? Utilities.addDescriptions(evt.getItem().clone(), null) : evt.getItem();
+        ItemStack toSet = config.descriptionLore() ? config.addDescriptions(evt.getItem().clone(), null) : evt.getItem();
         evt.getItem().setItemMeta(toSet.getItemMeta());
     }
 
@@ -227,15 +206,14 @@ public class Watcher implements Listener {
                 if (evt.getCurrentItem().hasItemMeta()) {
                     if (evt.getCurrentItem().getItemMeta().hasLore()) {
                         Player player = (Player) evt.getWhoClicked();
-                        for (Enchantment e : Utilities.getEnchants(evt.getCurrentItem()).keySet()) {
-                            String realName = Storage.originalEnchantClassesReverse.get(e);
-                            if (realName.equals("Jump") || realName.equals("Meador")) {
+                        for (CustomEnchantment e : Config.get(evt.getWhoClicked().getWorld()).getEnchants(evt.getCurrentItem()).keySet()) {
+                            if (e.getClass().equals(CustomEnchantment.Jump.class) || e.getClass().equals(CustomEnchantment.Meador.class)) {
                                 player.removePotionEffect(PotionEffectType.JUMP);
                             }
-                            if (realName.equals("Night Vision")) {
+                            if (e.getClass().equals(CustomEnchantment.NightVision.class)) {
                                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
                             }
-                            if (realName.equals("Weight")) {
+                            if (e.getClass().equals(CustomEnchantment.Weight.class)) {
                                 player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
                             }
                         }
@@ -247,14 +225,33 @@ public class Watcher implements Listener {
 
     @EventHandler
     public void onArrowCraft(CraftItemEvent evt) {
-        if (!evt.getWhoClicked().hasPermission("zenchantments.arrow.craft")) {
-            if (evt.getRecipe().getResult().hasItemMeta()) {
-                if (evt.getRecipe().getResult().getItemMeta().hasLore()) {
-                    if (Storage.arrowLores.contains(evt.getRecipe().getResult().getItemMeta().getLore().get(0))) {
+        Config config = Config.get(evt.getWhoClicked().getWorld());
+        if (evt.getRecipe().getResult().hasItemMeta()) {
+            if (evt.getRecipe().getResult().getItemMeta().hasLore()) {
+                if (config.getArrows().keySet().contains(evt.getRecipe().getResult().getItemMeta().getLore().get(0))) {
+                    if (!evt.getWhoClicked().hasPermission("zenchantments.arrow.get")) {
                         evt.setCancelled(true);
                     }
+                } else {
+                    evt.setCancelled(true);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onEat(PlayerInteractEvent evt) {
+        if (evt.getPlayer().getItemInHand().getType().isEdible() && (evt.getAction().equals(RIGHT_CLICK_AIR)
+                || evt.getAction().equals(RIGHT_CLICK_BLOCK)) && Storage.hungerPlayers.keySet().contains(evt.getPlayer())) {
+            evt.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void ArrowPickup(PlayerPickupItemEvent evt) {
+        if (evt.getItem().hasMetadata("ze.arrow")) {
+            evt.getItem().remove();
+            evt.setCancelled(true);
         }
     }
 }

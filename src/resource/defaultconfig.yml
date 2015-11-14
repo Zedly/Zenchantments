@@ -1,5 +1,5 @@
 ZenchantmentsConfigVersion:
-  - 1.2.0
+  - 1.3.0
 #   Edit each value to change the relative probability of obtaining each enchantment. 0 = no probability, -1 = disabled
 #   Edit the tool types to change what enchantments can be found on certain tools. I cannot guarantee compatibility with all configurations.
 #   (Axe, Shovel, Sword, Pickaxe, Rod, Shears, Bow, Lighter, Hoe, Helmet, Chestplate, Leggings, Boots, All) 
@@ -40,6 +40,11 @@ enchantments:
       Tools: Boots
       Name: Bounce
       Max Level: 5
+  - Burst:
+      Probability: 1
+      Tools: Bow
+      Name: Burst
+      Max Level: 3
   - Combustion:
       Probability: 1
       Tools: Chestplate
@@ -50,6 +55,11 @@ enchantments:
       Tools: Sword
       Name: Conversion
       Max Level: 1
+  - Decapitation:
+      Probability: 1
+      Tools: Sword
+      Name: Decapitation
+      Max Level: 4
   - Extraction:
       Probability: 1
       Tools: Pickaxe
@@ -74,6 +84,11 @@ enchantments:
       Probability: 1
       Tools: Sword
       Name: Force
+      Max Level: 3
+  - Frozen Step:
+      Probability: 1
+      Tools: Boots
+      Name: Frozen Step
       Max Level: 3
   - Fuse:
       Probability: 1
@@ -120,6 +135,11 @@ enchantments:
       Tools: Hoe
       Name: Harvest
       Max Level: 3
+  - Haul:
+      Probability: 1
+      Tools: Pickaxe
+      Name: Haul
+      Max Level: 1
   - Ice Aspect:
       Probability: 1
       Tools: Sword
@@ -170,6 +190,11 @@ enchantments:
       Tools: Rod
       Name: Mystery Fish
       Max Level: 1
+  - Nether Step:
+      Probability: 1
+      Tools: Boots
+      Name: Nether Step
+      Max Level: 3
   - Night Vision:
       Probability: 1
       Tools: Helmet
@@ -240,15 +265,35 @@ enchantments:
       Tools: Sword, Bow
       Name: Siphon
       Max Level: 4
+  - Spectral:
+      Probability: 1
+      Tools: Shovel
+      Name: Spectral
+      Max Level: 1
   - Speed:
       Probability: 1
       Tools: Boots
       Name: Speed
       Max Level: 4
+  - Spikes:
+      Probability: 1
+      Tools: Boots
+      Name: Spikes
+      Max Level: 3
+  - Spread:
+      Probability: 1
+      Tools: Bow
+      Name: Spread
+      Max Level: 5
   - Stationary:
       Probability: 1
       Tools: Bow, Sword
       Name: Stationary
+      Max Level: 1
+  - Stock:
+      Probability: 1
+      Tools: Chestplate
+      Name: Stock
       Max Level: 1
   - Switch:
       Probability: 1
@@ -260,6 +305,11 @@ enchantments:
       Tools: Shovel
       Name: Terraformer
       Max Level: 1
+  - Toxic:
+      Probability: 1
+      Tools: Bow, Sword
+      Name: Toxic
+      Max Level: 4
   - Tracer:
       Probability: 1
       Tools: Bow
@@ -296,20 +346,20 @@ enchantments:
       Tools: All
       Name: Ethereal
       Max Level: 1
-  - Fire Walker:
-      Probability: 0
-      Tools: Boots
-      Name: Fire Walker
-      Max Level: 1
   - Missile:
       Probability: 0
       Tools: Bow
       Name: Missile
       Max Level: 1
-  - Water Walker:
+  - Singularity:
       Probability: 0
-      Tools: Boots
-      Name: Water Walker
+      Tools: Bow
+      Name: Singularity
+      Max Level: 1
+  - Unrepairable:
+      Probability: 0
+      Tools: All
+      Name: Unrepairable
       Max Level: 1
 #  Determines which arrows are enabled and disabled
 elemental_arrows:
@@ -329,26 +379,16 @@ elemental_arrows:
   - Teleport Arrow: true
   - Web Arrow: true
 #  Changes the overall probability of obtaining all custom enchantments
-probability: 25
+enchant_rarity: 25
 #  Changes the maximum number of custom enchantments possible per item
-max_enchants_per_tool: 4
-#  Determines if the Laser enchantment works in dispensers
-laser_in_dispensers: true
-#  Determines if player speeds are reset upon login
-reset_speed_on_login: true
-#  Determines if Force or Rainbow slam work on players
-force_rainbow_slam_players: true
+max_enchants: 4
+#  Determines if custom enchantments work in PVP
+enchant_PVP: true
 #  Determines what the Shred enchantment drops (all, block (no ores), or none)
-item_drop_shred: all
-#  Determines if the Laser enchantment damages players
-laser_pvp: true
-#  Determines if the Fuse enchantment breaks blocks
-fuse_blockbreak: true
-#  Determines if the Missile enchantment breaks blocks
-missile_blockbreak: true
-#  Determines if the Apocalypse enchantment breaks blocks
-apocalypse_blockbreak: true
+shred_drops: all
+#  Determines if the certain enchantments can break blocks
+explosion_block_break: true
 #  Determines if the enchantment descriptions show up in lore
-lore_descriptions : false
+description_lore : false
 #  Determines the color of enchantment descriptions shown in lore
 description_color: a

@@ -18,39 +18,46 @@ public class AnvilMerge implements Listener {
 
     @EventHandler
     public void onClicks(final InventoryClickEvent evt) {
-        if (!evt.getInventory().getType().equals(InventoryType.ANVIL)) {
-            return;
-        }
-        if (evt.isCancelled()) {
+        final Config config = Config.get(evt.getWhoClicked().getWorld());
+        if (!evt.getInventory().getType().equals(InventoryType.ANVIL) || evt.isCancelled()) {
             return;
         }
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
             @Override
             public void run() {
                 InventoryView view = evt.getView();
-                HashMap<Enchantment, Integer> result = Utilities.getEnchants(Utilities.removeDescriptions(view.getItem(0), null));
-                HashMap<Enchantment, Integer> item2 = Utilities.getEnchants(Utilities.removeDescriptions(view.getItem(1), null));
-                HashMap<Enchantment, Integer> temp = new HashMap<>();
-                for (Enchantment e : item2.keySet()) {
-                    if (result.keySet().contains(e)) {
-                        int i = result.get(e);
-                        int i2 = item2.get(e);
+                HashMap<CustomEnchantment, Integer> firstItem = config.getEnchants(view.getItem(0));
+                HashMap<CustomEnchantment, Integer> secondItem = config.getEnchants(view.getItem(1));
+                HashMap<CustomEnchantment, Integer> toAdd = new HashMap<>();
+                toAdd.putAll(firstItem);
+                toAdd.putAll(secondItem);
+                for (CustomEnchantment e : toAdd.keySet()) {
+                    if (e.getClass().equals(CustomEnchantment.Unrepairable.class)) {
+                        view.setItem(2, null);
+                        return;
+                    }
+                }
+                toAdd.clear();
+                for (CustomEnchantment e : secondItem.keySet()) {
+                    if (firstItem.keySet().contains(e)) {
+                        int i = firstItem.get(e);
+                        int i2 = secondItem.get(e);
                         int i3;
                         if (i == i2 && i < e.maxLevel) {
                             i3 = i + 1;
                         } else {
                             i3 = Math.max(i, i2);
                         }
-                        temp.put(e, i3);
+                        toAdd.put(e, i3);
                     } else {
                         boolean b = false;
-                        if (result.keySet().isEmpty()) {
+                        if (firstItem.keySet().isEmpty()) {
                             if (!ArrayUtils.contains(e.enchantable, view.getItem(0).getType())) {
                                 b = true;
                             }
                         } else {
-                            for (Enchantment e1 : result.keySet()) {
-                                if (ArrayUtils.contains(e1.conflicting, Storage.originalEnchantClassesReverse.get(e))) {
+                            for (CustomEnchantment e1 : firstItem.keySet()) {
+                                if (ArrayUtils.contains(e1.conflicting, e.getClass())) {
                                     b = true;
                                 }
                                 if (!ArrayUtils.contains(e.enchantable, view.getItem(0).getType())) {
@@ -59,7 +66,7 @@ public class AnvilMerge implements Listener {
                             }
                         }
                         if (!b) {
-                            temp.put(e, item2.get(e));
+                            toAdd.put(e, secondItem.get(e));
                         }
                     }
                 }
@@ -72,22 +79,23 @@ public class AnvilMerge implements Listener {
                 }
                 ItemMeta m = stk.getItemMeta();
                 ArrayList<String> s = new ArrayList<>();
-                ArrayList<Enchantment> toGo = new ArrayList<>();
-                for (Enchantment e : temp.keySet()) {
+                ArrayList<CustomEnchantment> toGo = new ArrayList<>();
+                for (CustomEnchantment e : toAdd.keySet()) {
                     toGo.add(e);
                 }
                 Collections.shuffle(toGo);
-                for (Enchantment e : toGo) {
-                    if (result.size() < Storage.maxEnchants) {
-                        result.put(e, temp.get(e));
+                for (CustomEnchantment e : toGo) {
+                    if (firstItem.size() < config.getMaxEnchants()) {
+                        firstItem.put(e, toAdd.get(e));
                     }
                 }
-                for (Enchantment ench : result.keySet()) {
-                    s.add(ChatColor.GRAY + ench.loreName + " " + Utilities.getRomanString(result.get(ench)));
+                for (CustomEnchantment ench : firstItem.keySet()) {
+                    s.add(ChatColor.GRAY + ench.loreName + " " + Utilities.getRomanString(firstItem.get(ench)));
                 }
                 m.setLore(s);
                 stk.setItemMeta(m);
-                view.setItem(2, Storage.descriptions ? Utilities.addDescriptions(stk, null) : stk);
+                view.setItem(2, config.descriptionLore() ? config.addDescriptions(stk, null) : stk);
+
             }
         }, 1);
     }

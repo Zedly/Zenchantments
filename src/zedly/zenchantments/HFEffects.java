@@ -1,12 +1,15 @@
 package zedly.zenchantments;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import org.bukkit.Bukkit;
+import static org.bukkit.GameMode.CREATIVE;
 import org.bukkit.Location;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Guardian;
@@ -20,7 +23,7 @@ import org.bukkit.util.Vector;
 public class HFEffects implements Runnable {
 
     int tick;
-    private final LinkedList<Arrow> toRemove;
+    private final LinkedList<CustomArrow> toRemove;
     private final LinkedList<Block> websToRemove;
 
     public HFEffects() {
@@ -30,10 +33,33 @@ public class HFEffects implements Runnable {
 
     @Override
     public void run() {
+        for (Location l : Storage.blackholes.keySet()) {
+            for (Entity e : Utilities.getNearbyEntities(l, 10, 10, 10)) {
+                if (e instanceof Player) {
+                    if (((Player) e).getGameMode().equals(CREATIVE)) {
+                        continue;
+                    }
+                }
+                if (Storage.blackholes.get(l)) {
+                    Vector v = l.clone().subtract(e.getLocation()).toVector();
+                    v.setX(v.getX() + (-.5f + Storage.rnd.nextFloat()) * 10);
+                    v.setY(v.getY() + (-.5f + Storage.rnd.nextFloat()) * 10);
+                    v.setZ(v.getZ() + (-.5f + Storage.rnd.nextFloat()) * 10);
+                    e.setVelocity(v.multiply(.35f));
+                    e.setFallDistance(0);
+                } else {
+                    Vector v = e.getLocation().subtract(l.clone()).toVector();
+                    v.setX(v.getX() + (-.5f + Storage.rnd.nextFloat()) * 2);
+                    v.setY(v.getY() + Storage.rnd.nextFloat());
+                    v.setZ(v.getZ() + (-.5f + Storage.rnd.nextFloat()) * 2);
+                    e.setVelocity(v.multiply(.35f));
+                }
+            }
+        }
         //Arrows
         toRemove.clear();
-        for (Set<Arrow> pro : Storage.advancedProjectiles.values()) {
-            for (Arrow a : pro) {
+        for (Set<CustomArrow> pro : Storage.advancedProjectiles.values()) {
+            for (CustomArrow a : pro) {
                 a.onFlight();
                 a.tick++;
                 if (a.entity.isDead() || a.tick > 600) {
@@ -41,7 +67,7 @@ public class HFEffects implements Runnable {
                 }
             }
         }
-        for (Arrow pro : toRemove) {
+        for (CustomArrow pro : toRemove) {
             Storage.advancedProjectiles.remove(pro.entity);
             pro.entity.remove();
         }
@@ -119,7 +145,7 @@ public class HFEffects implements Runnable {
             }
         }
 
-        for (org.bukkit.entity.Arrow e : Storage.tracer.keySet()) {
+        for (Arrow e : Storage.tracer.keySet()) {
             Entity close = null;
             double distance = 100;
             int level = Storage.tracer.get(e);
@@ -159,16 +185,39 @@ public class HFEffects implements Runnable {
         }
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            Config config = Config.get(player.getWorld());
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                HashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
-                for (Enchantment ench : map.keySet()) {
+                HashMap<CustomEnchantment, Integer> map = config.getEnchants(stk);
+                for (CustomEnchantment ench : map.keySet()) {
                     ench.onFastScan(player, map.get(ench));
                 }
             }
-            HashMap<Enchantment, Integer> map = Utilities.getEnchants(player.getItemInHand());
-            for (Enchantment ench : map.keySet()) {
+            HashMap<CustomEnchantment, Integer> map = config.getEnchants(player.getItemInHand());
+            for (CustomEnchantment ench : map.keySet()) {
                 ench.onFastScanHand(player, map.get(ench));
             }
+        }
+        HashSet<Player> toDelete = new HashSet<>();
+        for (Player player : Storage.hungerPlayers.keySet()) {
+            if (Storage.hungerPlayers.get(player) < 1) {
+                toDelete.add(player);
+            } else {
+                Storage.hungerPlayers.put(player, Storage.hungerPlayers.get(player) - 1);
+            }
+        }
+        for (Player p : toDelete) {
+            Storage.hungerPlayers.remove(p);
+        }
+        toDelete.clear();
+        for (Player player : Storage.moverBlockDecay.keySet()) {
+            Storage.moverBlockDecay.put(player, Storage.moverBlockDecay.get(player) + 1);
+            if (Storage.moverBlockDecay.get(player) > 5) {
+                Storage.moverBlocks.remove(player);
+                toDelete.add(player);
+            }
+        }
+        for (Player p : toDelete) {
+            Storage.moverBlockDecay.remove(p);
         }
     }
 }

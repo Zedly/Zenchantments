@@ -16,24 +16,25 @@ public class MFEffects implements Runnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            Config config = Config.get(player.getWorld());
             for (ItemStack stk : (ItemStack[]) ArrayUtils.addAll(player.getInventory().getArmorContents(), player.getInventory().getContents())) {
-                if (Storage.descriptions) {
-                    Utilities.addDescriptions(stk, null);
+                if (config.descriptionLore()) {
+                    config.addDescriptions(stk, null);
                 } else {
-                    Utilities.removeDescriptions(stk, null);
+                    config.removeDescriptions(stk, null);
                 }
             }
             for (ItemStack stk : player.getInventory().getArmorContents()) {
                 if (stk != null) {
-                    HashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
-                    for (Enchantment ench : map.keySet()) {
+                    HashMap<CustomEnchantment, Integer> map = config.getEnchants(stk);
+                    for (CustomEnchantment ench : map.keySet()) {
                         ench.onScan(player, map.get(ench));
                     }
                 }
             }
             if (player.getItemInHand() != null) {
-                HashMap<Enchantment, Integer> map = Utilities.getEnchants(player.getItemInHand());
-                for (Enchantment ench : map.keySet()) {
+                HashMap<CustomEnchantment, Integer> map = config.getEnchants(player.getItemInHand());
+                for (CustomEnchantment ench : map.keySet()) {
                     ench.onScanHand(player, map.get(ench));
                 }
             }
@@ -57,17 +58,17 @@ public class MFEffects implements Runnable {
         Iterator speedIt = Storage.speed.iterator();
         while (speedIt.hasNext()) {
             Player player = (Player) speedIt.next();
+            Config world = Config.get(player.getWorld());
             if (!player.isOnline()) {
                 speedIt.remove();
                 continue;
             }
             boolean check = false;
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                HashMap<Enchantment, Integer> map = Utilities.getEnchants(stk);
-                String[] lores = new String[]{"Weight", "Speed", "Meador"};
-                for (Enchantment ench : map.keySet()) {
-                    String realName = Storage.originalEnchantClassesReverse.get(ench);
-                    if (ArrayUtils.contains(lores, Storage.originalEnchantClassesReverse.get(ench))) {
+                HashMap<CustomEnchantment, Integer> map = world.getEnchants(stk);
+                Class[] enchs = new Class[]{CustomEnchantment.Weight.class, CustomEnchantment.Speed.class, CustomEnchantment.Meador.class};
+                for (CustomEnchantment ench : map.keySet()) {
+                    if (ArrayUtils.contains(enchs, ench.getClass())) {
                         check = true;
                     }
                 }

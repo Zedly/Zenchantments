@@ -20,7 +20,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class CommandProcessor {
 
-    private static ItemStack theLore(Player player, Enchantment enchantment, ItemStack stack, String level, boolean isHeld) {
+    private static ItemStack theLore(Player player, CustomEnchantment enchantment, ItemStack stack, String level, boolean isHeld) {
+        Config config = Config.get(player.getWorld());
         if (stack.getType() == AIR) {
             player.sendMessage(Storage.logo + "You need to be holding an item!");
             return stack;
@@ -45,7 +46,7 @@ public class CommandProcessor {
         if (stack.getItemMeta().hasLore()) {
             lore = stack.getItemMeta().getLore();
         }
-        if (Utilities.getEnchants(stack).containsKey(enchantment)) {
+        if (config.getEnchants(stack).containsKey(enchantment)) {
             Iterator it = lore.iterator();
             while (it.hasNext()) {
                 String rawEnchant = (String) it.next();
@@ -68,11 +69,15 @@ public class CommandProcessor {
         ItemMeta meta = stack.getItemMeta();
         meta.setLore(lore);
         stack.setItemMeta(meta);
-        return Storage.descriptions ? Utilities.addDescriptions(stack, enchantment) : stack;
+        return config.descriptionLore() ? config.addDescriptions(stack, enchantment) : stack;
     }
 
     public static boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
+        if (!(sender instanceof Player)) {
+            return false;
+        }
         Player player = (Player) sender;
+        Config config = Config.get(player.getWorld());
         ItemStack stack = player.getItemInHand();
         String lArgs = "";
         if (!(args.length == 0)) {
@@ -88,7 +93,7 @@ public class CommandProcessor {
                             return true;
                         }
                         player.sendMessage(Storage.logo + "Reloaded Zenchantments.");
-                        Zenchantments.enable();
+                        Storage.zenchantments.loadConfigs();
                         break;
                     case "give":
                         if (!sender.hasPermission("zenchantments.command.give")) {
@@ -96,9 +101,9 @@ public class CommandProcessor {
                             return true;
                         }
                         if (args.length == 5) {
-                            Enchantment ench;
-                            if (Storage.allEnchantClasses.containsKey(args[2].toLowerCase().replace("_", ""))) {
-                                ench = Storage.allEnchantClasses.get(args[2].replace("_", "").toLowerCase());
+                            CustomEnchantment ench;
+                            if (config.getEnchants().containsKey(args[2].toLowerCase().replace("_", ""))) {
+                                ench = config.getEnchants().get(args[2].replace("_", "").toLowerCase());
                             } else {
                                 player.sendMessage(Storage.logo + "That enchantment does not exist!");
                                 return true;
@@ -139,9 +144,9 @@ public class CommandProcessor {
                             return true;
                         }
                         player.sendMessage(Storage.logo + "Enchantment Types:");
-                        for (String str : Storage.enchantClasses.keySet()) {
-                            if (ArrayUtils.contains(Storage.enchantClasses.get(str.replace(" ", "").toLowerCase()).enchantable, stack.getType())) {
-                                player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + Storage.enchantClasses.get(str.replace(" ", "").toLowerCase()).loreName);
+                        for (String str : config.getEnchants().keySet()) {
+                            if (ArrayUtils.contains(config.getEnchants().get(str.replace(" ", "").toLowerCase()).enchantable, stack.getType())) {
+                                player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + config.getEnchants().get(str.replace(" ", "").toLowerCase()).loreName);
                             }
                         }
                         break;
@@ -152,8 +157,8 @@ public class CommandProcessor {
                         }
                         if (args.length > 1) {
                             String enchant = WordUtils.capitalize(args[1].toLowerCase().replace("_", " "));
-                            if (Storage.allEnchantClasses.containsKey(enchant.replace(" ", "").toLowerCase())) {
-                                Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(enchant.replace(" ", "").toLowerCase());
+                            if (config.getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
+                                CustomEnchantment ench = config.getEnchants().get(enchant.replace(" ", "").toLowerCase());
                                 String e = "";
                                 if (Storage.playerSettings.containsKey(player.getUniqueId())) {
                                     if (Storage.playerSettings.get(player.getUniqueId()).contains(ench)) {
@@ -164,7 +169,7 @@ public class CommandProcessor {
                             }
                         } else {
                             player.sendMessage(Storage.logo + "Enchantment Info:");
-                            for (Enchantment e : Utilities.getEnchants(player.getItemInHand()).keySet()) {
+                            for (CustomEnchantment e : config.getEnchants(player.getItemInHand()).keySet()) {
                                 String s = "";
                                 if (Storage.playerSettings.containsKey(player.getUniqueId())) {
                                     if (Storage.playerSettings.get(player.getUniqueId()).contains(e)) {
@@ -182,9 +187,9 @@ public class CommandProcessor {
                         }
                         if (args.length > 1) {
                             String enchant = WordUtils.capitalize(args[1].toLowerCase().replace("_", " "));
-                            if (Storage.allEnchantClasses.containsKey(enchant.replace(" ", "").toLowerCase())) {
-                                Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(enchant.replace(" ", "").toLowerCase());
-                                HashSet<Enchantment> enchs = new HashSet<>();
+                            if (config.getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
+                                CustomEnchantment ench = config.getEnchants().get(enchant.replace(" ", "").toLowerCase());
+                                HashSet<CustomEnchantment> enchs = new HashSet<>();
                                 if (Storage.playerSettings.containsKey(player.getUniqueId())) {
                                     enchs = Storage.playerSettings.get(player.getUniqueId());
                                 }
@@ -193,8 +198,8 @@ public class CommandProcessor {
                                 PlayerConfig.saveConfigs();
                                 player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + " has been disabled.");
                             } else if (args[1].toLowerCase().equals("all")) {
-                                HashSet<Enchantment> enchs = new HashSet<>();
-                                for (Enchantment e : Storage.allEnchantClasses.values()) {
+                                HashSet<CustomEnchantment> enchs = new HashSet<>();
+                                for (CustomEnchantment e : config.getEnchants().values()) {
                                     enchs.add(e);
                                 }
                                 Storage.playerSettings.put(player.getUniqueId(), enchs);
@@ -212,8 +217,8 @@ public class CommandProcessor {
                         }
                         if (args.length > 1) {
                             String enchant = WordUtils.capitalize(args[1].toLowerCase().replace("_", " "));
-                            if (Storage.allEnchantClasses.containsKey(enchant.replace(" ", "").toLowerCase())) {
-                                Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(enchant.replace(" ", "").toLowerCase());
+                            if (config.getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
+                                CustomEnchantment ench = config.getEnchants().get(enchant.replace(" ", "").toLowerCase());
                                 if (Storage.playerSettings.containsKey(player.getUniqueId())) {
                                     Storage.playerSettings.get(player.getUniqueId()).remove(ench);
                                     if (Storage.playerSettings.get(player.getUniqueId()).isEmpty()) {
@@ -248,8 +253,8 @@ public class CommandProcessor {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
                             return true;
                         }
-                        if (Storage.allEnchantClasses.containsKey(lArgs.toLowerCase().replace("_", ""))) {
-                            Enchantment ench = Storage.allEnchantClasses.get(lArgs.toLowerCase().replace("_", "").toLowerCase());
+                        if (config.getEnchants().containsKey(lArgs.toLowerCase().replace("_", ""))) {
+                            CustomEnchantment ench = config.getEnchants().get(lArgs.toLowerCase().replace("_", "").toLowerCase());
                             if (args.length >= 2) {
                                 player.setItemInHand(theLore(player, ench, stack, args[1], true));
                             } else {
@@ -268,7 +273,7 @@ public class CommandProcessor {
                             return true;
                         }
                         player.sendMessage(Storage.logo + "Arrow Types:");
-                        for (String str : Storage.projectileTable.keySet()) {
+                        for (String str : config.getArrows().keySet()) {
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + str);
                         }
                         break;
@@ -278,7 +283,7 @@ public class CommandProcessor {
                             return true;
                         }
                         if (args.length >= 2) {
-                            for (Arrow ar : Storage.arrowClass.values()) {
+                            for (CustomArrow ar : config.getArrows().values()) {
                                 if (ar.getName().toLowerCase().startsWith(args[1])) {
                                     player.sendMessage(Storage.logo + "Arrow Info:");
                                     player.sendMessage(ChatColor.DARK_AQUA + "- " + ar.getName() + ": " + ChatColor.AQUA + ar.getDescription());
@@ -291,10 +296,10 @@ public class CommandProcessor {
                                 if (stack.getItemMeta().hasLore()) {
                                     String str = stack.getItemMeta().getLore().get(0);
                                     str = ChatColor.stripColor(str);
-                                    for (String string : Storage.arrowClass.keySet()) {
+                                    for (String string : config.getArrows().keySet()) {
                                         if (string.equals(str)) {
                                             player.sendMessage(Storage.logo + "Arrow Info:");
-                                            player.sendMessage(ChatColor.DARK_AQUA + "- " + str + ": " + ChatColor.AQUA + Storage.arrowClass.get(str).getDescription());
+                                            player.sendMessage(ChatColor.DARK_AQUA + "- " + str + ": " + ChatColor.AQUA + config.getArrows().get(str).getDescription());
                                         }
                                     }
                                 }
@@ -318,7 +323,7 @@ public class CommandProcessor {
                             player.sendMessage(Storage.logo + "You need to be holding arrows for this command!");
                             return true;
                         }
-                        for (Arrow ar : Storage.arrowClass.values()) {
+                        for (CustomArrow ar : config.getArrows().values()) {
                             if (ar.getName().toLowerCase().startsWith(lArgs)) {
                                 List<String> lore = ar.constructArrow(Arrays.copyOfRange(args, 1, args.length));
                                 if (lore == null) {

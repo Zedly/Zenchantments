@@ -15,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.Material.*;
 import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
 import static org.bukkit.entity.EntityType.BLAZE;
 import org.bukkit.entity.Firework;
@@ -33,11 +34,12 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
 import particles.ParticleEffect;
 
-public class Arrow {
-    
+public class CustomArrow {
+
     public Projectile entity;
     public int tick;
 
@@ -45,45 +47,45 @@ public class Arrow {
     public Recipe getRecipe(ItemStack is) {
         return null;
     }
-    
+
     public void onLaunch(LivingEntity player, List<String> lore) {
     }
-    
+
     public void onFlight() {
     }
-    
+
     public void onImpact() {
         die();
     }
-    
+
     public void onKill(EntityDeathEvent evt) {
     }
-    
+
     public boolean onImpact(EntityDamageByEntityEvent evt) {
         LivingEntity ent = (LivingEntity) evt.getEntity();
         onImpact();
         return true;
     }
-    
+
     public String getName() {
         return null;
     }
-    
+
     public String getDescription() {
         return null;
     }
-    
+
     public String getCommand() {
         return null;
     }
-    
+
     public List<String> constructArrow(String[] args) {
         return null;
     }
-    
+
     public void die() {
         final Entity e = entity;
-        final Arrow arrow = this;
+        final CustomArrow arrow = this;
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
             @Override
             public void run() {
@@ -99,10 +101,10 @@ public class Arrow {
     }
 
 //Elemental Arrows
-    public static class ArrowBouncifying extends Arrow {
-        
+    public static class ArrowBouncifying extends CustomArrow {
+
         private int duration;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (lore.size() >= 2) {
@@ -115,38 +117,38 @@ public class Arrow {
                 duration = 100;
             }
         }
-        
+
         @Override
         public void onImpact() {
             entity.getWorld().playEffect(entity.getLocation(), Effect.POTION_BREAK, 100);
             for (Entity ent : entity.getNearbyEntities(4, 3, 4)) {
-                if (ent instanceof LivingEntity) {
-                    ((LivingEntity) ent).addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, 9));
+                if (Utilities.canDamage((Entity) entity.getShooter(), ent)) {
+                    Utilities.addPotion((LivingEntity) ent, JUMP, duration, 9);
                 }
             }
             die();
         }
-        
+
         @Override
         public String getName() {
             return "Bouncifying Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(SLIME_BALL).addIngredient(FEATHER).addIngredient(SLIME_BALL).addIngredient(FEATHER);
         }
-        
+
         @Override
         public String getDescription() {
             return "Gives nearby targets jump boost";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow bouncify " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "duration" + ChatColor.GREEN + ", default is 100)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -162,14 +164,14 @@ public class Arrow {
             lore.add(args[0]);
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowCommand extends Arrow {
-        
+
+    public static class ArrowCommand extends CustomArrow {
+
         public String command;
         public Player shooter;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (!(player instanceof Player)) {
@@ -182,7 +184,7 @@ public class Arrow {
                 command = "/tell %t gg";
             }
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             LivingEntity ent = (LivingEntity) evt.getEntity();
@@ -192,22 +194,22 @@ public class Arrow {
             }
             return false;
         }
-        
+
         @Override
         public String getName() {
             return "Command Arrow";
         }
-        
+
         @Override
         public String getDescription() {
             return "When the arrow hits a player, the shooter runs a command. The player's name can be retrieved using %t.";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow command " + ChatColor.GREEN + "/command";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             if (args.length == 0) {
@@ -223,21 +225,21 @@ public class Arrow {
             return lore;
         }
     }
-    
-    public static class ArrowDerp extends Arrow {
-        
+
+    public static class ArrowDerp extends CustomArrow {
+
         boolean humans;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             humans = lore.size() == 2 && lore.get(1).equals("unsafe");
         }
-        
+
         @Override
         public void onImpact() {
             final LinkedList<LivingEntity> entities = new LinkedList<>();
             for (Entity ent : entity.getNearbyEntities(5, 5, 5)) {
-                if (ent instanceof LivingEntity && (!(ent instanceof Player) || humans)) {
+                if (!(ent instanceof Player) || humans) {
                     if (Utilities.canDamage((Entity) entity.getShooter(), ent)) {
                         entities.add((LivingEntity) ent);
                         Storage.derpingEntities.add((LivingEntity) ent);
@@ -252,27 +254,27 @@ public class Arrow {
             }, 300);
             die();
         }
-        
+
         @Override
         public String getName() {
             return "Derp Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(SUGAR).addIngredient(SUGAR).addIngredient(SUGAR).addIngredient(SUGAR).addIngredient(SUGAR);
         }
-        
+
         @Override
         public String getDescription() {
             return "Causes targets to derp around temporarily";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow derp " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "unsafe" + ChatColor.GREEN + " to make it affect players)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -286,12 +288,12 @@ public class Arrow {
             return lore;
         }
     }
-    
-    public static class ArrowEuphoria extends Arrow {
-        
+
+    public static class ArrowEuphoria extends CustomArrow {
+
         private LivingEntity shooter;
         private int duration;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             shooter = player;
@@ -305,38 +307,38 @@ public class Arrow {
                 duration = 400;
             }
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             LivingEntity ent = (LivingEntity) evt.getEntity();
-            shooter.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, duration, 2));
-            shooter.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, 2));
-            shooter.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, duration, 0));
-            shooter.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, duration, 2));
-            shooter.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, duration, 2));
+            Utilities.addPotion(shooter, SPEED, duration, 2);
+            Utilities.addPotion(shooter, JUMP, duration, 2);
+            Utilities.addPotion(shooter, REGENERATION, duration, 0);
+            Utilities.addPotion(shooter, FAST_DIGGING, duration, 2);
+            Utilities.addPotion(shooter, INCREASE_DAMAGE, duration, 2);
             return true;
         }
-        
+
         @Override
         public String getName() {
             return "Euphoria Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(GHAST_TEAR);
         }
-        
+
         @Override
         public String getDescription() {
             return "Gives the shooter several positive effects upon hitting a target";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow euphoria " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "duration" + ChatColor.GREEN + ", default is 400)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -352,13 +354,13 @@ public class Arrow {
             lore.add(args[0]);
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowExploding extends Arrow {
-        
+
+    public static class ArrowExploding extends CustomArrow {
+
         private float radius;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (lore.size() >= 2) {
@@ -371,38 +373,38 @@ public class Arrow {
                 radius = 2.5F;
             }
         }
-        
+
         @Override
         public void onImpact() {
             entity.getWorld().createExplosion(entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ(), radius, false, false);
             entity.remove();
             die();
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(TNT);
         }
-        
+
         @Override
         public String getName() {
             return "Exploding Arrow";
         }
-        
+
         public void setRadius(float radius) {
             this.radius = radius;
         }
-        
+
         @Override
         public String getDescription() {
             return "Creates an explosion upon impact";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow exploding " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "power" + ChatColor.GREEN + ", default is 2.5)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -419,11 +421,11 @@ public class Arrow {
             return lore;
         }
     }
-    
-    public static class ArrowFast extends Arrow {
-        
+
+    public static class ArrowFast extends CustomArrow {
+
         private float speed;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (lore != null && lore.size() >= 2) {
@@ -438,27 +440,27 @@ public class Arrow {
             entity.setVelocity(entity.getVelocity().normalize().multiply(speed));
             die();
         }
-        
+
         @Override
         public String getName() {
             return "Fast Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(FEATHER);
         }
-        
+
         @Override
         public String getDescription() {
             return "Allows the shooter to quickly draw and shoot arrows at full force";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow fast " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "speed" + ChatColor.GREEN + ", default is 3.5)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -474,14 +476,14 @@ public class Arrow {
             lore.add(args[0]);
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowGrenade extends Arrow {
-        
+
+    public static class ArrowGrenade extends CustomArrow {
+
         private int balls;
         private float radius;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (lore.size() >= 2) {
@@ -503,7 +505,7 @@ public class Arrow {
                 radius = 1.5F;
             }
         }
-        
+
         @Override
         public void onImpact() {
             for (int i = 0; i < balls; i++) {
@@ -512,33 +514,33 @@ public class Arrow {
                 ArrowExploding ar = new ArrowExploding();
                 ar.entity = ball;
                 ar.setRadius(radius);
-                HashSet<Arrow> a = new HashSet<>();
+                HashSet<CustomArrow> a = new HashSet<>();
                 a.add(ar);
                 Storage.advancedProjectiles.put(ball, a);
             }
             die();
         }
-        
+
         @Override
         public String getName() {
             return "Grenade Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(TNT).addIngredient(BLAZE_POWDER).addIngredient(BLAZE_POWDER).addIngredient(BLAZE_POWDER).addIngredient(SNOW_BALL).addIngredient(SNOW_BALL);
         }
-        
+
         @Override
         public String getDescription() {
             return "Creates an explosion with shrapnel upon impact";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow grenade " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "number of fragments" + ChatColor.GREEN + ", default is 8 (" + ChatColor.DARK_GREEN + ChatColor.ITALIC + "power" + ChatColor.GREEN + ", default is 1.5))";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -564,18 +566,18 @@ public class Arrow {
             return lore;
         }
     }
-    
-    public static class ArrowHarpoon extends Arrow {
-        
+
+    public static class ArrowHarpoon extends CustomArrow {
+
         private LivingEntity shooter;
         private boolean humans;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             shooter = player;
             humans = lore.size() >= 2 && lore.get(1).equals("unsafe");
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             LivingEntity ent = (LivingEntity) evt.getEntity();
@@ -586,27 +588,27 @@ public class Arrow {
             }
             return false;
         }
-        
+
         @Override
         public String getName() {
             return "Harpoon Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(STRING).addIngredient(FLINT);
         }
-        
+
         @Override
         public String getDescription() {
             return "Drags targets towards the shooter when hit";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow harpoon " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "unsafe" + ChatColor.GREEN + " to make it affect players)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -619,13 +621,13 @@ public class Arrow {
             }
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowIce extends Arrow {
-        
+
+    public static class ArrowIce extends CustomArrow {
+
         private int duration;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (lore.size() >= 2) {
@@ -638,38 +640,38 @@ public class Arrow {
                 duration = 100;
             }
         }
-        
+
         @Override
         public void onImpact() {
             entity.getWorld().playEffect(entity.getLocation(), Effect.POTION_BREAK, 100);
             for (Entity ent : entity.getNearbyEntities(4, 3, 4)) {
-                if (ent instanceof LivingEntity && Utilities.canDamage((Entity) entity.getShooter(), ent)) {
-                    ((LivingEntity) ent).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, duration, 50));
+                if (Utilities.canDamage((Entity) entity.getShooter(), ent)) {
+                    Utilities.addPotion((LivingEntity) ent, SLOW, duration, 50);
                 }
             }
             die();
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(ICE).addIngredient(ICE).addIngredient(ICE);
         }
-        
+
         @Override
         public String getName() {
             return "Ice Arrow";
         }
-        
+
         @Override
         public String getDescription() {
             return "Freezes targets temporarily";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow ice " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "duration" + ChatColor.GREEN + ", default is 100)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -686,18 +688,18 @@ public class Arrow {
             return lore;
         }
     }
-    
-    public static class ArrowLeech extends Arrow {
-        
+
+    public static class ArrowLeech extends CustomArrow {
+
         private boolean humans;
         private LivingEntity shooter;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             humans = lore.size() >= 2 && lore.get(1).equals("unsafe");
             shooter = player;
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             LivingEntity ent = (LivingEntity) evt.getEntity();
@@ -718,27 +720,27 @@ public class Arrow {
             }
             return true;
         }
-        
+
         @Override
         public String getName() {
             return "Leech Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(REDSTONE).addIngredient(REDSTONE).addIngredient(REDSTONE).addIngredient(REDSTONE);
         }
-        
+
         @Override
         public String getDescription() {
             return "Gives the shooter some of the target's health";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow leech " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "unsafe" + ChatColor.GREEN + " to make it affect players)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -751,20 +753,20 @@ public class Arrow {
             }
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowLightning extends Arrow {
-        
+
+    public static class ArrowLightning extends CustomArrow {
+
         public boolean unsafe;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (lore.size() == 1 || lore.get(1).equals("unsafe")) {
                 unsafe = true;
             }
         }
-        
+
         @Override
         public void onImpact() {
             final Entity lightning = entity.getWorld().strikeLightning(entity.getLocation());
@@ -779,27 +781,27 @@ public class Arrow {
             }
             die();
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(BLAZE_ROD).addIngredient(BLAZE_ROD);
         }
-        
+
         @Override
         public String getName() {
             return "Lightning Arrow";
         }
-        
+
         @Override
         public String getDescription() {
             return "Strikes lightning upon impact";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow lightning " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "unsafe" + ChatColor.GREEN + " to make the lightning zap pigs and creepers)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -812,13 +814,13 @@ public class Arrow {
             }
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowPoisoned extends Arrow {
-        
+
+    public static class ArrowPoisoned extends CustomArrow {
+
         private int duration;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             if (lore.size() >= 2) {
@@ -831,38 +833,38 @@ public class Arrow {
                 duration = 50;
             }
         }
-        
+
         @Override
         public void onImpact() {
             entity.getWorld().playEffect(entity.getLocation(), Effect.POTION_BREAK, 100);
             for (Entity ent : entity.getNearbyEntities(4, 3, 4)) {
-                if (ent instanceof LivingEntity && Utilities.canDamage((Entity) entity.getShooter(), ent)) {
-                    ((LivingEntity) ent).addPotionEffect(new PotionEffect(PotionEffectType.POISON, duration, 1));
+                if (Utilities.canDamage((Entity) entity.getShooter(), ent)) {
+                    Utilities.addPotion((LivingEntity) ent, POISON, duration, 1);
                 }
             }
             die();
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(FERMENTED_SPIDER_EYE).addIngredient(FERMENTED_SPIDER_EYE);
         }
-        
+
         @Override
         public String getName() {
             return "Poisoned Arrow";
         }
-        
+
         @Override
         public String getDescription() {
             return "Poisons targets temporarily";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow poison " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "power" + ChatColor.GREEN + ", default is 50)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -878,14 +880,14 @@ public class Arrow {
             lore.add(args[0]);
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowSupersonic extends Arrow {
-        
+
+    public static class ArrowSupersonic extends CustomArrow {
+
         private LivingEntity shooter;
         private int duration;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             shooter = player;
@@ -899,34 +901,34 @@ public class Arrow {
                 duration = 400;
             }
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             LivingEntity ent = (LivingEntity) evt.getEntity();
-            shooter.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, duration, 3));
+            Utilities.addPotion(shooter, SPEED, duration, 3);
             return true;
         }
-        
+
         @Override
         public String getName() {
             return "Supersonic Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(SUGAR).addIngredient(NETHER_STALK).addIngredient(GLOWSTONE_DUST).addIngredient(GOLD_NUGGET).addIngredient(GOLD_NUGGET);
         }
-        
+
         @Override
         public String getDescription() {
             return "Gives the shooter a speed boost if the arrow hits a mob or player";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow supersonic " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "duration" + ChatColor.GREEN + ", default is 400)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -943,18 +945,18 @@ public class Arrow {
             return lore;
         }
     }
-    
-    public static class ArrowTeleport extends Arrow {
-        
+
+    public static class ArrowTeleport extends CustomArrow {
+
         private LivingEntity shooter;
         private boolean hurt;
-        
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             shooter = player;
             hurt = lore.size() == 1 || !lore.get(1).equals("safe");
         }
-        
+
         @Override
         public void onImpact() {
             shooter.teleport(entity);
@@ -963,27 +965,27 @@ public class Arrow {
             }
             die();
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(ENDER_PEARL).addIngredient(ENDER_PEARL);
         }
-        
+
         @Override
         public String getName() {
             return "Teleport Arrow";
         }
-        
+
         @Override
         public String getDescription() {
             return "Teleports the shooter wherever the arrow lands";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow teleport " + ChatColor.GREEN + "(" + ChatColor.ITALIC + "safe" + ChatColor.GREEN + " to make it take no damage when used)";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
@@ -996,11 +998,11 @@ public class Arrow {
             }
             return lore;
         }
-        
+
     }
-    
-    public static class ArrowWeb extends Arrow {
-        
+
+    public static class ArrowWeb extends CustomArrow {
+
         @Override
         public void onImpact() {
             int x = entity.getLocation().getBlockX();
@@ -1018,97 +1020,93 @@ public class Arrow {
             }
             die();
         }
-        
+
         @Override
         public String getName() {
             return "Web Arrow";
         }
-        
+
         @Override
         public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING);
         }
-        
+
         @Override
         public String getDescription() {
             return "Encases targets in spiderwebs";
         }
-        
+
         @Override
         public String getCommand() {
             return "/arrow web";
         }
-        
+
         @Override
         public List<String> constructArrow(String[] args) {
             LinkedList<String> lore = new LinkedList<>();
             lore.add(ChatColor.AQUA + "Web Arrow");
             return lore;
         }
-        
+
     }
 
 //Enchantment Arrows
-    public static class ArrowEnchantBlizzard extends Arrow {
-        
+    public static class ArrowEnchantBlizzard extends CustomArrow {
+
         private final int level;
-        
+
         public ArrowEnchantBlizzard(int level) {
             this.level = level;
         }
-        
+
         @Override
         public void onImpact() {
             ParticleEffect.CLOUD.display(level, 1.5f, level, .1f, 100 * level, Utilities.getCenter(entity.getLocation()), 32);
             for (Entity e : entity.getNearbyEntities(1 + level, 1 + level, 1 + level)) {
-                if (!e.equals(entity.getShooter()) && e instanceof LivingEntity && Utilities.canDamage((Entity) entity.getShooter(), e)) {
-                    ((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 50 + (level * 50), (level * 2)));
+                if (!e.equals(entity.getShooter()) && Utilities.canDamage((Entity) entity.getShooter(), e)) {
+                    Utilities.addPotion((LivingEntity) e, SLOW, 50 + level * 50, level * 2);
                 }
             }
             die();
         }
     }
-    
-    public static class ArrowEnchantFirestorm extends Arrow {
-        
+
+    public static class ArrowEnchantFirestorm extends CustomArrow {
+
         public int level;
-        
+
         public ArrowEnchantFirestorm(int level) {
             this.level = level;
         }
-        
+
         @Override
         public void onImpact() {
             ParticleEffect.FLAME.display(level, 1.5f, level, .1f, 100 * level, Utilities.getCenter(entity.getLocation()), 32);
             for (Entity e : entity.getNearbyEntities(1 + level, 1 + level, 1 + level)) {
-                if (!e.equals(entity.getShooter()) && e instanceof LivingEntity && Utilities.canDamage((Entity) entity.getShooter(), e)) {
+                if (!e.equals(entity.getShooter()) && Utilities.canDamage((Entity) entity.getShooter(), e)) {
                     ((LivingEntity) e).setFireTicks(level * 100);
                 }
             }
             die();
         }
     }
-    
-    public static class ArrowEnchantFirework extends Arrow {
-        
+
+    public static class ArrowEnchantFirework extends CustomArrow {
+
         private final int level;
-        
+
         public ArrowEnchantFirework(int level) {
             this.level = level;
         }
-        
+
         @Override
         public void onImpact() {
-            int lvl = level;
-            if (lvl > 4) {
-                lvl = 4;
-            }
             Location l = (Location) entity.getLocation();
             FireworkEffect.Type[] type = {FireworkEffect.Type.BALL, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR, FireworkEffect.Type.BALL_LARGE};
             FireworkEffect.Builder b = FireworkEffect.builder();
             b = b.withColor(Color.LIME).withColor(Color.RED).withColor(Color.BLUE).withColor(Color.YELLOW).withColor(Color.fromRGB(0xFF00FF)).withColor(Color.ORANGE).withColor(Color.fromRGB(0x3E89FF));
             b = b.trail(true);
-            b = b.with(type[lvl - 1]);
+            b = b.with(type[(level > 4 ? 4 : level) - 1]);
             final Firework f = (Firework) l.getWorld().spawnEntity(l, EntityType.FIREWORK);
             FireworkMeta d = (FireworkMeta) f.getFireworkMeta();
             d.setPower(1);
@@ -1123,9 +1121,9 @@ public class Arrow {
             die();
         }
     }
-    
-    public static class ArrowEnchantFuse extends Arrow {
-        
+
+    public static class ArrowEnchantFuse extends CustomArrow {
+
         @Override
         public void onImpact() {
             Location loc = this.entity.getLocation();
@@ -1145,46 +1143,48 @@ public class Arrow {
             }
             die();
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             Location l = evt.getEntity().getLocation();
-            if (evt.getEntity().getType().equals(EntityType.CREEPER)) {
-                Creeper c = (Creeper) evt.getEntity();
-                float power;
-                if (c.isPowered()) {
-                    power = 6f;
-                } else {
-                    power = 3.1f;
-                }
-                if (Storage.fuseBreak) {
-                    evt.getEntity().getWorld().createExplosion(evt.getEntity().getLocation(), power);
-                } else {
-                    evt.getEntity().getWorld().createExplosion(l.getX(), l.getY(), l.getZ(), power, false, false);
-                }
-                c.remove();
-            } else if (evt.getEntity().getType().equals(EntityType.MUSHROOM_COW)) {
-                MushroomCow c = (MushroomCow) evt.getEntity();
-                if (c.isAdult()) {
-                    ParticleEffect.EXPLOSION_LARGE.display(0, 0, 0, 1f, 1, l, 32);
-                    evt.getEntity().remove();
-                    l.getWorld().spawnEntity(l, EntityType.COW);
-                    l.getWorld().dropItemNaturally(l, new ItemStack(Material.RED_MUSHROOM, 5));
+            if (Utilities.canDamage((Entity) entity.getShooter(), evt.getEntity())) {
+                if (evt.getEntity().getType().equals(EntityType.CREEPER)) {
+                    Creeper c = (Creeper) evt.getEntity();
+                    float power;
+                    if (c.isPowered()) {
+                        power = 6f;
+                    } else {
+                        power = 3.1f;
+                    }
+                    if (Config.get(evt.getDamager().getWorld()).explosionBlockBreak()) {
+                        evt.getEntity().getWorld().createExplosion(evt.getEntity().getLocation(), power);
+                    } else {
+                        evt.getEntity().getWorld().createExplosion(l.getX(), l.getY(), l.getZ(), power, false, false);
+                    }
+                    c.remove();
+                } else if (evt.getEntity().getType().equals(EntityType.MUSHROOM_COW)) {
+                    MushroomCow c = (MushroomCow) evt.getEntity();
+                    if (c.isAdult()) {
+                        ParticleEffect.EXPLOSION_LARGE.display(0, 0, 0, 1f, 1, l, 32);
+                        evt.getEntity().remove();
+                        l.getWorld().spawnEntity(l, EntityType.COW);
+                        l.getWorld().dropItemNaturally(l, new ItemStack(Material.RED_MUSHROOM, 5));
+                    }
                 }
             }
             die();
             return true;
         }
     }
-    
-    public static class ArrowEnchantLevel extends Arrow {
-        
+
+    public static class ArrowEnchantLevel extends CustomArrow {
+
         public int level;
-        
+
         public ArrowEnchantLevel(int level) {
             this.level = level;
         }
-        
+
         @Override
         public void onKill(EntityDeathEvent evt) {
             if (Storage.rnd.nextBoolean()) {
@@ -1193,84 +1193,111 @@ public class Arrow {
             die();
         }
     }
-    
-    public static class ArrowEnchantPotion extends Arrow {
-        
+
+    public static class ArrowEnchantPotion extends CustomArrow {
+
         private final int level;
-        PotionEffectType[] potions = new PotionEffectType[]{PotionEffectType.ABSORPTION,
-            PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.FIRE_RESISTANCE, PotionEffectType.SPEED,
-            PotionEffectType.JUMP, PotionEffectType.INVISIBILITY, PotionEffectType.INCREASE_DAMAGE,
-            PotionEffectType.HEALTH_BOOST, PotionEffectType.HEAL, PotionEffectType.REGENERATION,
-            PotionEffectType.NIGHT_VISION, PotionEffectType.SATURATION, PotionEffectType.FAST_DIGGING};
-        
+        PotionEffectType[] potions = new PotionEffectType[]{ABSORPTION,
+            DAMAGE_RESISTANCE, FIRE_RESISTANCE, SPEED,
+            JUMP, INVISIBILITY, INCREASE_DAMAGE,
+            HEALTH_BOOST, HEAL, REGENERATION,
+            NIGHT_VISION, SATURATION, FAST_DIGGING};
+
         public ArrowEnchantPotion(int level) {
             this.level = level;
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             if (Storage.rnd.nextInt((int) (10 / (level + 1))) == 1) {
-                ((Player) entity.getShooter()).addPotionEffect(new PotionEffect(potions[Storage.rnd.nextInt(12)], (150 + level * 50), level));
+                Utilities.addPotion((LivingEntity) entity.getShooter(), potions[Storage.rnd.nextInt(12)], 150 + level * 50, level);
             }
             die();
             return true;
         }
     }
-    
-    public static class ArrowEnchantQuickShot extends Arrow {
-        
+
+    public static class ArrowEnchantPtomaine extends CustomArrow {
+
+        private final int level;
+
+        public ArrowEnchantPtomaine(int level) {
+            this.level = level;
+        }
+
+        @Override
+        public boolean onImpact(final EntityDamageByEntityEvent evt) {
+            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+                Utilities.addPotion((LivingEntity) evt.getEntity(), CONFUSION, 40 + 60 * level, 4);
+                Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 40 + 60 * level, 4);
+                if (evt.getEntity() instanceof Player) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                        @Override
+                        public void run() {
+                            ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
+                            Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * level, 0);
+                        }
+                    }, 20 + 60 * level);
+                    Storage.hungerPlayers.put((Player) evt.getEntity(), (1 + level) * 100);
+                }
+            }
+            die();
+            return true;
+        }
+    }
+
+    public static class ArrowEnchantQuickShot extends CustomArrow {
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
             entity.setVelocity(entity.getVelocity().normalize().multiply(3.5f));
             die();
         }
     }
-    
-    public static class ArrowEnchantReaper extends Arrow {
-        
+
+    public static class ArrowEnchantReaper extends CustomArrow {
+
         private final int level;
-        
+
         public ArrowEnchantReaper(int level) {
             this.level = level;
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
-                ((LivingEntity) evt.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, (10 + (level * 20)), level));
-                ((LivingEntity) evt.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (10 + (level * 20)), level));
+                Utilities.addPotion((LivingEntity) evt.getEntity(), WITHER, 10 + level * 20, level);
+                Utilities.addPotion((LivingEntity) evt.getEntity(), BLINDNESS, 10 + level * 20, level);
             }
             die();
             return true;
         }
-        
+
     }
-    
-    public static class ArrowEnchantSiphon extends Arrow {
-        
+
+    public static class ArrowEnchantSiphon extends CustomArrow {
+
         private final int level;
-        
+
         public ArrowEnchantSiphon(int level) {
             this.level = level;
         }
-        
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 Player player = (Player) entity.getShooter();
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 int difference = level;
-                if (((Projectile) evt.getDamager()).getShooter() instanceof Player) {
-                    if (Storage.rnd.nextInt(4) == 2) {
-                        while (difference > 0) {
-                            if (player.getHealth() < 20) {
-                                player.setHealth(player.getHealth() + 1);
-                            }
-                            if (ent.getHealth() > 2) {
-                                ent.setHealth(ent.getHealth() - 1);
-                            }
-                            difference--;
+                if (Storage.rnd.nextInt(4) == 2) {
+                    while (difference > 0) {
+                        if (player.getHealth() < 20) {
+                            player.setHealth(player.getHealth() + 1);
                         }
+                        if (ent.getHealth() > 2) {
+                            ent.setHealth(ent.getHealth() - 1);
+                        }
+                        difference--;
                     }
                 }
             }
@@ -1278,20 +1305,18 @@ public class Arrow {
             return true;
         }
     }
-    
-    public static class ArrowEnchantStationary extends Arrow {
-        
+
+    public static class ArrowEnchantStationary extends CustomArrow {
+
         @Override
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
-                if (evt.getEntity() instanceof LivingEntity) {
-                    LivingEntity ent = (LivingEntity) evt.getEntity();
-                    if (evt.getDamage() < ent.getHealth()) {
-                        evt.setCancelled(true);
-                        ((LivingEntity) evt.getEntity()).damage(evt.getDamage());
-                        if (evt.getDamager().getType() == EntityType.ARROW) {
-                            evt.getDamager().remove();
-                        }
+                LivingEntity ent = (LivingEntity) evt.getEntity();
+                if (evt.getDamage() < ent.getHealth()) {
+                    evt.setCancelled(true);
+                    ((LivingEntity) evt.getEntity()).damage(evt.getDamage());
+                    if (evt.getDamager().getType() == EntityType.ARROW) {
+                        evt.getDamager().remove();
                     }
                 }
             }
@@ -1299,24 +1324,24 @@ public class Arrow {
             return true;
         }
     }
-    
-    public static class ArrowEnchantTracer extends Arrow {
-        
+
+    public static class ArrowEnchantTracer extends CustomArrow {
+
         private final int level;
-        
+
         public ArrowEnchantTracer(int level) {
             this.level = level;
         }
-        
+
         @Override
         public void onFlight() {
-            Storage.tracer.put((org.bukkit.entity.Arrow) this.entity, level);
+            Storage.tracer.put((Arrow) this.entity, level);
             die();
         }
     }
-    
-    public static class ArrowEnchantVortex extends Arrow {
-        
+
+    public static class ArrowEnchantVortex extends CustomArrow {
+
         @Override
         public void onKill(final EntityDeathEvent evt) {
             Storage.vortexLocs.put(evt.getEntity().getLocation().getBlock(), evt.getEntity().getKiller().getLocation());
@@ -1335,10 +1360,11 @@ public class Arrow {
 
 //Enchantment Arrows In-Development
 //Enchantment Admin Arrows
-    public static class ArrowAdminApocalypse extends Arrow {
-        
+    public static class ArrowAdminApocalypse extends CustomArrow {
+
         @Override
         public void onImpact() {
+            final Config config = Config.get(entity.getWorld());
             Location l2 = this.entity.getLocation().clone();
             l2.setY(l2.getY() + 1);
             Location[] locs = new Location[]{this.entity.getLocation(), l2};
@@ -1364,11 +1390,11 @@ public class Arrow {
                             ent.setVelocity(v.multiply(1.5));
                             TNTPrimed prime = (TNTPrimed) entity.getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
                             prime.setFuseTicks(200);
-                            prime.setYield(Storage.apocalypseBreak ? 4 : 0);
+                            prime.setYield(config.explosionBlockBreak() ? 4 : 0);
                             Blaze blaze = (Blaze) entity.getWorld().spawnEntity(l, BLAZE);
-                            blaze.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 150, 100000));
-                            blaze.addPotionEffect(new PotionEffect(PotionEffectType.HARM, 10000, 1));
-                            if (Storage.apocalypseBreak) {
+                            blaze.addPotionEffect(new PotionEffect(ABSORPTION, 150, 100000));
+                            blaze.addPotionEffect(new PotionEffect(HARM, 10000, 1));
+                            if (config.explosionBlockBreak()) {
                                 Entity crystal = entity.getWorld().spawnEntity(l, EntityType.ENDER_CRYSTAL);
                                 ent.setPassenger(prime);
                                 crystal.setPassenger(blaze);
@@ -1384,11 +1410,12 @@ public class Arrow {
             die();
         }
     }
-    
-    public static class ArrowAdminMissile extends Arrow {
-        
+
+    public static class ArrowAdminMissile extends CustomArrow {
+
         @Override
         public void onLaunch(LivingEntity player, List<String> lore) {
+            final Config config = Config.get(player.getWorld());
             Location playLoc = player.getLocation();
             final Location target = Utilities.getCenter(player.getTargetBlock((HashSet<Byte>) null, 220).getLocation());
             target.setY(target.getY() + .5);
@@ -1417,12 +1444,49 @@ public class Arrow {
                             ParticleEffect.EXPLOSION_HUGE.display(0, 0, 0, .01f, 10, loc2, 32);
                             ParticleEffect.FLAME.display(0, 0, 0, 1f, 175, loc, 32);
                             loc2.setY(loc2.getY() + 5);
-                            loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10, Storage.missileBreak, Storage.missileBreak);
+                            loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10, config.explosionBlockBreak(), config.explosionBlockBreak());
                         }
                     }
                 }, (int) (i / 7));
             }
         }
     }
-    
+
+    public static class ArrowAdminSingularity extends CustomArrow {
+
+        private final int level;
+
+        public ArrowAdminSingularity(int level) {
+            this.level = level;
+        }
+
+        @Override
+        public void onImpact() {
+            final Location l = entity.getLocation().clone();
+            Storage.blackholes.put(l, true);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                @Override
+                public void run() {
+                    Storage.blackholes.put(l, false);
+                }
+            }, 40);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                @Override
+                public void run() {
+                    Storage.blackholes.remove(l);
+                }
+            }, 60);
+            for (int i = 1; i <= 61; i++) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                    @Override
+                    public void run() {
+                        ParticleEffect.SMOKE_LARGE.display(.75f, .75f, .75f, .001f, 50, l, 32);
+                        l.getWorld().playSound(l, Sound.ENDERDRAGON_GROWL, 10f, .1f);
+                    }
+                }, i);
+            }
+            die();
+        }
+    }
+
 }

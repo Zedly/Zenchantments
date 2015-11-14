@@ -24,11 +24,13 @@ public class PlayerConfig {
                 for (String player : players) {
                     String[] enchantments = player.split(";");
                     UUID playerID = UUID.fromString(enchantments[0]);
-                    HashSet<Enchantment> finalEnchants = new HashSet<>();
+                    HashSet<CustomEnchantment> finalEnchants = new HashSet<>();
                     for (int i = 1; i < enchantments.length; i++) {
-                        if (Storage.allEnchantClasses.containsKey(enchantments[i].replace(" ", "").toLowerCase())) {
-                            Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(enchantments[i].replace(" ", "").toLowerCase());
-                            finalEnchants.add(ench);
+                        for (Config config : Storage.worldConfigs) {
+                            if (config.getEnchants().containsKey(enchantments[i].replace(" ", "").toLowerCase())) {
+                                CustomEnchantment ench = config.getEnchants().get(enchantments[i].replace(" ", "").toLowerCase());
+                                finalEnchants.add(ench);
+                            }
                         }
                     }
                     Storage.playerSettings.put(playerID, finalEnchants);
@@ -42,7 +44,7 @@ public class PlayerConfig {
         String rawText = "";
         for (UUID p : Storage.playerSettings.keySet()) {
             rawText += p.toString();
-            for (Enchantment e : Storage.playerSettings.get(p)) {
+            for (CustomEnchantment e : Storage.playerSettings.get(p)) {
                 rawText += ";" + e.loreName;
             }
         }

@@ -13,12 +13,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import static org.bukkit.Material.*;
+import org.bukkit.entity.Arrow;
 import org.bukkit.inventory.ItemStack;
 
 public class ArrowWatcher implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public boolean shoot(EntityShootBowEvent evt) {
+        Config config = Config.get(evt.getEntity().getWorld());
         if (evt.getEntity() instanceof Player) {
             if (evt.isCancelled()) {
                 return true;
@@ -27,16 +29,13 @@ public class ArrowWatcher implements Listener {
             ItemStack arrowShot = findArrowShot(player);
             if (arrowShot != null && arrowShot.getItemMeta().hasLore()) {
                 String type = ChatColor.stripColor(arrowShot.getItemMeta().getLore().get(0));
-                if (Storage.projectileTable.containsKey(type) && player.hasPermission("zenchantments.item.arrows") && !player.getItemInHand().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
-                    try {
-                        Arrow arrow = (Arrow) Storage.projectileTable.get(type).newInstance();
-                        arrow.entity = (Projectile) evt.getProjectile();
-                        HashSet<Arrow> a = new HashSet<>();
-                        a.add(arrow);
-                        Storage.advancedProjectiles.put(evt.getProjectile(), a);
-                        arrow.onLaunch(player, arrowShot.getItemMeta().getLore());
-                    } catch (InstantiationException | IllegalAccessException ex) {
-                    }
+                if (config.getArrows().containsKey(type) && player.hasPermission("zenchantments.arrow.use") && !player.getItemInHand().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
+                    CustomArrow arrow = config.getArrows().get(type);
+                    arrow.entity = (Projectile) evt.getProjectile();
+                    HashSet<CustomArrow> a = new HashSet<>();
+                    a.add(arrow);
+                    Storage.advancedProjectiles.put(evt.getProjectile(), a);
+                    arrow.onLaunch(player, arrowShot.getItemMeta().getLore());
                 }
             }
         }
@@ -56,8 +55,8 @@ public class ArrowWatcher implements Listener {
     @EventHandler
     public boolean impact(ProjectileHitEvent evt) {
         if (Storage.advancedProjectiles.containsKey(evt.getEntity())) {
-            Set<Arrow> ar = Storage.advancedProjectiles.get(evt.getEntity());
-            for (Arrow a : ar) {
+            Set<CustomArrow> ar = Storage.advancedProjectiles.get(evt.getEntity());
+            for (CustomArrow a : ar) {
                 a.onImpact();
             }
         }
@@ -65,11 +64,11 @@ public class ArrowWatcher implements Listener {
     }
 
     @EventHandler
-    public boolean entityhit(EntityDamageByEntityEvent evt) {
-        if (evt.getDamager() instanceof org.bukkit.entity.Arrow) {
+    public boolean entityHit(EntityDamageByEntityEvent evt) {
+        if (evt.getDamager() instanceof Arrow) {
             if (Storage.advancedProjectiles.containsKey(evt.getDamager())) {
-                Set<Arrow> arrows = Storage.advancedProjectiles.get(evt.getDamager());
-                for (Arrow arrow : arrows) {
+                Set<CustomArrow> arrows = Storage.advancedProjectiles.get(evt.getDamager());
+                for (CustomArrow arrow : arrows) {
                     if (evt.getEntity() instanceof LivingEntity) {
                         if (!arrow.onImpact(evt)) {
                             evt.setDamage(0);
@@ -88,7 +87,7 @@ public class ArrowWatcher implements Listener {
     @EventHandler
     public boolean entityDeath(EntityDeathEvent evt) {
         if (Storage.killedEntities.containsKey(evt.getEntity())) {
-            Arrow arrow = Storage.killedEntities.get(evt.getEntity());
+            CustomArrow arrow = Storage.killedEntities.get(evt.getEntity());
             arrow.onKill(evt);
             Storage.killedEntities.remove(evt.getEntity());
         }

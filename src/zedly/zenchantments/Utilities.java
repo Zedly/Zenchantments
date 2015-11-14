@@ -3,11 +3,9 @@ package zedly.zenchantments;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import static org.bukkit.GameMode.CREATIVE;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,12 +13,14 @@ import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import static zedly.zenchantments.Storage.rnd;
 
 public class Utilities {
@@ -45,40 +45,49 @@ public class Utilities {
         }
     }
 
-    public static void addUnbreaking(ItemStack is, int damage) {
-        for (int i = 0; i < damage; i++) {
-            if (rnd.nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-                is.setDurability((short) (is.getDurability() + 1));
-            }
-        }
-    }
-
-    public static void removeItem(Inventory inv, Material mat, short data, int amount) {
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) != null && inv.getItem(i).getType() == mat && inv.getItem(i).getDurability() == data) {
-                if (inv.getItem(i).getAmount() > amount) {
-                    int res = inv.getItem(i).getAmount() - amount;
-                    ItemStack rest = inv.getItem(i);
-                    rest.setAmount(res);
-                    inv.setItem(i, rest);
-                    return;
-                } else {
-                    amount -= inv.getItem(i).getAmount();
-                    inv.setItem(i, null);
+    public static void addUnbreaking(Player player, ItemStack is, int damage) {
+        if (!player.getGameMode().equals(CREATIVE)) {
+            for (int i = 0; i < damage; i++) {
+                if (rnd.nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                    is.setDurability((short) (is.getDurability() + 1));
                 }
             }
         }
     }
 
-    public static void removeItem(Inventory inv, Material mat, int amount) {
-        removeItem(inv, mat, (short) 0, amount);
+    public static void removeItem(Player player, Material mat, short data, int amount) {
+        if (player.getGameMode().equals(CREATIVE)) {
+            Inventory inv = player.getInventory();
+            for (int i = 0; i < inv.getSize(); i++) {
+                if (inv.getItem(i) != null && inv.getItem(i).getType() == mat && inv.getItem(i).getDurability() == data) {
+                    if (inv.getItem(i).getAmount() > amount) {
+                        int res = inv.getItem(i).getAmount() - amount;
+                        ItemStack rest = inv.getItem(i);
+                        rest.setAmount(res);
+                        inv.setItem(i, rest);
+                        return;
+                    } else {
+                        amount -= inv.getItem(i).getAmount();
+                        inv.setItem(i, null);
+                    }
+                }
+            }
+        }
     }
 
-    public static void removeItem(Inventory inv, ItemStack is) {
-        removeItem(inv, is.getType(), is.getDurability(), is.getAmount());
+    public static void removeItem(Player player, Material mat, int amount) {
+        removeItem(player, mat, (short) 0, amount);
     }
 
-    public static boolean removeItemCheck(Inventory inv, Material mat, short data, int amount) {
+    public static void removeItem(Player player, ItemStack is) {
+        removeItem(player, is.getType(), is.getDurability(), is.getAmount());
+    }
+
+    public static boolean removeItemCheck(Player player, Material mat, short data, int amount) {
+        if (player.getGameMode().equals(CREATIVE)) {
+            return true;
+        }
+        Inventory inv = player.getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
             if (inv.getItem(i) != null && inv.getItem(i).getType() == mat && inv.getItem(i).getDurability() == data) {
                 if (inv.getItem(i).getAmount() > amount) {
@@ -332,64 +341,6 @@ public class Utilities {
         return stacks;
     }
 
-    public static LinkedHashMap<Enchantment, Integer> getEnchants(ItemStack stack) {
-        LinkedHashMap<Enchantment, Integer> map = new LinkedHashMap<>();
-        if (stack != null) {
-            if (stack.hasItemMeta()) {
-                if (stack.getItemMeta().hasLore()) {
-                    List<String> lore = stack.getItemMeta().getLore();
-                    for (String rawEnchant : lore) {
-                        int index1 = rawEnchant.lastIndexOf(" ");
-                        if (index1 == -1) {
-                            continue;
-                        }
-                        Integer level = Utilities.getNumber(rawEnchant.substring(index1 + 1));
-                        String enchant = rawEnchant.substring(2, index1);
-                        if (Storage.allEnchantClasses.containsKey(enchant.replace(" ", "").toLowerCase())) {
-                            Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(enchant.replace(" ", "").toLowerCase());
-                            map.put(ench, level);
-                        }
-                    }
-                }
-            }
-        }
-        LinkedHashMap<Enchantment, Integer> finalmap = new LinkedHashMap<>();
-        for (String s : new String[]{"Lumber", "Shred", "Mow", "Extraction"}) {
-            Enchantment e = (Enchantment) Storage.originalEnchantClasses.get(s);
-            if (map.containsKey(e)) {
-                finalmap.put(e, map.get(e));
-                map.remove(e);
-            }
-        }
-        finalmap.putAll(map);
-        return finalmap;
-    }
-
-    public static ArrayList<Enchantment> getEnchants(String[] raw) {
-        ArrayList<Enchantment> enchants = new ArrayList<>();
-        for (String s : raw) {
-            if (Storage.allEnchantClasses.containsKey(s.replace(" ", "").toLowerCase())) {
-                Enchantment ench = (Enchantment) Storage.allEnchantClasses.get(s.replace(" ", "").toLowerCase());
-                enchants.add(ench);
-            }
-        }
-        return enchants;
-    }
-
-    public static Enchantment getEnchant(String raw) {
-        Enchantment e = null;
-        int index1 = raw.lastIndexOf(" ");
-        if (index1 == -1) {
-            return e;
-        }
-        Integer level = Utilities.getNumber(raw.substring(index1 + 1));
-        String enchant = raw.substring(2, index1);
-        if (Storage.allEnchantClasses.containsKey(enchant.replace(" ", "").toLowerCase())) {
-            e = Storage.allEnchantClasses.get(enchant.replace(" ", "").toLowerCase());
-        }
-        return e;
-    }
-
     public static Location getCenter(Location loc) {
         double x = loc.getX();
         double z = loc.getZ();
@@ -477,8 +428,8 @@ public class Utilities {
         return in;
     }
 
-    public static int getSimpleDirection(Player player) {
-        float direction = player.getLocation().getYaw();
+    public static int getSimpleDirection(float yaw, float pitch) {
+        float direction = yaw;
         int in = 0;
         if (direction < 0) {
             direction += 360;
@@ -494,17 +445,16 @@ public class Utilities {
         } else if (i < 18 && i >= 13) {//E
             in = 4;
         }
-        if (player.getLocation().getPitch() < -50) {//U
+        if (pitch < -50) {//U
             in = 5;
-        } else if (player.getLocation().getPitch() > 50) {//D
+        } else if (pitch > 50) {//D
             in = 6;
         }
-
         return in;
     }
 
-    public static void putArrow(Entity e, Arrow a, Player p) {
-        HashSet<Arrow> ars;
+    public static void putArrow(Entity e, CustomArrow a, Player p) {
+        HashSet<CustomArrow> ars;
         if (Storage.advancedProjectiles.containsKey(e)) {
             ars = Storage.advancedProjectiles.get(e);
         } else {
@@ -515,7 +465,7 @@ public class Utilities {
         a.onLaunch(p, null);
     }
 
-    public static boolean enchTF(Player player, Enchantment ench) {
+    public static boolean canUse(Player player, CustomEnchantment ench) {
         if (!player.hasPermission("zenchantments.enchant.use")) {
             return false;
         }
@@ -553,81 +503,51 @@ public class Utilities {
             EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(damager, entity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1);
             Bukkit.getPluginManager().callEvent(evt);
             Storage.damagingPlayer.remove(damager);
+            if ((damager instanceof Player && !Config.get(damager.getWorld()).enchantPVP()) || !(entity instanceof LivingEntity)) {
+                return false;
+            }
             return !evt.isCancelled();
         }
         return false;
     }
 
-    public static ItemStack addDescriptions(ItemStack stk, Enchantment delete) {
-        stk = removeDescriptions(stk, delete);
-        if (stk != null) {
-            if (stk.hasItemMeta()) {
-                if (stk.getItemMeta().hasLore()) {
-                    ItemMeta meta = stk.getItemMeta();
-                    List<String> lore = new ArrayList<>();
-                    for (String s : meta.getLore()) {
-                        lore.add(s);
-                        Enchantment e = getEnchant(s);
-                        if (e != null) {
-                            String str = e.description;
-                            int start = 0;
-                            int counter = 0;
-                            for (int i = 0; i < str.toCharArray().length; i++) {
-                                if (counter > 30) {
-                                    if (str.toCharArray()[i - 1] == ' ') {
-                                        lore.add(Storage.descriptionColor + str.substring(start, i));
-                                        counter = 0;
-                                        start = i;
-                                    }
-                                }
-                                counter++;
-                            }
-                            lore.add(Storage.descriptionColor + str.substring(start));
-                        }
+    public static void addPotion(LivingEntity ent, PotionEffectType type, int length, int intensity) {
+        for (PotionEffect eff : ent.getActivePotionEffects()) {
+            if (eff.getType().equals(type)) {
+                if (eff.getAmplifier() > intensity) {
+                    return;
+                } else {
+                    if (eff.getDuration() > length) {
+                        return;
+                    } else {
+                        ent.removePotionEffect(type);
                     }
-                    meta.setLore(lore);
-                    stk.setItemMeta(meta);
                 }
             }
         }
-        return stk;
+        ent.addPotionEffect(new PotionEffect(type, length, intensity));
     }
 
-    public static ItemStack removeDescriptions(ItemStack stk, Enchantment delete) {
-        if (stk != null) {
-            if (stk.hasItemMeta()) {
-                if (stk.getItemMeta().hasLore()) {
-                    ItemMeta meta = stk.getItemMeta();
-                    List<String> lore = new ArrayList<>();
-                    Enchantment current = null;
-                    for (String s : meta.getLore()) {
-                        Enchantment e = getEnchant(s);
-                        if (e != null) {
-                            current = e;
-                        }
-                        if (current == null) {
-                            if (delete != null) {
-                                if (!delete.description.contains(ChatColor.stripColor(s))) {
-                                    lore.add(s);
-                                }
-                            } else {
-                                lore.add(s);
-                            }
-                        } else if (delete != null) {
-                            if (!delete.description.contains(ChatColor.stripColor(s)) && !current.description.contains(ChatColor.stripColor(s))) {
-                                lore.add(s);
-                            }
-                        } else if (!current.description.contains(ChatColor.stripColor(s))) {
-                            lore.add(s);
-                        }
-                    }
-                    meta.setLore(lore);
-                    stk.setItemMeta(meta);
-                    return stk;
-                }
-            }
+    public static boolean canEdit(Player player, Block block) {
+        if (Storage.worldGuard == null) {
+            return true;
+        } else {
+            return Storage.worldGuard.canBuild(player, block);
         }
-        return stk;
+    }
+
+    public static byte place(Player player) {
+        boolean vertical = Utilities.getSimpleDirection(0, player.getLocation().getPitch()) == 5;
+        int horizontal = Utilities.getSimpleDirection(player.getLocation().getYaw(), 0);
+
+        byte data = player.getItemInHand().getData().getData();
+        switch (player.getItemInHand().getType()) {
+            case WOOD_STEP:
+                if (vertical) {
+                    return (byte) (data + 5);
+                }
+        }
+        return data;
     }
 
 }
