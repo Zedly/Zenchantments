@@ -1,54 +1,51 @@
 package zedly.zenchantments;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import org.bukkit.Bukkit;
-import static org.bukkit.GameMode.CREATIVE;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import org.bukkit.*;
+import static org.bukkit.GameMode.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import static zedly.zenchantments.Storage.rnd;
+import org.bukkit.entity.*;
+import org.bukkit.event.entity.*;
+import org.bukkit.inventory.*;
+import org.bukkit.potion.*;
 
 public class Utilities {
 
-    public static ArrayList<ItemStack> getRelevant(Player p) {
-        ArrayList<ItemStack> stk = new ArrayList<>();
-        stk.addAll(Arrays.asList(p.getInventory().getArmorContents()));
-        stk.add(p.getItemInHand());
+    // Player player: Player whose inventory is being searched
+    // Returns an ArrayList of ItemStacks of the held item and armor
+    public static List<ItemStack> getRelevant(Player player) {
+        List<ItemStack> stk = new ArrayList<>();
+        stk.addAll(Arrays.asList(player.getInventory().getArmorContents()));
+        stk.add(player.getItemInHand());
+        Iterator<ItemStack> it = stk.iterator();
+        while (it.hasNext()) {
+            if (it.next() == null) {
+                it.remove();
+            }
+        }
         return stk;
 
     }
 
-    public static void addUnbreaking(ItemStack is, int damage, Player p) {
-        if (!p.getGameMode().equals(CREATIVE)) {
+    public static void addUnbreaking(ItemStack stack, int damage, Player player) {
+        if (!player.getGameMode().equals(CREATIVE)) {
             for (int i = 0; i < damage; i++) {
-                if (rnd.nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-                    is.setDurability((short) (is.getDurability() + 1));
+                if (Storage.rnd.nextInt(100) <= (100 / (stack.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                    stack.setDurability((short) (stack.getDurability() + 1));
                 }
             }
-            ItemStack hand = p.getItemInHand();
-            p.setItemInHand(hand.getDurability() > hand.getType().getMaxDurability() ? null : hand);
+            ItemStack hand = player.getItemInHand();
+            player.setItemInHand(hand.getDurability() > hand.getType().getMaxDurability() ? null : hand);
         }
     }
 
     public static void addUnbreaking(Player player, ItemStack is, int damage) {
         if (!player.getGameMode().equals(CREATIVE)) {
             for (int i = 0; i < damage; i++) {
-                if (rnd.nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                if (Storage.rnd.nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
                     is.setDurability((short) (is.getDurability() + 1));
                 }
             }
@@ -56,7 +53,7 @@ public class Utilities {
     }
 
     public static void removeItem(Player player, Material mat, short data, int amount) {
-        if (player.getGameMode().equals(CREATIVE)) {
+        if (!player.getGameMode().equals(CREATIVE)) {
             Inventory inv = player.getInventory();
             for (int i = 0; i < inv.getSize(); i++) {
                 if (inv.getItem(i) != null && inv.getItem(i).getType() == mat && inv.getItem(i).getDurability() == data) {
@@ -367,37 +364,37 @@ public class Utilities {
         return out;
     }
 
-    public static int grow(Block blk) {
+    public static boolean grow(Block blk) {
         if (blk != null) {
             if (blk.getType() == COCOA) {
                 if (blk.getData() < 8) {
                     blk.setData((byte) (blk.getData() + 4));
-                    return 1;
+                    return true;
                 } else {
-                    return 0;
+                    return false;
                 }
             } else if (blk.getType() == PUMPKIN_STEM || blk.getType() == MELON_STEM
                     || blk.getType() == CARROT || blk.getType() == CROPS || blk.getType() == POTATO) {
                 if (blk.getData() < 7) {
                     blk.setData((byte) (blk.getData() + 1));
-                    return 1;
+                    return true;
                 } else {
-                    return 0;
+                    return false;
                 }
-            } else if (blk.getType() == NETHER_WARTS) {
+            } else if (blk.getType() == NETHER_WARTS || blk.getType() == BEETROOT_BLOCK) {
                 if (blk.getData() < 3) {
                     blk.setData((byte) (blk.getData() + 1));
-                    return 1;
+                    return true;
                 } else {
-                    return 0;
+                    return false;
                 }
             } else if (blk.getType() == CACTUS) {
-                return 0;
+                return false;
             } else if (blk.getType() == SUGAR_CANE_BLOCK) {
-                return 0;
+                return false;
             }
         }
-        return 0;
+        return false;
     }
 
     public static int getDirection(Player player) {
@@ -453,8 +450,8 @@ public class Utilities {
         return in;
     }
 
-    public static void putArrow(Entity e, CustomArrow a, Player p) {
-        HashSet<CustomArrow> ars;
+    public static void putArrow(Entity e, EnchantArrow a, Player p) {
+        Set<AdvancedArrow> ars;
         if (Storage.advancedProjectiles.containsKey(e)) {
             ars = Storage.advancedProjectiles.get(e);
         } else {
@@ -465,16 +462,14 @@ public class Utilities {
         a.onLaunch(p, null);
     }
 
-    public static boolean canUse(Player player, CustomEnchantment ench) {
+    public static boolean canUse(Player player, String ench) {
         if (!player.hasPermission("zenchantments.enchant.use")) {
             return false;
         }
-        if (Storage.playerSettings.containsKey(player.getUniqueId())) {
-            if (Storage.playerSettings.get(player.getUniqueId()).contains(ench)) {
-                return false;
-            }
+        if (EnchantPlayer.matchPlayer(player).getCooldown(ench) != 0) {
+            return false;
         }
-        return true;
+        return !EnchantPlayer.matchPlayer(player).isDisabled(ench);
     }
 
     public static boolean eventStart(Player p, String e) {
@@ -548,6 +543,16 @@ public class Utilities {
                 }
         }
         return data;
+    }
+
+    public static AdvancedArrow construct(Class cl, Projectile p) {
+        try {
+            Constructor ctor = cl.getDeclaredConstructor(Projectile.class);
+            ctor.setAccessible(true);
+            return (ElementalArrow) ctor.newInstance((Object) p);
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        }
+        return null;
     }
 
 }

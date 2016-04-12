@@ -1,21 +1,56 @@
 package zedly.zenchantments;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.*;
 import static org.bukkit.Material.*;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import static org.bukkit.potion.PotionEffectType.*;
 
 public class MFEffects implements Runnable {
-
-    @Override
+    
     public void run() {
+        anthropomorphism();
+        scanPlayers();
+        speedPlayers();
+        updateBlocks();
+        
+    }
+
+    // Removes Anthropomorphism blocks when they are dead
+    private void anthropomorphism() {
+        Iterator it = Storage.idleBlocks.keySet().iterator();
+        while (it.hasNext()) {
+            FallingBlock b = (FallingBlock) it.next();
+            if (b.isDead()) {
+                it.remove();
+            }
+        }
+        it = Storage.attackBlocks.keySet().iterator();
+        while (it.hasNext()) {
+            FallingBlock b = (FallingBlock) it.next();
+            if (b.isDead()) {
+                it.remove();
+            }
+        }
+    }
+
+    // Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
+    private void scanPlayers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.hasMetadata("ze.haste")) {
+                boolean has = false;
+                for (CustomEnchantment e : Config.get(player.getWorld()).getEnchants(player.getItemInHand()).keySet()) {
+                    if (e.getClass().equals(CustomEnchantment.Haste.class)) {
+                        has = true;
+                    }
+                }
+                if (!has) {
+                    player.removePotionEffect(FAST_DIGGING);
+                    player.removeMetadata("ze.haste", Storage.zenchantments);
+                }
+            }
             Config config = Config.get(player.getWorld());
             for (ItemStack stk : (ItemStack[]) ArrayUtils.addAll(player.getInventory().getArmorContents(), player.getInventory().getContents())) {
                 if (config.descriptionLore()) {
@@ -26,46 +61,34 @@ public class MFEffects implements Runnable {
             }
             for (ItemStack stk : player.getInventory().getArmorContents()) {
                 if (stk != null) {
-                    HashMap<CustomEnchantment, Integer> map = config.getEnchants(stk);
+                    Map<CustomEnchantment, Integer> map = config.getEnchants(stk);
                     for (CustomEnchantment ench : map.keySet()) {
                         ench.onScan(player, map.get(ench));
                     }
                 }
             }
             if (player.getItemInHand() != null) {
-                HashMap<CustomEnchantment, Integer> map = config.getEnchants(player.getItemInHand());
+                Map<CustomEnchantment, Integer> map = config.getEnchants(player.getItemInHand());
                 for (CustomEnchantment ench : map.keySet()) {
                     ench.onScanHand(player, map.get(ench));
                 }
             }
         }
-        Iterator iceIT = Storage.waterLocs.keySet().iterator();
-        while (iceIT.hasNext()) {
-            Location location = (Location) iceIT.next();
-            if (Math.abs(System.nanoTime() - Storage.waterLocs.get(location)) > 9E8) {
-                location.getBlock().setType(STATIONARY_WATER);
-                iceIT.remove();
-            }
-        }
-        Iterator fireIT = Storage.fireLocs.keySet().iterator();
-        while (fireIT.hasNext()) {
-            Location location = (Location) fireIT.next();
-            if (Math.abs(System.nanoTime() - Storage.fireLocs.get(location)) > 9E8) {
-                location.getBlock().setType(STATIONARY_LAVA);
-                fireIT.remove();
-            }
-        }
-        Iterator speedIt = Storage.speed.iterator();
-        while (speedIt.hasNext()) {
-            Player player = (Player) speedIt.next();
+    }
+
+    // Sets player fly and walk speed to default after certain enchantments are removed
+    private void speedPlayers() {
+        Iterator it = Storage.speed.iterator();
+        while (it.hasNext()) {
+            Player player = (Player) it.next();
             Config world = Config.get(player.getWorld());
             if (!player.isOnline()) {
-                speedIt.remove();
+                it.remove();
                 continue;
             }
             boolean check = false;
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                HashMap<CustomEnchantment, Integer> map = world.getEnchants(stk);
+                Map<CustomEnchantment, Integer> map = world.getEnchants(stk);
                 Class[] enchs = new Class[]{CustomEnchantment.Weight.class, CustomEnchantment.Speed.class, CustomEnchantment.Meador.class};
                 for (CustomEnchantment ench : map.keySet()) {
                     if (ArrayUtils.contains(enchs, ench.getClass())) {
@@ -76,25 +99,30 @@ public class MFEffects implements Runnable {
             if (!check) {
                 player.setFlySpeed(.1f);
                 player.setWalkSpeed(.2f);
-                speedIt.remove();
+                it.remove();
                 break;
             }
         }
-        ArrayList<FallingBlock> toKill = new ArrayList<>();
-        for (FallingBlock b : Storage.anthMobs.keySet()) {
-            if (b.isDead()) {
-                toKill.add(b);
+    }
+
+    // Removes the blocks from NetherStep and FrozenStep after a peroid of time
+    private void updateBlocks() {
+        Iterator it = Storage.waterLocs.keySet().iterator();
+        while (it.hasNext()) {
+            Location location = (Location) it.next();
+            if (Math.abs(System.nanoTime() - Storage.waterLocs.get(location)) > 9E8) {
+                location.getBlock().setType(STATIONARY_WATER);
+                it.remove();
             }
         }
-        ArrayList<FallingBlock> toKill2 = new ArrayList<>();
-        for (FallingBlock b : Storage.anthMobs2) {
-            if (b.isDead()) {
-                toKill2.add(b);
+        it = Storage.fireLocs.keySet().iterator();
+        while (it.hasNext()) {
+            Location location = (Location) it.next();
+            if (Math.abs(System.nanoTime() - Storage.fireLocs.get(location)) > 9E8) {
+                location.getBlock().setType(STATIONARY_LAVA);
+                it.remove();
             }
-        }
-        Storage.anthMobs2.removeAll(toKill2);
-        for (FallingBlock b : toKill) {
-            Storage.anthMobs.remove(b);
         }
     }
+    
 }

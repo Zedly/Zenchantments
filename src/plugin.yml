@@ -1,6 +1,6 @@
 name: Zenchantments
 main: zedly.zenchantments.Zenchantments
-version: 1.3.0
+version: 1.4.0
 commands:
   arrow:
     description: Gives basic access; /arrow help.

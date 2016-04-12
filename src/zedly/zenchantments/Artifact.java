@@ -1,15 +1,7 @@
 package zedly.zenchantments;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
@@ -19,13 +11,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class Artifact {
 
-    String name;
-    List<String> lore;
-    Material material;
-    short materialData;
-    int[] range;
-    int[] durability;
-    int probability;
+    private final String name;
+    private final List<String> lore;
+    private final Material material;
+    private final short materialData;
+    private final int[] range;
+    private final int[] durability;
+    private final int probability;
 
     public Artifact(String name, List<String> lore, Material material, short materialData, int[] range, int[] durability, int probability) {
         this.name = name;
@@ -52,7 +44,7 @@ public class Artifact {
     public static void drop(Block block) {
         int locY = block.getLocation().getBlockY();
         float totalChance = 0;
-        HashSet<Artifact> artifacts = new HashSet<>();
+        Set<Artifact> artifacts = new HashSet<>();
         for (Artifact art : Storage.artifacts) {
             if (art.range[0] <= locY && art.range[1] >= locY) {
                 artifacts.add(art);

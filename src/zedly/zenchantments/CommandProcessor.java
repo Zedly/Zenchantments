@@ -1,33 +1,28 @@
 package zedly.zenchantments;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import java.util.*;
+import org.apache.commons.lang.*;
+import org.bukkit.*;
 import static org.bukkit.Material.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.*;
 
 public class CommandProcessor {
 
-    private static ItemStack theLore(Player player, CustomEnchantment enchantment, ItemStack stack, String level, boolean isHeld) {
-        Config config = Config.get(player.getWorld());
+    public static ItemStack addEnchantments(World world, Player player, CustomEnchantment enchantment, ItemStack stack, String level, boolean isHeld) {
+        Config config = Config.get(world);
         if (stack.getType() == AIR) {
-            player.sendMessage(Storage.logo + "You need to be holding an item!");
+            if (player != null) {
+                player.sendMessage(Storage.logo + "You need to be holding an item!");
+            }
             return stack;
         }
         if (!(ArrayUtils.contains(enchantment.enchantable, stack.getType())) && stack.getType() != BOOK && stack.getType() != ENCHANTED_BOOK) {
-            player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName + ChatColor.AQUA + " cannot be added to this item.");
+            if (player != null) {
+                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName + ChatColor.AQUA + " cannot be added to this item.");
+            }
             return stack;
         }
         try {
@@ -58,13 +53,17 @@ public class CommandProcessor {
         if (!level.equals("-")) {
             lore.add(finalEnch);
             if (isHeld) {
-                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName + ChatColor.AQUA + " has been added.");
+                if (player != null) {
+                    player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName + ChatColor.AQUA + " has been added.");
+                }
             }
         } else {
             if (!isHeld) {
                 return null;
             }
-            player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName + ChatColor.AQUA + " has been removed.");
+            if (player != null) {
+                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName + ChatColor.AQUA + " has been removed.");
+            }
         }
         ItemMeta meta = stack.getItemMeta();
         meta.setLore(lore);
@@ -76,17 +75,17 @@ public class CommandProcessor {
         if (!(sender instanceof Player)) {
             return false;
         }
-        Player player = (Player) sender;
-        Config config = Config.get(player.getWorld());
-        ItemStack stack = player.getItemInHand();
-        String lArgs = "";
+        EnchantPlayer player = EnchantPlayer.matchPlayer((Player) sender);
+        Config config = Config.get(player.getPlayer().getWorld());
+        ItemStack stack = player.getPlayer().getItemInHand();
+        String label = "";
         if (!(args.length == 0)) {
-            lArgs = args[0].toLowerCase().replace("_", "");
+            label = args[0].toLowerCase().replace("_", "");
         }
         String cmd = commandlabel.toLowerCase();
         switch (cmd) {
             case "ench":
-                switch (lArgs) {
+                switch (label) {
                     case "reload":
                         if (!sender.hasPermission("zenchantments.command.reload")) {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
@@ -100,44 +99,71 @@ public class CommandProcessor {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
                             return true;
                         }
-                        if (args.length == 5) {
-                            CustomEnchantment ench;
-                            if (config.getEnchants().containsKey(args[2].toLowerCase().replace("_", ""))) {
-                                ench = config.getEnchants().get(args[2].replace("_", "").toLowerCase());
-                            } else {
-                                player.sendMessage(Storage.logo + "That enchantment does not exist!");
+                        if (args.length >= 4) {
+                            Scanner s = new Scanner(Arrays.toString(args).replace("[", "").replace("]", "").replace(",", ""));
+                            s.next();
+                            String playerName = s.next();
+                            Player toAdd = null;
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                if (p.getName().equalsIgnoreCase(playerName)) {
+                                    toAdd = p;
+                                }
+                            }
+                            if (toAdd == null) {
+                                player.sendMessage(Storage.logo + "The player " + ChatColor.DARK_AQUA + playerName + ChatColor.AQUA + " is not online or does not exist.");
                                 return true;
                             }
-                            Material mat = Material.matchMaterial(args[4].toUpperCase());
+                            Material mat;
+                            if (s.hasNextInt()) {
+                                mat = Material.getMaterial(s.nextInt());
+                            } else {
+                                mat = Material.matchMaterial(s.next());
+                            }
                             if (mat == null) {
                                 player.sendMessage(Storage.logo + "The material " + ChatColor.DARK_AQUA + args[4].toUpperCase() + ChatColor.AQUA + " is not valid.");
                                 return true;
                             }
-                            if (!ArrayUtils.contains(ench.enchantable, mat) && !mat.equals(BOOK)) {
-                                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + " cannot be added to this item.");
-                                return true;
-                            }
-                            ItemStack stk = theLore(player, ench, new ItemStack(mat), args[3], false);
-                            Player toAdd = null;
-                            for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (p.getName().equalsIgnoreCase(args[1])) {
-                                    toAdd = p;
+                            Map<CustomEnchantment, Integer> enchantments = new HashMap<>();
+                            while (s.hasNext()) {
+                                String name = s.next();
+                                int level = 1;
+                                if (s.hasNextInt()) {
+                                    level = Math.max(1, s.nextInt());
                                 }
-                            }
-                            if (toAdd != null) {
-                                if (stk != null) {
-                                    toAdd.getInventory().addItem(stk);
-                                    player.sendMessage(Storage.logo + "Gave " + ChatColor.DARK_AQUA + toAdd.getName() + ChatColor.AQUA + " the enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + ".");
+                                boolean contains = false;
+                                for (String str : config.getEnchants().keySet()) {
+                                    if (name.toLowerCase().replace("_", "").equals(ChatColor.stripColor(str))) {
+                                        contains = true;
+                                        name = str;
+                                    }
+                                }
+                                if (contains) {
+                                    CustomEnchantment ench = config.getEnchants().get(name);
+                                    if (ArrayUtils.contains(ench.enchantable, mat) || mat == Material.BOOK || mat == Material.ENCHANTED_BOOK) {
+                                        enchantments.put(ench, level);
+                                    } else {
+                                        player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + " cannot be given with this item.");
+                                    }
                                 } else {
-                                    player.sendMessage(Storage.logo + "You can't give a level 0 enchantment!");
+                                    player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + name + ChatColor.AQUA + " does not exist!");
                                 }
-                            } else {
-                                player.sendMessage(Storage.logo + "Player " + ChatColor.DARK_AQUA + args[1] + ChatColor.AQUA + " is not online.");
+                            }
+
+                            ItemStack stk = new ItemStack(mat);
+                            String message = Storage.logo + "Gave " + ChatColor.DARK_AQUA + toAdd.getName() + ChatColor.AQUA + " the enchantments ";
+                            for (CustomEnchantment e : enchantments.keySet()) {
+                                addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), e, stk, enchantments.get(e) + "", false);
+                                message += e.loreName + ", ";
+                            }
+                            if (!enchantments.isEmpty()) {
+                                toAdd.getInventory().addItem(stk);
+                                player.sendMessage(message.substring(0, message.length() - 2) + ".");
                             }
                         } else {
-                            player.sendMessage(Storage.logo + "<Player> <enchantment> <?level> <Material>");
+                            player.sendMessage(Storage.logo + "/ench give <Player> <Material> <enchantment> <?level> ...");
                         }
                         break;
+
                     case "list":
                         if (!sender.hasPermission("zenchantments.command.list")) {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
@@ -160,21 +186,17 @@ public class CommandProcessor {
                             if (config.getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
                                 CustomEnchantment ench = config.getEnchants().get(enchant.replace(" ", "").toLowerCase());
                                 String e = "";
-                                if (Storage.playerSettings.containsKey(player.getUniqueId())) {
-                                    if (Storage.playerSettings.get(player.getUniqueId()).contains(ench)) {
-                                        e = ChatColor.RED + "**Disabled** ";
-                                    }
+                                if (player.isDisabled(ench.loreName)) {
+                                    e = ChatColor.RED + "**Disabled** ";
                                 }
                                 player.sendMessage(Storage.logo + (ench.loreName + ": " + e + ChatColor.AQUA + ench.description).replace(ChatColor.GRAY + "", ""));
                             }
                         } else {
                             player.sendMessage(Storage.logo + "Enchantment Info:");
-                            for (CustomEnchantment e : config.getEnchants(player.getItemInHand()).keySet()) {
+                            for (CustomEnchantment e : config.getEnchants(player.getPlayer().getItemInHand()).keySet()) {
                                 String s = "";
-                                if (Storage.playerSettings.containsKey(player.getUniqueId())) {
-                                    if (Storage.playerSettings.get(player.getUniqueId()).contains(e)) {
-                                        s = ChatColor.RED + "**Disabled** ";
-                                    }
+                                if (player.isDisabled(e.loreName)) {
+                                    s = ChatColor.RED + "**Disabled** ";
                                 }
                                 player.sendMessage((ChatColor.DARK_AQUA + e.loreName + ": " + s + ChatColor.AQUA + e.description).replace(ChatColor.GRAY + "", ""));
                             }
@@ -186,25 +208,14 @@ public class CommandProcessor {
                             return true;
                         }
                         if (args.length > 1) {
-                            String enchant = WordUtils.capitalize(args[1].toLowerCase().replace("_", " "));
-                            if (config.getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
-                                CustomEnchantment ench = config.getEnchants().get(enchant.replace(" ", "").toLowerCase());
-                                HashSet<CustomEnchantment> enchs = new HashSet<>();
-                                if (Storage.playerSettings.containsKey(player.getUniqueId())) {
-                                    enchs = Storage.playerSettings.get(player.getUniqueId());
-                                }
-                                enchs.add(ench);
-                                Storage.playerSettings.put(player.getUniqueId(), enchs);
-                                PlayerConfig.saveConfigs();
-                                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + " has been disabled.");
-                            } else if (args[1].toLowerCase().equals("all")) {
-                                HashSet<CustomEnchantment> enchs = new HashSet<>();
-                                for (CustomEnchantment e : config.getEnchants().values()) {
-                                    enchs.add(e);
-                                }
-                                Storage.playerSettings.put(player.getUniqueId(), enchs);
-                                PlayerConfig.saveConfigs();
-                                player.sendMessage(Storage.logo + ChatColor.DARK_AQUA + "All " + ChatColor.AQUA + "enchantments have been disabled.");
+                            String toDisable = args[1].toLowerCase();
+                            if (config.getEnchants().containsKey(toDisable)) {
+                                CustomEnchantment ench = config.getEnchants().get(toDisable);
+                                player.disable(toDisable);
+                                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + " has been " + ChatColor.RED + "disabled.");
+                            } else if (toDisable.equals("all")) {
+                                player.disableAll();
+                                player.sendMessage(Storage.logo + ChatColor.DARK_AQUA + "All " + ChatColor.AQUA + "enchantments have been " + ChatColor.RED + "disabled.");
                             } else {
                                 player.sendMessage(Storage.logo + "That enchantment does not exist!");
                             }
@@ -216,20 +227,13 @@ public class CommandProcessor {
                             return true;
                         }
                         if (args.length > 1) {
-                            String enchant = WordUtils.capitalize(args[1].toLowerCase().replace("_", " "));
-                            if (config.getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
-                                CustomEnchantment ench = config.getEnchants().get(enchant.replace(" ", "").toLowerCase());
-                                if (Storage.playerSettings.containsKey(player.getUniqueId())) {
-                                    Storage.playerSettings.get(player.getUniqueId()).remove(ench);
-                                    if (Storage.playerSettings.get(player.getUniqueId()).isEmpty()) {
-                                        Storage.playerSettings.remove(player.getUniqueId());
-                                    }
-                                    PlayerConfig.saveConfigs();
-                                }
-                                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + " has been enabled.");
-                            } else if (args[1].toLowerCase().equals("all")) {
-                                Storage.playerSettings.remove(player.getUniqueId());
-                                PlayerConfig.saveConfigs();
+                            String toDisable = args[1].toLowerCase();
+                            if (config.getEnchants().containsKey(toDisable)) {
+                                CustomEnchantment ench = config.getEnchants().get(toDisable);
+                                player.enable(ench.loreName);
+                                player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + ench.loreName + ChatColor.AQUA + " has been" + ChatColor.GREEN + " enabled.");
+                            } else if (toDisable.equals("all")) {
+                                player.enableAll();
                                 player.sendMessage(Storage.logo + ChatColor.DARK_AQUA + "All " + ChatColor.AQUA + "enchantments have been enabled.");
                             } else {
                                 player.sendMessage(Storage.logo + "That enchantment does not exist!");
@@ -238,11 +242,11 @@ public class CommandProcessor {
                         break;
                     case "help":
                     default:
-                        if (lArgs.equals("") || lArgs.equals("help")) {
+                        if (label.isEmpty() || label.equals("help")) {
                             player.sendMessage(Storage.logo);
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench info <?enchantment>: " + ChatColor.AQUA + "Returns information about custom enchantments.");
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench list: " + ChatColor.AQUA + "Returns a list of enchantments for the tool in hand.");
-                            player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench give <Player> <enchantment> <?level> <Material> " + ChatColor.AQUA + "Gives the target a specified enchanted item.");
+                            player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench give <Player> <Material> <enchantment> <?level> ... " + ChatColor.AQUA + "Gives the target a specified enchanted item.");
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench <enchantment> <?level>: " + ChatColor.AQUA + "Enchants the item in hand with the given enchantment and level");
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench disable <enchantment/all>: " + ChatColor.AQUA + "Disables selected enchantment for the user");
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench enable <enchantment/all>: " + ChatColor.AQUA + "Enables selected enchantment for the user");
@@ -253,12 +257,20 @@ public class CommandProcessor {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
                             return true;
                         }
-                        if (config.getEnchants().containsKey(lArgs.toLowerCase().replace("_", ""))) {
-                            CustomEnchantment ench = config.getEnchants().get(lArgs.toLowerCase().replace("_", "").toLowerCase());
+                        boolean contains = false;
+                        String enchantName = "";
+                        for (String s : config.getEnchants().keySet()) {
+                            if (label.toLowerCase().replace("_", "").equals(ChatColor.stripColor(s))) {
+                                contains = true;
+                                enchantName = s;
+                            }
+                        }
+                        if (contains) {
+                            CustomEnchantment ench = config.getEnchants().get(enchantName);
                             if (args.length >= 2) {
-                                player.setItemInHand(theLore(player, ench, stack, args[1], true));
+                                player.getPlayer().setItemInHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, args[1], true));
                             } else {
-                                player.setItemInHand(theLore(player, ench, stack, "1", true));
+                                player.getPlayer().setItemInHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, "1", true));
                             }
                         } else {
                             player.sendMessage(Storage.logo + "That enchantment does not exist!");
@@ -266,7 +278,7 @@ public class CommandProcessor {
                 }
                 break;
             case "arrow":
-                switch (lArgs) {
+                switch (label) {
                     case "list":
                         if (!sender.hasPermission("zenchantments.command.list")) {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
@@ -283,7 +295,7 @@ public class CommandProcessor {
                             return true;
                         }
                         if (args.length >= 2) {
-                            for (CustomArrow ar : config.getArrows().values()) {
+                            for (ElementalArrow ar : config.getArrows().values()) {
                                 if (ar.getName().toLowerCase().startsWith(args[1])) {
                                     player.sendMessage(Storage.logo + "Arrow Info:");
                                     player.sendMessage(ChatColor.DARK_AQUA + "- " + ar.getName() + ": " + ChatColor.AQUA + ar.getDescription());
@@ -308,7 +320,7 @@ public class CommandProcessor {
                         break;
                     case "help":
                     default:
-                        if (lArgs.equals("") || lArgs.equals("help")) {
+                        if (label.equals("") || label.equals("help")) {
                             player.sendMessage(ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments" + ChatColor.BLUE + "] ");
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + "arrow info: " + ChatColor.AQUA + "Returns information about custom arrows.");
                             player.sendMessage(ChatColor.DARK_AQUA + "- " + "arrow list: " + ChatColor.AQUA + "Returns a list of custom arrows");
@@ -319,12 +331,12 @@ public class CommandProcessor {
                             player.sendMessage(Storage.logo + "You do not have permission to do this!");
                             return true;
                         }
-                        if (player.getItemInHand() == null || player.getItemInHand().getType() != ARROW) {
+                        if (player.getPlayer().getItemInHand() == null || player.getPlayer().getItemInHand().getType() != ARROW) {
                             player.sendMessage(Storage.logo + "You need to be holding arrows for this command!");
                             return true;
                         }
-                        for (CustomArrow ar : config.getArrows().values()) {
-                            if (ar.getName().toLowerCase().startsWith(lArgs)) {
+                        for (ElementalArrow ar : config.getArrows().values()) {
+                            if (ar.getName().toLowerCase().startsWith(label)) {
                                 List<String> lore = ar.constructArrow(Arrays.copyOfRange(args, 1, args.length));
                                 if (lore == null) {
                                     player.sendMessage(Storage.logo + ar.getCommand());
@@ -333,7 +345,7 @@ public class CommandProcessor {
                                 ItemMeta soMeta = stack.getItemMeta();
                                 soMeta.setLore(lore);
                                 stack.setItemMeta(soMeta);
-                                player.setItemInHand(stack);
+                                player.getPlayer().setItemInHand(stack);
                                 player.sendMessage(Storage.logo + "Created " + ar.getName() + "s!");
                                 return true;
                             }

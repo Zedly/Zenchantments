@@ -1,35 +1,20 @@
 package zedly.zenchantments;
 
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import static org.bukkit.enchantments.Enchantment.DURABILITY;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.entity.*;
+import org.bukkit.event.*;
+import static org.bukkit.event.block.Action.*;
+import org.bukkit.event.block.*;
+import org.bukkit.event.enchantment.*;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
@@ -39,45 +24,47 @@ import particles.ParticleEffect;
 public class Watcher implements Listener {
 
     @EventHandler
-    public void onLaserDispense(BlockDispenseEvent evt) {
+    public void onBlockDispense(BlockDispenseEvent evt) {
         Config config = Config.get(evt.getBlock().getWorld());
         if (evt.getBlock().getType() == DISPENSER) {
             ItemStack stk = evt.getItem();
             if (stk != null) {
-                CustomEnchantment ench = null;
+                CustomEnchantment.Laser ench = null;
                 for (CustomEnchantment e : config.getEnchants().values()) {
                     if (e.getClass().equals(CustomEnchantment.Laser.class)) {
-                        ench = e;
+                        ench = (CustomEnchantment.Laser) e;
                     }
                 }
                 if (ench == null) {
                     return;
                 }
-                evt.setCancelled(true);
-                int level = config.getEnchants(stk).get(ench);
-                int range = 6 + (level * 3);
-                Block blk = evt.getBlock().getRelative(((Dispenser) evt.getBlock().getState().getData()).getFacing(), range);
-                Location play = Utilities.getCenter(evt.getBlock().getLocation());
-                Location target = Utilities.getCenter(blk.getLocation());
-                play.setY(play.getY() - .5);
-                target.setY(target.getY() + .5);
-                Location c = play;
-                c.setY(c.getY() + 1.1);
-                double d = target.distance(c);
-                for (int i = 0; i < (int) d * 5; i++) {
-                    Location tempLoc = target.clone();
-                    tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
-                    tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
-                    tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                    ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
-                    for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
-                        if (ent.getLocation().distance(tempLoc) < .75) {
-                            if (ent instanceof LivingEntity) {
-                                EntityDamageEvent event = new EntityDamageEvent(ent, EntityDamageEvent.DamageCause.FIRE, (double) (1 + (level * 2)));
-                                Bukkit.getPluginManager().callEvent(event);
-                                ent.setLastDamageCause(event);
-                                if (!event.isCancelled()) {
-                                    ((LivingEntity) ent).damage((double) (1 + (level * 2)));
+                if (config.getEnchants(stk).containsKey(ench) && !stk.getType().equals(ENCHANTED_BOOK)) {
+                    evt.setCancelled(true);
+                    int level = config.getEnchants(stk).get(ench);
+                    int range = 6 + (int) Math.round(level * ench.power * 3);
+                    Block blk = evt.getBlock().getRelative(((Dispenser) evt.getBlock().getState().getData()).getFacing(), range);
+                    Location play = Utilities.getCenter(evt.getBlock().getLocation());
+                    Location target = Utilities.getCenter(blk.getLocation());
+                    play.setY(play.getY() - .5);
+                    target.setY(target.getY() + .5);
+                    Location c = play;
+                    c.setY(c.getY() + 1.1);
+                    double d = target.distance(c);
+                    for (int i = 0; i < (int) d * 5; i++) {
+                        Location tempLoc = target.clone();
+                        tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
+                        tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
+                        tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
+                        ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                        for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
+                            if (ent.getLocation().distance(tempLoc) < .75) {
+                                if (ent instanceof LivingEntity) {
+                                    EntityDamageEvent event = new EntityDamageEvent(ent, EntityDamageEvent.DamageCause.FIRE, (double) (1 + (level * 2)));
+                                    Bukkit.getPluginManager().callEvent(event);
+                                    ent.setLastDamageCause(event);
+                                    if (!event.isCancelled()) {
+                                        ((LivingEntity) ent).damage((double) (1 + (level * 2)));
+                                    }
                                 }
                             }
                         }
@@ -90,7 +77,7 @@ public class Watcher implements Listener {
     @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent evt) {
         if ((evt.getEntityType() == EntityType.FALLING_BLOCK)) {
-            if (Storage.anthMobs.containsKey((FallingBlock) evt.getEntity()) || Storage.anthMobs2.contains((FallingBlock) evt.getEntity())) {
+            if (Storage.idleBlocks.containsKey((FallingBlock) evt.getEntity()) || Storage.attackBlocks.containsKey((FallingBlock) evt.getEntity())) {
                 evt.setCancelled(true);
             }
         }
@@ -99,7 +86,6 @@ public class Watcher implements Listener {
     @EventHandler
     public void onItemSpawn(final ItemSpawnEvent evt) {
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-            @Override
             public void run() {
                 for (Block block : Storage.grabLocs.keySet()) {
                     Location loc = evt.getEntity().getLocation();
@@ -148,7 +134,7 @@ public class Watcher implements Listener {
         if (evt.getItem().getType() == FISHING_ROD && evt.getExpLevelCost() <= 4) {
             return;
         }
-        HashSet<CustomEnchantment> enchAdd = new HashSet<>();
+        Set<CustomEnchantment> enchAdd = new HashSet<>();
         ItemMeta meta = evt.getItem().getItemMeta();
         LinkedList<String> lore = new LinkedList<>();
         if (meta.hasLore()) {
@@ -156,7 +142,7 @@ public class Watcher implements Listener {
         }
         for (int l = 1; l <= max; l++) {
             float totalChance = 0;
-            HashSet<CustomEnchantment> enchs = new HashSet<>();
+            Set<CustomEnchantment> enchs = new HashSet<>();
             for (CustomEnchantment ench : config.getEnchants().values()) {
                 boolean b = true;
                 for (CustomEnchantment e : enchAdd) {
@@ -177,7 +163,6 @@ public class Watcher implements Listener {
                     String level = Utilities.getRomanString(Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost()));
                     lore.add(ChatColor.GRAY + ench.loreName + " " + level);
                     if (evt.getItem().getType().equals(BOOK)) {
-                        evt.getEnchantsToAdd().clear();
                         int i;
                         if (evt.getExpLevelCost() > 20) {
                             i = 3;
@@ -232,8 +217,6 @@ public class Watcher implements Listener {
                     if (!evt.getWhoClicked().hasPermission("zenchantments.arrow.get")) {
                         evt.setCancelled(true);
                     }
-                } else {
-                    evt.setCancelled(true);
                 }
             }
         }
@@ -248,10 +231,11 @@ public class Watcher implements Listener {
     }
 
     @EventHandler
-    public void ArrowPickup(PlayerPickupItemEvent evt) {
+    public void onArrowPickup(PlayerPickupItemEvent evt) {
         if (evt.getItem().hasMetadata("ze.arrow")) {
             evt.getItem().remove();
             evt.setCancelled(true);
         }
     }
+
 }

@@ -1,18 +1,10 @@
 package zedly.zenchantments;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import static org.bukkit.Material.ARROW;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -22,18 +14,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class Config {
 
-    private HashMap<String, CustomEnchantment> enchants = new HashMap<>();
-    private HashMap<String, CustomArrow> arrows = new HashMap<>();
+    public static final Set<Config> CONFIGS = new HashSet<>();
+
+    private final Map<String, CustomEnchantment> enchants;
+    private final Map<String, ElementalArrow> arrows;
     private final double enchantRarity;
     private final int maxEnchants;
     private final boolean enchantPVP;
     private final int shredDrops;
     private final boolean explosionBlockBreak;
     private final boolean descriptionLore;
-    private ChatColor descriptionColor = ChatColor.GREEN;
+    private final ChatColor descriptionColor;
     private final World world;
 
-    public Config(HashMap<String, CustomEnchantment> enchants, HashMap<String, CustomArrow> arrows, double enchantRarity,
+    public Config(Map<String, CustomEnchantment> enchants, Map<String, ElementalArrow> arrows, double enchantRarity,
             int maxEnchants, boolean enchantPVP, int shredDrops, boolean explosionBlockBreak,
             boolean descriptionLore, ChatColor descriptionColor, World world) {
         this.enchants = enchants;
@@ -46,13 +40,14 @@ public class Config {
         this.descriptionLore = descriptionLore;
         this.descriptionColor = descriptionColor;
         this.world = world;
+        CONFIGS.add(this);
     }
 
-    public HashMap<String, CustomEnchantment> getEnchants() {
+    public Map<String, CustomEnchantment> getEnchants() {
         return enchants;
     }
 
-    public HashMap<String, CustomArrow> getArrows() {
+    public Map<String, ElementalArrow> getArrows() {
         return arrows;
     }
 
@@ -89,10 +84,9 @@ public class Config {
     }
 
     public static void loadConfigs() {
-        Storage.worldConfigs.clear();
+        CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
             try {
-                //Make the file if needed
                 InputStream stream = Zenchantments.class.getResourceAsStream("/resource/defaultconfig.yml");
                 File file = new File("plugins/Zenchantments/" + world.getName() + ".yml");
                 if (!file.exists()) {
@@ -107,20 +101,39 @@ public class Config {
                 }
                 YamlConfiguration c = new YamlConfiguration();
                 c.load(file);
+                int version = 4;
+                try {
+                    try {
+                        version = Integer.parseInt(((String) c.getList("ZenchantmentsConfigVersion").get(0)).split("\\.")[1]);
+                    } catch (NullPointerException ex) {
+                        version = Integer.parseInt(((String) c.get("ZenchantmentsConfigVersion")).split("\\.")[1]);
+                    }
+                } catch (NumberFormatException e) {
+                    version = 3;
+                }
+                if (version < 4) {
+                    System.out.println("Updating Config File...");
+                    UpdateConfig.updateToCurrent(c);
+                    System.out.println("Update Complete");
+                }
                 //Init variables
-                HashMap<String, CustomEnchantment> enchants = new HashMap<>();
-                HashMap<String, CustomArrow> arrows = new HashMap<>();
-                final double enchantRarity;
-                final int maxEnchants;
-                final boolean enchantPVP;
+                Map<String, CustomEnchantment> enchants = new HashMap<>();
+                Map<String, ElementalArrow> arrows = new HashMap<>();
                 final int shredDrops;
-                final boolean explosionBlockBreak;
-                final boolean descriptionLore;
-                ChatColor descriptionColor = ChatColor.GREEN;
+                //Load Arrows & Recipes
+                ItemStack is = new ItemStack(ARROW);
+                ItemMeta meta = is.getItemMeta();
+                for (Class cl : ElementalArrow.class.getClasses()) {
+                    ElementalArrow ar = (ElementalArrow) Utilities.construct(cl, null);
+                    List<String> lore = new ArrayList<>();
+                    lore.add(ChatColor.AQUA + ar.getName());
+                    meta.setLore(lore);
+                    is.setItemMeta(meta);
+                    Bukkit.getServer().addRecipe(ar.getRecipe(is));
+                    arrows.put(ar.getName(), ar);
+                }
                 //Elemental Arrows
-                ArrayList<Class> toRemove = new ArrayList<>();
-                for (int x = c.getList("elemental_arrows").size() - 1;
-                        x >= 0; x--) {
+                for (int x = c.getList("elemental_arrows").size() - 1; x >= 0; x--) {
                     String str = "" + c.getList("elemental_arrows").get(x);
                     boolean b;
                     try {
@@ -128,50 +141,21 @@ public class Config {
                     } catch (NumberFormatException e) {
                         b = false;
                     }
-                    for (Class cl : CustomArrow.class.getClasses()) {
-                        try {
-                            CustomArrow ar = (CustomArrow) cl.newInstance();
-                            if (ar.getName() != null) {
-                                if (ar.getName().equals(str.split("=")[0].replace("{", "")) && !b) {
-                                    toRemove.add(cl);
-                                }
-                            }
-                        } catch (InstantiationException | IllegalAccessException ex) {
-                        }
+                    String name = str.split("=")[0].replace("{", "");
+                    if (arrows.containsKey(name) && !b) {
+                        arrows.remove(name);
                     }
                 }
-                //Load Arrows & Recipes
-                ItemStack is = new ItemStack(ARROW);
-                ItemMeta meta = is.getItemMeta();
-                for (Class cl : CustomArrow.class.getClasses()) {
-                    try {
-                        if (!toRemove.contains(cl)) {
-                            CustomArrow ar = (CustomArrow) cl.newInstance();
-                            if (ar.getRecipe(is) != null) {
-                                ArrayList<String> lore = new ArrayList<>();
-                                lore.add(ChatColor.AQUA + ar.getName());
-                                meta.setLore(lore);
-                                is.setItemMeta(meta);
-                                Bukkit.getServer().addRecipe(ar.getRecipe(is));
-                            }
-                            if (ar.getName() != null) {
-                                arrows.put(ar.getName(), ar);
-                            }
-                        }
-                    } catch (InstantiationException | IllegalAccessException ex) {
-                    }
-                }
+                c.save(file);
                 //Load Variables
-                int rarity = (int) c.get("enchant_rarity");
-                enchantRarity = ((double) rarity / 100.0);
-                maxEnchants = (int) c.get("max_enchants");
-                enchantPVP = (boolean) c.get("enchant_PVP");
-                explosionBlockBreak = (boolean) c.get("explosion_block_break");
-                descriptionLore = (boolean) c.get("description_lore");
+                double rarity = (double) (c.get("enchant_rarity"));
+                double enchantRarity = ((double) rarity / 100.0);
+                int maxEnchants = (int) c.get("max_enchants");
+                boolean enchantPVP = (boolean) c.get("enchant_PVP");
+                boolean explosionBlockBreak = (boolean) c.get("explosion_block_break");
+                boolean descriptionLore = (boolean) c.get("description_lore");
                 ChatColor color = ChatColor.getByChar("" + c.get("description_color"));
-                if (color != null) {
-                    descriptionColor = color;
-                }
+                ChatColor descriptionColor = (color != null) ? color : ChatColor.GREEN;
                 switch ((String) c.get("shred_drops")) {
                     case "all":
                         shredDrops = 0;
@@ -186,14 +170,16 @@ public class Config {
                         shredDrops = 0;
                 }
                 //Load Individual CustomEnchantment Configs
-                HashMap<String, ArrayList<String>> tempConfigs = new HashMap<>();
+                Map<String, List<String>> tempConfigs = new HashMap<>();
                 for (int x = 0; x < c.getList("enchantments").size(); x++) {
                     String rawConfig = ("" + c.getList("enchantments").get(x)).replace("}", "").replace("{", "");
                     String[] p = rawConfig.replace(", ", ",").split("=");
-                    ArrayList<String> parts = new ArrayList<>();
+                    List<String> parts = new ArrayList<>();
                     parts.add(p[2].split(",")[0]);
                     parts.add(p[4].split(",")[0]);
                     parts.add(p[5].split(",")[0]);
+                    parts.add(p[6].split(",")[0]);
+                    parts.add(p[7].split(",")[0]);
                     for (int i = 0; i < p[3].split(",").length - 1; i++) {
                         parts.add(p[3].split(",")[i]);
                     }
@@ -204,22 +190,40 @@ public class Config {
                     try {
                         CustomEnchantment ench = (CustomEnchantment) cl.newInstance();
                         if (tempConfigs.containsKey(ench.loreName.toLowerCase().replace(" ", ""))) {
-                            ArrayList<String> conf = tempConfigs.get(ench.loreName.toLowerCase().replace(" ", ""));
-                            float probability = 1;
+                            List<String> conf = tempConfigs.get(ench.loreName.toLowerCase().replace(" ", ""));
+
+                            float chance = 1;
                             try {
-                                probability = Float.parseFloat(conf.get(0));
+                                chance = Float.parseFloat(conf.get(0));
                             } catch (NumberFormatException e) {
                             }
-                            ench.chance = probability;
+                            ench.chance = chance;
+
                             ench.loreName = conf.get(1);
+
                             int max = 1;
                             try {
                                 max = Integer.parseInt(conf.get(2));
                             } catch (NumberFormatException e) {
                             }
-                            ench.maxLevel = max;
+                            ench.maxLevel = Math.max(max, 1);
+
+                            int cooldown = 0;
+                            try {
+                                cooldown = Integer.parseInt(conf.get(3));
+                            } catch (NumberFormatException e) {
+                            }
+                            ench.cooldown = Math.max(cooldown, 0);
+
+                            double power = 1.0;
+                            try {
+                                power = Double.parseDouble(conf.get(4));
+                            } catch (NumberFormatException e) {
+                            }
+                            ench.power = Math.max(power, 0.0);
+
                             Object[] m = null;
-                            for (int i = 3; i < conf.size(); i++) {
+                            for (int i = 5; i < conf.size(); i++) {
                                 switch (conf.get(i)) {
                                     case "Axe":
                                         m = ArrayUtils.addAll(m, Storage.axes);
@@ -285,20 +289,20 @@ public class Config {
                     } catch (InstantiationException | IllegalAccessException ex) {
                     }
                 }
-                Storage.worldConfigs.add(new Config(enchants, arrows, enchantRarity, maxEnchants, enchantPVP, shredDrops, explosionBlockBreak, descriptionLore, descriptionColor, world));
+                Config config = new Config(enchants, arrows, enchantRarity, maxEnchants, enchantPVP, shredDrops, explosionBlockBreak, descriptionLore, descriptionColor, world);
             } catch (IOException | InvalidConfigurationException ex) {
             }
         }
     }
 
     public static Config get(World world) {
-        for (Config c : Storage.worldConfigs) {
+        for (Config c : CONFIGS) {
             if (c.world.equals(world)) {
                 return c;
             }
         }
         loadConfigs();
-        for (Config c : Storage.worldConfigs) {
+        for (Config c : CONFIGS) {
             if (c.world.equals(world)) {
                 return c;
             }
@@ -308,7 +312,7 @@ public class Config {
 
     public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk) {
         ItemStack stack;
-        LinkedHashMap<CustomEnchantment, Integer> map = new LinkedHashMap<>();
+        Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
         if (stk != null) {
             stack = removeDescriptions(stk.clone(), null);
             if (stack.hasItemMeta()) {
@@ -319,12 +323,19 @@ public class Config {
                         if (index1 == -1) {
                             continue;
                         }
-                        Integer level = Utilities.getNumber(rawEnchant.substring(index1 + 1));
-                        String enchant = rawEnchant.substring(2, index1);
-                        if (getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
-                            CustomEnchantment ench = getEnchants().get(enchant.replace(" ", "").toLowerCase());
-                            map.put(ench, level);
+                        if (rawEnchant.length() > 2) {
+                            try {
+                                Integer level = Utilities.getNumber(rawEnchant.substring(index1 + 1));
+                                String enchant = rawEnchant.substring(2, index1);//ERROR
+                                if (getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
+                                    CustomEnchantment ench = getEnchants().get(enchant.replace(" ", "").toLowerCase());
+                                    map.put(ench, level);
+                                }
+                            } catch (StringIndexOutOfBoundsException e) {
+                                System.out.println("Lore causing error: " + rawEnchant);
+                            }
                         }
+
                     }
                 }
             }
@@ -348,13 +359,15 @@ public class Config {
 
     private CustomEnchantment getEnchant(String raw) {
         CustomEnchantment e = null;
-        int index1 = raw.lastIndexOf(" ");
-        if (index1 == -1) {
-            return e;
-        }
-        String enchant = raw.substring(2, index1);
-        if (getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
-            e = getEnchants().get(enchant.replace(" ", "").toLowerCase());
+        if (raw != null && raw.length() > 2) {
+            int index1 = raw.lastIndexOf(" ");
+            if (index1 == -1) {
+                return e;
+            }
+            String enchant = raw.substring(2, index1);
+            if (getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
+                e = getEnchants().get(enchant.replace(" ", "").toLowerCase());
+            }
         }
         return e;
     }
