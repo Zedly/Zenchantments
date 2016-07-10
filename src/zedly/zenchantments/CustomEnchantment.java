@@ -9,7 +9,6 @@ import org.bukkit.block.Biome;
 import static org.bukkit.block.Biome.*;
 import org.bukkit.block.Block;
 import static org.bukkit.block.BlockFace.*;
-import static org.bukkit.enchantments.Enchantment.*;
 import static org.bukkit.entity.EntityType.*;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -27,23 +26,39 @@ import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
 import particles.ParticleEffect;
 import particles.ParticleEffect.BlockData;
+import particles.ParticleEffectOld;
+import static zedly.zenchantments.Tool.*;
 
+// CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
+//      and will override any methods as neccecary in its behavior
 public class CustomEnchantment {
 
-    protected int maxLevel;
-    protected String loreName;
-    protected float chance;
-    protected Material[] enchantable;
-    protected Class[] conflicting;
-    protected String description;
-    protected int cooldown;
-    protected double power;
+    protected int maxLevel;         // Max level the given enchant can naturally obtain
+    protected String loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
+    protected float probability;    // Relative probability of obtaining the given enchantment
+    protected Tool[] enchantable;   // Enums that represent tools that can receive and work with given enchantment
+    protected Class[] conflicting;  // Classes of enchantments that don't work with given enchantment
+    protected String description;   // Description of what the enchantment does
+    protected int cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
+    protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
 
-    public String getName() {
-        return loreName;
+    // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
+    public boolean validMaterial(Material m) {
+        for (Tool t : enchantable) {
+            if (t.contains(m)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-//Empty Methods
+    // Returns true if the given item stack (tool) is compatible with the enchantment, otherwise false
+    public boolean validMaterial(ItemStack m) {
+        return validMaterial(m.getType());
+    }
+
+    //Empty Methods for Events and Scanning Tasks: These are empty by default so that the WatcherEnchant can call these 
+    //      for any enchantment without performing any checks. Each enchantment will override them as neccecary
     public boolean onBlockBreak(BlockBreakEvent evt, int level) {
         return false;
     }
@@ -130,8 +145,8 @@ public class CustomEnchantment {
         public Anthropomorphism() {
             maxLevel = 1;
             loreName = "Anthropomorphism";
-            chance = 0;
-            enchantable = Storage.picks;
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE};
             conflicting = new Class[]{Pierce.class, Switch.class};
             description = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
             cooldown = 0;
@@ -153,18 +168,19 @@ public class CustomEnchantment {
                     }
                     if (counter < 64 && player.getInventory().contains(COBBLESTONE)) {
                         Utilities.removeItem(player, COBBLESTONE, 1);
-                        Utilities.addUnbreaking(player.getItemInHand(), 2, player);
+                        Utilities.addUnbreaking(player.getInventory().getItemInMainHand(), 2, player);
                         player.updateInventory();
                         Location loc = player.getLocation();
                         Material mat[] = new Material[]{STONE, GRAVEL, DIRT, GRASS};
                         FallingBlock bk = loc.getWorld().spawnFallingBlock(loc, mat[Storage.rnd.nextInt(4)], (byte) 0x0);
                         bk.setDropItem(false);
                         Storage.idleBlocks.put(bk, player);
+                        return true;
                     }
                 }
-                return true;
+                return false;
             } else if ((evt.getAction() == LEFT_CLICK_AIR || evt.getAction() == LEFT_CLICK_BLOCK)
-                    || player.getItemInHand().getType() == AIR) {
+                    || player.getInventory().getItemInMainHand().getType() == AIR) {
                 Storage.anthVortex.remove(player);
                 List<FallingBlock> toRemove = new ArrayList<>();
                 for (FallingBlock blk : Storage.idleBlocks.keySet()) {
@@ -188,8 +204,8 @@ public class CustomEnchantment {
         public Arborist() {
             maxLevel = 3;
             loreName = "Arborist";
-            chance = 0;
-            enchantable = Storage.axes;
+            probability = 0;
+            enchantable = new Tool[]{AXE};
             conflicting = new Class[]{};
             description = "Drops more apples, sticks, and saplings when used on leaves and wood";
             cooldown = 0;
@@ -212,19 +228,19 @@ public class CustomEnchantment {
                 if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
                     if (Storage.rnd.nextInt(3) % 3 == 0) {
                         evt.getBlock().getWorld()
-                                .dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), stk);
+                                .dropItemNaturally(Utilities.getCenter(evt.getBlock()), stk);
                     }
                     if (Storage.rnd.nextInt(3) % 3 == 0) {
                         evt.getBlock().getWorld()
-                                .dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(STICK, 1));
+                                .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(STICK, 1));
                     }
                     if (Storage.rnd.nextInt(3) % 3 == 0) {
                         evt.getBlock().getWorld()
-                                .dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(APPLE, 1));
+                                .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(APPLE, 1));
                     }
                     if (Storage.rnd.nextInt(65) == 25) {
                         evt.getBlock().getWorld()
-                                .dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(GOLDEN_APPLE, 1));
+                                .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(GOLDEN_APPLE, 1));
                     }
                     return true;
                 }
@@ -238,8 +254,8 @@ public class CustomEnchantment {
         public Archaeology() {
             maxLevel = 3;
             loreName = "Archaeology";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.picks, Storage.spades);
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE, SHOVEL};
             conflicting = new Class[]{};
             description = "Occasionally drops ancient artifacts when mining";
             cooldown = 0;
@@ -262,61 +278,41 @@ public class CustomEnchantment {
         public Bind() {
             maxLevel = 1;
             loreName = "Bind";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.axes, ArrayUtils.addAll(Storage.boots, ArrayUtils.addAll(Storage.bows, ArrayUtils.addAll(Storage.chestplates, ArrayUtils.addAll(Storage.helmets, ArrayUtils.addAll(Storage.hoes, ArrayUtils.addAll(Storage.leggings, ArrayUtils.addAll(Storage.lighters, ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.rods, ArrayUtils.addAll(Storage.shears, ArrayUtils.addAll(Storage.spades, Storage.swords))))))))))));
+            probability = 0;
+            enchantable = new Tool[]{ALL};
             conflicting = new Class[]{};
             description = "Keeps items with this enchantment in your inventory after death";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onPlayerDeath(final PlayerDeathEvent evt, int level) {
-            Config config = Config.get(evt.getEntity().getWorld());
-
-            final List<ItemStack> contents = new ArrayList<>();
-            final Map<ItemStack, Integer> armorContents = new HashMap<>();
-
-            for (ItemStack stk : evt.getEntity().getInventory().getContents()) {
-                if (stk != null) {
-                    if (config.getEnchants(stk).containsKey(this)) {
-                        contents.add(stk);
-                    }
+            if (evt.getKeepInventory()) {
+                return false;
+            }
+            final Player player = evt.getEntity();
+            Config config = Config.get(player.getWorld());
+            final ItemStack[] contents = player.getInventory().getContents().clone();
+            final List<ItemStack> removed = new ArrayList<>();
+            for (int i = 0; i < contents.length; i++) {
+                if (!config.getEnchants(contents[i]).containsKey(this)) {
+                    contents[i] = null;
+                } else {
+                    removed.add(contents[i]);
+                    evt.getDrops().remove(contents[i]);
                 }
-            }
-
-            for (int i = 0; i < evt.getEntity().getInventory().getArmorContents().length; i++) {
-                ItemStack stk = evt.getEntity().getInventory().getArmorContents()[i];
-                if (stk != null) {
-                    if (config.getEnchants(stk).containsKey(this)) {
-                        armorContents.put(stk, i);
-                    }
-                }
-            }
-            evt.getDrops().removeAll(contents);
-            Iterator it = evt.getDrops().iterator();
-            while (it.hasNext()) {
-                ItemStack stk = (ItemStack) it.next();
-                if (armorContents.containsKey(stk)) {
-                    it.remove();
-                }
-            }
-            final ItemStack[] invFinal = new ItemStack[contents.size()];
-            for (int i = 0; i < contents.size(); i++) {
-                invFinal[i] = contents.get(i);
-            }
-            final ItemStack[] armorFinal = new ItemStack[4];
-            for (ItemStack s : armorContents.keySet()) {
-                armorFinal[armorContents.get(s)] = s;
             }
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                 public void run() {
-                    evt.getEntity().getInventory().setContents(invFinal);
-                    evt.getEntity().getInventory().setArmorContents(armorFinal);
+                    if (evt.getKeepInventory()) {
+                        evt.getDrops().addAll(removed);
+                    } else {
+                        player.getInventory().setContents(contents);
+                    }
                 }
             }, 1);
             return true;
         }
-
     }
 
     public static class BlazesCurse extends CustomEnchantment {
@@ -324,12 +320,12 @@ public class CustomEnchantment {
         public BlazesCurse() {
             maxLevel = 1;
             loreName = "Blaze's Curse";
-            chance = 0;
-            enchantable = Storage.chestplates;
+            probability = 0;
+            enchantable = new Tool[]{CHESTPLATE};
             conflicting = new Class[]{};
             description = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onEntityDamage(EntityDamageEvent evt, int level) {
@@ -389,8 +385,8 @@ public class CustomEnchantment {
         public Blizzard() {
             maxLevel = 3;
             loreName = "Blizzard";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{Firestorm.class};
             description = "Spawns a blizzard where the arrow strikes freezing nearby entities";
             cooldown = 0;
@@ -409,8 +405,8 @@ public class CustomEnchantment {
         public Bounce() {
             maxLevel = 5;
             loreName = "Bounce";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{};
             description = "Preserves momentum when on slime blocks";
             cooldown = 0;
@@ -436,8 +432,8 @@ public class CustomEnchantment {
         public Burst() {
             maxLevel = 3;
             loreName = "Burst";
-            chance = 0;
-            enchantable = enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{Spread.class};
             description = "Rapidly fires arrows in series";
             cooldown = 0;
@@ -448,8 +444,8 @@ public class CustomEnchantment {
             final Player player = evt.getPlayer();
             if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
                 if (Utilities.removeItemCheck(player, Material.ARROW, (short) 0, 1)) {
-                    Utilities.addUnbreaking(player.getItemInHand(), (int) Math.round(level / 2.0 + 1), player);
-                    player.setItemInHand(player.getItemInHand());
+                    Utilities.addUnbreaking(player.getInventory().getItemInMainHand(), (int) Math.round(level / 2.0 + 1), player);
+                    player.setItemInHand(player.getInventory().getItemInMainHand());
                     for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                             public void run() {
@@ -457,7 +453,7 @@ public class CustomEnchantment {
                                 arrow.setShooter(player);
                                 arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
 
-                                EntityShootBowEvent event = new EntityShootBowEvent(player, player.getItemInHand(), arrow, 1f);
+                                EntityShootBowEvent event = new EntityShootBowEvent(player, player.getInventory().getItemInMainHand(), arrow, 1f);
                                 Bukkit.getPluginManager().callEvent(event);
 
                                 Bukkit.getPluginManager().callEvent(new ProjectileLaunchEvent(arrow));
@@ -481,8 +477,8 @@ public class CustomEnchantment {
         public Combustion() {
             maxLevel = 4;
             loreName = "Combustion";
-            chance = 0;
-            enchantable = Storage.chestplates;
+            probability = 0;
+            enchantable = new Tool[]{CHESTPLATE};
             conflicting = new Class[]{};
             description = "Lights attacking entities on fire when player is attacked";
             cooldown = 0;
@@ -514,8 +510,8 @@ public class CustomEnchantment {
         public Conversion() {
             maxLevel = 4;
             loreName = "Conversion";
-            chance = 0;
-            enchantable = Storage.swords;
+            probability = 0;
+            enchantable = new Tool[]{SWORD};
             conflicting = new Class[]{};
             description = "Converts XP to health when right clicking and sneaking";
             cooldown = 0;
@@ -551,8 +547,8 @@ public class CustomEnchantment {
         public Decapitation() {
             maxLevel = 4;
             loreName = "Decapitation";
-            chance = 0;
-            enchantable = enchantable = Storage.swords;
+            probability = 0;
+            enchantable = new Tool[]{SWORD};
             conflicting = new Class[]{};
             description = "Increases the chance for dropping the enemies head on death";
             cooldown = 0;
@@ -589,8 +585,8 @@ public class CustomEnchantment {
         public Extraction() {
             maxLevel = 3;
             loreName = "Extraction";
-            chance = 0;
-            enchantable = Storage.picks;
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE};
             conflicting = new Class[]{Switch.class};
             description = "Smelts and yields more product from ores";
             cooldown = 0;
@@ -599,14 +595,16 @@ public class CustomEnchantment {
 
         public boolean onBlockBreak(BlockBreakEvent evt, final int level) {
             if (evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
+                evt.setCancelled(true);
                 for (int x = 0; x < Storage.rnd.nextInt((int) Math.round(power * level + 1)) + 1; x++) {
-                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()),
+                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()),
                             new ItemStack(evt.getBlock().getType() == GOLD_ORE ? GOLD_INGOT : IRON_INGOT));
                 }
-                evt.setCancelled(true);
+                ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld().spawnEntity(Utilities.getCenter(evt.getBlock()), EXPERIENCE_ORB);
+                o.setExperience(evt.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
                 evt.getBlock().setType(AIR);
-                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
+                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
                 return true;
             }
             return false;
@@ -618,19 +616,19 @@ public class CustomEnchantment {
         public Fire() {
             maxLevel = 1;
             loreName = "Fire";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.axes, Storage.spades));
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE, AXE, SHOVEL};
             conflicting = new Class[]{Switch.class, Variety.class};
             description = "Drops the smelted version of the block broken";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
             Material mat = AIR;
             short itemInfo = 0;
             short s = evt.getBlock().getData();
-            if (ArrayUtils.contains(Storage.picks, evt.getPlayer().getItemInHand().getType())) {
+            if (Tool.PICKAXE.contains(evt.getPlayer().getInventory().getItemInMainHand())) {
                 if (evt.getBlock().getType() == STONE) {
                     if (s == 1 || s == 3 || s == 5) {
                         s++;
@@ -659,14 +657,18 @@ public class CustomEnchantment {
                     itemInfo = 2;
                 }
             }
+            if (evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
+                ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld().spawnEntity(Utilities.getCenter(evt.getBlock()), EXPERIENCE_ORB);
+                o.setExperience(evt.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
+            }
             if (evt.getBlock().getType() == CHORUS_PLANT) {
                 if (Storage.rnd.nextBoolean()) {
                     mat = CHORUS_FRUIT_POPPED;
                 } else {
-                    Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                    Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                     evt.setCancelled(true);
                     evt.getBlock().setType(AIR);
-                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
+                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
                     return true;
                 }
             }
@@ -676,16 +678,16 @@ public class CustomEnchantment {
                 mat = COAL;
                 itemInfo = 1;
             } else if (evt.getBlock().getType() == CLAY) {
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
-                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
+                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
                 for (int x = 0; x < 4; x++) {
-                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(CLAY_BRICK));
+                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(CLAY_BRICK));
                 }
                 return true;
             } else if (evt.getBlock().getType() == CACTUS) {
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                 evt.setCancelled(true);
                 Location location = evt.getBlock().getLocation().clone();
                 double height = location.getY();
@@ -699,18 +701,18 @@ public class CustomEnchantment {
                 }
                 for (double i = height - 1; i >= evt.getBlock().getLocation().getY(); i--) {
                     location.setY(i);
-                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
+                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
                     evt.getBlock().setType(AIR);
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
                     return true;
                 }
             }
             if (mat != AIR) {
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
-                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack((mat), 1, itemInfo));
-                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock().getLocation()), 32);
+                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
+                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
                 return true;
             }
             return false;
@@ -722,8 +724,8 @@ public class CustomEnchantment {
         public Firestorm() {
             maxLevel = 3;
             loreName = "Firestorm";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{Blizzard.class};
             description = "Spawns a firestorm where the arrow strikes burning nearby entities";
             cooldown = 0;
@@ -743,12 +745,12 @@ public class CustomEnchantment {
         public Fireworks() {
             maxLevel = 4;
             loreName = "Fireworks";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Shoots arrows that burst into fireworks upon impact";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -764,8 +766,8 @@ public class CustomEnchantment {
         public Force() {
             maxLevel = 3;
             loreName = "Force";
-            chance = 0;
-            enchantable = Storage.swords;
+            probability = 0;
+            enchantable = new Tool[]{SWORD};
             conflicting = new Class[]{RainbowSlam.class, Gust.class};
             description = "Pushes and pulls nearby mobs, configurable through shift clicking";
             cooldown = 0;
@@ -773,46 +775,40 @@ public class CustomEnchantment {
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
-            if (!Storage.forceModes.containsKey(evt.getPlayer())) {
-                Storage.forceModes.put(evt.getPlayer(), 1);
+            Player player = evt.getPlayer();
+            if (!evt.getPlayer().hasMetadata("ze.force.direction")) {
+                player.setMetadata("ze.force.direction", new FixedMetadataValue(Storage.zenchantments, true));
+                player.setMetadata("ze.force.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
             }
-            if (evt.getPlayer().isSneaking()) {
-                if (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
-                    if (Storage.forceModes.get(evt.getPlayer()) < 3) {
-                        Storage.forceModes.put(evt.getPlayer(), Storage.forceModes.get(evt.getPlayer()) + 1);
-                    } else {
-                        Storage.forceModes.put(evt.getPlayer(), 1);
-                    }
-                    switch (Storage.forceModes.get(evt.getPlayer())) {
-                        case 1:
-                            evt.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Push Mode");
-                            break;
-                        case 2:
-                            evt.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Pull Mode");
-                            break;
-                    }
+            if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
+                boolean b = !player.getMetadata("ze.force.direction").get(0).asBoolean();
+                long l = player.getMetadata("ze.force.time").get(0).asLong();
+                player.setMetadata("ze.force.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
+                if (System.currentTimeMillis() - l > 10) {
+                    player.setMetadata("ze.force.direction", new FixedMetadataValue(Storage.zenchantments, b));
+                    player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + (b ? "Push Mode" : "Pull Mode"));
                 }
                 return false;
             }
-            int mode = Storage.forceModes.get(evt.getPlayer());
+            boolean mode = player.getMetadata("ze.force.direction").get(0).asBoolean();
             if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                List<Entity> nearEnts = evt.getPlayer().getNearbyEntities(5, 5, 5);
+                List<Entity> nearEnts = player.getNearbyEntities(5, 5, 5);
                 if (!nearEnts.isEmpty()) {
-                    if (evt.getPlayer().getFoodLevel() >= 2) {
+                    if (player.getFoodLevel() >= 2) {
                         if (Storage.rnd.nextInt(10) == 5) {
-                            FoodLevelChangeEvent event = new FoodLevelChangeEvent(evt.getPlayer(), 2);
+                            FoodLevelChangeEvent event = new FoodLevelChangeEvent(player, 2);
                             Bukkit.getServer().getPluginManager().callEvent(event);
                             if (!event.isCancelled()) {
-                                evt.getPlayer().setFoodLevel(evt.getPlayer().getFoodLevel() - 2);
+                                player.setFoodLevel(player.getFoodLevel() - 2);
                             }
                         }
                         for (Entity ent : nearEnts) {
-                            Location playLoc = evt.getPlayer().getLocation();
+                            Location playLoc = player.getLocation();
                             Location entLoc = ent.getLocation();
-                            Location total = mode == 1 ? entLoc.subtract(playLoc) : playLoc.subtract(entLoc);
+                            Location total = mode ? entLoc.subtract(playLoc) : playLoc.subtract(entLoc);
                             Vector vect = new Vector(total.getX(), total.getY(), total.getZ()).multiply((.1f + (power * level * .2f)));
                             vect.setY(vect.getY() > 1 ? 1 : -1);
-                            if (Utilities.canDamage(evt.getPlayer(), ent)) {
+                            if (Utilities.canDamage(player, ent)) {
                                 ent.setVelocity(vect);
                             }
                         }
@@ -829,8 +825,8 @@ public class CustomEnchantment {
         public FrozenStep() {
             maxLevel = 3;
             loreName = "Frozen Step";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{NetherStep.class};
             description = "Allows the player to walk on water and safely emerge from it when sneaking";
             cooldown = 0;
@@ -867,12 +863,12 @@ public class CustomEnchantment {
         public Fuse() {
             maxLevel = 1;
             loreName = "Fuse";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Instantly ignites anything explosive";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -888,8 +884,8 @@ public class CustomEnchantment {
         public Germination() {
             maxLevel = 3;
             loreName = "Germination";
-            chance = 0;
-            enchantable = Storage.hoes;
+            probability = 0;
+            enchantable = new Tool[]{HOE};
             conflicting = new Class[]{};
             description = "Uses bonemeal from the player's inventory to grow nearby plants";
             cooldown = 0;
@@ -923,10 +919,10 @@ public class CustomEnchantment {
                                         } else {
                                             Utilities.grow(block.getRelative(x, y, z));
                                         }
-                                        ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 30, Utilities.getCenter(block.getRelative(x, y, z).getLocation()), 32);
+                                        ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 30, Utilities.getCenter(block.getRelative(x, y, z)), 32);
                                         evt.getPlayer().updateInventory();
                                         if (Storage.rnd.nextInt(10) == 3) {
-                                            Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                                            Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                                         }
                                     }
                                 }
@@ -935,8 +931,9 @@ public class CustomEnchantment {
                         }
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
     }
 
@@ -945,8 +942,8 @@ public class CustomEnchantment {
         public Glide() {
             maxLevel = 3;
             loreName = "Glide";
-            chance = 0;
-            enchantable = Storage.leggings;
+            probability = 0;
+            enchantable = new Tool[]{LEGGINGS};
             conflicting = new Class[]{};
             description = "Gently brings the player back to the ground when sneaking";
             cooldown = 0;
@@ -1007,12 +1004,12 @@ public class CustomEnchantment {
         public Gluttony() {
             maxLevel = 1;
             loreName = "Gluttony";
-            chance = 0;
-            enchantable = Storage.helmets;
+            probability = 0;
+            enchantable = new Tool[]{HELMET};
             conflicting = new Class[]{};
             description = "Automatically eats for the player";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1020,16 +1017,18 @@ public class CustomEnchantment {
                 GRILLED_PORK, BAKED_POTATO, BEETROOT_SOUP, COOKED_CHICKEN, COOKED_MUTTON,
                 MUSHROOM_SOUP, COOKED_FISH, COOKED_FISH, BREAD, APPLE, CARROT_ITEM, COOKIE,
                 MELON, BEETROOT};
-            int[] ints = {10, 8, 8, 8, 6, 6, 6, 6, 6, 6, 5, 5, 4, 3, 2, 2, 1};
+            int[] foodLevels = {10, 8, 8, 8, 6, 6, 6, 6, 6, 6, 5, 5, 4, 3, 2, 2, 1};
+            double[] saturations = {12.0, 12.8, 4.8, 12.8, 6.0, 7.2, 7.2, 9.6, 7.2, 6.0, 9.6, 6.0, 2.4, 3.6, 0.4, 1.2, 1.2};
             int check = 0;
             for (int i = 0; i < mat.length; i++) {
                 if (mat[i] == COOKED_FISH) {
                     check = (check + 1) % 2;
                 }
                 if (player.getInventory().containsAtLeast(new ItemStack(mat[i], 1, (short) check), 1)
-                        && player.getFoodLevel() <= 20 - ints[i]) {
+                        && player.getFoodLevel() <= 20 - foodLevels[i]) {
                     Utilities.removeItem(player, mat[i], (short) check, 1);
-                    player.setFoodLevel(player.getFoodLevel() + ints[i]);
+                    player.setFoodLevel(player.getFoodLevel() + foodLevels[i]);
+                    player.setSaturation((float) (player.getSaturation() + saturations[i]));
                     if (mat[i] == RABBIT_STEW || mat[i] == MUSHROOM_SOUP) {
                         player.getInventory().addItem(new ItemStack(BOWL));
                     }
@@ -1044,8 +1043,8 @@ public class CustomEnchantment {
         public GoldRush() {
             maxLevel = 3;
             loreName = "Gold Rush";
-            chance = 0;
-            enchantable = Storage.spades;
+            probability = 0;
+            enchantable = new Tool[]{SHOVEL};
             conflicting = new Class[]{};
             description = "Randomly drops gold nuggets when mining sand";
             cooldown = 0;
@@ -1054,7 +1053,7 @@ public class CustomEnchantment {
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
             if (evt.getBlock().getType() == SAND && Storage.rnd.nextInt(100) >= (100 - (level * power * 3))) {
-                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(GOLD_NUGGET));
+                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(GOLD_NUGGET));
             }
             return true;
         }
@@ -1065,12 +1064,12 @@ public class CustomEnchantment {
         public Grab() {
             maxLevel = 1;
             loreName = "Grab";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.axes, Storage.spades));
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE, SHOVEL, AXE};
             conflicting = new Class[]{};
             description = "Teleports mined items and XP directly to the player";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockBreak(final BlockBreakEvent evt, int level) {
@@ -1080,7 +1079,7 @@ public class CustomEnchantment {
                 public void run() {
                     Storage.grabLocs.remove(block);
                 }
-            }, 3);
+            }, 15);
             return true;
         }
     }
@@ -1090,8 +1089,8 @@ public class CustomEnchantment {
         public GreenThumb() {
             maxLevel = 3;
             loreName = "Green Thumb";
-            chance = 0;
-            enchantable = Storage.leggings;
+            probability = 0;
+            enchantable = new Tool[]{LEGGINGS};
             conflicting = new Class[]{};
             description = "Grows the foliage around the player";
             cooldown = 0;
@@ -1153,7 +1152,7 @@ public class CustomEnchantment {
                                     block.getRelative(x, y, z).setData(data);
                                 }
                                 if (test) {
-                                    ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 20, Utilities.getCenter(block.getRelative(x, y + 1, z).getLocation()), 32);
+                                    ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 20, Utilities.getCenter(block.getRelative(x, y + 1, z)), 32);
                                 }
                                 if (test) {
                                     int chc = Storage.rnd.nextInt(50);
@@ -1187,8 +1186,8 @@ public class CustomEnchantment {
         public Gust() {
             maxLevel = 1;
             loreName = "Gust";
-            chance = 0;
-            enchantable = Storage.swords;
+            probability = 0;
+            enchantable = new Tool[]{SWORD};
             conflicting = new Class[]{Force.class, RainbowSlam.class};
             description = "Pushes the user through the air at the cost of their health";
             cooldown = 0;
@@ -1196,25 +1195,27 @@ public class CustomEnchantment {
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
+            final Player player = evt.getPlayer();
             if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-                if (evt.getPlayer().getHealth() > 2) {
-                    final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 10);
-                    evt.getPlayer().setVelocity(blk.getLocation().toVector().subtract(evt.getPlayer().getLocation().toVector()).multiply(.25 * power));
-                    evt.getPlayer().setFallDistance(0);
-                    EntityDamageEvent event = new EntityDamageEvent(evt.getPlayer(), DamageCause.MAGIC, 2);
+                if (player.getHealth() > 2 && (evt.getClickedBlock() == null || evt.getClickedBlock().getLocation().distance(player.getLocation()) > 2)) {
+                    final Block blk = player.getTargetBlock((HashSet<Byte>) null, 10);
+                    player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector()).multiply(.25 * power));
+                    player.setFallDistance(-40);
+                    EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.MAGIC, 2);
                     Bukkit.getPluginManager().callEvent(event);
-                    evt.getPlayer().setLastDamageCause(event);
+                    player.setLastDamageCause(event);
                     if (!event.isCancelled()) {
-                        evt.getPlayer().damage(2f);
+                        player.damage(2f);
                     }
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                         public void run() {
-                            Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 5, evt.getPlayer());
+                            Utilities.addUnbreaking(player.getInventory().getItemInMainHand(), 5, player);
                         }
                     }, 1);
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
     }
 
@@ -1223,8 +1224,8 @@ public class CustomEnchantment {
         public Harvest() {
             maxLevel = 3;
             loreName = "Harvest";
-            chance = 0;
-            enchantable = Storage.hoes;
+            probability = 0;
+            enchantable = new Tool[]{HOE};
             conflicting = new Class[]{};
             description = "Harvests fully grown crops within a radius when clicked";
             cooldown = 0;
@@ -1249,7 +1250,7 @@ public class CustomEnchantment {
                                         continue;
                                     }
                                     if (Storage.rnd.nextBoolean()) {
-                                        Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                                        Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                                     }
                                     Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
                                     final Block blk = block.getRelative(x, y + 1, z);
@@ -1264,8 +1265,9 @@ public class CustomEnchantment {
                         }
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
     }
 
@@ -1274,8 +1276,8 @@ public class CustomEnchantment {
         public Haste() {
             maxLevel = 4;
             loreName = "Haste";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.spades, Storage.axes));
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE, AXE, SHOVEL};
             conflicting = new Class[]{};
             description = "Gives the player a mining boost";
             cooldown = 0;
@@ -1295,12 +1297,12 @@ public class CustomEnchantment {
         public Haul() {
             maxLevel = 1;
             loreName = "Haul";
-            chance = 0;
-            enchantable = enchantable = Storage.picks;
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE};
             conflicting = new Class[]{Laser.class};
             description = "Allows for dragging blocks around";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -1329,7 +1331,7 @@ public class CustomEnchantment {
                             Block toBreak = Storage.haulBlocks.get(evt.getPlayer());
                             toBreak.setType(AIR);
                             Storage.haulBlocks.put(evt.getPlayer(), toUse);
-                            Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                            Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                         }
                     }
                 }
@@ -1344,8 +1346,8 @@ public class CustomEnchantment {
         public IceAspect() {
             maxLevel = 2;
             loreName = "Ice Aspect";
-            chance = 0;
-            enchantable = Storage.swords;
+            probability = 0;
+            enchantable = new Tool[]{SWORD};
             conflicting = new Class[]{};
             description = "Temporarily freezes the target";
             cooldown = 0;
@@ -1367,8 +1369,8 @@ public class CustomEnchantment {
         public Jump() {
             maxLevel = 4;
             loreName = "Jump";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{};
             description = "Gives the player a jump boost";
             cooldown = 0;
@@ -1386,8 +1388,8 @@ public class CustomEnchantment {
         public Laser() {
             maxLevel = 3;
             loreName = "Laser";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.picks, Storage.axes);
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE, AXE};
             conflicting = new Class[]{Haul.class};
             description = "Breaks blocks and damages mobs using a powerful beam of light";
             cooldown = 0;
@@ -1406,7 +1408,11 @@ public class CustomEnchantment {
                 tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
                 tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
                 tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                if (Bukkit.getVersion().contains("1.10")){
+                    ParticleEffect.REDSTONE.display(tempLoc, 32);
+                }else{
+                    ParticleEffectOld.REDSTONE.display(new ParticleEffectOld.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                }
                 for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getEntities()) {
                     if (ent.getLocation().distance(tempLoc) < 1.5) {
                         if (Utilities.canDamage(player, ent)) {
@@ -1418,7 +1424,7 @@ public class CustomEnchantment {
                                 theE.setLastDamageCause(evt);
                                 if (!evt.isCancelled()) {
                                     if (Storage.rnd.nextInt(20) == 6) {
-                                        Utilities.addUnbreaking(player.getItemInHand(), 1, player);
+                                        Utilities.addUnbreaking(player.getInventory().getItemInMainHand(), 1, player);
                                     }
                                     theE.damage(1 + (level * power * 2));
                                 }
@@ -1435,8 +1441,9 @@ public class CustomEnchantment {
                 final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 6
                         + (int) Math.round(level * power * 3));
                 shoot(blk.getLocation(), evt.getPlayer(), level);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -1445,7 +1452,7 @@ public class CustomEnchantment {
                 return false;
             }
             boolean b = false;
-            for (CustomEnchantment e : Config.get(evt.getPlayer().getWorld()).getEnchants(evt.getPlayer().getItemInHand()).keySet()) {
+            for (CustomEnchantment e : Config.get(evt.getPlayer().getWorld()).getEnchants(evt.getPlayer().getInventory().getItemInMainHand()).keySet()) {
                 if (e.getClass().equals(Lumber.class)) {
                     b = e.getClass().equals(Lumber.class);
                 }
@@ -1465,24 +1472,13 @@ public class CustomEnchantment {
                 }
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                     public void run() {
-                        if (evt.getPlayer().getItemInHand().getEnchantments().containsKey(SILK_TOUCH)) {
-                            for (ItemStack st : Utilities.silktouchDrops(blk)) {
-                                evt.getPlayer().getWorld().dropItem(Utilities.getCenter(blk.getLocation()), st);
-                            }
-                            blk.setType(AIR);
-                        } else if (evt.getPlayer().getItemInHand().getEnchantments().containsKey(LOOT_BONUS_BLOCKS)) {
-                            for (ItemStack st : Utilities.fortuneDrops(evt.getPlayer().getItemInHand().getEnchantments().get(LOOT_BONUS_BLOCKS), blk)) {
-                                evt.getPlayer().getWorld().dropItem(Utilities.getCenter(blk.getLocation()), st);
-                            }
-                            blk.setType(AIR);
-                        } else {
-                            blk.breakNaturally();
-                        }
+                        Utilities.breakBlockNaturally(blk, evt.getPlayer());
                     }
                 }, 1);
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
+                return true;
             }
-            return true;
+            return false;
         }
     }
 
@@ -1491,8 +1487,8 @@ public class CustomEnchantment {
         public Level() {
             maxLevel = 3;
             loreName = "Level";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.bows, Storage.swords));
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE, SWORD, BOW_};
             conflicting = new Class[]{};
             description = "Drops more XP when killing mobs or mining ores";
             cooldown = 0;
@@ -1531,8 +1527,8 @@ public class CustomEnchantment {
         public LongCast() {
             maxLevel = 2;
             loreName = "Long Cast";
-            chance = 0;
-            enchantable = Storage.rods;
+            probability = 0;
+            enchantable = new Tool[]{ROD};
             conflicting = new Class[]{ShortCast.class};
             description = "Launches fishing hooks farther out when casting";
             cooldown = 0;
@@ -1568,10 +1564,10 @@ public class CustomEnchantment {
                                 && mat != COCOA && mat != AIR && mat != RED_ROSE && mat != YELLOW_FLOWER && mat != LONG_GRASS && mat != GRAVEL
                                 && mat != STONE && mat != DOUBLE_PLANT && mat != WATER && mat != STATIONARY_WATER && mat != SAND && mat != SAPLING
                                 && mat != BROWN_MUSHROOM && mat != RED_MUSHROOM && mat != MOSSY_COBBLESTONE && mat != CLAY && mat != HUGE_MUSHROOM_1 && mat != HUGE_MUSHROOM_2
-                                && mat != SUGAR_CANE_BLOCK) {
+                                && mat != SUGAR_CANE_BLOCK && mat != MYCEL && mat != TORCH) {
                             tester.add(loc2.getBlock());
                         }
-                        if (!bks.contains(loc2.getBlock()) && (loc2.getBlock().getType() == LOG || loc2.getBlock().getType() == LOG_2)) {
+                        if (!bks.contains(loc2.getBlock()) && (loc2.getBlock().getType() == LOG || loc2.getBlock().getType() == LOG_2 || loc2.getBlock().getType() == HUGE_MUSHROOM_1 || loc2.getBlock().getType() == HUGE_MUSHROOM_2)) {
                             bk(loc2.getBlock(), bks, total, tester, i);
                             total.add(loc2.getBlock());
                         }
@@ -1583,12 +1579,12 @@ public class CustomEnchantment {
         public Lumber() {
             maxLevel = 1;
             loreName = "Lumber";
-            chance = 0;
-            enchantable = Storage.axes;
+            probability = 0;
+            enchantable = new Tool[]{AXE};
             conflicting = new Class[]{};
             description = "Breaks the entire tree at once";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -1600,17 +1596,19 @@ public class CustomEnchantment {
                 List<Block> used = new ArrayList<>();
                 List<Block> total = new ArrayList<>();
                 List<Block> tester = new ArrayList<>();
-                if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
+                if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2
+                        || evt.getBlock().getType() == Material.HUGE_MUSHROOM_1 || evt.getBlock().getType() == Material.HUGE_MUSHROOM_2) {
                     bk(evt.getBlock(), used, total, tester, 0);
                 }
                 if ((!(total.size() >= 150)) && tester.isEmpty()) {
                     int i = 1;
-                    if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
+                    if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2
+                            || evt.getBlock().getType() == Material.HUGE_MUSHROOM_1 || evt.getBlock().getType() == Material.HUGE_MUSHROOM_2) {
                         total.add(evt.getBlock());
                     }
                     for (Block b : total) {
                         final int i2 = i + 1;
-                        Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                        Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                         final BlockBreakEvent event = new BlockBreakEvent(b, evt.getPlayer());
                         Bukkit.getPluginManager().callEvent(event);
                         if (Utilities.canEdit(evt.getPlayer(), b)) {
@@ -1637,8 +1635,8 @@ public class CustomEnchantment {
         public Magnetism() {
             maxLevel = 3;
             loreName = "Magnetism";
-            chance = 0;
-            enchantable = Storage.leggings;
+            probability = 0;
+            enchantable = new Tool[]{LEGGINGS};
             conflicting = new Class[]{};
             description = "Slowly attracts nearby items to the players inventory";
             cooldown = 0;
@@ -1661,8 +1659,8 @@ public class CustomEnchantment {
         public Meador() {
             maxLevel = 1;
             loreName = "Meador";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{Weight.class, Speed.class, Jump.class};
             description = "Gives the player both a speed and jump boost";
             cooldown = 0;
@@ -1672,7 +1670,7 @@ public class CustomEnchantment {
         public boolean onScan(Player player, int level) {
             player.setWalkSpeed((float) Math.min(.5f + level * power * .05f, 1));
             player.setFlySpeed((float) Math.min(.5f + level * power * .05f, 1));
-            Storage.speed.add(player);
+            player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, true));
             Utilities.addPotion(player, JUMP, 610, (int) Math.round(power * level + 2));
             return true;
         }
@@ -1683,8 +1681,8 @@ public class CustomEnchantment {
         public Mow() {
             maxLevel = 3;
             loreName = "Mow";
-            chance = 0;
-            enchantable = Storage.shears;
+            probability = 0;
+            enchantable = new Tool[]{SHEAR};
             conflicting = new Class[]{};
             description = "Shears all nearby sheep";
             cooldown = 0;
@@ -1704,7 +1702,7 @@ public class CustomEnchantment {
                     if (sheep.isAdult() && !sheep.isSheared() && !event.isCancelled()) {
                         short s = sheep.getColor().getData();
                         int number = Storage.rnd.nextInt(3) + 1;
-                        Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                        Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                         sheep.setSheared(true);
                         evt.getPlayer().getWorld().dropItemNaturally(Utilities.getCenter(e.getLocation()), new ItemStack(WOOL, number, s));
                     }
@@ -1735,8 +1733,8 @@ public class CustomEnchantment {
         public MysteryFish() {
             maxLevel = 3;
             loreName = "Mystery Fish";
-            chance = 0;
-            enchantable = Storage.rods;
+            probability = 0;
+            enchantable = new Tool[]{ROD};
             conflicting = new Class[]{};
             description = "Catches water mobs like Squid and Guardians";
             cooldown = 0;
@@ -1768,8 +1766,8 @@ public class CustomEnchantment {
         public NetherStep() {
             maxLevel = 3;
             loreName = "Nether Step";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{FrozenStep.class};
             description = "Allows the player to slowly but safely walk on lava";
             cooldown = 0;
@@ -1806,12 +1804,12 @@ public class CustomEnchantment {
         public NightVision() {
             maxLevel = 1;
             loreName = "Night Vision";
-            chance = 0;
-            enchantable = Storage.helmets;
+            probability = 0;
+            enchantable = new Tool[]{HELMET};
             conflicting = new Class[]{};
             description = "Lets the player see in the darkness";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1825,8 +1823,8 @@ public class CustomEnchantment {
         public Persephone() {
             maxLevel = 3;
             loreName = "Persephone";
-            chance = 0;
-            enchantable = Storage.hoes;
+            probability = 0;
+            enchantable = new Tool[]{HOE};
             conflicting = new Class[]{};
             description = "Plants seeds from the player's inventory around them";
             cooldown = 0;
@@ -1891,15 +1889,16 @@ public class CustomEnchantment {
                                     }
                                     evt.getPlayer().updateInventory();
                                     if (Storage.rnd.nextBoolean() && !b) {
-                                        Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                                        Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                                     }
                                 }
                             }
                         }
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
     }
 
@@ -1931,44 +1930,43 @@ public class CustomEnchantment {
         public Pierce() {
             maxLevel = 1;
             loreName = "Pierce";
-            chance = 0;
-            enchantable = Storage.picks;
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE};
             conflicting = new Class[]{Anthropomorphism.class, Switch.class, Shred.class};
             description = "Lets the player mine in several modes which can be changed through shift clicking";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
-            if (!Storage.pierceModes.containsKey(evt.getPlayer())) {
-                Storage.pierceModes.put(evt.getPlayer(), 1);
+            Player player = evt.getPlayer();
+            if (!evt.getPlayer().hasMetadata("ze.pierce.mode")) {
+                player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
+                player.setMetadata("ze.pierce.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
             }
-            if (evt.getPlayer().isSneaking()) {
-                if (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
-                    if (Utilities.canUse(evt.getPlayer(), loreName)) {
-                        EnchantPlayer.matchPlayer(evt.getPlayer()).setCooldown(this.loreName, 1);
-                        if (Storage.pierceModes.get(evt.getPlayer()) < 5) {
-                            Storage.pierceModes.put(evt.getPlayer(), Storage.pierceModes.get(evt.getPlayer()) + 1);
-                        } else {
-                            Storage.pierceModes.put(evt.getPlayer(), 1);
-                        }
-                        switch (Storage.pierceModes.get(evt.getPlayer())) {
-                            case 1:
-                                evt.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "1x Normal Mode");
-                                break;
-                            case 2:
-                                evt.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Wide Mode");
-                                break;
-                            case 3:
-                                evt.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Long Mode");
-                                break;
-                            case 4:
-                                evt.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Tall Mode");
-                                break;
-                            case 5:
-                                evt.getPlayer().sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Ore Mode");
-                                break;
-                        }
+            if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
+                int b = player.getMetadata("ze.pierce.mode").get(0).asInt();
+                b = b == 5 ? 1 : b + 1;
+                long l = player.getMetadata("ze.pierce.time").get(0).asLong();
+                player.setMetadata("ze.pierce.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
+                if (System.currentTimeMillis() - l > 10) {
+                    player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, b));
+                    switch (b) {
+                        case 1:
+                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "1x Normal Mode");
+                            break;
+                        case 2:
+                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Wide Mode");
+                            break;
+                        case 3:
+                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Long Mode");
+                            break;
+                        case 4:
+                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Tall Mode");
+                            break;
+                        case 5:
+                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Ore Mode");
+                            break;
                     }
                 }
             }
@@ -1977,19 +1975,20 @@ public class CustomEnchantment {
 
         public boolean onBlockBreak(final BlockBreakEvent evt, int level) {
             //1 = normal; 2 = wide; 3 = deep; 4 = tall; 5 = ore
-            if (!Storage.pierceModes.containsKey(evt.getPlayer())) {
-                Storage.pierceModes.put(evt.getPlayer(), 1);
+            Player player = evt.getPlayer();
+            if (!evt.getPlayer().hasMetadata("ze.pierce.mode")) {
+                player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
+                player.setMetadata("ze.pierce.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
             }
-            final int mode = Storage.pierceModes.get(evt.getPlayer());
+            final int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
             if (!Utilities.eventStart(evt.getPlayer(), loreName)) {
-                int counter = 0;
-                Player player = (Player) evt.getPlayer();
+                List<Block> total = new ArrayList<>();
                 final Location blkLoc = evt.getBlock().getLocation();
                 if (mode != 1 && mode != 5) {
                     int add = -1;
                     boolean b = false;
                     int[][] ints = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-                    switch (Utilities.getSimpleDirection(player.getLocation().getYaw(), 0)) {
+                    switch (Utilities.getSimpleDirection(evt.getPlayer().getLocation().getYaw(), 0)) {
                         case 1:
                             ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
                             add = 1;
@@ -2025,35 +2024,7 @@ public class CustomEnchantment {
                     for (int x = -(rads[0]); x <= rads[0]; x++) {
                         for (int y = -(rads[1]); y <= rads[1]; y++) {
                             for (int z = -(rads[2]); z <= rads[2]; z++) {
-                                evt.setCancelled(true);
-                                final BlockBreakEvent event = new BlockBreakEvent(blkLoc.getBlock().getRelative(x, y, z), player);
-                                Bukkit.getServer().getPluginManager().callEvent(event);
-                                if (!event.isCancelled()) {
-                                    if (event.getBlock().getType() != BEDROCK && event.getBlock().getType() != ENDER_PORTAL_FRAME
-                                            && event.getBlock().getType() != ENDER_PORTAL && event.getBlock().getType() != BARRIER && event.getBlock().getType() != PORTAL
-                                            && event.getBlock().getType() != STRUCTURE_BLOCK && event.getBlock().getType() != END_GATEWAY) {
-                                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                            public void run() {
-                                                if (event.getBlock().getType() != AIR) {
-                                                    if (event.getPlayer().getItemInHand().getEnchantments().containsKey(SILK_TOUCH)) {
-                                                        for (ItemStack st : Utilities.silktouchDrops(event.getBlock())) {
-                                                            event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                                                        }
-                                                        event.getBlock().setType(AIR);
-                                                    } else if (event.getPlayer().getItemInHand().getEnchantments().containsKey(LOOT_BONUS_BLOCKS)) {
-                                                        for (ItemStack st : Utilities.fortuneDrops(event.getPlayer().getItemInHand().getEnchantments().get(LOOT_BONUS_BLOCKS), event.getBlock())) {
-                                                            event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                                                        }
-                                                        event.getBlock().setType(AIR);
-                                                    } else {
-                                                        event.getBlock().breakNaturally();
-                                                    }
-                                                }
-                                            }
-                                        }, 1);
-                                        counter++;
-                                    }
-                                }
+                                total.add(blkLoc.getBlock().getRelative(x, y, z));
                             }
                         }
                     }
@@ -2061,7 +2032,6 @@ public class CustomEnchantment {
                     Material mats[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
                         IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
                     List<Block> used = new ArrayList<>();
-                    List<Block> total = new ArrayList<>();
                     if (ArrayUtils.contains(mats, evt.getBlock().getType())) {
                         Material mat[];
                         if (evt.getBlock().getType() != REDSTONE_ORE && evt.getBlock().getType() != GLOWING_REDSTONE_ORE) {
@@ -2074,36 +2044,24 @@ public class CustomEnchantment {
                         Utilities.eventEnd(evt.getPlayer(), loreName);
                         return false;
                     }
-                    if (!(total.size() >= 128)) {
-                        for (Block b : total) {
-                            Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
-                            final BlockBreakEvent event = new BlockBreakEvent(b, evt.getPlayer());
-                            Bukkit.getServer().getPluginManager().callEvent(event);
-                            if (!event.isCancelled()) {
-                                if (evt.getBlock().getType() != AIR) {
-                                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                        public void run() {
-                                            if (event.getPlayer().getItemInHand().getEnchantments().containsKey(SILK_TOUCH)) {
-                                                for (ItemStack st : Utilities.silktouchDrops(event.getBlock())) {
-                                                    event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                                                }
-                                                event.getBlock().setType(AIR);
-                                            } else if (event.getPlayer().getItemInHand().getEnchantments().containsKey(LOOT_BONUS_BLOCKS)) {
-                                                for (ItemStack st : Utilities.fortuneDrops(event.getPlayer().getItemInHand().getEnchantments().get(LOOT_BONUS_BLOCKS), event.getBlock())) {
-                                                    event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                                                }
-                                                event.getBlock().setType(AIR);
-                                            } else {
-                                                event.getBlock().breakNaturally();
-                                            }
-                                        }
-                                    }, 1);
-                                }
+                }
+
+                if (total.size() < 128) {
+                    for (Block b : total) {
+                        final BlockBreakEvent event = new BlockBreakEvent(b, evt.getPlayer());
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()) {
+                            if (evt.getBlock().getType() != AIR) {
+                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                                    public void run() {
+                                        Utilities.breakBlockNaturally(event.getBlock(), evt.getPlayer());
+                                    }
+                                }, 1);
                             }
                         }
                     }
                 }
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), (int) (counter / (float) 1.5), evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), (int) (total.size() / (float) 1.5), evt.getPlayer());
                 Utilities.eventEnd(evt.getPlayer(), loreName);
             }
             return true;
@@ -2115,8 +2073,8 @@ public class CustomEnchantment {
         public Plough() {
             maxLevel = 3;
             loreName = "Plough";
-            chance = 0;
-            enchantable = Storage.hoes;
+            probability = 0;
+            enchantable = new Tool[]{HOE};
             conflicting = new Class[]{};
             description = "Tills all soil within a radius";
             cooldown = 0;
@@ -2139,15 +2097,16 @@ public class CustomEnchantment {
                                 if ((block.getRelative(x, y, z).getType() == DIRT || block.getRelative(x, y, z).getType() == GRASS || block.getRelative(x, y, z).getType() == MYCEL) && block.getRelative(x, y + 1, z).getType() == AIR) {
                                     block.getRelative(x, y, z).setType(SOIL);
                                     if (Storage.rnd.nextBoolean()) {
-                                        Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                                        Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                                     }
                                 }
                             }
                         }
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
     }
 
@@ -2158,8 +2117,8 @@ public class CustomEnchantment {
         public Potion() {
             maxLevel = 3;
             loreName = "Potion";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Gives the shooter random positive potion effects when attacking";
             cooldown = 0;
@@ -2178,8 +2137,8 @@ public class CustomEnchantment {
         public PotionResistance() {
             maxLevel = 4;
             loreName = "Potion Resistance";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.helmets, ArrayUtils.addAll(Storage.chestplates, ArrayUtils.addAll(Storage.leggings, Storage.boots)));
+            probability = 0;
+            enchantable = new Tool[]{HELMET, CHESTPLATE, LEGGINGS, BOOTS};
             conflicting = new Class[]{};
             description = "Lessens the effects of all potions on players";
             cooldown = 0;
@@ -2210,8 +2169,8 @@ public class CustomEnchantment {
         public QuickShot() {
             maxLevel = 1;
             loreName = "Quick Shot";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Shoots arrows at full speed, instantly";
             cooldown = 0;
@@ -2230,12 +2189,12 @@ public class CustomEnchantment {
         public Rainbow() {
             maxLevel = 1;
             loreName = "Rainbow";
-            chance = 0;
-            enchantable = Storage.shears;
+            probability = 0;
+            enchantable = new Tool[]{SHEAR};
             conflicting = new Class[]{};
             description = "Drops random flowers and wool colors when used";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -2256,8 +2215,8 @@ public class CustomEnchantment {
             }
             evt.setCancelled(true);
             evt.getBlock().setType(AIR);
-            Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
-            evt.getPlayer().getWorld().dropItem(Utilities.getCenter(evt.getBlock().getLocation()), new ItemStack(dropMaterial, 1, itemInfo));
+            Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
+            evt.getPlayer().getWorld().dropItem(Utilities.getCenter(evt.getBlock()), new ItemStack(dropMaterial, 1, itemInfo));
             return true;
         }
 
@@ -2266,7 +2225,7 @@ public class CustomEnchantment {
             if (!sheep.isSheared()) {
                 int color = Storage.rnd.nextInt(16);
                 int number = Storage.rnd.nextInt(3) + 1;
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                 evt.setCancelled(true);
                 sheep.setSheared(true);
                 evt.getEntity().getWorld().dropItemNaturally(Utilities.getCenter(evt.getEntity().getLocation()), new ItemStack(WOOL, number, (short) color));
@@ -2280,8 +2239,8 @@ public class CustomEnchantment {
         public RainbowSlam() {
             maxLevel = 4;
             loreName = "Rainbow Slam";
-            chance = 0;
-            enchantable = Storage.swords;
+            probability = 0;
+            enchantable = new Tool[]{SWORD};
             conflicting = new Class[]{Force.class, Gust.class};
             description = "Attacks enemy mobs with a powerful swirling slam";
             cooldown = 0;
@@ -2292,7 +2251,7 @@ public class CustomEnchantment {
             if (!Utilities.canDamage(evt.getPlayer(), evt.getRightClicked())) {
                 return false;
             }
-            Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 9, evt.getPlayer());
+            Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 9, evt.getPlayer());
             final LivingEntity ent = (LivingEntity) evt.getRightClicked();
             final Location l = ent.getLocation().clone();
             ent.teleport(l);
@@ -2343,8 +2302,8 @@ public class CustomEnchantment {
         public Reaper() {
             maxLevel = 4;
             loreName = "Reaper";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.bows, Storage.swords);
+            probability = 0;
+            enchantable = new Tool[]{BOW_, SWORD};
             conflicting = new Class[]{};
             description = "Gives the target temporary wither effect and blindness";
             cooldown = 0;
@@ -2373,8 +2332,8 @@ public class CustomEnchantment {
         public Saturation() {
             maxLevel = 3;
             loreName = "Saturation";
-            chance = 0;
-            enchantable = Storage.leggings;
+            probability = 0;
+            enchantable = new Tool[]{LEGGINGS};
             conflicting = new Class[]{};
             description = "Uses less of the player's hunger";
             cooldown = 0;
@@ -2394,8 +2353,8 @@ public class CustomEnchantment {
         public ShortCast() {
             maxLevel = 2;
             loreName = "Short Cast";
-            chance = 0;
-            enchantable = Storage.rods;
+            probability = 0;
+            enchantable = new Tool[]{ROD};
             conflicting = new Class[]{LongCast.class};
             description = "Launches fishing hooks closer in when casting";
             cooldown = 0;
@@ -2415,188 +2374,87 @@ public class CustomEnchantment {
         public Shred() {
             maxLevel = 5;
             loreName = "Shred";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.picks, Storage.spades);
+            probability = 0;
+            enchantable = new Tool[]{SHOVEL, PICKAXE};
             conflicting = new Class[]{Pierce.class, Switch.class};
             description = "Breaks the blocks within a radius of the original block mined";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
+        final Material mats[] = new Material[]{STONE, COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE,
+            NETHERRACK, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GRASS, SOUL_SAND, GLOWING_REDSTONE_ORE,
+            DIRT, MYCEL, SAND, GRAVEL, SOUL_SAND, CLAY, HARD_CLAY, STAINED_CLAY, SANDSTONE, RED_SANDSTONE};
+
+        final Material shovel[] = new Material[]{GLOWSTONE, GRASS, DIRT, MYCEL, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
+
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
+            int counter = 0;
+            if (!ArrayUtils.contains(mats, evt.getBlock().getType()) && !evt.getBlock().getType().equals(AIR)) {
+                return false;
+            }
             final Config config = Config.get(evt.getBlock().getWorld());
-            int original = level;
-            final int l = level;
-            level++;
             if (!Utilities.eventStart(evt.getPlayer(), loreName)) {
-                Material mats[] = new Material[]{STONE, COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE,
-                    NETHERRACK, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GRASS, SOUL_SAND, GLOWING_REDSTONE_ORE,
-                    DIRT, MYCEL, SAND, GRAVEL, SOUL_SAND, CLAY, HARD_CLAY, STAINED_CLAY, SANDSTONE, RED_SANDSTONE};
-                final Material shovel[] = new Material[]{GLOWSTONE, GRASS, DIRT, MYCEL, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
-                int counter = 0;
-                if (!ArrayUtils.contains(mats, evt.getBlock().getType()) && !evt.getBlock().getType().equals(AIR)) {
-                    Utilities.eventEnd(evt.getPlayer(), loreName);
-                    return false;
-                }
                 evt.setCancelled(true);
-                Player player = (Player) evt.getPlayer();
-                final Material itemType = player.getItemInHand().getType();
-                int radius = level * 2 + 4;
-                final Block block = evt.getBlock();
-                int x1, x2, x3, y1, y2, y3, z1, z2, z3;
-                x1 = x2 = x3 = y1 = y2 = y3 = z1 = z2 = z3 = 1;
-                int x, y, z;
-                x = y = z = radius;
-                int j = Utilities.getSimpleDirection(player.getLocation().getYaw(), player.getLocation().getPitch());
-                switch (j) {
-                    case 3:
-                        x3 = radius;
-                        y3 = radius;
-                        z1 = radius;
-                        break;
-                    case 1:
-                        x3 = radius;
-                        y3 = radius;
-                        z2 = radius;
-                        break;
-                    case 2:
-                        x1 = radius;
-                        y3 = radius;
-                        z3 = radius;
-                        break;
-                    case 4:
-                        x2 = radius;
-                        y3 = radius;
-                        z3 = radius;
-                        break;
-                    case 6:
-                        x3 = radius;
-                        y1 = radius;
-                        z3 = radius;
-                        break;
-                    case 5:
-                        x3 = radius;
-                        y2 = radius;
-                        z3 = radius;
-                        break;
-                }
-                for (int x01 = 0; x01 < x1; x01++) {
-                    for (int x02 = x2; x02 > 0; x02--) {
-                        for (int y01 = 0; y01 < y1; y01++) {
-                            for (int y02 = y2; y02 > 0; y02--) {
-                                for (int z01 = 0; z01 < z1; z01++) {
-                                    for (int z02 = z2; z02 > 0; z02--) {
-                                        for (int z03 = z3; z03 > 0; z03--) {
-                                            for (int x03 = x3; x03 > 0; x03--) {
-                                                for (int y03 = y3; y03 > 0; y03--) {
-                                                    switch (j) {
-                                                        case 3:
-                                                            x = x03;
-                                                            y = y03;
-                                                            z = z01;
-                                                            break;
-                                                        case 1:
-                                                            x = x03;
-                                                            y = y03;
-                                                            z = z02;
-                                                            break;
-                                                        case 2:
-                                                            x = x01;
-                                                            y = y03;
-                                                            z = z03;
-                                                            break;
-                                                        case 4:
-                                                            x = x02;
-                                                            y = y03;
-                                                            z = z03;
-                                                            break;
-                                                        case 6:
-                                                            x = x03;
-                                                            y = y01;
-                                                            z = z03;
-                                                            break;
-                                                        case 5:
-                                                            x = x03;
-                                                            y = y02;
-                                                            z = z03;
-                                                            break;
-                                                    }
-                                                    x = level - x + 1;
-                                                    y = level - y + 1;
-                                                    z = level - z + 1;
-                                                    int r = Storage.rnd.nextInt(2);
-                                                    double limit;
-                                                    if (original > 2) {
-                                                        limit = level + 3 + r + 1.7;
-                                                    } else if (level == 3) {
-                                                        limit = level + 3 + r + 1;
-                                                    } else {
-                                                        limit = (float) (level + 3 + r);
-                                                    }
-                                                    int timer = (int) (counter / (l * 1.6));
-                                                    if (config.getEnchants(player.getItemInHand()).size() > 1 && config.getShredDrops() != 2) {
-                                                        timer = 1;
-                                                    }
-                                                    if (block.getRelative(x, y, z).getLocation().distanceSquared(block.getLocation()) < limit) {
-                                                        if (ArrayUtils.contains(mats, block.getRelative(x, y, z).getType())) {
-                                                            final BlockBreakEvent event = new BlockBreakEvent(block.getRelative(x, y, z), player);
-                                                            Bukkit.getServer().getPluginManager().callEvent(event);
-                                                            if (!event.isCancelled()) {
-                                                                counter++;
-                                                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                                                    public void run() {
-                                                                        if (config.getShredDrops() == 1) {
-                                                                            Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
-                                                                            if (ArrayUtils.contains(ores, event.getBlock().getType())) {
-                                                                                event.getBlock().setType(STONE);
-                                                                            } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
-                                                                                event.getBlock().setType(NETHERRACK);
-                                                                            }
-                                                                        } else if (config.getShredDrops() == 2) {
-                                                                            event.getBlock().setType(AIR);
-                                                                        }
-                                                                        if (event.getBlock().getType() == GRASS) {
-                                                                            block.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRASS_BREAK, 10, 1);
-                                                                        } else if (event.getBlock().getType() == DIRT || event.getBlock().getType() == GRAVEL || event.getBlock().getType() == CLAY) {
-                                                                            block.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRAVEL_BREAK, 10, 1);
-                                                                        } else if (event.getBlock().getType() == SAND) {
-                                                                            block.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_SAND_BREAK, 10, 1);
-                                                                        } else {
-                                                                            block.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
-                                                                        }
-                                                                        if (ArrayUtils.contains(Storage.picks, itemType) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
-                                                                            if (event.getPlayer().getItemInHand().getEnchantments().containsKey(SILK_TOUCH)) {
-                                                                                for (ItemStack st : Utilities.silktouchDrops(event.getBlock())) {
-                                                                                    event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                                                                                }
-                                                                                event.getBlock().setType(AIR);
-                                                                            } else if (event.getPlayer().getItemInHand().getEnchantments().containsKey(LOOT_BONUS_BLOCKS)) {
-                                                                                for (ItemStack st : Utilities.fortuneDrops(event.getPlayer().getItemInHand().getEnchantments().get(LOOT_BONUS_BLOCKS), event.getBlock())) {
-                                                                                    event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                                                                                }
-                                                                                event.getBlock().setType(AIR);
-                                                                            } else {
-                                                                                event.getBlock().breakNaturally();
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }, timer);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), (int) (counter / 4.0), evt.getPlayer());
+                Set<Block> broken = new HashSet<>();
+                blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
+                        0, 4.6 + (level * .22), broken, evt.getPlayer(), config, evt.getPlayer().getItemInHand().getType());
+                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), broken.size() / 4, evt.getPlayer());
                 Utilities.eventEnd(evt.getPlayer(), loreName);
             }
             return true;
+        }
+
+        public void blocks(Block original, final Block blk, int[] coords, int time, double size, Set<Block> used,
+                final Player player, final Config config, final Material itemType) {
+            if (blk.getType() != AIR && !used.contains(blk)) {
+                final BlockBreakEvent event = new BlockBreakEvent(blk, player);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                        public void run() {
+                            if (config.getShredDrops() == 1) {
+                                Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
+                                if (ArrayUtils.contains(ores, event.getBlock().getType())) {
+                                    event.getBlock().setType(STONE);
+                                } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
+                                    event.getBlock().setType(NETHERRACK);
+                                }
+                            } else if (config.getShredDrops() == 2) {
+                                event.getBlock().setType(AIR);
+                            }
+                            if (event.getBlock().getType() == GRASS) {
+                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRASS_BREAK, 10, 1);
+                            } else if (event.getBlock().getType() == DIRT || event.getBlock().getType() == GRAVEL || event.getBlock().getType() == CLAY) {
+                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRAVEL_BREAK, 10, 1);
+                            } else if (event.getBlock().getType() == SAND) {
+                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_SAND_BREAK, 10, 1);
+                            } else {
+                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
+                            }
+                            if ((Tool.PICKAXE.contains(itemType) && ArrayUtils.contains(mats, event.getBlock().getType())) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
+                                Utilities.breakBlockNaturally(event.getBlock(), player);
+                            }
+
+                        }
+                    }, time / 4);
+                    used.add(blk);
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (coords[i] > 0) {
+                        coords[i] -= 1;
+                        Block blk1 = blk.getRelative(i == 0 ? -1 : 0, i == 1 ? -1 : 0, i == 2 ? -1 : 0);
+                        Block blk2 = blk.getRelative(i == 0 ? 1 : 0, i == 1 ? 1 : 0, i == 2 ? 1 : 0);
+                        if (blk1.getLocation().distanceSquared(original.getLocation()) < size + (-1 + 2 * Math.random())) {
+                            blocks(original, blk1, coords, time + 2, size, used, player, config, itemType);
+                        }
+                        if (blk2.getLocation().distanceSquared(original.getLocation()) < size + (-1 + 2 * Math.random())) {
+                            blocks(original, blk2, coords, time + 2, size, used, player, config, itemType);
+                        }
+                        coords[i] += 1;
+                    }
+                }
+            }
         }
     }
 
@@ -2605,8 +2463,8 @@ public class CustomEnchantment {
         public Siphon() {
             maxLevel = 4;
             loreName = "Siphon";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.swords, Storage.bows);
+            probability = 0;
+            enchantable = new Tool[]{BOW_, SWORD};
             conflicting = new Class[]{};
             description = "Drains the health of the mob that you attack, giving it to you";
             cooldown = 0;
@@ -2653,12 +2511,12 @@ public class CustomEnchantment {
         public Spectral() {
             maxLevel = 1;
             loreName = "Spectral";
-            chance = 0;
-            enchantable = enchantable = Storage.spades;
+            probability = 0;
+            enchantable = new Tool[]{SHOVEL};
             conflicting = new Class[]{};
             description = "Allows for cycling through a block's types";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -2900,9 +2758,10 @@ public class CustomEnchantment {
             }
             if (!evt.getClickedBlock().getType().equals(original) || data != originalInt) {
                 evt.getClickedBlock().setData((byte) data);
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
+                return true;
             }
-            return true;
+            return false;
         }
 
     }
@@ -2912,8 +2771,8 @@ public class CustomEnchantment {
         public Speed() {
             maxLevel = 4;
             loreName = "Speed";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{Meador.class, Weight.class};
             description = "Gives the player a speed boost";
             cooldown = 0;
@@ -2923,7 +2782,7 @@ public class CustomEnchantment {
         public boolean onScan(Player player, int level) {
             player.setWalkSpeed((float) Math.min((.05f * level * power) + .2f, 1));
             player.setFlySpeed((float) Math.min((.05f * level * power) + .2f, 1));
-            Storage.speed.add(player);
+            player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, true));
             return true;
         }
     }
@@ -2933,8 +2792,8 @@ public class CustomEnchantment {
         public Spikes() {
             maxLevel = 3;
             loreName = "Spikes";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{};
             description = "Damages entities the player jumps onto";
             cooldown = 0;
@@ -2959,8 +2818,8 @@ public class CustomEnchantment {
         public Spread() {
             maxLevel = 5;
             loreName = "Spread";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{Burst.class};
             description = "Fires an array of arrows simultaneously";
             cooldown = 0;
@@ -2972,9 +2831,9 @@ public class CustomEnchantment {
             Player player = (Player) originalArrow.getShooter();
             EnchantArrow.ArrowGenericMulitple ar = new EnchantArrow.ArrowGenericMulitple(originalArrow);
             Utilities.putArrow(originalArrow, ar, player);
-            Bukkit.getPluginManager().callEvent(new EntityShootBowEvent(player, player.getItemInHand(), originalArrow, (float) originalArrow.getVelocity().length()));
+            Bukkit.getPluginManager().callEvent(new EntityShootBowEvent(player, player.getInventory().getItemInMainHand(), originalArrow, (float) originalArrow.getVelocity().length()));
             if (!Utilities.eventStart(player, loreName)) {
-                Utilities.addUnbreaking(player.getItemInHand(), (int) Math.round(level / 2.0 + 1), player);
+                Utilities.addUnbreaking(player.getInventory().getItemInMainHand(), (int) Math.round(level / 2.0 + 1), player);
                 for (int i = 0; i < (int) Math.round(power * level * 4); i++) {
                     Vector v = originalArrow.getVelocity();
                     v.setX(v.getX() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
@@ -2986,7 +2845,7 @@ public class CustomEnchantment {
 
                     arrow.setFireTicks(originalArrow.getFireTicks());
                     arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
-                    EntityShootBowEvent event = new EntityShootBowEvent(player, player.getItemInHand(), arrow, (float) originalArrow.getVelocity().length());
+                    EntityShootBowEvent event = new EntityShootBowEvent(player, player.getInventory().getItemInMainHand(), arrow, (float) originalArrow.getVelocity().length());
                     Bukkit.getPluginManager().callEvent(event);
                     arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
                     arrow.setCritical(originalArrow.isCritical());
@@ -3003,12 +2862,12 @@ public class CustomEnchantment {
         public Stationary() {
             maxLevel = 1;
             loreName = "Stationary";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.swords, Storage.bows);
+            probability = 0;
+            enchantable = new Tool[]{BOW_, SWORD};
             conflicting = new Class[]{};
             description = "Negates any knockback when attacking mobs, leaving them clueless as to who is attacking";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level) {
@@ -3016,7 +2875,7 @@ public class CustomEnchantment {
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 if (evt.getDamage() < ent.getHealth()) {
                     evt.setCancelled(true);
-                    Utilities.addUnbreaking(((Player) evt.getDamager()).getItemInHand(), 1, ((Player) evt.getDamager()));
+                    Utilities.addUnbreaking(((Player) evt.getDamager()).getInventory().getItemInMainHand(), 1, ((Player) evt.getDamager()));
                     ent.damage(evt.getDamage());
                 }
             }
@@ -3036,22 +2895,22 @@ public class CustomEnchantment {
         public Stock() {
             maxLevel = 1;
             loreName = "Stock";
-            chance = 0;
-            enchantable = Storage.chestplates;
+            probability = 0;
+            enchantable = new Tool[]{CHESTPLATE};
             conflicting = new Class[]{};
             description = "Refills the player's item in hand when they run out";
-            cooldown = 0;
-            power = 1.0;
+            cooldown = -1;
+            power = -1.0;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
-            final ItemStack stk = evt.getPlayer().getItemInHand().clone();
+            final ItemStack stk = evt.getPlayer().getInventory().getItemInMainHand().clone();
             Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                 public void run() {
                     int current = -1;
                     for (int i = 0; i < evt.getPlayer().getInventory().getContents().length; i++) {
                         ItemStack s = evt.getPlayer().getInventory().getContents()[i];
-                        if (s != null && stk != null && evt.getPlayer().getItemInHand().getType().equals(AIR)) {
+                        if (s != null && stk != null && evt.getPlayer().getInventory().getItemInMainHand().getType().equals(AIR)) {
                             if (s.getType().equals(stk.getType())) {
                                 if (s.getData().getData() == stk.getData().getData()) {
                                     current = i;
@@ -3068,7 +2927,7 @@ public class CustomEnchantment {
                     }
                 }
             }, 1);
-            return true;
+            return false;
         }
     }
 
@@ -3077,12 +2936,12 @@ public class CustomEnchantment {
         public Switch() {
             maxLevel = 1;
             loreName = "Switch";
-            chance = 0;
-            enchantable = Storage.picks;
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE};
             conflicting = new Class[]{Shred.class, Anthropomorphism.class, Fire.class, Extraction.class, Pierce.class};
             description = "Replaces the clicked block with the leftmost block in your inventory when sneaking";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -3092,15 +2951,12 @@ public class CustomEnchantment {
                 if (event.isCancelled()) {
                     return false;
                 }
-                int ints[] = {6, 7, 23, 25, 29, 31, 32, 33, 37, 38, 39, 40, 49, 52, 54, 58, 61, 62, 63, 65, 68,
-                    69, 77, 81, 83, 84, 90, 106, 107, 111, 119, 120, 130, 131, 143, 145, 146, 151, 158, 166, 166, 175, 178,
-                    183, 184, 185, 186, 187, 209, 255, 323, 324, 330, 355, 397, 427, 428, 429, 430, 431};
                 Material mat = AIR;
                 byte bt = 0;
                 int c = -1;
                 for (int i = 0; i < 9; i++) {
                     if (evt.getPlayer().getInventory().getItem(i) != null) {
-                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && !ArrayUtils.contains(ints, evt.getPlayer().getInventory().getItem(i).getType().getId())) {
+                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && !ArrayUtils.contains(Storage.badBlocks, evt.getPlayer().getInventory().getItem(i).getType().getId())) {
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
                             c = i;
                             bt = evt.getPlayer().getInventory().getItem(i).getData().getData();
@@ -3114,7 +2970,7 @@ public class CustomEnchantment {
                 if (mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
                     bt = 14;
                 }
-                if (ArrayUtils.contains(ints, mat.getId()) || ArrayUtils.contains(ints, evt.getClickedBlock().getTypeId())) {
+                if (ArrayUtils.contains(Storage.badBlocks, mat.getId()) || ArrayUtils.contains(Storage.badBlocks, evt.getClickedBlock().getTypeId())) {
                     return false;
                 }
                 if (!(mat == evt.getClickedBlock().getType() && evt.getClickedBlock().getData() == bt)) {
@@ -3127,18 +2983,8 @@ public class CustomEnchantment {
                             }
                         }, 3);
                         evt.setCancelled(true);
-                        if (event.getPlayer().getItemInHand().getEnchantments().containsKey(SILK_TOUCH)) {
-                            for (ItemStack st : Utilities.silktouchDrops(event.getBlock())) {
-                                event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                            }
-                        } else if (event.getPlayer().getItemInHand().getEnchantments().containsKey(LOOT_BONUS_BLOCKS)) {
-                            for (ItemStack st : Utilities.fortuneDrops(event.getPlayer().getItemInHand().getEnchantments().get(LOOT_BONUS_BLOCKS), event.getBlock())) {
-                                event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock().getLocation()), st);
-                            }
-                        } else {
-                            event.getBlock().breakNaturally();
-                        }
-                        Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                        Utilities.breakBlockNaturally(event.getBlock(), evt.getPlayer());
+                        Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                         final Material m = mat;
                         final Byte b = bt;
                         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
@@ -3149,10 +2995,11 @@ public class CustomEnchantment {
                         }, 1);
                         Utilities.removeItem(evt.getPlayer(), evt.getPlayer().getInventory().getItem(c).getType(), (short) bt, 1);
                         evt.getPlayer().updateInventory();
+                        return true;
                     }
                 }
             }
-            return true;
+            return false;
         }
     }
 
@@ -3182,12 +3029,12 @@ public class CustomEnchantment {
         public Terraformer() {
             maxLevel = 1;
             loreName = "Terraformer";
-            chance = 0;
-            enchantable = Storage.spades;
+            probability = 0;
+            enchantable = new Tool[]{SHOVEL};
             conflicting = new Class[]{};
             description = "Places the leftmost blocks in the players inventory within a 7 block radius";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -3206,7 +3053,7 @@ public class CustomEnchantment {
                         total.add(l.getBlock());
                     }
                     bk(l.getBlock(), used, total, 0);
-                    int ints[] = {1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 21, 24, 35, 43, 45, 46, 47, 48, 79, 80, 82, 87, 88, 99,
+                    int ints[] = {1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 21, 24, 35, 43, 45, 46, 47, 48, 79, 80, 82, 87, 88, 98, 99,
                         100, 110, 112, 121, 125, 129, 153, 155, 159, 161, 162, 165, 168, 172, 174, 179, 181};
                     Material mat = AIR;
                     byte bt = 0;
@@ -3231,14 +3078,15 @@ public class CustomEnchantment {
                                 b.setData(bt);
                                 evt.getPlayer().updateInventory();
                                 if (Storage.rnd.nextInt(10) == 5) {
-                                    Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                                    Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                                 }
                             }
                         }
                     }
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
     }
 
@@ -3247,8 +3095,8 @@ public class CustomEnchantment {
         public Toxic() {
             maxLevel = 4;
             loreName = "Toxic";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.swords, Storage.bows);
+            probability = 0;
+            enchantable = new Tool[]{BOW_, SWORD};
             conflicting = new Class[]{};
             description = "Sickens the target, making them nauseous and unable to eat";
             cooldown = 0;
@@ -3286,8 +3134,8 @@ public class CustomEnchantment {
         public Tracer() {
             maxLevel = 4;
             loreName = "Tracer";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Guides the arrow to targets and then attacks";
             cooldown = 0;
@@ -3309,8 +3157,8 @@ public class CustomEnchantment {
         public Transformation() {
             maxLevel = 3;
             loreName = "Transformation";
-            chance = 0;
-            enchantable = Storage.swords;
+            probability = 0;
+            enchantable = new Tool[]{SWORD};
             conflicting = new Class[]{};
             description = "Occasionally causes the attacked mob to be transformed into its similar cousin";
             cooldown = 0;
@@ -3338,31 +3186,35 @@ public class CustomEnchantment {
 
     public static class Variety extends CustomEnchantment {
 
-        ItemStack[] logs = new ItemStack[]{new ItemStack(LOG, 1, (short) 0), new ItemStack(LOG, 1, (short) 1), new ItemStack(LOG, 1, (short) 2), new ItemStack(LOG, 1, (short) 3), new ItemStack(LOG_2, 1, (short) 0), new ItemStack(LOG_2, 1, (short) 1)};
-        ItemStack[] leaves = new ItemStack[]{new ItemStack(LEAVES, 1, (short) 0), new ItemStack(LEAVES, 1, (short) 1), new ItemStack(LEAVES, 1, (short) 2), new ItemStack(LEAVES, 1, (short) 3), new ItemStack(LEAVES_2, 1, (short) 0), new ItemStack(LEAVES_2, 1, (short) 1)};
+        ItemStack[] logs = new ItemStack[]{new ItemStack(LOG, 1, (short) 0), new ItemStack(LOG, 1, (short) 1),
+            new ItemStack(LOG, 1, (short) 2), new ItemStack(LOG, 1, (short) 3), new ItemStack(LOG_2, 1, (short) 0),
+            new ItemStack(LOG_2, 1, (short) 1)};
+        ItemStack[] leaves = new ItemStack[]{new ItemStack(LEAVES, 1, (short) 0), new ItemStack(LEAVES, 1, (short) 1),
+            new ItemStack(LEAVES, 1, (short) 2), new ItemStack(LEAVES, 1, (short) 3),
+            new ItemStack(LEAVES_2, 1, (short) 0), new ItemStack(LEAVES_2, 1, (short) 1)};
 
         public Variety() {
             maxLevel = 1;
             loreName = "Variety";
-            chance = 0;
-            enchantable = Storage.axes;
+            probability = 0;
+            enchantable = new Tool[]{AXE};
             conflicting = new Class[]{Fire.class};
             description = "Drops random types of wood or leaves";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
             if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
-                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), logs[Storage.rnd.nextInt(6)]);
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), logs[Storage.rnd.nextInt(6)]);
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
             } else if (evt.getBlock().getType() == LEAVES || evt.getBlock().getType() == LEAVES_2) {
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
-                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock().getLocation()), leaves[Storage.rnd.nextInt(6)]);
-                Utilities.addUnbreaking(evt.getPlayer().getItemInHand(), 1, evt.getPlayer());
+                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), leaves[Storage.rnd.nextInt(6)]);
+                Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
             }
             return true;
         }
@@ -3373,12 +3225,12 @@ public class CustomEnchantment {
         public Vortex() {
             maxLevel = 1;
             loreName = "Vortex";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.bows, Storage.swords);
+            probability = 0;
+            enchantable = new Tool[]{BOW_, SWORD};
             conflicting = new Class[]{};
             description = "Teleports mob loot and XP directly to the player";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onEntityKill(final EntityDeathEvent evt, int level) {
@@ -3407,8 +3259,8 @@ public class CustomEnchantment {
         public Weight() {
             maxLevel = 4;
             loreName = "Weight";
-            chance = 0;
-            enchantable = Storage.boots;
+            probability = 0;
+            enchantable = new Tool[]{BOOTS};
             conflicting = new Class[]{Meador.class, Speed.class};
             description = "Slows the player down but makes them stronger and more resistant to knockback";
             cooldown = 0;
@@ -3441,8 +3293,8 @@ public class CustomEnchantment {
 
         public boolean onScan(Player player, int level) {
             player.setWalkSpeed((float) (.164f - level * power * .014f));
-            Storage.speed.add(player);
             Utilities.addPotion(player, INCREASE_DAMAGE, 610, (int) Math.round(power * level));
+            player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, true));
             return true;
         }
     }
@@ -3454,12 +3306,12 @@ public class CustomEnchantment {
         public Apocalypse() {
             maxLevel = 1;
             loreName = "Apocalypse";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Unleashes hell";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -3474,16 +3326,16 @@ public class CustomEnchantment {
         public Ethereal() {
             maxLevel = 1;
             loreName = "Ethereal";
-            chance = 0;
-            enchantable = ArrayUtils.addAll(Storage.axes, ArrayUtils.addAll(Storage.boots, ArrayUtils.addAll(Storage.bows, ArrayUtils.addAll(Storage.chestplates, ArrayUtils.addAll(Storage.helmets, ArrayUtils.addAll(Storage.hoes, ArrayUtils.addAll(Storage.leggings, ArrayUtils.addAll(Storage.lighters, ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.rods, ArrayUtils.addAll(Storage.shears, ArrayUtils.addAll(Storage.spades, Storage.swords))))))))))));
+            probability = 0;
+            enchantable = new Tool[]{ALL};
             conflicting = new Class[]{};
             description = "Prevents tools from breaking";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onScanHand(Player player, int level) {
-            player.getItemInHand().setDurability((short) 0);
+            player.getInventory().getItemInMainHand().setDurability((short) 0);
             return true;
         }
 
@@ -3505,19 +3357,19 @@ public class CustomEnchantment {
         public Missile() {
             maxLevel = 1;
             loreName = "Missile";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Shoots a missile from the bow";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
             EnchantArrow.ArrowAdminMissile arrow = new EnchantArrow.ArrowAdminMissile((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
             evt.setCancelled(true);
-            Utilities.addUnbreaking(((Player) evt.getEntity()).getItemInHand(), 1, (Player) evt.getEntity());
+            Utilities.addUnbreaking(((Player) evt.getEntity()).getInventory().getItemInMainHand(), 1, (Player) evt.getEntity());
             Utilities.removeItem(((Player) evt.getEntity()), Material.ARROW, 1);
             return true;
         }
@@ -3528,12 +3380,12 @@ public class CustomEnchantment {
         public Singularity() {
             maxLevel = 1;
             loreName = "Singularity";
-            chance = 0;
-            enchantable = Storage.bows;
+            probability = 0;
+            enchantable = new Tool[]{BOW_};
             conflicting = new Class[]{};
             description = "Creates a black hole that attracts nearby entities and then discharges them";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -3549,12 +3401,12 @@ public class CustomEnchantment {
         public Unrepairable() {
             maxLevel = 1;
             loreName = "Unrepairable";
-            chance = 0;
-            enchantable = enchantable = ArrayUtils.addAll(Storage.axes, ArrayUtils.addAll(Storage.boots, ArrayUtils.addAll(Storage.bows, ArrayUtils.addAll(Storage.chestplates, ArrayUtils.addAll(Storage.helmets, ArrayUtils.addAll(Storage.hoes, ArrayUtils.addAll(Storage.leggings, ArrayUtils.addAll(Storage.lighters, ArrayUtils.addAll(Storage.picks, ArrayUtils.addAll(Storage.rods, ArrayUtils.addAll(Storage.shears, ArrayUtils.addAll(Storage.spades, Storage.swords))))))))))));
+            probability = 0;
+            enchantable = new Tool[]{ALL};
             conflicting = new Class[]{};
             description = "Prevents an item from being repaired";
             cooldown = 0;
-            power = 1.0;
+            power = -1.0;
         }
     }
 }
