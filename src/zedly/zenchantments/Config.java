@@ -3,7 +3,6 @@ package zedly.zenchantments;
 import java.io.*;
 import java.util.*;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.Material.ARROW;
 import org.bukkit.World;
@@ -12,21 +11,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+// This class manages indivudual world configs, loading them each from the config file. It will start the process
+//      to automatically update the config files if they are old
 public class Config {
 
-    public static final Set<Config> CONFIGS = new HashSet<>();
+    public static final Set<Config> CONFIGS = new HashSet<>(); // Set of all world configs on the current server
 
-    private final Map<String, CustomEnchantment> enchants;
-    private final Map<String, ElementalArrow> arrows;
-    private final double enchantRarity;
-    private final int maxEnchants;
-    private final boolean enchantPVP;
-    private final int shredDrops;
-    private final boolean explosionBlockBreak;
-    private final boolean descriptionLore;
-    private final ChatColor descriptionColor;
-    private final World world;
+    private final Map<String, CustomEnchantment> enchants;     // Set of active Custom Enchantments 
+    private final Map<String, ElementalArrow> arrows;          // Set of active Elemental Arrows
+    private final double enchantRarity;                        // Overall rarity of obtaining enchantments
+    private final int maxEnchants;                             // Max number of Custom Enchantments on a tool
+    private final boolean enchantPVP;                          // Determines whether enchantments can damage players
+    private final int shredDrops;                              // The setting (all, block, none) for shred drops 
+    private final boolean explosionBlockBreak;                 // Determines whether enchantment explosions cause world damage
+    private final boolean descriptionLore;                     // Determines if description lore appears on tools
+    private final ChatColor descriptionColor;                  // The color of the description lore
+    private final World world;                                 // The World associated with the config
 
+    // Constructs a new config object
     public Config(Map<String, CustomEnchantment> enchants, Map<String, ElementalArrow> arrows, double enchantRarity,
             int maxEnchants, boolean enchantPVP, int shredDrops, boolean explosionBlockBreak,
             boolean descriptionLore, ChatColor descriptionColor, World world) {
@@ -40,49 +42,59 @@ public class Config {
         this.descriptionLore = descriptionLore;
         this.descriptionColor = descriptionColor;
         this.world = world;
-        CONFIGS.add(this);
     }
 
+    // Returns a mapping of enchantment names to custom enchantment objects
     public Map<String, CustomEnchantment> getEnchants() {
         return enchants;
     }
 
+    // Returns a mapping of elemental arrow names to elemental arrow objects
     public Map<String, ElementalArrow> getArrows() {
         return arrows;
     }
 
+    // Returns the overall rarity of obtaining an enchantment
     public double getEnchantRarity() {
         return enchantRarity;
     }
 
+    // Returns the max number of enchantments applicable on a tool
     public int getMaxEnchants() {
         return maxEnchants;
     }
 
+    // Returns whether enchantments can damage players
     public boolean enchantPVP() {
         return enchantPVP;
     }
 
+    // Returns which block break setting is enabled for shred (0 = all; 1 = blocks; 2 = none)
     public int getShredDrops() {
         return shredDrops;
     }
 
+    // Returns if certain enchantments can break blocks with the explosions they create
     public boolean explosionBlockBreak() {
         return explosionBlockBreak;
     }
 
+    // Returns if description lore appears on tools
     public boolean descriptionLore() {
         return descriptionLore;
     }
 
+    // Returns the color of description lore
     public ChatColor getDescriptionColor() {
         return descriptionColor;
     }
 
+    // Returns the world associated with the config
     public World getWorld() {
         return world;
     }
 
+    // Loads, parses, and auto updates the config file, creating a new config for each map 
     public static void loadConfigs() {
         CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
@@ -101,23 +113,27 @@ public class Config {
                 }
                 YamlConfiguration c = new YamlConfiguration();
                 c.load(file);
-                int version = 4;
+                int[] version = new int[3];
                 try {
+                    String[] versionString;
                     try {
-                        version = Integer.parseInt(((String) c.getList("ZenchantmentsConfigVersion").get(0)).split("\\.")[1]);
+                        versionString = c.getString("ZenchantmentsConfigVersion").split("\\.");
                     } catch (NullPointerException ex) {
-                        version = Integer.parseInt(((String) c.get("ZenchantmentsConfigVersion")).split("\\.")[1]);
+                        versionString = ((String) c.getList("ZenchantmentsConfigVersion").get(0)).split("\\.");
                     }
-                } catch (NumberFormatException e) {
-                    version = 3;
+                    if (versionString.length == 3) {
+                        for (int i = 0; i < 3; i++) {
+                            version[i] = Integer.parseInt(versionString[i]);
+                        }
+                    } else {
+                        version = new int[]{0, 0, 0};
+                    }
+                } catch (Exception ex) {
+                    version = new int[]{0, 0, 0};
                 }
-                if (version < 4) {
-                    System.out.println("Updating Config File...");
-                    UpdateConfig.updateToCurrent(c);
-                    System.out.println("Update Complete");
-                }
+                UpdateConfig.update(c, version);
+
                 //Init variables
-                Map<String, CustomEnchantment> enchants = new HashMap<>();
                 Map<String, ElementalArrow> arrows = new HashMap<>();
                 final int shredDrops;
                 //Load Arrows & Recipes
@@ -169,132 +185,50 @@ public class Config {
                     default:
                         shredDrops = 0;
                 }
-                //Load Individual CustomEnchantment Configs
-                Map<String, List<String>> tempConfigs = new HashMap<>();
-                for (int x = 0; x < c.getList("enchantments").size(); x++) {
-                    String rawConfig = ("" + c.getList("enchantments").get(x)).replace("}", "").replace("{", "");
-                    String[] p = rawConfig.replace(", ", ",").split("=");
-                    List<String> parts = new ArrayList<>();
-                    parts.add(p[2].split(",")[0]);
-                    parts.add(p[4].split(",")[0]);
-                    parts.add(p[5].split(",")[0]);
-                    parts.add(p[6].split(",")[0]);
-                    parts.add(p[7].split(",")[0]);
-                    for (int i = 0; i < p[3].split(",").length - 1; i++) {
-                        parts.add(p[3].split(",")[i]);
-                    }
-                    tempConfigs.put(rawConfig.subSequence(0, rawConfig.indexOf("=")).toString().replace(" ", "").toLowerCase(), parts);
-                }
                 //Load CustomEnchantment Classes
+                Map<String, CustomEnchantment> enchantmentMap = new HashMap<>();
+                Map<String, LinkedHashMap<String, Object>> configInfo = new HashMap<>();
+                for (Map<String, LinkedHashMap<String, Object>> part
+                        : (List<Map<String, LinkedHashMap<String, Object>>>) c.get("enchantments")) {
+                    for (String name : part.keySet()) {
+                        configInfo.put(name, part.get(name));
+                    }
+                }
                 for (Class cl : CustomEnchantment.class.getClasses()) {
                     try {
                         CustomEnchantment ench = (CustomEnchantment) cl.newInstance();
-                        if (tempConfigs.containsKey(ench.loreName.toLowerCase().replace(" ", ""))) {
-                            List<String> conf = tempConfigs.get(ench.loreName.toLowerCase().replace(" ", ""));
-
-                            float chance = 1;
-                            try {
-                                chance = Float.parseFloat(conf.get(0));
-                            } catch (NumberFormatException e) {
+                        if (configInfo.containsKey(ench.loreName)) {
+                            LinkedHashMap<String, Object> data = configInfo.get(ench.loreName);
+                            ench.probability = (float) (double) data.get("Probability");
+                            ench.loreName = (String) data.get("Name");
+                            if (data.containsValue("Max Level")) {
+                                ench.maxLevel = (int) data.get("Max Level");
                             }
-                            ench.chance = chance;
-
-                            ench.loreName = conf.get(1);
-
-                            int max = 1;
-                            try {
-                                max = Integer.parseInt(conf.get(2));
-                            } catch (NumberFormatException e) {
+                            ench.cooldown = (int) data.get("Cooldown");
+                            if (data.containsValue("Power")) {
+                                ench.power = (double) data.get("Power");
                             }
-                            ench.maxLevel = Math.max(max, 1);
-
-                            int cooldown = 0;
-                            try {
-                                cooldown = Integer.parseInt(conf.get(3));
-                            } catch (NumberFormatException e) {
+                            Set<Tool> materials = new HashSet<>();
+                            for (String s : ((String) data.get("Tools")).split(", |\\,")) {
+                                materials.add(Tool.fromString(s));
                             }
-                            ench.cooldown = Math.max(cooldown, 0);
-
-                            double power = 1.0;
-                            try {
-                                power = Double.parseDouble(conf.get(4));
-                            } catch (NumberFormatException e) {
+                            materials.toArray(ench.enchantable);
+                            if (ench.probability != -1) {
+                                enchantmentMap.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
                             }
-                            ench.power = Math.max(power, 0.0);
-
-                            Object[] m = null;
-                            for (int i = 5; i < conf.size(); i++) {
-                                switch (conf.get(i)) {
-                                    case "Axe":
-                                        m = ArrayUtils.addAll(m, Storage.axes);
-                                        break;
-                                    case "Shovel":
-                                        m = ArrayUtils.addAll(m, Storage.spades);
-                                        break;
-                                    case "Sword":
-                                        m = ArrayUtils.addAll(m, Storage.swords);
-                                        break;
-                                    case "Pickaxe":
-                                        m = ArrayUtils.addAll(m, Storage.picks);
-                                        break;
-                                    case "Rod":
-                                        m = ArrayUtils.addAll(m, Storage.rods);
-                                        break;
-                                    case "Shears":
-                                        m = ArrayUtils.addAll(m, Storage.shears);
-                                        break;
-                                    case "Bow":
-                                        m = ArrayUtils.addAll(m, Storage.bows);
-                                        break;
-                                    case "Lighter":
-                                        m = ArrayUtils.addAll(m, Storage.lighters);
-                                        break;
-                                    case "Hoe":
-                                        m = ArrayUtils.addAll(m, Storage.hoes);
-                                        break;
-                                    case "Helmet":
-                                        m = ArrayUtils.addAll(m, Storage.helmets);
-                                        break;
-                                    case "Chestplate":
-                                        m = ArrayUtils.addAll(m, Storage.chestplates);
-                                        break;
-                                    case "Leggings":
-                                        m = ArrayUtils.addAll(m, Storage.leggings);
-                                        break;
-                                    case "Boots":
-                                        m = ArrayUtils.addAll(m, Storage.boots);
-                                        break;
-                                    case "All":
-                                        m = ArrayUtils.addAll(m, Storage.axes);
-                                        m = ArrayUtils.addAll(m, Storage.spades);
-                                        m = ArrayUtils.addAll(m, Storage.swords);
-                                        m = ArrayUtils.addAll(m, Storage.picks);
-                                        m = ArrayUtils.addAll(m, Storage.rods);
-                                        m = ArrayUtils.addAll(m, Storage.shears);
-                                        m = ArrayUtils.addAll(m, Storage.bows);
-                                        m = ArrayUtils.addAll(m, Storage.lighters);
-                                        m = ArrayUtils.addAll(m, Storage.hoes);
-                                        m = ArrayUtils.addAll(m, Storage.helmets);
-                                        m = ArrayUtils.addAll(m, Storage.chestplates);
-                                        m = ArrayUtils.addAll(m, Storage.leggings);
-                                        m = ArrayUtils.addAll(m, Storage.boots);
-                                        break;
-                                }
-                            }
-                            ench.enchantable = (Material[]) m;
-                        }
-                        if (ench.chance != -1) {
-                            enchants.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
                         }
                     } catch (InstantiationException | IllegalAccessException ex) {
                     }
                 }
-                Config config = new Config(enchants, arrows, enchantRarity, maxEnchants, enchantPVP, shredDrops, explosionBlockBreak, descriptionLore, descriptionColor, world);
+                Config config = new Config(enchantmentMap, arrows, enchantRarity, maxEnchants, enchantPVP, shredDrops,
+                        explosionBlockBreak, descriptionLore, descriptionColor, world);
+                Config.CONFIGS.add(config);
             } catch (IOException | InvalidConfigurationException ex) {
             }
         }
     }
 
+    // Returns the config object associated with the given world
     public static Config get(World world) {
         for (Config c : CONFIGS) {
             if (c.world.equals(world)) {
@@ -310,6 +244,7 @@ public class Config {
         return null;
     }
 
+    // Returns a mapping of custom enchantments and their level on a given tool
     public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk) {
         ItemStack stack;
         Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
@@ -341,7 +276,8 @@ public class Config {
             }
         }
         LinkedHashMap<CustomEnchantment, Integer> finalmap = new LinkedHashMap<>();
-        for (Class c : new Class[]{CustomEnchantment.Lumber.class, CustomEnchantment.Shred.class, CustomEnchantment.Mow.class, CustomEnchantment.Extraction.class}) {
+        for (Class c : new Class[]{CustomEnchantment.Lumber.class, CustomEnchantment.Shred.class,
+            CustomEnchantment.Mow.class, CustomEnchantment.Pierce.class, CustomEnchantment.Extraction.class}) {
             CustomEnchantment e = null;
             for (CustomEnchantment en : getEnchants().values()) {
                 if (en.getClass().equals(c)) {
@@ -357,21 +293,27 @@ public class Config {
         return finalmap;
     }
 
+    // Returns the custom enchantment from the lore name 
     private CustomEnchantment getEnchant(String raw) {
         CustomEnchantment e = null;
         if (raw != null && raw.length() > 2) {
             int index1 = raw.lastIndexOf(" ");
-            if (index1 == -1) {
+            if (index1 < 0) {
                 return e;
             }
-            String enchant = raw.substring(2, index1);
-            if (getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
-                e = getEnchants().get(enchant.replace(" ", "").toLowerCase());
+            try {
+                String enchant = raw.substring(2, index1);
+                if (getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
+                    e = getEnchants().get(enchant.replace(" ", "").toLowerCase());
+                }
+            } catch (StringIndexOutOfBoundsException ex) {
+                System.out.println("Zenchantments error parsing item with lore: " + raw);
             }
         }
         return e;
     }
 
+    // Adds lore descriptions to a given item stack, but will remove a certain lore if the enchant is to be removed
     public ItemStack addDescriptions(ItemStack stk, CustomEnchantment delete) {
         stk = removeDescriptions(stk, delete);
         if (stk != null) {
@@ -407,6 +349,7 @@ public class Config {
         return stk;
     }
 
+    // Removes the lore description from a given item
     public ItemStack removeDescriptions(ItemStack stk, CustomEnchantment delete) {
         if (stk != null) {
             if (stk.hasItemMeta()) {
@@ -428,7 +371,8 @@ public class Config {
                                 lore.add(s);
                             }
                         } else if (delete != null) {
-                            if (!delete.description.contains(ChatColor.stripColor(s)) && !current.description.contains(ChatColor.stripColor(s))) {
+                            if (!delete.description.contains(ChatColor.stripColor(s))
+                                    && !current.description.contains(ChatColor.stripColor(s))) {
                                 lore.add(s);
                             }
                         } else if (!current.description.contains(ChatColor.stripColor(s))) {

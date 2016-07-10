@@ -16,66 +16,81 @@ import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
 import particles.ParticleEffect;
 
+// EnchantArrows is the defualt structure for these arrows. Each arrow below it will extend this class
+//      and will override any methods as neccecary in its behavior
 public class EnchantArrow implements AdvancedArrow {
 
-    private final Projectile entity;
-    private int tick;
-    private final int level;
-    private final double power;
+    private final Projectile entity;    // The Arrow associated with the EnchantArrow
+    private int tick;                   // The current tick
+    private final int level;            // The enchantment's level
+    private final double power;         // The enchantment's power level
 
-//Empty Methods
+    // Creates a new EnchantArrow with the given Projectile
     public EnchantArrow(Projectile entity) {
         this(entity, 0);
     }
 
+    // Creates a new ElementalArrow with the given Projectile and enchant level
     public EnchantArrow(Projectile entity, int level) {
         this(entity, level, 1f);
     }
 
+    // Creates a new ElementalArrow with the given Projectile, enchant level, and enchant power
     public EnchantArrow(Projectile entity, int level, double power) {
         this.entity = entity;
         this.level = level;
         this.power = power;
     }
 
-    public int getTick() {
-        return tick;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public double getPower() {
-        return power;
-    }
-
-    public Projectile getArrow() {
-        return entity;
-    }
-
+    // Advances the arrow's tick forward one
     public void tick() {
         tick++;
     }
 
+    // Returns the current tick of the arrow
+    public int getTick() {
+        return tick;
+    }
+
+    // Returns the Enchantment level for the Custom Enchantment on the arrow
+    public int getLevel() {
+        return level;
+    }
+
+    // Returns the Enchantment power for the Custom Enchantment on the arrow
+    public double getPower() {
+        return power;
+    }
+
+    // Returns the Arrow associated with the ElementalArrow
+    public Projectile getArrow() {
+        return entity;
+    }
+
+    // Called when the player shoots an arrow of this type
     public void onLaunch(LivingEntity player, List<String> lore) {
     }
 
+    // Called throughout the flight of the arrow
     public void onFlight() {
     }
 
+    // Called when the arrow hits a block
     public void onImpact() {
         die();
     }
 
+    // Called when the arrow kills an entity
     public void onKill(EntityDeathEvent evt) {
     }
 
+    // Called when the arrow hits an entity
     public boolean onImpact(EntityDamageByEntityEvent evt) {
         onImpact();
         return true;
     }
 
+    // Called when the arrow has finished any functionality
     public void die() {
         final Entity e = entity;
         final EnchantArrow arrow = this;
@@ -480,7 +495,7 @@ public class EnchantArrow implements AdvancedArrow {
         public void onLaunch(LivingEntity player, List<String> lore) {
             final Config config = Config.get(player.getWorld());
             Location playLoc = player.getLocation();
-            final Location target = Utilities.getCenter(player.getTargetBlock((HashSet<Byte>) null, 220).getLocation());
+            final Location target = Utilities.getCenter(player.getTargetBlock((HashSet<Byte>) null, 220));
             target.setY(target.getY() + .5);
             final Location c = playLoc;
             c.setY(c.getY() + 1.1);

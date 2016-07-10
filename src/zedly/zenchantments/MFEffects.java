@@ -8,18 +8,18 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import static org.bukkit.potion.PotionEffectType.*;
 
+// This is "Medium Frequency Effects", called every 5 ticks to perform certain actions within the plugin
 public class MFEffects implements Runnable {
-    
+
     public void run() {
         anthropomorphism();
         scanPlayers();
-        speedPlayers();
+        speedPlayers(false);
         updateBlocks();
-        
     }
 
     // Removes Anthropomorphism blocks when they are dead
-    private void anthropomorphism() {
+    private static void anthropomorphism() {
         Iterator it = Storage.idleBlocks.keySet().iterator();
         while (it.hasNext()) {
             FallingBlock b = (FallingBlock) it.next();
@@ -37,7 +37,7 @@ public class MFEffects implements Runnable {
     }
 
     // Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
-    private void scanPlayers() {
+    private static void scanPlayers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasMetadata("ze.haste")) {
                 boolean has = false;
@@ -77,15 +77,9 @@ public class MFEffects implements Runnable {
     }
 
     // Sets player fly and walk speed to default after certain enchantments are removed
-    private void speedPlayers() {
-        Iterator it = Storage.speed.iterator();
-        while (it.hasNext()) {
-            Player player = (Player) it.next();
+    public static void speedPlayers(boolean checkAll) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             Config world = Config.get(player.getWorld());
-            if (!player.isOnline()) {
-                it.remove();
-                continue;
-            }
             boolean check = false;
             for (ItemStack stk : player.getInventory().getArmorContents()) {
                 Map<CustomEnchantment, Integer> map = world.getEnchants(stk);
@@ -96,17 +90,17 @@ public class MFEffects implements Runnable {
                     }
                 }
             }
-            if (!check) {
+            if (player.hasMetadata("ze.speed") && (!check || checkAll)) {
+                player.removeMetadata("ze.speed", Storage.zenchantments);
                 player.setFlySpeed(.1f);
                 player.setWalkSpeed(.2f);
-                it.remove();
                 break;
             }
         }
     }
 
     // Removes the blocks from NetherStep and FrozenStep after a peroid of time
-    private void updateBlocks() {
+    private static void updateBlocks() {
         Iterator it = Storage.waterLocs.keySet().iterator();
         while (it.hasNext()) {
             Location location = (Location) it.next();
@@ -124,5 +118,5 @@ public class MFEffects implements Runnable {
             }
         }
     }
-    
+
 }

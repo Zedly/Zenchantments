@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+// This is "High Frequency Effects", called every tick to perform certain actions within the plugin
 public class HFEffects implements Runnable {
 
     public void run() {

@@ -20,9 +20,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
 import particles.ParticleEffect;
+import particles.ParticleEffectOld;
 
+// This contains extraneous watcher methods that are not relevant to arrows or enchantments
 public class Watcher implements Listener {
 
+    // Fires a laser effect from dispensers if a tool with the Laser enchantment is dispensed
     @EventHandler
     public void onBlockDispense(BlockDispenseEvent evt) {
         Config config = Config.get(evt.getBlock().getWorld());
@@ -43,8 +46,8 @@ public class Watcher implements Listener {
                     int level = config.getEnchants(stk).get(ench);
                     int range = 6 + (int) Math.round(level * ench.power * 3);
                     Block blk = evt.getBlock().getRelative(((Dispenser) evt.getBlock().getState().getData()).getFacing(), range);
-                    Location play = Utilities.getCenter(evt.getBlock().getLocation());
-                    Location target = Utilities.getCenter(blk.getLocation());
+                    Location play = Utilities.getCenter(evt.getBlock());
+                    Location target = Utilities.getCenter(blk);
                     play.setY(play.getY() - .5);
                     target.setY(target.getY() + .5);
                     Location c = play;
@@ -55,7 +58,11 @@ public class Watcher implements Listener {
                         tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
                         tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
                         tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                        ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                        if (Bukkit.getVersion().contains("1.10")) {
+                            ParticleEffect.REDSTONE.display(tempLoc, 32);
+                        } else {
+                            ParticleEffectOld.REDSTONE.display(new ParticleEffectOld.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                        }
                         for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
                             if (ent.getLocation().distance(tempLoc) < .75) {
                                 if (ent instanceof LivingEntity) {
@@ -74,6 +81,7 @@ public class Watcher implements Listener {
         }
     }
 
+    // Prevents falling block entities from Anthropomorphism from becoming solid blocks or disappearing
     @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent evt) {
         if ((evt.getEntityType() == EntityType.FALLING_BLOCK)) {
@@ -83,6 +91,8 @@ public class Watcher implements Listener {
         }
     }
 
+    // Teleports item stacks to a certain location as they are created from breaking a block or killing an entity if 
+    //      a Grab or Vortex enchantment was used
     @EventHandler
     public void onItemSpawn(final ItemSpawnEvent evt) {
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
@@ -94,7 +104,8 @@ public class Watcher implements Listener {
                             e.teleport(Storage.grabLocs.get(block));
                         }
                     }
-                    if (block.getLocation().getBlockX() == loc.getBlockX() && block.getLocation().getBlockY() == loc.getBlockY() && block.getLocation().getBlockZ() == loc.getBlockZ()) {
+                    if (block.getLocation().getBlockX() == loc.getBlockX() && block.getLocation().getBlockY() == loc.getBlockY()
+                            && block.getLocation().getBlockZ() == loc.getBlockZ()) {
                         evt.getEntity().teleport(Storage.grabLocs.get(block));
                         evt.getEntity().setPickupDelay(0);
                     }
@@ -117,6 +128,7 @@ public class Watcher implements Listener {
         }, 1);
     }
 
+    // Prevents players from harvesting materials from the Water Walker and Fire Walker trails
     @EventHandler
     public void onIceOrLavaBreak(BlockBreakEvent evt) {
         if (Storage.waterLocs.containsKey(evt.getBlock().getLocation()) || Storage.fireLocs.containsKey(evt.getBlock().getLocation())) {
@@ -124,6 +136,8 @@ public class Watcher implements Listener {
         }
     }
 
+    // Randomly adds CustomEnchantments to an item based off the overall probability, enchantments' relative 
+    //      probability, and the level at which the item is being enchanted if the player has permission
     @EventHandler
     public void onEnchantItem(EnchantItemEvent evt) {
         Config config = Config.get(evt.getEnchantBlock().getWorld());
@@ -146,19 +160,19 @@ public class Watcher implements Listener {
             for (CustomEnchantment ench : config.getEnchants().values()) {
                 boolean b = true;
                 for (CustomEnchantment e : enchAdd) {
-                    if (ArrayUtils.contains(ench.conflicting, e.getClass()) || enchAdd.contains(ench) || e.chance <= 0) {
+                    if (ArrayUtils.contains(ench.conflicting, e.getClass()) || enchAdd.contains(ench) || e.probability <= 0) {
                         b = false;
                     }
                 }
-                if (b && (ArrayUtils.contains(ench.enchantable, evt.getItem().getType()) || evt.getItem().getType().equals(BOOK))) {
+                if (b && (ench.validMaterial(evt.getItem().getType()) || evt.getItem().getType().equals(BOOK))) {
                     enchs.add(ench);
-                    totalChance += ench.chance;
+                    totalChance += ench.probability;
                 }
             }
             double decision = (Storage.rnd.nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), l);
             float running = 0;
             for (CustomEnchantment ench : enchs) {
-                running += ench.chance;
+                running += ench.probability;
                 if (running > decision) {
                     String level = Utilities.getRomanString(Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost()));
                     lore.add(ChatColor.GRAY + ench.loreName + " " + level);
@@ -184,6 +198,7 @@ public class Watcher implements Listener {
         evt.getItem().setItemMeta(toSet.getItemMeta());
     }
 
+    // Removes certain potion effects given by enchantments when the enchanted items are removed
     @EventHandler
     public void onInventoryClick(InventoryClickEvent evt) {
         if (evt.getInventory() != null) {
@@ -208,6 +223,7 @@ public class Watcher implements Listener {
         }
     }
 
+    // Determines if a player has permission to craft elemental arrows
     @EventHandler
     public void onArrowCraft(CraftItemEvent evt) {
         Config config = Config.get(evt.getWhoClicked().getWorld());
@@ -222,6 +238,7 @@ public class Watcher implements Listener {
         }
     }
 
+    // Prevents players from being able to eat if they are stored within the 'hungerPlayers' set in Storage
     @EventHandler
     public void onEat(PlayerInteractEvent evt) {
         if (evt.getPlayer().getItemInHand().getType().isEdible() && (evt.getAction().equals(RIGHT_CLICK_AIR)
@@ -230,6 +247,7 @@ public class Watcher implements Listener {
         }
     }
 
+    // Prevents arrows with the 'ze.arrow' metadata from being able to be picked up by removing them
     @EventHandler
     public void onArrowPickup(PlayerPickupItemEvent evt) {
         if (evt.getItem().hasMetadata("ze.arrow")) {

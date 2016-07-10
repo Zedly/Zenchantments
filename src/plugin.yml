@@ -1,6 +1,6 @@
 name: Zenchantments
 main: zedly.zenchantments.Zenchantments
-version: 1.4.0
+version: 1.4.1
 commands:
   arrow:
     description: Gives basic access; /arrow help.
@@ -34,13 +34,13 @@ permissions:
     default: false
   zenchantments.command.info:
     description: Returns descriptions of the enchantments or arrows in hand
-    default: false
+    default: true
   zenchantments.command.list:
     description: Returns a list of enchantments and arrows
-    default: false
+    default: true
   zenchantments.command.onoff:
     description: Enables or disables certain custom enchantments for the user
-    default: false
+    default: true
   zenchantment.command.reload:
     description: Reloads the plugin config file
     default: false

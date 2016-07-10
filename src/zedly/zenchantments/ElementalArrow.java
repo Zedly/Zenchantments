@@ -9,71 +9,88 @@ import org.bukkit.inventory.*;
 import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
 
+// ElementalArrow is the defualt structure for these arrows. Each arrow below it will extend this class
+//      and will override any methods as neccecary in its behavior
 public class ElementalArrow implements AdvancedArrow {
 
-    private final Projectile arrow;
-    private int tick;
+    private final Projectile arrow;   // The Arrow associated with the ElementalArrow
+    private int tick;                 // The current tick
 
-//Empty Methods
+    // Creates a new ElementalArrow without a Projectile, used in the config setup process
     public ElementalArrow() {
         this(null);
     }
 
+    // Creates a new ElementalArrow with the given Projectile
     public ElementalArrow(Projectile arrow) {
         this.arrow = arrow;
     }
 
+    // Advances the arrow's tick forward one
+    public void tick() {
+        tick++;
+    }
+    
+    // Returns the current tick of the arrow
     public int getTick() {
         return tick;
     }
 
-    public void tick() {
-        tick++;
-    }
-
+    // Returns the Arrow associated with the ElementalArrow
     public Projectile getArrow() {
         return arrow;
     }
 
+    // Returns the arrow's recipe
     public static Recipe getRecipe(ItemStack is) {
         return null;
     }
 
+    // Called when the player shoots an arrow of this type
     public void onLaunch(LivingEntity player, List<String> lore) {
     }
 
+    // Called throughout the flight of the arrow
     public void onFlight() {
     }
 
+    // Called when the arrow hits a block
     public void onImpact() {
         die();
     }
 
+    // Called when the arrow kills an entity
     public void onKill(EntityDeathEvent evt) {
     }
 
+    // Called when the arrow hits an entity
     public boolean onImpact(EntityDamageByEntityEvent evt) {
         LivingEntity ent = (LivingEntity) evt.getEntity();
         onImpact();
         return true;
     }
 
+    // Returns the name of the arrow
     public String getName() {
         return null;
     }
 
+    // Returns the description of the arrow
     public String getDescription() {
         return null;
     }
 
+    // Returns the command with necessary parameters for creating the arrow
     public String getCommand() {
         return null;
     }
 
+    // Creates the lore for the arrow with the given arguments
     public List<String> constructArrow(String[] args) {
         return null;
     }
 
+    // Called when the arrow has finished any functionality
     public void die() {
         final Entity e = arrow;
         final ElementalArrow arrow2 = this;

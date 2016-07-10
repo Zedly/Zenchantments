@@ -3,23 +3,42 @@ package zedly.zenchantments;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.GameMode.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
+import static org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS;
+import static org.bukkit.enchantments.Enchantment.SILK_TOUCH;
 import org.bukkit.entity.*;
+import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.*;
 import org.bukkit.potion.*;
 
 public class Utilities {
 
-    // Player player: Player whose inventory is being searched
-    // Returns an ArrayList of ItemStacks of the held item and armor
+    // Returns the ItemStack the player used in any recent event
+    public static ItemStack usedStack(Player player) {
+        ItemStack m = player.getInventory().getItemInMainHand();
+        ItemStack o = player.getInventory().getItemInOffHand();
+        boolean main = Tool.fromMaterial(m.getType()).canRightClickAction();
+        boolean off = Tool.fromMaterial(o.getType()).canRightClickAction();
+        Block blk = player.getTargetBlock((HashSet<Byte>) null, 1);
+        if (blk == null || blk.getType() == AIR) {
+            //Bukkit.broadcastMessage(main ? "m" : off ? "o" : "m");
+            return main ? m : off ? o : m;
+        } else {
+            //Bukkit.broadcastMessage(main ? "m" : "o");
+            return main ? m : o;
+        }
+    }
+
+    // Returns an ArrayList of ItemStacks of the player's held item and armor
     public static List<ItemStack> getRelevant(Player player) {
         List<ItemStack> stk = new ArrayList<>();
         stk.addAll(Arrays.asList(player.getInventory().getArmorContents()));
-        stk.add(player.getItemInHand());
+        stk.add(usedStack(player));
         Iterator<ItemStack> it = stk.iterator();
         while (it.hasNext()) {
             if (it.next() == null) {
@@ -30,6 +49,8 @@ public class Utilities {
 
     }
 
+    // Removes the given ItemStack's durability by the given 'damage' and then sets the item in the given players hand.
+    //      This also takes into account the unbreaking enchantment
     public static void addUnbreaking(ItemStack stack, int damage, Player player) {
         if (!player.getGameMode().equals(CREATIVE)) {
             for (int i = 0; i < damage; i++) {
@@ -42,6 +63,8 @@ public class Utilities {
         }
     }
 
+    // Removes the given ItemStack's durability by the given 'damage'
+    //      This also takes into account the unbreaking enchantment
     public static void addUnbreaking(Player player, ItemStack is, int damage) {
         if (!player.getGameMode().equals(CREATIVE)) {
             for (int i = 0; i < damage; i++) {
@@ -52,6 +75,7 @@ public class Utilities {
         }
     }
 
+    // Removes a certain number of an item stack of the given description from the players inventory
     public static void removeItem(Player player, Material mat, short data, int amount) {
         if (!player.getGameMode().equals(CREATIVE)) {
             Inventory inv = player.getInventory();
@@ -72,14 +96,18 @@ public class Utilities {
         }
     }
 
+    // Removes a certain number of an item stack of the given description from the players inventory
     public static void removeItem(Player player, Material mat, int amount) {
         removeItem(player, mat, (short) 0, amount);
     }
 
+    // Removes a certain number of an item stack of the given description from the players inventory
     public static void removeItem(Player player, ItemStack is) {
         removeItem(player, is.getType(), is.getDurability(), is.getAmount());
     }
 
+    // Removes a certain number of an item stack of the given description from the players inventory and returns true
+    //      if the item stack was in their inventory
     public static boolean removeItemCheck(Player player, Material mat, short data, int amount) {
         if (player.getGameMode().equals(CREATIVE)) {
             return true;
@@ -103,6 +131,7 @@ public class Utilities {
         return false;
     }
 
+    // Returns a level for the enchant event given the XP level and the enchantments max level
     public static int getEnchantLevel(int maxlevel, int levels) {
         if (maxlevel == 1) {
             return 1;
@@ -117,6 +146,7 @@ public class Utilities {
         }
     }
 
+    // Returns the english number representation of the given roman number string
     public static int getNumber(String numeral) {
         switch (numeral.toUpperCase()) {
             case "-":
@@ -146,6 +176,7 @@ public class Utilities {
         }
     }
 
+    // Returns the roman number string representation of the given english number
     public static String getRomanString(int number) {
         switch (number) {
             case 0:
@@ -175,6 +206,7 @@ public class Utilities {
         }
     }
 
+    // Returns the roman number string representation of the given english number, capped at the int 'limit'
     public static String getRomanString(int number, int limit) {
         if (number > limit) {
             return getRomanString(limit);
@@ -183,7 +215,8 @@ public class Utilities {
         }
     }
 
-    public static ArrayList<ItemStack> fortuneDrops(int level, Block blk) {
+    // Returns a set of item stacks that would be dropped during a normal block break event with fortune
+    public static ArrayList<ItemStack> getFortuneDrops(int level, Block blk) {
         Material mat = blk.getType();
         ArrayList<ItemStack> stacks = new ArrayList<>();
         int prob = Storage.rnd.nextInt(100);
@@ -279,10 +312,12 @@ public class Utilities {
         return stacks;
     }
 
-    public static ArrayList<ItemStack> silktouchDrops(Block blk) {
+    // Returns a set of item stacks that would be dropped during a normal block break event with silk touch
+    public static ArrayList<ItemStack> getSilkTouchDrops(Block blk) {
         ArrayList<ItemStack> stacks = new ArrayList<>();
         Material mat = blk.getType();
         Material m;
+        ItemStack stk = null;
         switch (mat) {
             case COAL_ORE:
             case DIAMOND_ORE:
@@ -297,25 +332,23 @@ public class Utilities {
             case SEA_LANTERN:
             case THIN_GLASS:
             case ENDER_CHEST:
-            case VINE:
             case MELON_BLOCK:
             case GLOWSTONE:
             case CLAY:
             case SNOW_BLOCK:
             case BOOKSHELF:
             case DEAD_BUSH:
+            case GRAVEL:
+            case WEB:
             case HUGE_MUSHROOM_1:
             case HUGE_MUSHROOM_2:
                 m = mat;
-                ItemStack stk = new ItemStack(m, 1);
-                stacks.add(stk);
+                stk = new ItemStack(m, 1);
                 break;
             case STAINED_GLASS_PANE:
             case STAINED_GLASS:
             case DIRT:
             case STONE:
-            case DOUBLE_PLANT:
-            case LONG_GRASS:
             case LEAVES:
             case LEAVES_2:
                 short s = (short) blk.getData();
@@ -323,21 +356,35 @@ public class Utilities {
                     s -= 8;
                 }
                 m = mat;
-                ItemStack stk2 = new ItemStack(m, 1, s);
-                stacks.add(stk2);
+                stk = new ItemStack(m, 1, s);
                 break;
             case GLOWING_REDSTONE_ORE:
             case REDSTONE_ORE:
-                ItemStack stk3 = new ItemStack(REDSTONE_ORE, 1);
-                stacks.add(stk3);
+                stk = new ItemStack(REDSTONE_ORE, 1);
+                break;
+            case MONSTER_EGGS:
+                switch (blk.getData()) {
+                    case 0:
+                        stk = new ItemStack(STONE);
+                        break;
+                    case 1:
+                        stk = new ItemStack(COBBLESTONE);
+                        break;
+                    default:
+                        stk = new ItemStack(SMOOTH_BRICK, 1, (short) (blk.getData() - 2));
+                }
                 break;
             default:
                 stacks.addAll(blk.getDrops());
                 break;
         }
+        if (stk != null) {
+            stacks.add(stk);
+        }
         return stacks;
     }
 
+    // Returns the exact center of a block of a given location
     public static Location getCenter(Location loc) {
         double x = loc.getX();
         double z = loc.getZ();
@@ -357,6 +404,12 @@ public class Utilities {
         return lo;
     }
 
+    // Returns the exact center of a block of a given block
+    public static Location getCenter(Block blk) {
+        return getCenter(blk.getLocation());
+    }
+
+    // Returns the nearby entities at any loction within the given range
     public static List<Entity> getNearbyEntities(Location loc, double x, double y, double z) {
         FallingBlock ent = loc.getWorld().spawnFallingBlock(loc, 132, (byte) 0);
         List<Entity> out = ent.getNearbyEntities(x, y, z);
@@ -364,6 +417,8 @@ public class Utilities {
         return out;
     }
 
+    // Advances the growth cycle of the given block if it is a plant. It will return true if it changed anything,
+    // otherwise false
     public static boolean grow(Block blk) {
         if (blk != null) {
             if (blk.getType() == COCOA) {
@@ -397,6 +452,7 @@ public class Utilities {
         return false;
     }
 
+    // Returns a direction integer, 0-8, for the given player's pitch and yaw
     public static int getDirection(Player player) {
         float direction = player.getLocation().getYaw();
         int in = 0;
@@ -425,6 +481,7 @@ public class Utilities {
         return in;
     }
 
+    // Returns a more simple direction integer, 0-6, for the given player's pitch and yaw
     public static int getSimpleDirection(float yaw, float pitch) {
         float direction = yaw;
         int in = 0;
@@ -450,6 +507,7 @@ public class Utilities {
         return in;
     }
 
+    // Adds an arrow entity into the arrow storage variable calls its launch method
     public static void putArrow(Entity e, EnchantArrow a, Player p) {
         Set<AdvancedArrow> ars;
         if (Storage.advancedProjectiles.containsKey(e)) {
@@ -462,6 +520,8 @@ public class Utilities {
         a.onLaunch(p, null);
     }
 
+    // Returns true if a player can use a certain enchantment at a certain time (permissions and cooldowns),
+    //      otherwise false
     public static boolean canUse(Player player, String ench) {
         if (!player.hasPermission("zenchantments.enchant.use")) {
             return false;
@@ -472,33 +532,39 @@ public class Utilities {
         return !EnchantPlayer.matchPlayer(player).isDisabled(ench);
     }
 
-    public static boolean eventStart(Player p, String e) {
-        if (Storage.duringEvents.containsKey(p)) {
-            if (Storage.duringEvents.get(p).contains(e)) {
+    // Stores a player and an enchantments in a map to prevent infinite recursion of method calls from the WatcherEnchant
+    //      Returns true of the player was already stored with the given enchantment
+    public static boolean eventStart(Player player, String enchantment) {
+        if (Storage.duringEvents.containsKey(player)) {
+            if (Storage.duringEvents.get(player).contains(enchantment)) {
                 return true;
             } else {
-                Storage.duringEvents.get(p).add(e);
+                Storage.duringEvents.get(player).add(enchantment);
                 return false;
             }
         } else {
             HashSet<String> s = new HashSet<>();
-            s.add(e);
-            Storage.duringEvents.put(p, s);
+            s.add(enchantment);
+            Storage.duringEvents.put(player, s);
             return false;
         }
     }
 
-    public static void eventEnd(Player p, String e) {
-        Storage.duringEvents.get(p).remove(e);
+    // Removes a player from the map that prevented them from being able to use the enchantment 
+    public static void eventEnd(Player player, String enchantment) {
+        Storage.duringEvents.get(player).remove(enchantment);
     }
 
+    // Returns true if the first given entity can damage the second given entity, otherwise false
     public static boolean canDamage(Entity damager, Entity entity) {
         if (!Storage.damagingPlayer.contains(damager)) {
             Storage.damagingPlayer.add(damager);
-            EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(damager, entity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1);
+            EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(damager, entity,
+                    EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1);
             Bukkit.getPluginManager().callEvent(evt);
             Storage.damagingPlayer.remove(damager);
-            if ((damager instanceof Player && !Config.get(damager.getWorld()).enchantPVP()) || !(entity instanceof LivingEntity)) {
+            if ((damager instanceof Player && !Config.get(damager.getWorld()).enchantPVP())
+                    || !(entity instanceof LivingEntity)) {
                 return false;
             }
             return !evt.isCancelled();
@@ -506,6 +572,7 @@ public class Utilities {
         return false;
     }
 
+    // Adds a potion effect of given length and intensity to the given entity. 
     public static void addPotion(LivingEntity ent, PotionEffectType type, int length, int intensity) {
         for (PotionEffect eff : ent.getActivePotionEffects()) {
             if (eff.getType().equals(type)) {
@@ -523,6 +590,7 @@ public class Utilities {
         ent.addPotionEffect(new PotionEffect(type, length, intensity));
     }
 
+    // Returns true if a player can change a given block, otherwise false
     public static boolean canEdit(Player player, Block block) {
         if (Storage.worldGuard == null) {
             return true;
@@ -531,28 +599,58 @@ public class Utilities {
         }
     }
 
-    public static byte place(Player player) {
-        boolean vertical = Utilities.getSimpleDirection(0, player.getLocation().getPitch()) == 5;
-        int horizontal = Utilities.getSimpleDirection(player.getLocation().getYaw(), 0);
-
-        byte data = player.getItemInHand().getData().getData();
-        switch (player.getItemInHand().getType()) {
-            case WOOD_STEP:
-                if (vertical) {
-                    return (byte) (data + 5);
-                }
-        }
-        return data;
-    }
-
+    // Returns an instance of an AdvancedArrow of the given class
     public static AdvancedArrow construct(Class cl, Projectile p) {
         try {
             Constructor ctor = cl.getDeclaredConstructor(Projectile.class);
             ctor.setAccessible(true);
             return (ElementalArrow) ctor.newInstance((Object) p);
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
+                IllegalArgumentException | InvocationTargetException ex) {
         }
         return null;
+    }
+
+    public static int getBlockXP(Material mat) {
+        switch (mat) {
+            case COAL_ORE:
+                return Storage.rnd.nextInt(3);
+            case DIAMOND_ORE:
+            case EMERALD_ORE:
+                return Storage.rnd.nextInt(5) + 3;
+            case LAPIS_ORE:
+            case QUARTZ_ORE:
+                return Storage.rnd.nextInt(4) + 2;
+            case REDSTONE_ORE:
+            case GLOWING_REDSTONE_ORE:
+                return Storage.rnd.nextInt(5) + 1;
+            case MOB_SPAWNER:
+                return Storage.rnd.nextInt(29) + 15;
+            default:
+                return 0;
+        }
+    }
+
+    public static void breakBlockNaturally(Block blk, Player player) {
+        if (player.getGameMode().equals(CREATIVE)) {
+            blk.setType(AIR);
+        } else if (player.getGameMode().equals(SURVIVAL) && !ArrayUtils.contains(Storage.badBlocks, blk.getType().getId())) {
+            if (player.getInventory().getItemInMainHand().getEnchantments().containsKey(SILK_TOUCH)) {
+                for (ItemStack st : Utilities.getSilkTouchDrops(blk)) {
+                    player.getWorld().dropItem(Utilities.getCenter(blk), st);
+                }
+                blk.setType(AIR);
+            } else if (player.getInventory().getItemInMainHand().getEnchantments().containsKey(LOOT_BONUS_BLOCKS)) {
+                for (ItemStack st : Utilities.getFortuneDrops(player.getInventory().getItemInMainHand().getEnchantments().get(LOOT_BONUS_BLOCKS), blk)) {
+                    player.getWorld().dropItem(Utilities.getCenter(blk), st);
+                }
+                ExperienceOrb o = (ExperienceOrb) player.getWorld().spawnEntity(Utilities.getCenter(blk), EXPERIENCE_ORB);
+                o.setExperience(getBlockXP(blk.getType()));
+                blk.setType(AIR);
+            } else {
+                blk.breakNaturally();
+            }
+        }
     }
 
 }

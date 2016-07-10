@@ -1,11 +1,10 @@
 package zedly.zenchantments;
-//For Bukkit & Spigot 1.9.X
+//For Bukkit & Spigot 1.9.X-1.10.X
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import java.io.*;
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
@@ -51,6 +50,7 @@ public class Zenchantments extends JavaPlugin {
 
     // Sets blocks to their natural states at shutdown
     public void onDisable() {
+        MFEffects.speedPlayers(true);
         getServer().getScheduler().cancelTasks(this);
         for (Location l : Storage.waterLocs.keySet()) {
             l.getBlock().setType(STATIONARY_WATER);
@@ -71,6 +71,7 @@ public class Zenchantments extends JavaPlugin {
         return CommandProcessor.onCommand(sender, command, commandlabel, args);
     }
 
+    // Returns true if the given item stack has a custom enchantment
     public boolean hasEnchantment(ItemStack stack) {
         boolean has = false;
         for (Config c : Config.CONFIGS) {
@@ -81,6 +82,7 @@ public class Zenchantments extends JavaPlugin {
         return has;
     }
 
+    // Returns enchantment names mapped to their level from the given item stack
     public Map<String, Integer> getEnchantments(ItemStack stack) {
         Map<String, Integer> enchantments = new TreeMap<>();
         for (Config c : Config.CONFIGS) {
@@ -92,13 +94,14 @@ public class Zenchantments extends JavaPlugin {
         return enchantments;
     }
 
+    // Returns true if the enchantment (given by the string) can be applied to the given item stack
     public boolean isCompatible(String enchantmentName, ItemStack stack) {
         boolean is = false;
         for (Config c : Config.CONFIGS) {
             Map<String, CustomEnchantment> ench = c.getEnchants();
             if (ench.containsKey(enchantmentName.toLowerCase())) {
-                is = ArrayUtils.contains(ench.get(enchantmentName.toLowerCase()).enchantable, stack.getType());
-                if (is){
+                is = ench.get(enchantmentName.toLowerCase()).validMaterial(stack);
+                if (is) {
                     return true;
                 }
             }
@@ -106,6 +109,8 @@ public class Zenchantments extends JavaPlugin {
         return is;
     }
 
+    // Adds the enchantments (given by the string) of level 'level' to the given item stack, returning true if the
+    //      action was successful
     public boolean addEnchantment(ItemStack stack, String name, int level) {
         for (Config c : Config.CONFIGS) {
             Map<String, CustomEnchantment> ench = c.getEnchants();
@@ -117,6 +122,8 @@ public class Zenchantments extends JavaPlugin {
         return false;
     }
 
+    // Removes the enchantment (given by the string) from the given item stack, returning true if the action was
+    //      successful
     public boolean removeEnchantment(ItemStack stack, String name) {
         for (Config c : Config.CONFIGS) {
             Map<String, CustomEnchantment> ench = c.getEnchants();

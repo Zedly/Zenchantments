@@ -9,17 +9,21 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+// This is the layout of Artifacts dropped by certain enchantments. This class manages how they are loaded from the
+//      artifact config, how they are created, and how they are dropped.
 public class Artifact {
 
-    private final String name;
-    private final List<String> lore;
-    private final Material material;
-    private final short materialData;
-    private final int[] range;
-    private final int[] durability;
-    private final int probability;
+    private final String name;         // The given name of the artifact item
+    private final List<String> lore;   // The lines of lore for the artifact item
+    private final Material material;   // The material of the artifact item
+    private final short materialData;  // The item data for the artifact item
+    private final int[] range;         // The range from which the artifact can be found
+    private final int[] durability;    // The range of durability for which the artifact can have
+    private final int probability;     // The relative probability of finding the given artifact
 
-    public Artifact(String name, List<String> lore, Material material, short materialData, int[] range, int[] durability, int probability) {
+    // Creates a new artifact object
+    public Artifact(String name, List<String> lore, Material material, short materialData, int[] range, 
+            int[] durability, int probability) {
         this.name = name;
         this.lore = lore;
         this.material = material;
@@ -29,6 +33,7 @@ public class Artifact {
         this.probability = probability;
     }
 
+    // Creates and returns a new item stack of the artifact
     public ItemStack generate() {
         ItemStack stk = new ItemStack(material, 1, materialData);
         ItemMeta meta = stk.getItemMeta();
@@ -40,7 +45,9 @@ public class Artifact {
         stk.setItemMeta(meta);
         return stk;
     }
-
+    
+    // Determines what artifacts can be dropped at the given block's y-value and picks one based on the relative 
+    //      probability, and then drops the artifact at the block's location
     public static void drop(Block block) {
         int locY = block.getLocation().getBlockY();
         float totalChance = 0;
@@ -62,6 +69,7 @@ public class Artifact {
         }
     }
 
+    // Loads the artifact config "artifacts.txt" and parses the information, storing each in "artifacts" in Storage
     public static void loadConfig() {
         InputStream stream = Zenchantments.class.getResourceAsStream("/resource/artifacts.txt");
         String raw = "";
@@ -95,7 +103,7 @@ public class Artifact {
                     Material material;
                     try {
                         material = Material.getMaterial(Integer.parseInt(s.split("\n")[1].split("Item ID: ")[1]));
-                        if (ArrayUtils.contains(Storage.badIds, material.getId())) {
+                        if (ArrayUtils.contains(Storage.badItems, material.getId())) {
                             System.err.println("Artifact #" + counter + "'s material ID is invalid. Ignoring artifact...");
                             continue;
                         }

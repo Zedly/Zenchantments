@@ -12,6 +12,9 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 
+// This class manages the combination of enchantments in an anvil. It takes into account conflicting enchantments, 
+//      the max number of enchantments per tool, and the enchantment's max level. It shuffles the results every time
+//      so that the player can find the combination they desire when there are conficting or too many enchantment
 public class AnvilMerge implements Listener {
 
     @EventHandler(priority = MONITOR)
@@ -49,7 +52,7 @@ public class AnvilMerge implements Listener {
                     } else {
                         boolean b = false;
                         if (firstItem.keySet().isEmpty()) {
-                            if (!ArrayUtils.contains(e.enchantable, view.getItem(0).getType())) {
+                            if (!e.validMaterial(view.getItem(0))) {
                                 b = true;
                             }
                         } else {
@@ -57,7 +60,7 @@ public class AnvilMerge implements Listener {
                                 if (ArrayUtils.contains(e1.conflicting, e.getClass())) {
                                     b = true;
                                 }
-                                if (!ArrayUtils.contains(e.enchantable, view.getItem(0).getType())) {
+                                if (!e.validMaterial(view.getItem(0))) {
                                     b = true;
                                 }
                             }

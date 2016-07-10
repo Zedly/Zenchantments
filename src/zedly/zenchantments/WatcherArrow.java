@@ -10,8 +10,12 @@ import org.bukkit.event.entity.*;
 import static org.bukkit.Material.*;
 import org.bukkit.inventory.ItemStack;
 
+// This is the watcher used by both the EnchantArrow and Elemental Arrow classes. Each method checks for certain events
+// and conditions and will call the relevant methods defined in the AdvancedArrow interface
+//      
 public class WatcherArrow implements Listener {
 
+    // Called when a player shoots a bow. This creates AdvancedArrows if the bow or arrows used call for this.
     @EventHandler(priority = EventPriority.HIGHEST)
     public boolean shoot(EntityShootBowEvent evt) {
         Config config = Config.get(evt.getEntity().getWorld());
@@ -35,6 +39,7 @@ public class WatcherArrow implements Listener {
         return true;
     }
 
+    // Called when a player tries to break a block created by web arrows
     @EventHandler
     public boolean mine(BlockBreakEvent evt) {
         if (evt.getBlock().getType() == WEB && Storage.webs.contains(evt.getBlock())) {
@@ -45,6 +50,7 @@ public class WatcherArrow implements Listener {
         return true;
     }
 
+    // Called when an arrow hits a block
     @EventHandler
     public boolean impact(ProjectileHitEvent evt) {
         if (Storage.advancedProjectiles.containsKey(evt.getEntity())) {
@@ -55,7 +61,8 @@ public class WatcherArrow implements Listener {
         }
         return true;
     }
-
+    
+    // Called when an arrow hits an entity
     @EventHandler
     public boolean entityHit(EntityDamageByEntityEvent evt) {
         if (evt.getDamager() instanceof Arrow) {
@@ -77,6 +84,7 @@ public class WatcherArrow implements Listener {
         return true;
     }
 
+    // Called when an arrow kills an entity; the advanced arrow is removed after this event
     @EventHandler
     public boolean entityDeath(EntityDeathEvent evt) {
         if (Storage.killedEntities.containsKey(evt.getEntity())) {
@@ -87,6 +95,7 @@ public class WatcherArrow implements Listener {
         return true;
     }
 
+    // Prevents lightning events from arrows from supercharging creepers
     @EventHandler
     public boolean charge(CreeperPowerEvent evt) {
         if (Storage.lightnings.contains(evt.getLightning())) {
@@ -95,6 +104,7 @@ public class WatcherArrow implements Listener {
         return true;
     }
 
+    // Prevents lightning events from arrows from changing pigs to pigmen
     @EventHandler
     public boolean pigzap(PigZapEvent evt) {
         if (Storage.lightnings.contains(evt.getLightning())) {
@@ -103,6 +113,7 @@ public class WatcherArrow implements Listener {
         return true;
     }
 
+    // Returns the arrow that it shot from the given player's inventory
     private ItemStack findArrowShot(Player player) {
         ItemStack[] inv = player.getInventory().getContents();
         for (ItemStack is : inv) {
