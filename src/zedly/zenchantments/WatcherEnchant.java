@@ -2,6 +2,7 @@ package zedly.zenchantments;
 
 import java.util.*;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.*;

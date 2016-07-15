@@ -19,8 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
-import particles.ParticleEffect;
-import particles.ParticleEffectOld;
+import zedly.particles.ParticleEffect;
+import zedly.particles.ParticleEffectOld;
 
 // This contains extraneous watcher methods that are not relevant to arrows or enchantments
 public class Watcher implements Listener {
@@ -58,10 +58,13 @@ public class Watcher implements Listener {
                         tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
                         tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
                         tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                        if (Bukkit.getVersion().contains("1.10")) {
-                            ParticleEffect.REDSTONE.display(tempLoc, 32);
-                        } else {
-                            ParticleEffectOld.REDSTONE.display(new ParticleEffectOld.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                        try {
+                            if (Bukkit.getVersion().contains("1.10")) {
+                                ParticleEffect.REDSTONE.display(tempLoc, 32);
+                            } else {
+                                ParticleEffectOld.REDSTONE.display(new ParticleEffectOld.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                            }
+                        }catch(Exception e){
                         }
                         for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
                             if (ent.getLocation().distance(tempLoc) < .75) {

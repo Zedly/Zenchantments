@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
-import particles.ParticleEffect;
+import zedly.particles.ParticleEffect;
 
 // EnchantArrows is the defualt structure for these arrows. Each arrow below it will extend this class
 //      and will override any methods as neccecary in its behavior
@@ -115,7 +115,10 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public void onImpact() {
-            ParticleEffect.CLOUD.display(getLevel(), 1.5f, getLevel(), .1f, 100 * getLevel(), Utilities.getCenter(getArrow().getLocation()), 32);
+            try {
+                ParticleEffect.CLOUD.display(getLevel(), 1.5f, getLevel(), .1f, 100 * getLevel(), Utilities.getCenter(getArrow().getLocation()), 32);
+            } catch (Exception e) {
+            }
             double radius = 1 + getLevel() * getPower();
             for (Entity e : getArrow().getNearbyEntities(radius, radius, radius)) {
                 if (!e.equals(getArrow().getShooter()) && Utilities.canDamage((Entity) getArrow().getShooter(), e)) {
@@ -134,7 +137,10 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public void onImpact() {
-            ParticleEffect.FLAME.display(getLevel(), 1.5f, getLevel(), .1f, 100 * getLevel(), Utilities.getCenter(getArrow().getLocation()), 32);
+            try {
+                ParticleEffect.FLAME.display(getLevel(), 1.5f, getLevel(), .1f, 100 * getLevel(), Utilities.getCenter(getArrow().getLocation()), 32);
+            } catch (Exception e) {
+            }
             double radius = 1 + getLevel() * getPower();
             for (Entity e : getArrow().getNearbyEntities(radius, radius, radius)) {
                 if (!e.equals(getArrow().getShooter()) && Utilities.canDamage((Entity) getArrow().getShooter(), e)) {
@@ -218,7 +224,10 @@ public class EnchantArrow implements AdvancedArrow {
                 } else if (evt.getEntity().getType().equals(EntityType.MUSHROOM_COW)) {
                     MushroomCow c = (MushroomCow) evt.getEntity();
                     if (c.isAdult()) {
-                        ParticleEffect.EXPLOSION_LARGE.display(0, 0, 0, 1f, 1, l, 32);
+                        try {
+                            ParticleEffect.EXPLOSION_LARGE.display(0, 0, 0, 1f, 1, l, 32);
+                        } catch (Exception e) {
+                        }
                         evt.getEntity().remove();
                         l.getWorld().spawnEntity(l, EntityType.COW);
                         l.getWorld().dropItemNaturally(l, new ItemStack(Material.RED_MUSHROOM, 5));
@@ -512,14 +521,20 @@ public class EnchantArrow implements AdvancedArrow {
                         loc2.setX(c.getX() + ((i1 + 10) * ((target.getX() - c.getX()) / (d * 5))));
                         loc2.setY(c.getY() + ((i1 + 10) * ((target.getY() - c.getY()) / (d * 5))));
                         loc2.setZ(c.getZ() + ((i1 + 10) * ((target.getZ() - c.getZ()) / (d * 5))));
-                        ParticleEffect.FLAME.display(0, 0, 0, .001f, 10, loc, 32);
-                        ParticleEffect.FLAME.display(0, 0, 0, .1f, 1, loc, 32);
+                        try {
+                            ParticleEffect.FLAME.display(0, 0, 0, .001f, 10, loc, 32);
+                            ParticleEffect.FLAME.display(0, 0, 0, .1f, 1, loc, 32);
+                        } catch (Exception e) {
+                        }
                         if (i1 % 5 == 0) {
                             target.getWorld().playSound(loc, Sound.ENTITY_WITHER_SPAWN, 10f, .1f);
                         }
                         if (i1 >= ((int) (d * 5) + 9) || loc2.getBlock().getType() != AIR) {
-                            ParticleEffect.EXPLOSION_HUGE.display(0, 0, 0, .01f, 10, loc2, 32);
-                            ParticleEffect.FLAME.display(0, 0, 0, 1f, 175, loc, 32);
+                            try {
+                                ParticleEffect.EXPLOSION_HUGE.display(0, 0, 0, .01f, 10, loc2, 32);
+                                ParticleEffect.FLAME.display(0, 0, 0, 1f, 175, loc, 32);
+                            } catch (Exception e) {
+                            }
                             loc2.setY(loc2.getY() + 5);
                             loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10, config.explosionBlockBreak(), config.explosionBlockBreak());
                         }
@@ -554,7 +569,10 @@ public class EnchantArrow implements AdvancedArrow {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
 
                     public void run() {
-                        ParticleEffect.SMOKE_LARGE.display(.75f, .75f, .75f, .001f, 50, l, 32);
+                        try {
+                            ParticleEffect.SMOKE_LARGE.display(.75f, .75f, .75f, .001f, 50, l, 32);
+                        } catch (Exception e) {
+                        }
                         l.getWorld().playSound(l, Sound.ENTITY_ENDERDRAGON_GROWL, 10f, .1f);
                     }
                 }, i);

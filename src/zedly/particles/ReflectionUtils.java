@@ -1,4 +1,4 @@
-package particles;
+package zedly.particles;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

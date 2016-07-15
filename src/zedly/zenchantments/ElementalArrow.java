@@ -42,7 +42,7 @@ public class ElementalArrow implements AdvancedArrow {
     }
 
     // Returns the arrow's recipe
-    public static Recipe getRecipe(ItemStack is) {
+    public Recipe getRecipe(ItemStack is) {
         return null;
     }
 
@@ -142,7 +142,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Bouncifying Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(SLIME_BALL).addIngredient(FEATHER).addIngredient(SLIME_BALL).addIngredient(FEATHER);
         }
 
@@ -263,7 +263,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Derp Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(SUGAR).addIngredient(SUGAR).addIngredient(SUGAR).addIngredient(SUGAR).addIngredient(SUGAR);
         }
 
@@ -324,7 +324,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Euphoria Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(GHAST_TEAR);
         }
 
@@ -380,7 +380,7 @@ public class ElementalArrow implements AdvancedArrow {
             die();
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(TNT);
         }
 
@@ -442,7 +442,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Fast Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(FEATHER);
         }
 
@@ -518,7 +518,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Grenade Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(TNT).addIngredient(BLAZE_POWDER).addIngredient(BLAZE_POWDER).addIngredient(BLAZE_POWDER).addIngredient(SNOW_BALL).addIngredient(SNOW_BALL);
         }
 
@@ -583,7 +583,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Harpoon Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(STRING).addIngredient(FLINT);
         }
 
@@ -639,7 +639,7 @@ public class ElementalArrow implements AdvancedArrow {
             die();
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(ICE).addIngredient(ICE).addIngredient(ICE);
         }
 
@@ -709,7 +709,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Leech Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(REDSTONE).addIngredient(REDSTONE).addIngredient(REDSTONE).addIngredient(REDSTONE);
         }
 
@@ -763,7 +763,7 @@ public class ElementalArrow implements AdvancedArrow {
             die();
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(BLAZE_ROD).addIngredient(BLAZE_ROD);
         }
 
@@ -823,7 +823,7 @@ public class ElementalArrow implements AdvancedArrow {
             die();
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(FERMENTED_SPIDER_EYE).addIngredient(FERMENTED_SPIDER_EYE);
         }
 
@@ -888,7 +888,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Supersonic Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(SUGAR).addIngredient(NETHER_STALK).addIngredient(GLOWSTONE_DUST).addIngredient(GOLD_NUGGET).addIngredient(GOLD_NUGGET);
         }
 
@@ -938,7 +938,7 @@ public class ElementalArrow implements AdvancedArrow {
             die();
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(ENDER_PEARL).addIngredient(ENDER_PEARL);
         }
 
@@ -997,7 +997,7 @@ public class ElementalArrow implements AdvancedArrow {
             return "Web Arrow";
         }
 
-        public static Recipe getRecipe(ItemStack is) {
+        public Recipe getRecipe(ItemStack is) {
             return new ShapelessRecipe(is).addIngredient(ARROW).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING).addIngredient(STRING);
         }
 

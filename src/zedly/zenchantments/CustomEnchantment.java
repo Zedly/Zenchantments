@@ -24,9 +24,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
-import particles.ParticleEffect;
-import particles.ParticleEffect.BlockData;
-import particles.ParticleEffectOld;
+import zedly.particles.ParticleEffect;
+import zedly.particles.ParticleEffect.BlockData;
+import zedly.particles.ParticleEffectOld;
 import static zedly.zenchantments.Tool.*;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
@@ -529,7 +529,10 @@ public class CustomEnchantment {
                             for (int i = 0; i < 3; i++) {
                                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                                     public void run() {
-                                        ParticleEffect.HEART.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(player.getLocation()), 32);
+                                        try {
+                                            ParticleEffect.HEART.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(player.getLocation()), 32);
+                                        } catch (Exception e) {
+                                        }
                                     }
                                 }, ((i * 5) + 1));
                             }
@@ -604,7 +607,10 @@ public class CustomEnchantment {
                 ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld().spawnEntity(Utilities.getCenter(evt.getBlock()), EXPERIENCE_ORB);
                 o.setExperience(evt.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
                 evt.getBlock().setType(AIR);
-                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                try {
+                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                } catch (Exception e) {
+                }
                 return true;
             }
             return false;
@@ -668,7 +674,10 @@ public class CustomEnchantment {
                     Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                     evt.setCancelled(true);
                     evt.getBlock().setType(AIR);
-                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                    try {
+                        ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                    } catch (Exception e) {
+                    }
                     return true;
                 }
             }
@@ -681,7 +690,10 @@ public class CustomEnchantment {
                 Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
-                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                try {
+                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                } catch (Exception e) {
+                }
                 for (int x = 0; x < 4; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(CLAY_BRICK));
                 }
@@ -701,7 +713,10 @@ public class CustomEnchantment {
                 }
                 for (double i = height - 1; i >= evt.getBlock().getLocation().getY(); i--) {
                     location.setY(i);
-                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                    try {
+                        ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                    } catch (Exception e) {
+                    }
                     evt.getBlock().setType(AIR);
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
                     return true;
@@ -712,7 +727,10 @@ public class CustomEnchantment {
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
-                ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                try {
+                    ParticleEffect.FLAME.display(.5f, .5f, .5f, .1f, 10, Utilities.getCenter(evt.getBlock()), 32);
+                } catch (Exception e) {
+                }
                 return true;
             }
             return false;
@@ -919,7 +937,10 @@ public class CustomEnchantment {
                                         } else {
                                             Utilities.grow(block.getRelative(x, y, z));
                                         }
-                                        ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 30, Utilities.getCenter(block.getRelative(x, y, z)), 32);
+                                        try {
+                                            ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 30, Utilities.getCenter(block.getRelative(x, y, z)), 32);
+                                        } catch (Exception e) {
+                                        }
                                         evt.getPlayer().updateInventory();
                                         if (Storage.rnd.nextInt(10) == 3) {
                                             Utilities.addUnbreaking(evt.getPlayer().getInventory().getItemInMainHand(), 1, evt.getPlayer());
@@ -963,6 +984,9 @@ public class CustomEnchantment {
                     b = true;
                 }
             }
+            if (player.getVelocity().getY() > -0.5) {
+                b = true;
+            }
             if (!b) {
                 double sinPitch = Math.sin(Math.toRadians(player.getLocation().getPitch()));
                 double cosPitch = Math.cos(Math.toRadians(player.getLocation().getPitch()));
@@ -973,10 +997,13 @@ public class CustomEnchantment {
                 v.multiply(level * power / 2);
                 v.setY(-1);
                 player.setVelocity(v);
-                player.setFallDistance((float) (6 - level * power));
+                player.setFallDistance((float) (6 - level * power) - 4);
                 Location l = player.getLocation().clone();
                 l.setY(l.getY() - 3);
-                ParticleEffect.CLOUD.display(0, 0, 0, .1f, 1, l, 32);
+                try {
+                    ParticleEffect.CLOUD.display(0, 0, 0, .1f, 1, l, 32);
+                } catch (Exception e) {
+                }
             }
             if (Storage.rnd.nextInt(5 * level) == 5) {
                 ItemStack[] s = player.getInventory().getArmorContents();
@@ -1152,7 +1179,10 @@ public class CustomEnchantment {
                                     block.getRelative(x, y, z).setData(data);
                                 }
                                 if (test) {
-                                    ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 20, Utilities.getCenter(block.getRelative(x, y + 1, z)), 32);
+                                    try {
+                                        ParticleEffect.VILLAGER_HAPPY.display(.3f, .3f, .3f, 1f, 20, Utilities.getCenter(block.getRelative(x, y + 1, z)), 32);
+                                    } catch (Exception e) {
+                                    }
                                 }
                                 if (test) {
                                     int chc = Storage.rnd.nextInt(50);
@@ -1358,7 +1388,10 @@ public class CustomEnchantment {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 Utilities.addPotion((LivingEntity) evt.getEntity(), SLOW,
                         (int) Math.round(40 + level * power * 40), (int) Math.round(power * level * 2));
-                ParticleEffect.CLOUD.display(1f, 2f, 1f, .1f, 10, Utilities.getCenter(Utilities.getCenter(evt.getEntity().getLocation())), 32);
+                try {
+                    ParticleEffect.CLOUD.display(1f, 2f, 1f, .1f, 10, Utilities.getCenter(Utilities.getCenter(evt.getEntity().getLocation())), 32);
+                } catch (Exception e) {
+                }
             }
             return true;
         }
@@ -1408,10 +1441,13 @@ public class CustomEnchantment {
                 tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
                 tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
                 tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-                if (Bukkit.getVersion().contains("1.10")){
-                    ParticleEffect.REDSTONE.display(tempLoc, 32);
-                }else{
-                    ParticleEffectOld.REDSTONE.display(new ParticleEffectOld.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                try {
+                    if (Bukkit.getVersion().contains("1.10")) {
+                        ParticleEffect.REDSTONE.display(tempLoc, 32);
+                    } else {
+                        ParticleEffectOld.REDSTONE.display(new ParticleEffectOld.OrdinaryColor(255, 0, 0), tempLoc, 32);
+                    }
+                } catch (Exception e) {
                 }
                 for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getEntities()) {
                     if (ent.getLocation().distance(tempLoc) < 1.5) {
@@ -2268,7 +2304,10 @@ public class CustomEnchantment {
                         loc.setY(loc.getY() + (j1 / 100));
                         loc.setX(loc.getX() + Math.sin(Math.toRadians(j1)) * j1 / 330);
                         loc.setZ(loc.getZ() + Math.cos(Math.toRadians(j1)) * j1 / 330);
-                        ParticleEffect.REDSTONE.display(0, 0, 0, 10f, 1, loc, 32);
+                        try {
+                            ParticleEffect.REDSTONE.display(0, 0, 0, 10f, 1, loc, 32);
+                        } catch (Exception e) {
+                        }
                         loc.setY(loc.getY() + 1.3);
                         ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
                         ent.setFallDistance((float) (-10 + ((level * power * 2) + 8)));
@@ -2287,7 +2326,10 @@ public class CustomEnchantment {
                             ground.setY(l.getY() - 1);
                             for (int c = 0; c < 1000; c++) {
                                 Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math.toRadians(c))).multiply(.75);
-                                ParticleEffect.BLOCK_DUST.display(new BlockData(ground.getBlock().getType(), ground.getBlock().getData()), v, 1, Utilities.getCenter(l), 32);
+                                try {
+                                    ParticleEffect.BLOCK_DUST.display(new BlockData(ground.getBlock().getType(), ground.getBlock().getData()), v, 1, Utilities.getCenter(l), 32);
+                                } catch (Exception e) {
+                                }
                             }
                         }
                     }
@@ -3174,7 +3216,10 @@ public class CustomEnchantment {
                             evt.setCancelled(true);
                         }
                         int newPosition = position + 1 - 2 * (position % 2);
-                        ParticleEffect.HEART.display(.5f, 2f, .5f, .1f, 70, Utilities.getCenter(evt.getEntity().getLocation()), 32);
+                        try {
+                            ParticleEffect.HEART.display(.5f, 2f, .5f, .1f, 70, Utilities.getCenter(evt.getEntity().getLocation()), 32);
+                        } catch (Exception e) {
+                        }
                         evt.getEntity().remove();
                         ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(), ENTITY_TYPES[newPosition]);
                     }

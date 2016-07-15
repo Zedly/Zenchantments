@@ -3,8 +3,7 @@
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-            <name>Zenchantments1.9</name>
-            <explicit-platform explicit-source-supported="true"/>
+            <name>Zenchantments1.9-1.10</name>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

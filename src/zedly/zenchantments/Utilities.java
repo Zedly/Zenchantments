@@ -22,16 +22,18 @@ public class Utilities {
     public static ItemStack usedStack(Player player) {
         ItemStack m = player.getInventory().getItemInMainHand();
         ItemStack o = player.getInventory().getItemInOffHand();
-        boolean main = Tool.fromMaterial(m.getType()).canRightClickAction();
-        boolean off = Tool.fromMaterial(o.getType()).canRightClickAction();
-        Block blk = player.getTargetBlock((HashSet<Byte>) null, 1);
-        if (blk == null || blk.getType() == AIR) {
+        boolean main = Tool.fromMaterial(m.getType()).canRightClickAction() && m.getType() != AIR;
+        boolean off = Tool.fromMaterial(o.getType()).canRightClickAction() && o.getType() != AIR;
+        if (m.getType() == AIR && o.getType() != AIR) {
+            return o;
+        } else if (m.getType() != AIR && o.getType() == AIR) {
+            return m;
+        } else {
+            //Block blk = player.getTargetBlock((HashSet<Byte>) null, 1);
             //Bukkit.broadcastMessage(main ? "m" : off ? "o" : "m");
             return main ? m : off ? o : m;
-        } else {
-            //Bukkit.broadcastMessage(main ? "m" : "o");
-            return main ? m : o;
         }
+
     }
 
     // Returns an ArrayList of ItemStacks of the player's held item and armor
@@ -578,12 +580,10 @@ public class Utilities {
             if (eff.getType().equals(type)) {
                 if (eff.getAmplifier() > intensity) {
                     return;
+                } else if (eff.getDuration() > length) {
+                    return;
                 } else {
-                    if (eff.getDuration() > length) {
-                        return;
-                    } else {
-                        ent.removePotionEffect(type);
-                    }
+                    ent.removePotionEffect(type);
                 }
             }
         }

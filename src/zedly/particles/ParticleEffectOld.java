@@ -1,4 +1,4 @@
-package particles;
+package zedly.particles;
 
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -6,7 +6,7 @@ import org.bukkit.util.Vector;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
-import particles.ReflectionUtils.PackageType;
+import zedly.particles.ReflectionUtils.PackageType;
 
 /**
  * <b>ParticleEffectOld Library</b>
