@@ -1,4 +1,4 @@
-package zedly.particles;
+package zedly.zenchantments.particles;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -11,7 +11,8 @@ import org.bukkit.Bukkit;
 /**
  * <b>ReflectionUtils</b>
  * <p>
- * This class provides useful methods which makes dealing with reflection much easier, especially when working with Bukkit
+ * This class provides useful methods which makes dealing with reflection much easier, especially when working with
+ * Bukkit
  * <p>
  * You are welcome to use it, modify it and redistribute it under the following conditions:
  * <ul>
@@ -60,7 +61,8 @@ public final class ReflectionUtils {
      * @param parameterTypes Parameter types of the desired constructor
      * @return The constructor of the desired target class with the specified parameter types
      * @throws NoSuchMethodException If the desired constructor with the specified parameter types cannot be found
-     * @throws ClassNotFoundException ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @throws ClassNotFoundException ClassNotFoundException If the desired target class with the specified name and
+     * package cannot be found
      * @see #getConstructor(Class, Class...)
      */
     public static Constructor<?> getConstructor(String className, PackageType packageType, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException {
@@ -75,7 +77,8 @@ public final class ReflectionUtils {
      * @return The instance of the target class with the specified arguments
      * @throws InstantiationException If you cannot create an instance of the target class due to certain circumstances
      * @throws IllegalAccessException If the desired constructor cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the constructor (this should not occur since it searches for a constructor with the types of the arguments)
+     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the
+     * constructor (this should not occur since it searches for a constructor with the types of the arguments)
      * @throws InvocationTargetException If the desired constructor cannot be invoked
      * @throws NoSuchMethodException If the desired constructor with the specified arguments cannot be found
      */
@@ -90,9 +93,11 @@ public final class ReflectionUtils {
      * @param packageType Package where the desired target class is located
      * @param arguments Arguments which are used to construct an object of the desired target class
      * @return The instance of the desired target class with the specified arguments
-     * @throws InstantiationException If you cannot create an instance of the desired target class due to certain circumstances
+     * @throws InstantiationException If you cannot create an instance of the desired target class due to certain
+     * circumstances
      * @throws IllegalAccessException If the desired constructor cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the constructor (this should not occur since it searches for a constructor with the types of the arguments)
+     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the
+     * constructor (this should not occur since it searches for a constructor with the types of the arguments)
      * @throws InvocationTargetException If the desired constructor cannot be invoked
      * @throws NoSuchMethodException If the desired constructor with the specified arguments cannot be found
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
@@ -109,7 +114,8 @@ public final class ReflectionUtils {
      * @param methodName Name of the desired method
      * @param parameterTypes Parameter types of the desired method
      * @return The method of the target class with the specified name and parameter types
-     * @throws NoSuchMethodException If the desired method of the target class with the specified name and parameter types cannot be found
+     * @throws NoSuchMethodException If the desired method of the target class with the specified name and parameter
+     * types cannot be found
      * @see DataType#getPrimitive(Class[])
      * @see DataType#compare(Class[], Class[])
      */
@@ -132,7 +138,8 @@ public final class ReflectionUtils {
      * @param methodName Name of the desired method
      * @param parameterTypes Parameter types of the desired method
      * @return The method of the desired target class with the specified name and parameter types
-     * @throws NoSuchMethodException If the desired method of the desired target class with the specified name and parameter types cannot be found
+     * @throws NoSuchMethodException If the desired method of the desired target class with the specified name and
+     * parameter types cannot be found
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #getMethod(Class, String, Class...)
      */
@@ -148,9 +155,11 @@ public final class ReflectionUtils {
      * @param arguments Arguments which are used to invoke the desired method
      * @return The result of invoking the desired method on the target object
      * @throws IllegalAccessException If the desired method cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the method (this should not occur since it searches for a method with the types of the arguments)
+     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the method
+     * (this should not occur since it searches for a method with the types of the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
-     * @throws NoSuchMethodException If the desired method of the class of the target object with the specified name and arguments cannot be found
+     * @throws NoSuchMethodException If the desired method of the class of the target object with the specified name and
+     * arguments cannot be found
      * @see #getMethod(Class, String, Class...)
      * @see DataType#getPrimitive(Object[])
      */
@@ -167,9 +176,11 @@ public final class ReflectionUtils {
      * @param arguments Arguments which are used to invoke the desired method
      * @return The result of invoking the desired method on the target object
      * @throws IllegalAccessException If the desired method cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the method (this should not occur since it searches for a method with the types of the arguments)
+     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the method
+     * (this should not occur since it searches for a method with the types of the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
-     * @throws NoSuchMethodException If the desired method of the target class with the specified name and arguments cannot be found
+     * @throws NoSuchMethodException If the desired method of the target class with the specified name and arguments
+     * cannot be found
      * @see #getMethod(Class, String, Class...)
      * @see DataType#getPrimitive(Object[])
      */
@@ -187,9 +198,11 @@ public final class ReflectionUtils {
      * @param arguments Arguments which are used to invoke the desired method
      * @return The result of invoking the desired method on the target object
      * @throws IllegalAccessException If the desired method cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the method (this should not occur since it searches for a method with the types of the arguments)
+     * @throws IllegalArgumentException If the types of the arguments do not match the parameter types of the method
+     * (this should not occur since it searches for a method with the types of the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
-     * @throws NoSuchMethodException If the desired method of the desired target class with the specified name and arguments cannot be found
+     * @throws NoSuchMethodException If the desired method of the desired target class with the specified name and
+     * arguments cannot be found
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #invokeMethod(Object, Class, String, Object...)
      */
@@ -275,7 +288,8 @@ public final class ReflectionUtils {
      * @param declared Whether the desired field is declared or not
      * @param fieldName Name of the desired field
      * @return The value of field of the target object
-     * @throws IllegalArgumentException If the target object does not feature the desired field (should not occur since it searches for a field with the given name in the class of the object)
+     * @throws IllegalArgumentException If the target object does not feature the desired field (should not occur since
+     * it searches for a field with the given name in the class of the object)
      * @throws IllegalAccessException If the desired field cannot be accessed
      * @throws NoSuchFieldException If the desired field of the target object cannot be found
      * @throws SecurityException If the desired field cannot be made accessible

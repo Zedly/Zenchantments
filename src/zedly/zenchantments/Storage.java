@@ -71,28 +71,28 @@ public class Storage {
 
     // Entites that are being tested by Utilities' canDamage method to prevent infinite recursion
     public static final Set<Entity> damagingPlayer = new HashSet<>();
-    
+
     // Lighting entities created by Lightning Arrows
     public static final List<Entity> lightnings = new ArrayList<>();
-    
+
     // Entities being affected by the Derp Elemental Arrow
     public static final Set<LivingEntity> derpingEntities = new HashSet<>();
-    
+
     // Arrows mapped to different advanced arrow effects, to be used by the Arrow Watcher to perform these effects
     public static final Map<Entity, Set<AdvancedArrow>> advancedProjectiles = new HashMap<>();
-    
+
     // Players that have been affected by the Toxic enchantment who cannot currently eat
     public static final Map<Player, Integer> hungerPlayers = new HashMap<>();
-    
+
     // Locations of black holes from the singularity enchantment and whether or not they are attracting or repelling
     public static final Map<Location, Boolean> blackholes = new HashMap<>();
-    
+
     // Players and the most recent block they are moving with the Haul enchantment
     public static final Map<Player, Block> haulBlocks = new HashMap<>();
-    
+
     // Players and how long it has been since they last move a block with haul
     public static final Map<Player, Integer> haulBlockDelay = new HashMap<>();
-    
+
     // An instance of World Guard if it is present on the server
     public static WorldGuardPlugin worldGuard;
 
@@ -100,14 +100,14 @@ public class Storage {
     public static final Integer[] badItems = new Integer[]{0, 8, 9, 10, 11, 26, 34, 36, 43, 51, 55, 59, 63, 64, 68, 71,
         74, 75, 83, 90, 92, 93, 94, 104, 105, 115, 117, 118, 119, 124, 125, 127, 132, 140, 141, 142, 144, 149, 150, 176,
         177, 178, 181, 193, 194, 195, 196, 197};
-    
+
     // Block IDs that are not to be used in events
     public static final Integer[] badBlocks = {6, 7, 23, 25, 29, 31, 32, 33, 37, 38, 39, 40, 49, 52, 54, 58, 61, 62, 63, 65, 68,
-                    69, 77, 81, 83, 84, 90, 106, 107, 111, 119, 120, 130, 131, 143, 145, 146, 151, 158, 166, 166, 175, 178,
-                    183, 184, 185, 186, 187, 209, 255, 323, 324, 330, 355, 397, 427, 428, 429, 430, 431};
-    
+        69, 77, 81, 83, 84, 90, 106, 107, 111, 119, 120, 130, 131, 143, 145, 146, 151, 158, 166, 166, 175, 178,
+        183, 184, 185, 186, 187, 209, 255, 323, 324, 330, 355, 397, 427, 428, 429, 430, 431};
+
     // The plugin Logo to be used in chat commands
     public static final String logo = ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments"
             + ChatColor.BLUE + "] " + ChatColor.AQUA;
-    
+
 }

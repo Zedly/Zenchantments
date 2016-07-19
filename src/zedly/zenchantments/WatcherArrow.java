@@ -61,7 +61,7 @@ public class WatcherArrow implements Listener {
         }
         return true;
     }
-    
+
     // Called when an arrow hits an entity
     @EventHandler
     public boolean entityHit(EntityDamageByEntityEvent evt) {

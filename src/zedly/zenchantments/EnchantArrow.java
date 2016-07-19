@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
-import zedly.particles.ParticleEffect;
+import zedly.zenchantments.particles.ParticleEffect;
 
 // EnchantArrows is the defualt structure for these arrows. Each arrow below it will extend this class
 //      and will override any methods as neccecary in its behavior

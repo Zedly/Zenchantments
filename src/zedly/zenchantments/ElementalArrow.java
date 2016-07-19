@@ -30,7 +30,7 @@ public class ElementalArrow implements AdvancedArrow {
     public void tick() {
         tick++;
     }
-    
+
     // Returns the current tick of the arrow
     public int getTick() {
         return tick;

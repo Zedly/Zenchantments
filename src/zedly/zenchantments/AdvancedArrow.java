@@ -11,13 +11,13 @@ public interface AdvancedArrow {
 
     // Advances the Arrow's tick integer by one
     public void tick();
-    
+
     // Returns the Arrow's current tick integer
     public int getTick();
 
     // Returns the projectile associated with the particular instance of the AdvancedArrow
     public Projectile getArrow();
-    
+
     // Called when a user shoots an arrow and creates a new instance of the given AdvancedArrow
     public void onLaunch(LivingEntity player, List<String> lore);
 

@@ -29,8 +29,6 @@ public class Utilities {
         } else if (m.getType() != AIR && o.getType() == AIR) {
             return m;
         } else {
-            //Block blk = player.getTargetBlock((HashSet<Byte>) null, 1);
-            //Bukkit.broadcastMessage(main ? "m" : off ? "o" : "m");
             return main ? m : off ? o : m;
         }
 

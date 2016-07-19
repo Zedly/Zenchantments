@@ -22,7 +22,7 @@ public class Artifact {
     private final int probability;     // The relative probability of finding the given artifact
 
     // Creates a new artifact object
-    public Artifact(String name, List<String> lore, Material material, short materialData, int[] range, 
+    public Artifact(String name, List<String> lore, Material material, short materialData, int[] range,
             int[] durability, int probability) {
         this.name = name;
         this.lore = lore;
@@ -45,7 +45,7 @@ public class Artifact {
         stk.setItemMeta(meta);
         return stk;
     }
-    
+
     // Determines what artifacts can be dropped at the given block's y-value and picks one based on the relative 
     //      probability, and then drops the artifact at the block's location
     public static void drop(Block block) {

@@ -24,9 +24,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
-import zedly.particles.ParticleEffect;
-import zedly.particles.ParticleEffect.BlockData;
-import zedly.particles.ParticleEffectOld;
+import zedly.zenchantments.particles.ParticleEffect;
+import zedly.zenchantments.particles.ParticleEffect.BlockData;
+import zedly.zenchantments.particles.ParticleEffectOld;
 import static zedly.zenchantments.Tool.*;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
@@ -41,6 +41,7 @@ public class CustomEnchantment {
     protected String description;   // Description of what the enchantment does
     protected int cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
     protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
+    protected int handUse; // 0 = none, 1 = left, 2 = right, 3 = both
 
     // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
     public boolean validMaterial(Material m) {
@@ -151,6 +152,7 @@ public class CustomEnchantment {
             description = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
             cooldown = 0;
             power = 1.0;
+            handUse = 3;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -210,6 +212,7 @@ public class CustomEnchantment {
             description = "Drops more apples, sticks, and saplings when used on leaves and wood";
             cooldown = 0;
             power = 1.0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -260,6 +263,7 @@ public class CustomEnchantment {
             description = "Occasionally drops ancient artifacts when mining";
             cooldown = 0;
             power = .0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -284,6 +288,7 @@ public class CustomEnchantment {
             description = "Keeps items with this enchantment in your inventory after death";
             cooldown = 0;
             power = -1.0;
+            handUse = 0;
         }
 
         public boolean onPlayerDeath(final PlayerDeathEvent evt, int level) {
@@ -326,6 +331,7 @@ public class CustomEnchantment {
             description = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
             cooldown = 0;
             power = -1.0;
+            handUse = 0;
         }
 
         public boolean onEntityDamage(EntityDamageEvent evt, int level) {
@@ -391,6 +397,7 @@ public class CustomEnchantment {
             description = "Spawns a blizzard where the arrow strikes freezing nearby entities";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -411,6 +418,7 @@ public class CustomEnchantment {
             description = "Preserves momentum when on slime blocks";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onFastScan(Player player, int level) {
@@ -438,6 +446,7 @@ public class CustomEnchantment {
             description = "Rapidly fires arrows in series";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -483,6 +492,7 @@ public class CustomEnchantment {
             description = "Lights attacking entities on fire when player is attacked";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onBeingHit(EntityDamageByEntityEvent evt, int level) {
@@ -516,6 +526,7 @@ public class CustomEnchantment {
             description = "Converts XP to health when right clicking and sneaking";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -556,6 +567,7 @@ public class CustomEnchantment {
             description = "Increases the chance for dropping the enemies head on death";
             cooldown = 0;
             power = 1.0;
+            handUse = 1;
         }
 
         public boolean onEntityKill(EntityDeathEvent evt, int level) {
@@ -594,6 +606,7 @@ public class CustomEnchantment {
             description = "Smelts and yields more product from ores";
             cooldown = 0;
             power = 1.0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, final int level) {
@@ -628,6 +641,7 @@ public class CustomEnchantment {
             description = "Drops the smelted version of the block broken";
             cooldown = 0;
             power = -1.0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -748,6 +762,7 @@ public class CustomEnchantment {
             description = "Spawns a firestorm where the arrow strikes burning nearby entities";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -769,6 +784,7 @@ public class CustomEnchantment {
             description = "Shoots arrows that burst into fireworks upon impact";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -790,6 +806,7 @@ public class CustomEnchantment {
             description = "Pushes and pulls nearby mobs, configurable through shift clicking";
             cooldown = 0;
             power = 1.0;
+            handUse = 3;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -849,6 +866,7 @@ public class CustomEnchantment {
             description = "Allows the player to walk on water and safely emerge from it when sneaking";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -887,6 +905,7 @@ public class CustomEnchantment {
             description = "Instantly ignites anything explosive";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -908,6 +927,7 @@ public class CustomEnchantment {
             description = "Uses bonemeal from the player's inventory to grow nearby plants";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -969,6 +989,7 @@ public class CustomEnchantment {
             description = "Gently brings the player back to the ground when sneaking";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onFastScan(Player player, int level) {
@@ -1037,6 +1058,7 @@ public class CustomEnchantment {
             description = "Automatically eats for the player";
             cooldown = 0;
             power = -1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1076,6 +1098,7 @@ public class CustomEnchantment {
             description = "Randomly drops gold nuggets when mining sand";
             cooldown = 0;
             power = 1.0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -1097,6 +1120,7 @@ public class CustomEnchantment {
             description = "Teleports mined items and XP directly to the player";
             cooldown = 0;
             power = -1.0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(final BlockBreakEvent evt, int level) {
@@ -1122,6 +1146,7 @@ public class CustomEnchantment {
             description = "Grows the foliage around the player";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1222,6 +1247,7 @@ public class CustomEnchantment {
             description = "Pushes the user through the air at the cost of their health";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -1260,6 +1286,7 @@ public class CustomEnchantment {
             description = "Harvests fully grown crops within a radius when clicked";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -1312,6 +1339,7 @@ public class CustomEnchantment {
             description = "Gives the player a mining boost";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onScanHand(Player player, int level) {
@@ -1333,6 +1361,7 @@ public class CustomEnchantment {
             description = "Allows for dragging blocks around";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -1382,6 +1411,7 @@ public class CustomEnchantment {
             description = "Temporarily freezes the target";
             cooldown = 0;
             power = 1.0;
+            handUse = 1;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level) {
@@ -1408,6 +1438,7 @@ public class CustomEnchantment {
             description = "Gives the player a jump boost";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1427,6 +1458,7 @@ public class CustomEnchantment {
             description = "Breaks blocks and damages mobs using a powerful beam of light";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public void shoot(Location blk, Player player, int level) {
@@ -1529,6 +1561,7 @@ public class CustomEnchantment {
             description = "Drops more XP when killing mobs or mining ores";
             cooldown = 0;
             power = 1.0;
+            handUse = 3;
         }
 
         public boolean onEntityKill(EntityDeathEvent evt, int level) {
@@ -1569,6 +1602,7 @@ public class CustomEnchantment {
             description = "Launches fishing hooks farther out when casting";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level) {
@@ -1621,6 +1655,7 @@ public class CustomEnchantment {
             description = "Breaks the entire tree at once";
             cooldown = 0;
             power = -1.0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -1677,6 +1712,7 @@ public class CustomEnchantment {
             description = "Slowly attracts nearby items to the players inventory";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onFastScan(Player player, int level) {
@@ -1701,6 +1737,7 @@ public class CustomEnchantment {
             description = "Gives the player both a speed and jump boost";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1723,6 +1760,7 @@ public class CustomEnchantment {
             description = "Shears all nearby sheep";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         private boolean shear(PlayerEvent evt, int level) {
@@ -1775,6 +1813,7 @@ public class CustomEnchantment {
             description = "Catches water mobs like Squid and Guardians";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onPlayerFish(final PlayerFishEvent evt, int level) {
@@ -1808,6 +1847,7 @@ public class CustomEnchantment {
             description = "Allows the player to slowly but safely walk on lava";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1846,6 +1886,7 @@ public class CustomEnchantment {
             description = "Lets the player see in the darkness";
             cooldown = 0;
             power = -1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -1865,6 +1906,7 @@ public class CustomEnchantment {
             description = "Plants seeds from the player's inventory around them";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -1972,6 +2014,7 @@ public class CustomEnchantment {
             description = "Lets the player mine in several modes which can be changed through shift clicking";
             cooldown = 0;
             power = -1.0;
+            handUse = 3;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -2115,6 +2158,7 @@ public class CustomEnchantment {
             description = "Tills all soil within a radius";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -2159,6 +2203,7 @@ public class CustomEnchantment {
             description = "Gives the shooter random positive potion effects when attacking";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -2179,6 +2224,7 @@ public class CustomEnchantment {
             description = "Lessens the effects of all potions on players";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onPotionSplash(PotionSplashEvent evt, int level) {
@@ -2211,6 +2257,7 @@ public class CustomEnchantment {
             description = "Shoots arrows at full speed, instantly";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -2231,6 +2278,7 @@ public class CustomEnchantment {
             description = "Drops random flowers and wool colors when used";
             cooldown = 0;
             power = -1.0;
+            handUse = 3;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -2281,6 +2329,7 @@ public class CustomEnchantment {
             description = "Attacks enemy mobs with a powerful swirling slam";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onEntityInteract(final PlayerInteractEntityEvent evt, final int level) {
@@ -2350,6 +2399,7 @@ public class CustomEnchantment {
             description = "Gives the target temporary wither effect and blindness";
             cooldown = 0;
             power = 1.0;
+            handUse = 3;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -2380,6 +2430,7 @@ public class CustomEnchantment {
             description = "Uses less of the player's hunger";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onHungerChange(FoodLevelChangeEvent evt, int level) {
@@ -2401,6 +2452,7 @@ public class CustomEnchantment {
             description = "Launches fishing hooks closer in when casting";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level) {
@@ -2422,6 +2474,7 @@ public class CustomEnchantment {
             description = "Breaks the blocks within a radius of the original block mined";
             cooldown = 0;
             power = -1.0;
+            handUse = 1;
         }
 
         final Material mats[] = new Material[]{STONE, COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE,
@@ -2511,6 +2564,7 @@ public class CustomEnchantment {
             description = "Drains the health of the mob that you attack, giving it to you";
             cooldown = 0;
             power = 1.0;
+            handUse = 3;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level) {
@@ -2559,11 +2613,15 @@ public class CustomEnchantment {
             description = "Allows for cycling through a block's types";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
             Material original = evt.getClickedBlock().getType();
             int originalInt = evt.getClickedBlock().getData();
+            if (evt.getAction() != RIGHT_CLICK_BLOCK) {
+                return false;
+            }
             if (!Utilities.canEdit(evt.getPlayer(), evt.getClickedBlock()) || !evt.getPlayer().isSneaking()) {
                 return false;
             }
@@ -2819,6 +2877,7 @@ public class CustomEnchantment {
             description = "Gives the player a speed boost";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onScan(Player player, int level) {
@@ -2840,6 +2899,7 @@ public class CustomEnchantment {
             description = "Damages entities the player jumps onto";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onFastScan(Player player, int level) {
@@ -2866,6 +2926,7 @@ public class CustomEnchantment {
             description = "Fires an array of arrows simultaneously";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level) {
@@ -2910,6 +2971,7 @@ public class CustomEnchantment {
             description = "Negates any knockback when attacking mobs, leaving them clueless as to who is attacking";
             cooldown = 0;
             power = -1.0;
+            handUse = 3;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level) {
@@ -2943,6 +3005,7 @@ public class CustomEnchantment {
             description = "Refills the player's item in hand when they run out";
             cooldown = -1;
             power = -1.0;
+            handUse = 0;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -2984,6 +3047,7 @@ public class CustomEnchantment {
             description = "Replaces the clicked block with the leftmost block in your inventory when sneaking";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level) {
@@ -3077,6 +3141,7 @@ public class CustomEnchantment {
             description = "Places the leftmost blocks in the players inventory within a 7 block radius";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level) {
@@ -3143,6 +3208,7 @@ public class CustomEnchantment {
             description = "Sickens the target, making them nauseous and unable to eat";
             cooldown = 0;
             power = 1.0;
+            handUse = 3;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -3182,6 +3248,7 @@ public class CustomEnchantment {
             description = "Guides the arrow to targets and then attacks";
             cooldown = 0;
             power = 1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -3205,6 +3272,7 @@ public class CustomEnchantment {
             description = "Occasionally causes the attacked mob to be transformed into its similar cousin";
             cooldown = 0;
             power = 1.0;
+            handUse = 1;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level) {
@@ -3247,6 +3315,7 @@ public class CustomEnchantment {
             description = "Drops random types of wood or leaves";
             cooldown = 0;
             power = -1.0;
+            handUse = 1;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level) {
@@ -3276,6 +3345,7 @@ public class CustomEnchantment {
             description = "Teleports mob loot and XP directly to the player";
             cooldown = 0;
             power = -1.0;
+            handUse = 3;
         }
 
         public boolean onEntityKill(final EntityDeathEvent evt, int level) {
@@ -3310,6 +3380,7 @@ public class CustomEnchantment {
             description = "Slows the player down but makes them stronger and more resistant to knockback";
             cooldown = 0;
             power = 1.0;
+            handUse = 0;
         }
 
         public boolean onBeingHit(EntityDamageByEntityEvent evt, int level) {
@@ -3357,6 +3428,7 @@ public class CustomEnchantment {
             description = "Unleashes hell";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -3377,6 +3449,7 @@ public class CustomEnchantment {
             description = "Prevents tools from breaking";
             cooldown = 0;
             power = -1.0;
+            handUse = 0;
         }
 
         public boolean onScanHand(Player player, int level) {
@@ -3408,6 +3481,7 @@ public class CustomEnchantment {
             description = "Shoots a missile from the bow";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -3431,6 +3505,7 @@ public class CustomEnchantment {
             description = "Creates a black hole that attracts nearby entities and then discharges them";
             cooldown = 0;
             power = -1.0;
+            handUse = 2;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level) {
@@ -3452,6 +3527,7 @@ public class CustomEnchantment {
             description = "Prevents an item from being repaired";
             cooldown = 0;
             power = -1.0;
+            handUse = 0;
         }
     }
 }
