@@ -14,31 +14,21 @@ import org.bukkit.entity.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.*;
+import static org.bukkit.inventory.EquipmentSlot.HAND;
 import org.bukkit.potion.*;
 
 public class Utilities {
 
-    // Returns the ItemStack the player used in any recent event
-    public static ItemStack usedStack(Player player) {
-        ItemStack m = player.getInventory().getItemInMainHand();
-        ItemStack o = player.getInventory().getItemInOffHand();
-        boolean main = Tool.fromMaterial(m.getType()).canRightClickAction() && m.getType() != AIR;
-        boolean off = Tool.fromMaterial(o.getType()).canRightClickAction() && o.getType() != AIR;
-        if (m.getType() == AIR && o.getType() != AIR) {
-            return o;
-        } else if (m.getType() != AIR && o.getType() == AIR) {
-            return m;
-        } else {
-            return main ? m : off ? o : m;
-        }
-
+    // Returns true for main hand slots, false otherwise
+    public static boolean usedHand(EquipmentSlot preferred) {
+        return preferred == HAND;
     }
 
     // Returns an ArrayList of ItemStacks of the player's held item and armor
-    public static List<ItemStack> getRelevant(Player player) {
+    public static List<ItemStack> getRelevant(Player player, boolean usedHand) {
         List<ItemStack> stk = new ArrayList<>();
         stk.addAll(Arrays.asList(player.getInventory().getArmorContents()));
-        stk.add(usedStack(player));
+        stk.add(usedStack(player, usedHand));
         Iterator<ItemStack> it = stk.iterator();
         while (it.hasNext()) {
             if (it.next() == null) {
@@ -46,21 +36,29 @@ public class Utilities {
             }
         }
         return stk;
-
     }
 
     // Removes the given ItemStack's durability by the given 'damage' and then sets the item in the given players hand.
     //      This also takes into account the unbreaking enchantment
-    public static void addUnbreaking(ItemStack stack, int damage, Player player) {
+    public static void addUnbreaking(Player player, int damage, boolean handUsed) {
         if (!player.getGameMode().equals(CREATIVE)) {
+            ItemStack hand = handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
             for (int i = 0; i < damage; i++) {
-                if (Storage.rnd.nextInt(100) <= (100 / (stack.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-                    stack.setDurability((short) (stack.getDurability() + 1));
+                if (Storage.rnd.nextInt(100) <= (100 / (hand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                    hand.setDurability((short) (hand.getDurability() + 1));
                 }
             }
-            ItemStack hand = player.getItemInHand();
-            player.setItemInHand(hand.getDurability() > hand.getType().getMaxDurability() ? null : hand);
+            if (handUsed) {
+                player.getInventory().setItemInMainHand(hand.getDurability() > hand.getType().getMaxDurability() ? null : hand);
+            } else {
+                player.getInventory().setItemInOffHand(hand.getDurability() > hand.getType().getMaxDurability() ? null : hand);
+            }
         }
+    }
+
+    // Displays a particle with the given data
+    public static void display(Location loc, Particle particle, int amount, float speed, float xO, float yO, float zO) {
+        loc.getWorld().spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), amount, xO, yO, zO, speed);
     }
 
     // Removes the given ItemStack's durability by the given 'damage'
@@ -72,6 +70,20 @@ public class Utilities {
                     is.setDurability((short) (is.getDurability() + 1));
                 }
             }
+        }
+    }
+
+    // Returns the item stack in the player's main or off hand, determinted by 'handUsed'
+    public static ItemStack usedStack(Player player, boolean handUsed) {
+        return handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+    }
+
+    // Sets the hand the player to the given item stack, determined by 'handUsed'
+    public static void setHand(Player player, ItemStack stk, boolean handUsed) {
+        if (handUsed) {
+            player.getInventory().setItemInMainHand(stk);
+        } else {
+            player.getInventory().setItemInOffHand(stk);
         }
     }
 
@@ -600,15 +612,19 @@ public class Utilities {
     // Returns an instance of an AdvancedArrow of the given class
     public static AdvancedArrow construct(Class cl, Projectile p) {
         try {
-            Constructor ctor = cl.getDeclaredConstructor(Projectile.class);
-            ctor.setAccessible(true);
-            return (ElementalArrow) ctor.newInstance((Object) p);
+            Constructor ctor = cl.getDeclaredConstructor(Projectile.class
+            );
+            ctor.setAccessible(
+                    true);
+            return (ElementalArrow) ctor.newInstance(
+                    (Object) p);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
                 IllegalArgumentException | InvocationTargetException ex) {
         }
         return null;
     }
 
+    // Returns the amount of XP dropped by a given material
     public static int getBlockXP(Material mat) {
         switch (mat) {
             case COAL_ORE:
@@ -629,6 +645,7 @@ public class Utilities {
         }
     }
 
+    // A better implementation of Bukkit/Spigot's breakBlockNaturally. This method accounts for Silk Touch, Fortune, and XP
     public static void breakBlockNaturally(Block blk, Player player) {
         if (player.getGameMode().equals(CREATIVE)) {
             blk.setType(AIR);

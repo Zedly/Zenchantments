@@ -41,7 +41,7 @@ public class MFEffects implements Runnable {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasMetadata("ze.haste")) {
                 boolean has = false;
-                for (CustomEnchantment e : Config.get(player.getWorld()).getEnchants(player.getItemInHand()).keySet()) {
+                for (CustomEnchantment e : Config.get(player.getWorld()).getEnchants(player.getInventory().getItemInMainHand()).keySet()) {
                     if (e.getClass().equals(CustomEnchantment.Haste.class)) {
                         has = true;
                     }
@@ -59,20 +59,23 @@ public class MFEffects implements Runnable {
                     config.removeDescriptions(stk, null);
                 }
             }
+            Map<CustomEnchantment, Integer> map;
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                if (stk != null) {
-                    Map<CustomEnchantment, Integer> map = config.getEnchants(stk);
-                    for (CustomEnchantment ench : map.keySet()) {
-                        ench.onScan(player, map.get(ench));
-                    }
-                }
-            }
-            if (player.getItemInHand() != null) {
-                Map<CustomEnchantment, Integer> map = config.getEnchants(player.getItemInHand());
+                map = config.getEnchants(stk);
                 for (CustomEnchantment ench : map.keySet()) {
-                    ench.onScanHand(player, map.get(ench));
+                    ench.onScan(player, map.get(ench), true);
                 }
             }
+
+            map = config.getEnchants(player.getInventory().getItemInMainHand());
+            for (CustomEnchantment ench : map.keySet()) {
+                ench.onFastScanHands(player, map.get(ench), true);
+            }
+            map = config.getEnchants(player.getInventory().getItemInOffHand());
+            for (CustomEnchantment ench : map.keySet()) {
+                ench.onFastScanHands(player, map.get(ench), false);
+            }
+
         }
     }
 

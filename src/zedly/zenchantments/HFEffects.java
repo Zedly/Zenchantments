@@ -189,19 +189,26 @@ public class HFEffects implements Runnable {
 
     // Fast Scan of Player's Armor and their hand to register enchantments 
     private void scanPlayers() {
+        Map<CustomEnchantment, Integer> map;
         for (Player player : Bukkit.getOnlinePlayers()) {
             EnchantPlayer.matchPlayer(player).tick();
             Config config = Config.get(player.getWorld());
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                Map<CustomEnchantment, Integer> map = config.getEnchants(stk);
+                map = config.getEnchants(stk);
                 for (CustomEnchantment ench : map.keySet()) {
-                    ench.onFastScan(player, map.get(ench));
+                    ench.onFastScan(player, map.get(ench), true);
                 }
             }
-            Map<CustomEnchantment, Integer> map = config.getEnchants(player.getItemInHand());
+
+            map = config.getEnchants(player.getInventory().getItemInMainHand());
             for (CustomEnchantment ench : map.keySet()) {
-                ench.onFastScanHand(player, map.get(ench));
+                ench.onScanHands(player, map.get(ench), true);
             }
+            map = config.getEnchants(player.getInventory().getItemInOffHand());
+            for (CustomEnchantment ench : map.keySet()) {
+                ench.onScanHands(player, map.get(ench), false);
+            }
+
         }
     }
 

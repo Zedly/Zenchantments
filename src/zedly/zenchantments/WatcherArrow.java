@@ -27,7 +27,7 @@ public class WatcherArrow implements Listener {
             ItemStack arrowShot = findArrowShot(player);
             if (arrowShot != null && arrowShot.getItemMeta().hasLore()) {
                 String type = ChatColor.stripColor(arrowShot.getItemMeta().getLore().get(0));
-                if (config.getArrows().containsKey(type) && player.hasPermission("zenchantments.arrow.use") && !player.getItemInHand().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
+                if (config.getArrows().containsKey(type) && player.hasPermission("zenchantments.arrow.use") && !evt.getBow().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
                     ElementalArrow arrow = (ElementalArrow) Utilities.construct(config.getArrows().get(type).getClass(), (Projectile) evt.getProjectile());
                     Set<AdvancedArrow> a = new HashSet<>();
                     a.add(arrow);

@@ -82,4 +82,9 @@ public enum Tool {
         return null;
     }
 
+    // Returns an enum using a given ItemStack
+    public static Tool fromItemStack(ItemStack stk) {
+        return stk == null ? null : fromMaterial(stk.getType());
+    }
+
 }

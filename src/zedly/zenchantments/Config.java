@@ -248,7 +248,7 @@ public class Config {
     public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk) {
         ItemStack stack;
         Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
-        if (stk != null) {
+        if (stk != null && stk.getType() != Material.ENCHANTED_BOOK) {
             stack = removeDescriptions(stk.clone(), null);
             if (stack.hasItemMeta()) {
                 if (stack.getItemMeta().hasLore()) {
