@@ -534,14 +534,14 @@ public class Utilities {
 
     // Returns true if a player can use a certain enchantment at a certain time (permissions and cooldowns),
     //      otherwise false
-    public static boolean canUse(Player player, String ench) {
+    public static boolean canUse(Player player, int enchantmentID) {
         if (!player.hasPermission("zenchantments.enchant.use")) {
             return false;
         }
-        if (EnchantPlayer.matchPlayer(player).getCooldown(ench) != 0) {
+        if (EnchantPlayer.matchPlayer(player).getCooldown(enchantmentID) != 0) {
             return false;
         }
-        return !EnchantPlayer.matchPlayer(player).isDisabled(ench);
+        return !EnchantPlayer.matchPlayer(player).isDisabled(enchantmentID);
     }
 
     // Stores a player and an enchantments in a map to prevent infinite recursion of method calls from the WatcherEnchant

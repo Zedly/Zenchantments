@@ -170,17 +170,6 @@ public class Watcher implements Listener {
                 if (running > decision) {
                     String level = Utilities.getRomanString(Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost()));
                     lore.add(ChatColor.GRAY + ench.loreName + " " + level);
-                    if (evt.getItem().getType().equals(BOOK)) {
-                        int i;
-                        if (evt.getExpLevelCost() > 20) {
-                            i = 3;
-                        } else if (evt.getExpLevelCost() > 10) {
-                            i = 2;
-                        } else {
-                            i = 1;
-                        }
-                        evt.getEnchantsToAdd().put(DURABILITY, i);
-                    }
                     enchAdd.add(ench);
                     break;
                 }

@@ -193,7 +193,7 @@ public class CommandProcessor {
             if (config.getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
                 CustomEnchantment ench = config.getEnchants().get(enchant.replace(" ", "").toLowerCase());
                 String e = "";
-                if (player.isDisabled(ench.loreName)) {
+                if (player.isDisabled(ench.enchantmentID)) {
                     e = ChatColor.RED + "**Disabled** ";
                 }
                 player.sendMessage(Storage.logo + (ench.loreName + ": " + e + ChatColor.AQUA
@@ -201,13 +201,13 @@ public class CommandProcessor {
             }
         } else {
             player.sendMessage(Storage.logo + "Enchantment Info:");
-            for (CustomEnchantment e : config.getEnchants(player.getPlayer().getItemInHand()).keySet()) {
+            for (CustomEnchantment ench : config.getEnchants(player.getPlayer().getItemInHand()).keySet()) {
                 String s = "";
-                if (player.isDisabled(e.loreName)) {
+                if (player.isDisabled(ench.enchantmentID)) {
                     s = ChatColor.RED + "**Disabled** ";
                 }
-                player.sendMessage((ChatColor.DARK_AQUA + e.loreName + ": " + s + ChatColor.AQUA
-                        + e.description).replace(ChatColor.GRAY + "", ""));
+                player.sendMessage((ChatColor.DARK_AQUA + ench.loreName + ": " + s + ChatColor.AQUA
+                        + ench.description).replace(ChatColor.GRAY + "", ""));
             }
         }
         return true;
@@ -223,7 +223,7 @@ public class CommandProcessor {
             String toDisable = args[1].toLowerCase();
             if (config.getEnchants().containsKey(toDisable)) {
                 CustomEnchantment ench = config.getEnchants().get(toDisable);
-                player.disable(toDisable);
+                player.disable(ench.enchantmentID);
                 player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA
                         + ench.loreName + ChatColor.AQUA + " has been " + ChatColor.RED + "disabled.");
             } else if (toDisable.equals("all")) {
@@ -247,7 +247,7 @@ public class CommandProcessor {
             String toDisable = args[1].toLowerCase();
             if (config.getEnchants().containsKey(toDisable)) {
                 CustomEnchantment ench = config.getEnchants().get(toDisable);
-                player.enable(ench.loreName);
+                player.enable(ench.enchantmentID);
                 player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA
                         + ench.loreName + ChatColor.AQUA + " has been" + ChatColor.GREEN + " enabled.");
             } else if (toDisable.equals("all")) {

@@ -313,6 +313,16 @@ public class Config {
         return e;
     }
 
+    // Returns the custom enchantment from the enchantment ID
+    private CustomEnchantment getEnchant(int id) {
+        for (CustomEnchantment ench : enchants.values()) {
+            if (ench.enchantmentID == id) {
+                return ench;
+            }
+        }
+        return null;
+    }
+
     // Adds lore descriptions to a given item stack, but will remove a certain lore if the enchant is to be removed
     public ItemStack addDescriptions(ItemStack stk, CustomEnchantment delete) {
         stk = removeDescriptions(stk, delete);

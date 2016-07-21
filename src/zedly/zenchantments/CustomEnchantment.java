@@ -40,7 +40,8 @@ public class CustomEnchantment {
     protected String description;   // Description of what the enchantment does
     protected int cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
     protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
-    protected int handUse;          // 0 = none, 1 = left, 2 = right, 3 = both
+    protected int handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
+    protected int enchantmentID;    // Unique ID for each enchantment
 
     // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
     public boolean validMaterial(Material m) {
@@ -144,6 +145,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
+            enchantmentID = 1;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -205,6 +207,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
+            enchantmentID = 2;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -256,6 +259,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = .0;
             handUse = 1;
+            enchantmentID = 3;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -281,6 +285,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
+            enchantmentID = 4;
         }
 
         public boolean onPlayerDeath(final PlayerDeathEvent evt, int level, boolean usedHand) {
@@ -324,6 +329,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
+            enchantmentID = 5;
         }
 
         public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
@@ -390,6 +396,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 6;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -411,6 +418,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 7;
         }
 
         public boolean onFastScan(Player player, int level, boolean usedHand) {
@@ -439,6 +447,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 8;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -486,6 +495,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 9;
         }
 
         public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
@@ -520,6 +530,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 10;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -558,6 +569,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
+            enchantmentID = 11;
         }
 
         public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
@@ -597,6 +609,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
+            enchantmentID = 12;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, final int level, boolean usedHand) {
@@ -629,6 +642,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
+            enchantmentID = 13;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -739,6 +753,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 14;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -761,6 +776,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 15;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -783,22 +799,18 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
+            enchantmentID = 16;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             Player player = evt.getPlayer();
             if (!evt.getPlayer().hasMetadata("ze.force.direction")) {
                 player.setMetadata("ze.force.direction", new FixedMetadataValue(Storage.zenchantments, true));
-                player.setMetadata("ze.force.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
             }
             if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
                 boolean b = !player.getMetadata("ze.force.direction").get(0).asBoolean();
-                long l = player.getMetadata("ze.force.time").get(0).asLong();
-                player.setMetadata("ze.force.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
-                if (System.currentTimeMillis() - l > 10) {
-                    player.setMetadata("ze.force.direction", new FixedMetadataValue(Storage.zenchantments, b));
-                    player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + (b ? "Push Mode" : "Pull Mode"));
-                }
+                player.setMetadata("ze.force.direction", new FixedMetadataValue(Storage.zenchantments, b));
+                player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + (b ? "Push Mode" : "Pull Mode"));
                 return false;
             }
             boolean mode = player.getMetadata("ze.force.direction").get(0).asBoolean();
@@ -843,6 +855,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 17;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -882,6 +895,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 18;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -904,6 +918,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 19;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -963,6 +978,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 20;
         }
 
         public boolean onFastScan(Player player, int level, boolean usedHand) {
@@ -1029,6 +1045,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
+            enchantmentID = 21;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -1069,6 +1086,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
+            enchantmentID = 22;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -1091,6 +1109,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
+            enchantmentID = 23;
         }
 
         public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
@@ -1117,6 +1136,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 24;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -1215,6 +1235,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 25;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final boolean usedHand) {
@@ -1254,6 +1275,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 26;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -1307,6 +1329,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 27;
         }
 
         public boolean onScanHands(Player player, int level, boolean usedHand) {
@@ -1329,10 +1352,11 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 28;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-            if (evt.getAction().equals(RIGHT_CLICK_BLOCK) && Utilities.canUse(evt.getPlayer(), loreName)) {
+            if (evt.getAction().equals(RIGHT_CLICK_BLOCK) && Utilities.canUse(evt.getPlayer(), enchantmentID)) {
                 if (!Storage.haulBlocks.containsKey(evt.getPlayer())) {
                     int[] bad = new int[]{6, 7, 8, 9, 10, 11, 23, 25, 26, 31, 32, 34,
                         36, 37, 38, 39, 40, 50, 51, 52, 54, 59, 61, 62, 63, 64,
@@ -1362,7 +1386,7 @@ public class CustomEnchantment {
                     }
                 }
             }
-            EnchantPlayer.matchPlayer(evt.getPlayer()).setCooldown(loreName, cooldown == 0 ? 1 : cooldown);
+            EnchantPlayer.matchPlayer(evt.getPlayer()).setCooldown(enchantmentID, cooldown == 0 ? 1 : cooldown);
             return false;
         }
     }
@@ -1379,6 +1403,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
+            enchantmentID = 29;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
@@ -1403,6 +1428,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 30;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -1423,6 +1449,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 31;
         }
 
         public void shoot(Location blk, Player player, int level, boolean usedHand) {
@@ -1519,6 +1546,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
+            enchantmentID = 32;
         }
 
         public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
@@ -1560,6 +1588,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 33;
         }
 
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
@@ -1613,6 +1642,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
+            enchantmentID = 34;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -1670,6 +1700,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 35;
         }
 
         public boolean onFastScan(Player player, int level, boolean usedHand) {
@@ -1695,6 +1726,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 36;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -1718,6 +1750,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 37;
         }
 
         private boolean shear(PlayerEvent evt, int level, boolean usedHand) {
@@ -1771,6 +1804,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 38;
         }
 
         public boolean onPlayerFish(final PlayerFishEvent evt, int level, boolean usedHand) {
@@ -1805,6 +1839,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 39;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -1844,6 +1879,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
+            enchantmentID = 40;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -1864,6 +1900,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 41;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -1972,38 +2009,34 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
+            enchantmentID = 42;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             Player player = evt.getPlayer();
             if (!evt.getPlayer().hasMetadata("ze.pierce.mode")) {
                 player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
-                player.setMetadata("ze.pierce.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
             }
             if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
                 int b = player.getMetadata("ze.pierce.mode").get(0).asInt();
                 b = b == 5 ? 1 : b + 1;
-                long l = player.getMetadata("ze.pierce.time").get(0).asLong();
-                player.setMetadata("ze.pierce.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
-                if (System.currentTimeMillis() - l > 10) {
-                    player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, b));
-                    switch (b) {
-                        case 1:
-                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "1x Normal Mode");
-                            break;
-                        case 2:
-                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Wide Mode");
-                            break;
-                        case 3:
-                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Long Mode");
-                            break;
-                        case 4:
-                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Tall Mode");
-                            break;
-                        case 5:
-                            player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Ore Mode");
-                            break;
-                    }
+                player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, b));
+                switch (b) {
+                    case 1:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "1x Normal Mode");
+                        break;
+                    case 2:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Wide Mode");
+                        break;
+                    case 3:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Long Mode");
+                        break;
+                    case 4:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "3x Tall Mode");
+                        break;
+                    case 5:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Ore Mode");
+                        break;
                 }
             }
             return false;
@@ -2014,7 +2047,6 @@ public class CustomEnchantment {
             Player player = evt.getPlayer();
             if (!evt.getPlayer().hasMetadata("ze.pierce.mode")) {
                 player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
-                player.setMetadata("ze.pierce.time", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
             }
             final int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
             if (!Utilities.eventStart(evt.getPlayer(), loreName)) {
@@ -2065,10 +2097,8 @@ public class CustomEnchantment {
                         }
                     }
                 } else if (mode == 5) {
-                    Material mats[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
-                        IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
                     List<Block> used = new ArrayList<>();
-                    if (ArrayUtils.contains(mats, evt.getBlock().getType())) {
+                    if (ArrayUtils.contains(Storage.ores, evt.getBlock().getType())) {
                         Material mat[];
                         if (evt.getBlock().getType() != REDSTONE_ORE && evt.getBlock().getType() != GLOWING_REDSTONE_ORE) {
                             mat = new Material[]{evt.getBlock().getType()};
@@ -2116,6 +2146,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 43;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -2161,6 +2192,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 44;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -2182,6 +2214,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 45;
         }
 
         public boolean onPotionSplash(PotionSplashEvent evt, int level, boolean usedHand) {
@@ -2215,6 +2248,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 46;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -2236,6 +2270,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
+            enchantmentID = 47;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -2287,6 +2322,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 48;
         }
 
         public boolean onEntityInteract(final PlayerInteractEntityEvent evt, final int level, boolean usedHand) {
@@ -2351,6 +2387,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
+            enchantmentID = 49;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -2382,6 +2419,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 50;
         }
 
         public boolean onHungerChange(FoodLevelChangeEvent evt, int level, boolean usedHand) {
@@ -2404,6 +2442,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 51;
         }
 
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
@@ -2426,6 +2465,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
+            enchantmentID = 52;
         }
 
         final Material mats[] = new Material[]{STONE, COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE,
@@ -2517,6 +2557,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
+            enchantmentID = 53;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
@@ -2566,6 +2607,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 54;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -2830,6 +2872,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 55;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -2852,6 +2895,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 56;
         }
 
         public boolean onFastScan(Player player, int level, boolean usedHand) {
@@ -2879,6 +2923,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 57;
         }
 
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
@@ -2925,6 +2970,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
+            enchantmentID = 58;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
@@ -2959,6 +3005,7 @@ public class CustomEnchantment {
             cooldown = -1;
             power = -1.0;
             handUse = 0;
+            enchantmentID = 59;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final List<ItemStack> items) {
@@ -3001,6 +3048,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 60;
         }
 
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -3096,6 +3144,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 61;
         }
 
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -3164,6 +3213,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
+            enchantmentID = 62;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -3204,6 +3254,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
+            enchantmentID = 63;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -3228,6 +3279,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
+            enchantmentID = 64;
         }
 
         public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
@@ -3268,6 +3320,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
+            enchantmentID = 65;
         }
 
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -3298,6 +3351,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
+            enchantmentID = 66;
         }
 
         public boolean onEntityKill(final EntityDeathEvent evt, int level, boolean usedHand) {
@@ -3333,6 +3387,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
+            enchantmentID = 67;
         }
 
         public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
@@ -3368,6 +3423,60 @@ public class CustomEnchantment {
     }
 
 //In-Development
+    public static class IDK extends CustomEnchantment {
+
+        public IDK() {
+            maxLevel = 4;
+            loreName = "Revealing";
+            probability = 0;
+            enchantable = new Tool[]{PICKAXE};
+            conflicting = new Class[]{Pierce.class, Spectral.class};
+            description = "Makes nearby ores glow white through the stone.";
+            cooldown = 0;
+            power = 1.0;
+            handUse = 0;
+            enchantmentID = 68;
+        }
+
+        public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
+            Player player = evt.getPlayer();
+            if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (evt.getPlayer().isSneaking()) {
+                    int radius = (int) Math.max(2, Math.round((2 + level) * power));
+                    int found = 0;
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block blk = evt.getPlayer().getLocation().getBlock().getRelative(x, y, z);
+                                if (ArrayUtils.contains(Storage.ores, blk.getType())) {
+                                    final Slime s = (Slime) blk.getWorld().spawnEntity(Utilities.getCenter(blk), EntityType.SLIME);
+                                    s.setAI(false);
+                                    s.setCollidable(false);
+                                    s.setGravity(false);
+                                    s.setSize(2);
+                                    s.setSilent(true);
+                                    s.setGlowing(true);
+                                    s.setInvulnerable(true);
+                                    evt.getPlayer().setCollidable(false);
+                                    found++;
+                                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                                        public void run() {
+                                            s.remove();
+                                            evt.getPlayer().setCollidable(true);
+                                        }
+                                    }, 100);
+                                }
+                            }
+                        }
+                    }
+                    Utilities.addUnbreaking(evt.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+                }
+            }
+            return false;
+        }
+
+    }
+
 //OP-Enchantments
     public static class Apocalypse extends CustomEnchantment {
 
@@ -3381,6 +3490,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 69;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -3402,6 +3512,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
+            enchantmentID = 70;
         }
 
         public boolean onScanHands(Player player, int level, boolean usedHand) {
@@ -3444,6 +3555,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 71;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -3468,6 +3580,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
+            enchantmentID = 72;
         }
 
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
@@ -3490,6 +3603,7 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
+            enchantmentID = 73;
         }
     }
 }

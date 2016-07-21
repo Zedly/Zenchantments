@@ -3,6 +3,16 @@ package zedly.zenchantments;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import java.util.*;
 import org.bukkit.*;
+import static org.bukkit.Material.COAL_ORE;
+import static org.bukkit.Material.DIAMOND_ORE;
+import static org.bukkit.Material.EMERALD_ORE;
+import static org.bukkit.Material.GLOWING_REDSTONE_ORE;
+import static org.bukkit.Material.GLOWSTONE;
+import static org.bukkit.Material.GOLD_ORE;
+import static org.bukkit.Material.IRON_ORE;
+import static org.bukkit.Material.LAPIS_ORE;
+import static org.bukkit.Material.QUARTZ_ORE;
+import static org.bukkit.Material.REDSTONE_ORE;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
@@ -109,5 +119,9 @@ public class Storage {
     // The plugin Logo to be used in chat commands
     public static final String logo = ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments"
             + ChatColor.BLUE + "] " + ChatColor.AQUA;
+    
+    public static final Material ores[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
+                    IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
+    
 
 }

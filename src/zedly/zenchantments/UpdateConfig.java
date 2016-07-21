@@ -15,6 +15,7 @@ public class UpdateConfig {
             case 4:
                 switch (version[2]) {
                     case 0:
+                    case 1:
                         oneFourOne(config);
                         break;
                 }
