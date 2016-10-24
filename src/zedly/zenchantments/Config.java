@@ -199,7 +199,7 @@ public class Config {
                         CustomEnchantment ench = (CustomEnchantment) cl.newInstance();
                         if (configInfo.containsKey(ench.loreName)) {
                             LinkedHashMap<String, Object> data = configInfo.get(ench.loreName);
-                            ench.probability = (float) (double) data.get("Probability");
+                            ench.probability = Float.valueOf(data.get("Probability"));
                             ench.loreName = (String) data.get("Name");
                             if (data.containsValue("Max Level")) {
                                 ench.maxLevel = (int) data.get("Max Level");
