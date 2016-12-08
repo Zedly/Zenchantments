@@ -1,6 +1,5 @@
 package zedly.zenchantments;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import java.util.*;
 import org.bukkit.*;
 import static org.bukkit.Material.COAL_ORE;
@@ -102,9 +101,6 @@ public class Storage {
 
     // Players and how long it has been since they last move a block with haul
     public static final Map<Player, Integer> haulBlockDelay = new HashMap<>();
-
-    // An instance of World Guard if it is present on the server
-    public static WorldGuardPlugin worldGuard;
 
     // Block IDs that are not to be used within a player's inventory
     public static final Integer[] badItems = new Integer[]{0, 8, 9, 10, 11, 26, 34, 36, 43, 51, 55, 59, 63, 64, 68, 71,

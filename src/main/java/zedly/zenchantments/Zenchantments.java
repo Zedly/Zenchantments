@@ -1,7 +1,6 @@
 package zedly.zenchantments;
 //For Bukkit & Spigot 1.9.X-1.10.X
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import java.io.*;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,15 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Zenchantments extends JavaPlugin {
 
-    // Tries to find an instance of WorldGuard running on the server
-    private WorldGuardPlugin getWorldGuard() {
-        Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
-        if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
-            return null;
-        }
-        return (WorldGuardPlugin) plugin;
-    }
-
     // Creates a directory for the plugin and then loads configs
     public void loadConfigs() {
         File file = new File("plugins/Zenchantments/");
@@ -38,11 +28,10 @@ public class Zenchantments extends JavaPlugin {
         Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
         loadConfigs();
         Storage.zenchantments = this;
-        Storage.worldGuard = getWorldGuard();
 
         getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
         getServer().getPluginManager().registerEvents(new WatcherArrow(), this);
-        getServer().getPluginManager().registerEvents(new WatcherEnchant(), this);
+        getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);
         getServer().getPluginManager().registerEvents(new Watcher(), this);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new HFEffects(), 1, 1);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new MFEffects(), 1, 5);

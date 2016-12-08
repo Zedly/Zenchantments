@@ -42,7 +42,8 @@ public class CustomEnchantment {
     protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
     protected int handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
     protected int enchantmentID;    // Unique ID for each enchantment
-
+    protected boolean called;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
+    
     // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
     public boolean validMaterial(Material m) {
         for (Tool t : enchantable) {
@@ -58,12 +59,13 @@ public class CustomEnchantment {
         return validMaterial(m.getType());
     }
 
+    
     //Empty Methods for Events and Scanning Tasks: These are empty by default so that the WatcherEnchant can call these 
     //      for any enchantment without performing any checks. Each enchantment will override them as neccecary
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
         return false;
     }
-
+    
     public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
         return false;
     }
@@ -1439,6 +1441,8 @@ public class CustomEnchantment {
 
     public static class Laser extends CustomEnchantment {
 
+        private final int[] doNotBreak = new int[]{0, 7, 23, 52, 54, 61, 62, 63, 64, 68, 69, 71, 77, 90, 96, 107, 116, 117, 119, 120, 130, 137, 138, 143, 145, 146, 158, 166, 167, 183, 184, 185, 186, 187, 193, 194, 195, 196, 197};
+
         public Laser() {
             maxLevel = 3;
             loreName = "Laser";
@@ -1506,15 +1510,15 @@ public class CustomEnchantment {
             boolean b = false;
             for (CustomEnchantment e : Config.get(evt.getPlayer().getWorld()).getEnchants(Utilities.usedStack(evt.getPlayer(), usedHand)).keySet()) {
                 if (e.getClass().equals(Lumber.class)) {
-                    b = e.getClass().equals(Lumber.class);
+                    b = true;
+                    break;
                 }
             }
             if ((!evt.getPlayer().isSneaking() || b) && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
                 final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 6
                         + (int) Math.round(level * power * 3)).getRelative(0, 0, 0);
                 shoot(blk.getLocation(), evt.getPlayer(), level, usedHand);
-                int[] nobreak = new int[]{0, 7, 23, 52, 54, 61, 62, 63, 64, 68, 69, 71, 77, 90, 96, 107, 116, 117, 119, 120, 130, 137, 138, 143, 145, 146, 158, 166, 167, 183, 184, 185, 186, 187, 193, 194, 195, 196, 197};
-                if (ArrayUtils.contains(nobreak, blk.getTypeId())) {
+                if (ArrayUtils.contains(doNotBreak, blk.getTypeId())) {
                     return false;
                 }
                 BlockBreakEvent event = new BlockBreakEvent(blk, evt.getPlayer());
@@ -1764,7 +1768,7 @@ public class CustomEnchantment {
                     PlayerShearEntityEvent event = new PlayerShearEntityEvent(evt.getPlayer(), ent);
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if (sheep.isAdult() && !sheep.isSheared() && !event.isCancelled()) {
-                        short s = sheep.getColor().getData();
+                        short s = sheep.getColor().getDyeData();
                         int number = Storage.rnd.nextInt(3) + 1;
                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                         sheep.setSheared(true);
@@ -3008,26 +3012,33 @@ public class CustomEnchantment {
             enchantmentID = 59;
         }
 
-        public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final List<ItemStack> items) {
-            final ItemStack stk = items.get(0).clone();
+        @Override
+        public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
+            final ItemStack stk = evt.getPlayer().getInventory().getItemInMainHand().clone();
+            if (stk == null || stk.getType() == AIR) {
+                return false;
+            }
+            final Player player = evt.getPlayer();
             Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
                 public void run() {
                     int current = -1;
+                    ItemStack newHandItem = evt.getPlayer().getInventory().getItemInMainHand();
+                    if (newHandItem != null && newHandItem.getType() != AIR) {
+                        return;
+                    }
                     for (int i = 0; i < evt.getPlayer().getInventory().getContents().length; i++) {
-                        ItemStack s = evt.getPlayer().getInventory().getContents()[i];
-                        if (s != null && stk != null && items.get(0).getType().equals(AIR)) {
-                            if (s.getType().equals(stk.getType())) {
-                                if (s.getData().getData() == stk.getData().getData()) {
-                                    current = i;
-                                    break;
-                                }
+                        ItemStack s = player.getInventory().getContents()[i];
+                        if (s != null && s.getType().equals(stk.getType())) {
+                            if (s.getData().getData() == stk.getData().getData()) {
                                 current = i;
+                                break;
                             }
+                            current = i;
                         }
                     }
                     if (current != -1) {
-                        evt.getPlayer().setItemInHand(evt.getPlayer().getInventory().getContents()[current]);
-                        evt.getPlayer().getInventory().setItem(current, null);
+                        evt.getPlayer().getInventory().setItemInMainHand(evt.getPlayer().getInventory().getContents()[current]);
+                        evt.getPlayer().getInventory().setItem(current, new ItemStack(AIR));
                         evt.getPlayer().updateInventory();
                     }
                 }

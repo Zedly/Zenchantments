@@ -1,0 +1,3 @@
+# Zenchantments
+## Description
+Zenchantments is a custom enchantment plugin adds 70+ new enchantments to the game, covering a multitude of different uses. These include target-tracing arrows, lumber axes, block-breaking lasers, and much more. These custom enchantments are obtained through the normal enchantment process, and act like regular enchantments, capable of being combined and merged. The plugin also adds several new arrows, which can be crafted through special recipes. These can do things like encase a target in spiderwebs, strike lightning onto the ground, and launch grenades.

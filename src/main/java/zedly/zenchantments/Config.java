@@ -199,7 +199,7 @@ public class Config {
                         CustomEnchantment ench = (CustomEnchantment) cl.newInstance();
                         if (configInfo.containsKey(ench.loreName)) {
                             LinkedHashMap<String, Object> data = configInfo.get(ench.loreName);
-                            ench.probability = Float.valueOf(data.get("Probability"));
+                            ench.probability = (float) (double) data.get("Probability");
                             ench.loreName = (String) data.get("Name");
                             if (data.containsValue("Max Level")) {
                                 ench.maxLevel = (int) data.get("Max Level");
@@ -217,7 +217,8 @@ public class Config {
                                 enchantmentMap.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
                             }
                         }
-                    } catch (InstantiationException | IllegalAccessException ex) {
+                    } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
+                        System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
                     }
                 }
                 Config config = new Config(enchantmentMap, arrows, enchantRarity, maxEnchants, enchantPVP, shredDrops,
@@ -243,12 +244,18 @@ public class Config {
         }
         return null;
     }
+    
+    
 
     // Returns a mapping of custom enchantments and their level on a given tool
     public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk) {
+        return getEnchants(stk, false);
+    }
+    
+    public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks) {
         ItemStack stack;
         Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
-        if (stk != null && stk.getType() != Material.ENCHANTED_BOOK) {
+        if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
             stack = removeDescriptions(stk.clone(), null);
             if (stack.hasItemMeta()) {
                 if (stack.getItemMeta().hasLore()) {
