@@ -45,7 +45,7 @@ public class CommandProcessor {
         if (stack.getItemMeta().hasLore()) {
             lore = stack.getItemMeta().getLore();
         }
-        if (config.getEnchants(stack).containsKey(enchantment)) {
+        if (config.getEnchants(stack, true).containsKey(enchantment)) {
             Iterator it = lore.iterator();
             while (it.hasNext()) {
                 String rawEnchant = (String) it.next();
@@ -201,7 +201,7 @@ public class CommandProcessor {
             }
         } else {
             player.sendMessage(Storage.logo + "Enchantment Info:");
-            for (CustomEnchantment ench : config.getEnchants(player.getPlayer().getItemInHand()).keySet()) {
+            for (CustomEnchantment ench : config.getEnchants(player.getPlayer().getItemInHand(), true).keySet()) {
                 String s = "";
                 if (player.isDisabled(ench.enchantmentID)) {
                     s = ChatColor.RED + "**Disabled** ";

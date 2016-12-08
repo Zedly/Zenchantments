@@ -15,6 +15,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
@@ -134,16 +135,17 @@ public class Watcher implements Listener {
     //      probability, and the level at which the item is being enchanted if the player has permission
     @EventHandler
     public void onEnchantItem(EnchantItemEvent evt) {
-        Config config = Config.get(evt.getEnchantBlock().getWorld());
-        int max = Math.min(config.getMaxEnchants(), 3);
         if (!evt.getEnchanter().hasPermission("zenchantments.enchant.get")) {
             return;
         }
         if (evt.getItem().getType() == FISHING_ROD && evt.getExpLevelCost() <= 4) {
             return;
         }
+        Config config = Config.get(evt.getEnchantBlock().getWorld());
+        int max = Math.min(config.getMaxEnchants(), 3);
         Set<CustomEnchantment> enchAdd = new HashSet<>();
-        ItemMeta meta = evt.getItem().getItemMeta();
+        ItemStack stk = evt.getItem();
+        ItemMeta meta = stk.getItemMeta();
         LinkedList<String> lore = new LinkedList<>();
         if (meta.hasLore()) {
             lore.addAll(meta.getLore());
@@ -176,9 +178,20 @@ public class Watcher implements Listener {
             }
         }
         meta.setLore(lore);
-        evt.getItem().setItemMeta(meta);
-        ItemStack toSet = config.descriptionLore() ? config.addDescriptions(evt.getItem().clone(), null) : evt.getItem();
-        evt.getItem().setItemMeta(toSet.getItemMeta());
+        stk.setItemMeta(meta);
+        if (config.descriptionLore()) {
+            config.addDescriptions(evt.getItem(), null);
+        }
+        List<String> finalLore = stk.getItemMeta().getLore();
+        
+        Inventory inv = evt.getInventory();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+            ItemStack book = inv.getItem(0);
+            ItemMeta bookMeta = book.getItemMeta();
+            bookMeta.setLore(finalLore);
+            book.setItemMeta(bookMeta);
+            inv.setItem(0, book);
+        }, 0);
     }
 
     // Removes certain potion effects given by enchantments when the enchanted items are removed

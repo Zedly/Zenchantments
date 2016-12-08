@@ -3,8 +3,11 @@ package zedly.zenchantments;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import net.minecraft.server.v1_11_R1.EntityPlayer;
+import net.minecraft.server.v1_11_R1.BlockPosition;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import static org.bukkit.GameMode.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
@@ -25,13 +28,14 @@ public class Utilities {
     }
 
     // Returns an ArrayList of ItemStacks of the player's held item and armor
-    public static List<ItemStack> getRelevant(Player player, boolean usedHand) {
+    public static List<ItemStack> getArmorandMainHandItems(Player player, boolean usedHand) {
         List<ItemStack> stk = new ArrayList<>();
         stk.addAll(Arrays.asList(player.getInventory().getArmorContents()));
         stk.add(usedStack(player, usedHand));
         Iterator<ItemStack> it = stk.iterator();
         while (it.hasNext()) {
-            if (it.next() == null) {
+            ItemStack is = it.next();
+            if (is == null || is.getType() == Material.AIR) {
                 it.remove();
             }
         }
@@ -71,6 +75,29 @@ public class Utilities {
                 }
             }
         }
+    }
+
+    // Stores a player and an enchantments in a map to prevent infinite recursion of method calls from the WatcherEnchant
+    //      Returns true of the player was already stored with the given enchantment
+    public static boolean eventStart(Player player, String enchantment) {
+        if (Storage.duringEvents.containsKey(player)) {
+            if (Storage.duringEvents.get(player).contains(enchantment)) {
+                return true;
+            } else {
+                Storage.duringEvents.get(player).add(enchantment);
+                return false;
+            }
+        } else {
+            HashSet<String> s = new HashSet<>();
+            s.add(enchantment);
+            Storage.duringEvents.put(player, s);
+            return false;
+        }
+    }
+
+    // Removes a player from the map that prevented them from being able to use the enchantment 
+    public static void eventEnd(Player player, String enchantment) {
+        Storage.duringEvents.get(player).remove(enchantment);
     }
 
     // Returns the item stack in the player's main or off hand, determinted by 'handUsed'
@@ -227,175 +254,6 @@ public class Utilities {
         }
     }
 
-    // Returns a set of item stacks that would be dropped during a normal block break event with fortune
-    public static ArrayList<ItemStack> getFortuneDrops(int level, Block blk) {
-        Material mat = blk.getType();
-        ArrayList<ItemStack> stacks = new ArrayList<>();
-        int prob = Storage.rnd.nextInt(100);
-        switch (mat) {
-            case COAL_ORE:
-            case DIAMOND_ORE:
-            case EMERALD_ORE:
-            case QUARTZ_ORE:
-            case LAPIS_ORE:
-                short n = 0;
-                if (mat == LAPIS_ORE) {
-                    n = 4;
-                }
-                Material m = AIR;
-                int n0 = blk.getDrops().size();
-                for (ItemStack s : blk.getDrops()) {
-                    m = s.getType();
-                }
-                Random rnd = new Random();
-                int c = 0;
-                for (int i2 = 0; i2 < n0; i2++) {
-                    double f = Math.pow(1.3, level);
-                    f -= 1;
-                    f *= 100;
-                    int something = (int) f;
-                    c++;
-                    while (something > 0) {
-                        if (rnd.nextInt(100) < something) {
-                            c++;
-                        }
-                        something -= 100;
-                    }
-                }
-                for (int i3 = 0; i3 < c; i3++) {
-                    stacks.add(new ItemStack(m, 1, n));
-                }
-                break;
-            case REDSTONE_ORE:
-            case GLOWING_REDSTONE_ORE:
-                int n1 = blk.getDrops().size() - 1;
-                n1 += level;
-                for (int i = 0; i < n1; i++) {
-                    stacks.add(new ItemStack(REDSTONE, 1));
-                }
-                break;
-            case SEA_LANTERN:
-                int n2 = blk.getDrops().size() - 1;
-                n2 += level;
-                if (n2 > 5) {
-                    n2 = 5;
-                }
-                for (int i = 0; i < n2; i++) {
-                    stacks.add(new ItemStack(PRISMARINE_CRYSTALS, 1));
-                }
-                break;
-            case GLOWSTONE:
-                int n3 = blk.getDrops().size() - 1;
-                n3 += level;
-                if (n3 > 4) {
-                    n3 = 4;
-                }
-                for (int i = 0; i < n3; i++) {
-                    stacks.add(new ItemStack(GLOWSTONE_DUST, 1));
-                }
-                break;
-            case GRAVEL:
-                if (level == 1) {
-                    if (prob < 15) {
-                        ItemStack stk2 = new ItemStack(FLINT, 1);
-                        stacks.add(stk2);
-                    } else {
-                        ItemStack stk2 = new ItemStack(GRAVEL, 1);
-                        stacks.add(stk2);
-                    }
-                } else if (level == 2) {
-
-                    if (prob < 25) {
-                        ItemStack stk2 = new ItemStack(FLINT, 1);
-                        stacks.add(stk2);
-                    } else {
-                        ItemStack stk2 = new ItemStack(GRAVEL, 1);
-                        stacks.add(stk2);
-                    }
-                } else if (level >= 3) {
-                    ItemStack stk2 = new ItemStack(FLINT, 1);
-                    stacks.add(stk2);
-                }
-                break;
-            default:
-                stacks.addAll(blk.getDrops());
-                break;
-        }
-        return stacks;
-    }
-
-    // Returns a set of item stacks that would be dropped during a normal block break event with silk touch
-    public static ArrayList<ItemStack> getSilkTouchDrops(Block blk) {
-        ArrayList<ItemStack> stacks = new ArrayList<>();
-        Material mat = blk.getType();
-        Material m;
-        ItemStack stk = null;
-        switch (mat) {
-            case COAL_ORE:
-            case DIAMOND_ORE:
-            case EMERALD_ORE:
-            case GRASS:
-            case ICE:
-            case PACKED_ICE:
-            case LAPIS_ORE:
-            case MYCEL:
-            case QUARTZ_ORE:
-            case GLASS:
-            case SEA_LANTERN:
-            case THIN_GLASS:
-            case ENDER_CHEST:
-            case MELON_BLOCK:
-            case GLOWSTONE:
-            case CLAY:
-            case SNOW_BLOCK:
-            case BOOKSHELF:
-            case DEAD_BUSH:
-            case GRAVEL:
-            case WEB:
-            case HUGE_MUSHROOM_1:
-            case HUGE_MUSHROOM_2:
-                m = mat;
-                stk = new ItemStack(m, 1);
-                break;
-            case STAINED_GLASS_PANE:
-            case STAINED_GLASS:
-            case DIRT:
-            case STONE:
-            case LEAVES:
-            case LEAVES_2:
-                short s = (short) blk.getData();
-                if (s >= 8 && (mat == LEAVES || mat == LEAVES_2)) {
-                    s -= 8;
-                }
-                m = mat;
-                stk = new ItemStack(m, 1, s);
-                break;
-            case GLOWING_REDSTONE_ORE:
-            case REDSTONE_ORE:
-                stk = new ItemStack(REDSTONE_ORE, 1);
-                break;
-            case MONSTER_EGGS:
-                switch (blk.getData()) {
-                    case 0:
-                        stk = new ItemStack(STONE);
-                        break;
-                    case 1:
-                        stk = new ItemStack(COBBLESTONE);
-                        break;
-                    default:
-                        stk = new ItemStack(SMOOTH_BRICK, 1, (short) (blk.getData() - 2));
-                }
-                break;
-            default:
-                stacks.addAll(blk.getDrops());
-                break;
-        }
-        if (stk != null) {
-            stacks.add(stk);
-        }
-        return stacks;
-    }
-
     // Returns the exact center of a block of a given location
     public static Location getCenter(Location loc) {
         double x = loc.getX();
@@ -544,29 +402,6 @@ public class Utilities {
         return !EnchantPlayer.matchPlayer(player).isDisabled(enchantmentID);
     }
 
-    // Stores a player and an enchantments in a map to prevent infinite recursion of method calls from the WatcherEnchant
-    //      Returns true of the player was already stored with the given enchantment
-    public static boolean eventStart(Player player, String enchantment) {
-        if (Storage.duringEvents.containsKey(player)) {
-            if (Storage.duringEvents.get(player).contains(enchantment)) {
-                return true;
-            } else {
-                Storage.duringEvents.get(player).add(enchantment);
-                return false;
-            }
-        } else {
-            HashSet<String> s = new HashSet<>();
-            s.add(enchantment);
-            Storage.duringEvents.put(player, s);
-            return false;
-        }
-    }
-
-    // Removes a player from the map that prevented them from being able to use the enchantment 
-    public static void eventEnd(Player player, String enchantment) {
-        Storage.duringEvents.get(player).remove(enchantment);
-    }
-
     // Returns true if the first given entity can damage the second given entity, otherwise false
     public static boolean canDamage(Entity damager, Entity entity) {
         if (!Storage.damagingPlayer.contains(damager)) {
@@ -602,11 +437,7 @@ public class Utilities {
 
     // Returns true if a player can change a given block, otherwise false
     public static boolean canEdit(Player player, Block block) {
-        if (Storage.worldGuard == null) {
-            return true;
-        } else {
-            return Storage.worldGuard.canBuild(player, block);
-        }
+        return true;
     }
 
     // Returns an instance of an AdvancedArrow of the given class
@@ -618,8 +449,8 @@ public class Utilities {
                     true);
             return (ElementalArrow) ctor.newInstance(
                     (Object) p);
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
-                IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException ex) {
         }
         return null;
     }
@@ -646,7 +477,13 @@ public class Utilities {
     }
 
     // A better implementation of Bukkit/Spigot's breakBlockNaturally. This method accounts for Silk Touch, Fortune, and XP
-    public static void breakBlockNaturally(Block blk, Player player) {
+    public static boolean breakBlockNaturally(Block blk, Player player) {
+        EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        WatcherEnchant.ignoreBlockBreak(true);
+        boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(blk.getX(), blk.getY(), blk.getZ()));
+        WatcherEnchant.ignoreBlockBreak(false);
+        return success;
+        /*
         if (player.getGameMode().equals(CREATIVE)) {
             blk.setType(AIR);
         } else if (player.getGameMode().equals(SURVIVAL) && !ArrayUtils.contains(Storage.badBlocks, blk.getType().getId())) {
@@ -666,6 +503,7 @@ public class Utilities {
                 blk.breakNaturally();
             }
         }
+         */
     }
 
 }
