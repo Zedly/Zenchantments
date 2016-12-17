@@ -1,5 +1,5 @@
 package zedly.zenchantments;
-//For Bukkit & Spigot 1.9.X-1.10.X
+//For Bukkit & Spigot 1.10.X-1.11.X
 
 import java.io.*;
 import java.util.Map;
@@ -10,7 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Zenchantments extends JavaPlugin {
