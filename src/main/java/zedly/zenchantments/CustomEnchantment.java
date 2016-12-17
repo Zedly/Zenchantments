@@ -1484,7 +1484,7 @@ public class CustomEnchantment {
                 for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getNearbyEntities(tempLoc, .3, .3, .3)) {
                     if (ent instanceof LivingEntity) {
                         LivingEntity e = (LivingEntity) ent;
-                        PlayerInteractUtil.attackEntityNMS(e, player, 1 + (level + power * 2));
+                        PlayerInteractUtil.attackEntity(e, player, 1 + (level + power * 2));
                     }
                 }
             }

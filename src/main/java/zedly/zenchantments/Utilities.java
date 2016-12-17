@@ -3,18 +3,11 @@ package zedly.zenchantments;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import net.minecraft.server.v1_11_R1.EntityPlayer;
-import net.minecraft.server.v1_11_R1.BlockPosition;
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import static org.bukkit.GameMode.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
-import static org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS;
-import static org.bukkit.enchantments.Enchantment.SILK_TOUCH;
 import org.bukkit.entity.*;
-import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.*;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
@@ -449,7 +442,7 @@ public class Utilities {
     }
 
     // Returns the amount of XP dropped by a given material
-    public static int getBlockXP(Material mat) {
+    public static int getBlockXP0(Material mat) {
         switch (mat) {
             case COAL_ORE:
                 return Storage.rnd.nextInt(3);

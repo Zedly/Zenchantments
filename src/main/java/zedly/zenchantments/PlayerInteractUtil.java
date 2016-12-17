@@ -72,7 +72,7 @@ public class PlayerInteractUtil {
         return false;
     }
 
-    public static boolean attackEntityNMS(LivingEntity target, Player attacker, double damage) {
+    public static boolean attackEntity(LivingEntity target, Player attacker, double damage) {
         EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
         Bukkit.getPluginManager().callEvent(damageEvent);
         if (!damageEvent.isCancelled()) {
