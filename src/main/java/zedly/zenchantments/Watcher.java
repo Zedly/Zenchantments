@@ -5,7 +5,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
-import static org.bukkit.enchantments.Enchantment.DURABILITY;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import static org.bukkit.event.block.Action.*;
@@ -90,33 +89,31 @@ public class Watcher implements Listener {
     //      a Grab or Vortex enchantment was used
     @EventHandler
     public void onItemSpawn(final ItemSpawnEvent evt) {
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-            public void run() {
-                for (Block block : Storage.grabLocs.keySet()) {
-                    Location loc = evt.getEntity().getLocation();
-                    for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
-                        if (e instanceof ExperienceOrb) {
-                            e.teleport(Storage.grabLocs.get(block));
-                        }
-                    }
-                    if (block.getLocation().getBlockX() == loc.getBlockX() && block.getLocation().getBlockY() == loc.getBlockY()
-                            && block.getLocation().getBlockZ() == loc.getBlockZ()) {
-                        evt.getEntity().teleport(Storage.grabLocs.get(block));
-                        evt.getEntity().setPickupDelay(0);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+            for (Block block : Storage.grabLocs.keySet()) {
+                Location loc = evt.getEntity().getLocation();
+                for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
+                    if (e instanceof ExperienceOrb) {
+                        e.teleport(Storage.grabLocs.get(block));
                     }
                 }
-                for (Block block : Storage.vortexLocs.keySet()) {
-                    Location loc = evt.getEntity().getLocation();
-                    if (block.getLocation().getWorld().equals(loc.getWorld())) {
-                        for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
-                            if (e instanceof ExperienceOrb) {
-                                e.teleport(Storage.vortexLocs.get(block));
-                            }
+                if (block.getLocation().getBlockX() == loc.getBlockX() && block.getLocation().getBlockY() == loc.getBlockY()
+                        && block.getLocation().getBlockZ() == loc.getBlockZ()) {
+                    evt.getEntity().teleport(Storage.grabLocs.get(block));
+                    evt.getEntity().setPickupDelay(0);
+                }
+            }
+            for (Block block : Storage.vortexLocs.keySet()) {
+                Location loc = evt.getEntity().getLocation();
+                if (block.getLocation().getWorld().equals(loc.getWorld())) {
+                    for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
+                        if (e instanceof ExperienceOrb) {
+                            e.teleport(Storage.vortexLocs.get(block));
                         }
-                        if (block.getLocation().distance(loc) < 2) {
-                            evt.getEntity().teleport(Storage.vortexLocs.get(block));
-                            evt.getEntity().setPickupDelay(0);
-                        }
+                    }
+                    if (block.getLocation().distance(loc) < 2) {
+                        evt.getEntity().teleport(Storage.vortexLocs.get(block));
+                        evt.getEntity().setPickupDelay(0);
                     }
                 }
             }

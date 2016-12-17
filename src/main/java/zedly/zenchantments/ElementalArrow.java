@@ -94,14 +94,12 @@ public class ElementalArrow implements AdvancedArrow {
     public void die() {
         final Entity e = arrow;
         final ElementalArrow arrow2 = this;
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-            public void run() {
-                if (Storage.advancedProjectiles.containsKey(e)) {
-                    if (Storage.advancedProjectiles.get(e).size() == 1) {
-                        Storage.advancedProjectiles.remove(e);
-                    } else {
-                        Storage.advancedProjectiles.get(e).remove(arrow2);
-                    }
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+            if (Storage.advancedProjectiles.containsKey(e)) {
+                if (Storage.advancedProjectiles.get(e).size() == 1) {
+                    Storage.advancedProjectiles.remove(e);
+                } else {
+                    Storage.advancedProjectiles.get(e).remove(arrow2);
                 }
             }
         }, 1);
@@ -250,11 +248,8 @@ public class ElementalArrow implements AdvancedArrow {
                     }
                 }
             }
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                public void run() {
-                    Storage.derpingEntities.removeAll(entities);
-                }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                Storage.derpingEntities.removeAll(entities);
             }, 300);
             die();
         }
@@ -753,11 +748,8 @@ public class ElementalArrow implements AdvancedArrow {
             final Entity lightning = getArrow().getWorld().strikeLightning(getArrow().getLocation());
             Storage.lightnings.add(lightning);
             if (!unsafe) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                    public void run() {
-                        Storage.lightnings.remove(lightning);
-                    }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    Storage.lightnings.remove(lightning);
                 }, 2);
             }
             die();

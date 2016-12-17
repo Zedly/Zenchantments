@@ -15,7 +15,6 @@ import org.bukkit.craftbukkit.v1_11_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
