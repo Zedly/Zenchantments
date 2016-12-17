@@ -53,9 +53,9 @@ public class Utilities {
                 }
             }
             if (handUsed) {
-                player.getInventory().setItemInMainHand(hand.getDurability() > hand.getType().getMaxDurability() ? null : hand);
+                player.getInventory().setItemInMainHand(hand.getDurability() > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
             } else {
-                player.getInventory().setItemInOffHand(hand.getDurability() > hand.getType().getMaxDurability() ? null : hand);
+                player.getInventory().setItemInOffHand(hand.getDurability() > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
             }
         }
     }
@@ -280,10 +280,8 @@ public class Utilities {
     }
 
     // Returns the nearby entities at any loction within the given range
-    public static List<Entity> getNearbyEntities(Location loc, double x, double y, double z) {
-        FallingBlock ent = loc.getWorld().spawnFallingBlock(loc, 132, (byte) 0);
-        List<Entity> out = ent.getNearbyEntities(x, y, z);
-        ent.remove();
+    public static Collection<Entity> getNearbyEntities(Location loc, double x, double y, double z) {
+        Collection<Entity> out = loc.getWorld().getNearbyEntities(loc, x, y, z);
         return out;
     }
 
@@ -435,11 +433,6 @@ public class Utilities {
         ent.addPotionEffect(new PotionEffect(type, length, intensity));
     }
 
-    // Returns true if a player can change a given block, otherwise false
-    public static boolean canEdit(Player player, Block block) {
-        return true;
-    }
-
     // Returns an instance of an AdvancedArrow of the given class
     public static AdvancedArrow construct(Class cl, Projectile p) {
         try {
@@ -476,34 +469,7 @@ public class Utilities {
         }
     }
 
-    // A better implementation of Bukkit/Spigot's breakBlockNaturally. This method accounts for Silk Touch, Fortune, and XP
-    public static boolean breakBlockNaturally(Block blk, Player player) {
-        EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        WatcherEnchant.ignoreBlockBreak(true);
-        boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(blk.getX(), blk.getY(), blk.getZ()));
-        WatcherEnchant.ignoreBlockBreak(false);
-        return success;
-        /*
-        if (player.getGameMode().equals(CREATIVE)) {
-            blk.setType(AIR);
-        } else if (player.getGameMode().equals(SURVIVAL) && !ArrayUtils.contains(Storage.badBlocks, blk.getType().getId())) {
-            if (player.getInventory().getItemInMainHand().getEnchantments().containsKey(SILK_TOUCH)) {
-                for (ItemStack st : Utilities.getSilkTouchDrops(blk)) {
-                    player.getWorld().dropItem(Utilities.getCenter(blk), st);
-                }
-                blk.setType(AIR);
-            } else if (player.getInventory().getItemInMainHand().getEnchantments().containsKey(LOOT_BONUS_BLOCKS)) {
-                for (ItemStack st : Utilities.getFortuneDrops(player.getInventory().getItemInMainHand().getEnchantments().get(LOOT_BONUS_BLOCKS), blk)) {
-                    player.getWorld().dropItem(Utilities.getCenter(blk), st);
-                }
-                ExperienceOrb o = (ExperienceOrb) player.getWorld().spawnEntity(Utilities.getCenter(blk), EXPERIENCE_ORB);
-                o.setExperience(getBlockXP(blk.getType()));
-                blk.setType(AIR);
-            } else {
-                blk.breakNaturally();
-            }
-        }
-         */
+    public static boolean canEdit(Player player, Block block) {
+        return true;
     }
-
 }

@@ -1,6 +1,8 @@
 package zedly.zenchantments;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.GameMode.CREATIVE;
@@ -8,6 +10,7 @@ import static org.bukkit.Material.*;
 import org.bukkit.block.Biome;
 import static org.bukkit.block.Biome.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import static org.bukkit.block.BlockFace.*;
 import org.bukkit.enchantments.Enchantment;
 import static org.bukkit.entity.EntityType.*;
@@ -19,6 +22,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -42,8 +46,22 @@ public class CustomEnchantment {
     protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
     protected int handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
     protected int enchantmentID;    // Unique ID for each enchantment
-    protected boolean called;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
-    
+    private boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
+
+    public static void applyForTool(World world, ItemStack tool, BiConsumer<CustomEnchantment, Integer> action) {
+        Config.get(world).getEnchants(tool).forEach((ench, level) -> {
+            if (!ench.used) {
+                try {
+                    ench.used = true;
+                    action.accept(ench, level);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                ench.used = false;
+            }
+        });
+    }
+
     // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
     public boolean validMaterial(Material m) {
         for (Tool t : enchantable) {
@@ -59,13 +77,12 @@ public class CustomEnchantment {
         return validMaterial(m.getType());
     }
 
-    
     //Empty Methods for Events and Scanning Tasks: These are empty by default so that the WatcherEnchant can call these 
     //      for any enchantment without performing any checks. Each enchantment will override them as neccecary
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
         return false;
     }
-    
+
     public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
         return false;
     }
@@ -78,7 +95,7 @@ public class CustomEnchantment {
         return false;
     }
 
-    public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+    public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
         return false;
     }
 
@@ -150,6 +167,7 @@ public class CustomEnchantment {
             enchantmentID = 1;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             Player player = evt.getPlayer();
             ItemStack hand = Utilities.usedStack(player, usedHand);
@@ -212,6 +230,7 @@ public class CustomEnchantment {
             enchantmentID = 2;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             Block blk = evt.getBlock();
             if (blk.getType() == LOG || blk.getType() == LOG_2 || blk.getType() == LEAVES_2 || blk.getType() == LEAVES) {
@@ -264,6 +283,7 @@ public class CustomEnchantment {
             enchantmentID = 3;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (evt.getBlock().getType() == STONE || evt.getBlock().getType() == DIRT) {
                 if (Storage.rnd.nextInt((int) Math.round(300.0 / (level * power + .001))) == 20) {
@@ -290,6 +310,7 @@ public class CustomEnchantment {
             enchantmentID = 4;
         }
 
+        @Override
         public boolean onPlayerDeath(final PlayerDeathEvent evt, int level, boolean usedHand) {
             if (evt.getKeepInventory()) {
                 return false;
@@ -306,13 +327,11 @@ public class CustomEnchantment {
                     evt.getDrops().remove(contents[i]);
                 }
             }
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                public void run() {
-                    if (evt.getKeepInventory()) {
-                        evt.getDrops().addAll(removed);
-                    } else {
-                        player.getInventory().setContents(contents);
-                    }
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                if (evt.getKeepInventory()) {
+                    evt.getDrops().addAll(removed);
+                } else {
+                    player.getInventory().setContents(contents);
                 }
             }, 1);
             return true;
@@ -320,6 +339,14 @@ public class CustomEnchantment {
     }
 
     public static class BlazesCurse extends CustomEnchantment {
+
+        private static final Biome[] noRainBiomes = new Biome[]{DESERT, FROZEN_OCEAN, FROZEN_RIVER, ICE_FLATS,
+            ICE_MOUNTAINS, DESERT_HILLS, COLD_BEACH, TAIGA_COLD, TAIGA_COLD_HILLS,
+            SAVANNA, SAVANNA_ROCK, MESA, MESA_ROCK, MESA_CLEAR_ROCK, MUTATED_DESERT,
+            MUTATED_ICE_FLATS, MUTATED_TAIGA_COLD, MUTATED_SAVANNA, MUTATED_SAVANNA_ROCK,
+            MUTATED_MESA, MUTATED_MESA_ROCK, MUTATED_MESA_CLEAR_ROCK};
+        private static final float submergeDamage = 1.5f;
+        private static final float rainDamage = .5f;
 
         public BlazesCurse() {
             maxLevel = 1;
@@ -334,6 +361,7 @@ public class CustomEnchantment {
             enchantmentID = 5;
         }
 
+        @Override
         public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
             if (evt.getCause() == EntityDamageEvent.DamageCause.LAVA || evt.getCause() == EntityDamageEvent.DamageCause.FIRE || evt.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
                 evt.setCancelled(true);
@@ -342,45 +370,17 @@ public class CustomEnchantment {
             return false;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
-            Location loc = player.getLocation();
             Material mat = player.getLocation().getBlock().getType();
             if (mat == STATIONARY_WATER || mat == WATER) {
-                EntityDamageEvent evt = new EntityDamageEvent(player, DamageCause.DROWNING, 100);
-                Bukkit.getPluginManager().callEvent(evt);
-                player.setLastDamageCause(evt);
-                if (!evt.isCancelled()) {
-                    player.damage(1.5f);
-                }
+                PlayerInteractUtil.damagePlayer(player, submergeDamage, DamageCause.DROWNING);
+                return true;
             }
-            if (player.getWorld().hasStorm() == true) {
-                List<Boolean> b = new ArrayList<>();
-                if (player.getLocation().getBlockY() > 256) {
-                    return false;
-                }
-                for (int x = player.getLocation().getBlockY() + 1; x <= 256; x++) {
-                    loc.setY(x);
-                    if (loc.getBlock().getType() != AIR) {
-                        b.add(Boolean.FALSE);
-                    } else {
-                        b.add(Boolean.TRUE);
-                    }
-                }
-                if (!b.contains(Boolean.FALSE)) {
-                    Biome[] biomes = new Biome[]{DESERT, FROZEN_OCEAN, FROZEN_RIVER, ICE_FLATS,
-                        ICE_MOUNTAINS, DESERT_HILLS, COLD_BEACH, TAIGA_COLD, TAIGA_COLD_HILLS,
-                        SAVANNA, SAVANNA_ROCK, MESA, MESA_ROCK, MESA_CLEAR_ROCK, MUTATED_DESERT,
-                        MUTATED_ICE_FLATS, MUTATED_TAIGA_COLD, MUTATED_SAVANNA, MUTATED_SAVANNA_ROCK,
-                        MUTATED_MESA, MUTATED_MESA_ROCK, MUTATED_MESA_CLEAR_ROCK};
-                    if (!ArrayUtils.contains(biomes, player.getLocation().getBlock().getBiome())) {
-                        EntityDamageEvent evt = new EntityDamageEvent(player, DamageCause.DROWNING, .5);
-                        Bukkit.getPluginManager().callEvent(evt);
-                        player.setLastDamageCause(evt);
-                        if (!evt.isCancelled()) {
-                            player.damage(.5f);
-                        }
-                    }
-                }
+            if (player.getWorld().hasStorm() == true
+                    && !ArrayUtils.contains(noRainBiomes, player.getLocation().getBlock().getBiome())
+                    && player.getLocation().getY() >= player.getWorld().getHighestBlockYAt(player.getLocation())) {
+                PlayerInteractUtil.damagePlayer(player, rainDamage, DamageCause.CUSTOM);
             }
             return true;
         }
@@ -401,6 +401,7 @@ public class CustomEnchantment {
             enchantmentID = 6;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantBlizzard arrow = new EnchantArrow.ArrowEnchantBlizzard((Projectile) evt.getProjectile(), level, power);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -423,6 +424,7 @@ public class CustomEnchantment {
             enchantmentID = 7;
         }
 
+        @Override
         public boolean onFastScan(Player player, int level, boolean usedHand) {
             if (player.getVelocity().getY() < 0 && (player.getLocation().getBlock().getRelative(0, -1, 0).getType() == SLIME_BLOCK
                     || player.getLocation().getBlock().getType() == SLIME_BLOCK
@@ -452,6 +454,7 @@ public class CustomEnchantment {
             enchantmentID = 8;
         }
 
+        @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
             final Player player = evt.getPlayer();
             final ItemStack hand = Utilities.usedStack(player, usedHand);
@@ -461,19 +464,22 @@ public class CustomEnchantment {
                     Utilities.setHand(player, hand, usedHand);
                     for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                            @Override
                             public void run() {
                                 Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(), player.getLocation().getDirection(), 1, 0);
                                 arrow.setShooter(player);
                                 arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
-
-                                EntityShootBowEvent event = new EntityShootBowEvent(player, hand, arrow, 1f);
-                                Bukkit.getPluginManager().callEvent(event);
-
-                                Bukkit.getPluginManager().callEvent(new ProjectileLaunchEvent(arrow));
-
-                                arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
-                                arrow.setCritical(true);
-                                Utilities.putArrow(arrow, new EnchantArrow.ArrowGenericMulitple(arrow), player);
+                                EntityShootBowEvent shootEvent = new EntityShootBowEvent(player, hand, arrow, 1f);
+                                ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
+                                Bukkit.getPluginManager().callEvent(shootEvent);
+                                Bukkit.getPluginManager().callEvent(launchEvent);
+                                if (shootEvent.isCancelled() || launchEvent.isCancelled()) {
+                                    arrow.remove();
+                                } else {
+                                    arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
+                                    arrow.setCritical(true);
+                                    Utilities.putArrow(arrow, new EnchantArrow.ArrowGenericMulitple(arrow), player);
+                                }
                             }
                         }, i * 2);
                     }
@@ -500,6 +506,7 @@ public class CustomEnchantment {
             enchantmentID = 9;
         }
 
+        @Override
         public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             Entity ent;
             if (evt.getDamager().getType() == EntityType.ARROW) {
@@ -512,11 +519,7 @@ public class CustomEnchantment {
             } else {
                 ent = evt.getDamager();
             }
-            if (Utilities.canDamage(ent, evt.getEntity())) {
-                ent.setFireTicks((int) (50 * level * power));
-                return true;
-            }
-            return false;
+            return PlayerInteractUtil.igniteEntity(ent, (Player) evt.getEntity(), (int) (50 * level * power));
         }
     }
 
@@ -535,6 +538,7 @@ public class CustomEnchantment {
             enchantmentID = 10;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 final Player player = (Player) evt.getPlayer();
@@ -545,6 +549,7 @@ public class CustomEnchantment {
                             player.setHealth(Math.min(20, player.getHealth() + 2 * power * level));
                             for (int i = 0; i < 3; i++) {
                                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                                    @Override
                                     public void run() {
                                         Utilities.display(Utilities.getCenter(player.getLocation()), Particle.HEART, 10, .1f, .5f, .5f, .5f);
                                     }
@@ -561,6 +566,9 @@ public class CustomEnchantment {
 
     public static class Decapitation extends CustomEnchantment {
 
+        private static final int BASE_PLAYER_DROP_CHANCE = 150;
+        private static final int BASE_MOB_DROP_CHANCE = 150;
+
         public Decapitation() {
             maxLevel = 4;
             loreName = "Decapitation";
@@ -574,26 +582,24 @@ public class CustomEnchantment {
             enchantmentID = 11;
         }
 
+        @Override
         public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
             EntityType[] t = new EntityType[]{SKELETON, WITHER_SKULL, ZOMBIE, PLAYER, CREEPER};
             short id = (short) ArrayUtils.indexOf(t, evt.getEntityType());
-            if (id != -1 && id != 1) {
-                if (id == 0) {
-                    if (((Skeleton) evt.getEntity()).getSkeletonType() == SkeletonType.WITHER) {
-                        return false;
-                    }
-                }
-                ItemStack stk = new ItemStack(Material.SKULL_ITEM, 1, id);
-                if (id == 3) {
+            if (id == -1) {
+                return false;
+            }
+            if (id == 3) {
+                if (Storage.rnd.nextInt((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * power))) == 0) {
+                    ItemStack stk = new ItemStack(Material.SKULL_ITEM, 1, id);
                     SkullMeta meta = (SkullMeta) stk.getItemMeta();
                     meta.setOwner(evt.getEntity().getName());
                     stk.setItemMeta(meta);
-                }
-                if ((id != 3 && Storage.rnd.nextInt((int) Math.round(150.0 / (level * power))) == 0)
-                        || Storage.rnd.nextInt((int) Math.round(35.0 / level * power)) == 0) {
                     evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(), stk);
-                    return true;
                 }
+            } else if (Storage.rnd.nextInt((int) Math.round(BASE_MOB_DROP_CHANCE / level * power)) == 0) {
+                ItemStack stk = new ItemStack(Material.SKULL_ITEM, 1, id);
+                evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(), stk);
             }
             return false;
         }
@@ -614,10 +620,10 @@ public class CustomEnchantment {
             enchantmentID = 12;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, final int level, boolean usedHand) {
             if (evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
                 Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                evt.setCancelled(true);
                 for (int x = 0; x < Storage.rnd.nextInt((int) Math.round(power * level + 1)) + 1; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()),
                             new ItemStack(evt.getBlock().getType() == GOLD_ORE ? GOLD_INGOT : IRON_INGOT));
@@ -647,6 +653,7 @@ public class CustomEnchantment {
             enchantmentID = 13;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
             Material mat = AIR;
@@ -758,6 +765,7 @@ public class CustomEnchantment {
             enchantmentID = 14;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantFirestorm arrow = new EnchantArrow.ArrowEnchantFirestorm((Projectile) evt.getProjectile(), level, power);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -781,6 +789,7 @@ public class CustomEnchantment {
             enchantmentID = 15;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantFirework arrow = new EnchantArrow.ArrowEnchantFirework((Projectile) evt.getProjectile(), level);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -804,6 +813,7 @@ public class CustomEnchantment {
             enchantmentID = 16;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             Player player = evt.getPlayer();
             if (!evt.getPlayer().hasMetadata("ze.force.direction")) {
@@ -870,8 +880,7 @@ public class CustomEnchantment {
                 for (int z = -(radius); z <= radius; z++) {
                     if (block.getRelative(x, -1, z).getLocation().distanceSquared(block.getRelative(DOWN).getLocation()) < radius * radius - 2) {
                         if (block.getRelative(x, -1, z).getData() == 0 && block.getRelative(x, -1, z).getType() == STATIONARY_WATER && block.getRelative(x, 0, z).getType() == AIR) {
-                            if (Utilities.canEdit(player, block)) {
-                                block.getRelative(x, -1, z).setType(PACKED_ICE);
+                            if (PlayerInteractUtil.formBlock(block, PACKED_ICE, (byte) 0, player)) {
                                 Storage.waterLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
                             }
                         }
@@ -900,6 +909,7 @@ public class CustomEnchantment {
             enchantmentID = 18;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantFuse arrow = new EnchantArrow.ArrowEnchantFuse((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -923,6 +933,7 @@ public class CustomEnchantment {
             enchantmentID = 19;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getAction() == RIGHT_CLICK_BLOCK) {
                 Location loc = evt.getClickedBlock().getLocation();
@@ -940,14 +951,9 @@ public class CustomEnchantment {
                                         || block.getRelative(x, y, z).getType() == PUMPKIN_STEM) && block.getRelative(x, y, z).getData() < 7)
                                         || ((block.getRelative(x, y, z).getType() == COCOA) && block.getRelative(x, y, z).getData() < 8)
                                         || ((block.getRelative(x, y, z).getType() == BEETROOT_BLOCK) && block.getRelative(x, y, z).getData() < 3)) {
-                                    if (!Utilities.canEdit(evt.getPlayer(), block.getRelative(x, y, z))) {
-                                        continue;
-                                    }
-                                    if (Utilities.removeItemCheck(evt.getPlayer(), INK_SACK, (short) 15, 1) || evt.getPlayer().getGameMode().equals(CREATIVE)) {
+                                    if (evt.getPlayer().getGameMode().equals(CREATIVE) || Utilities.removeItemCheck(evt.getPlayer(), INK_SACK, (short) 15, 1)) {
+                                        Utilities.grow(block.getRelative(x, y, z));
                                         if (Storage.rnd.nextBoolean()) {
-                                            Utilities.grow(block.getRelative(x, y, z));
-                                            Utilities.grow(block.getRelative(x, y, z));
-                                        } else {
                                             Utilities.grow(block.getRelative(x, y, z));
                                         }
                                         Utilities.display(Utilities.getCenter(block.getRelative(x, y, z)), Particle.VILLAGER_HAPPY, 30, 1f, .3f, .3f, .3f);
@@ -983,6 +989,7 @@ public class CustomEnchantment {
             enchantmentID = 20;
         }
 
+        @Override
         public boolean onFastScan(Player player, int level, boolean usedHand) {
             if (!Storage.sneakGlide.containsKey(player)) {
                 Storage.sneakGlide.put(player, player.getLocation().getY());
@@ -1014,7 +1021,7 @@ public class CustomEnchantment {
                 l.setY(l.getY() - 3);
                 Utilities.display(l, Particle.CLOUD, 1, .1f, 0, 0, 0);
             }
-            if (Storage.rnd.nextInt(5 * level) == 5) {
+            if (Storage.rnd.nextInt(5 * level) == 5) { // Slowly damage all armor
                 ItemStack[] s = player.getInventory().getArmorContents();
                 for (int i = 0; i < 4; i++) {
                     if (s[i] != null) {
@@ -1050,6 +1057,7 @@ public class CustomEnchantment {
             enchantmentID = 21;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             Material[] mat = new Material[]{RABBIT_STEW, COOKED_BEEF, PUMPKIN_PIE,
                 GRILLED_PORK, BAKED_POTATO, BEETROOT_SOUP, COOKED_CHICKEN, COOKED_MUTTON,
@@ -1091,6 +1099,7 @@ public class CustomEnchantment {
             enchantmentID = 22;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (evt.getBlock().getType() == SAND && Storage.rnd.nextInt(100) >= (100 - (level * power * 3))) {
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(GOLD_NUGGET));
@@ -1114,10 +1123,12 @@ public class CustomEnchantment {
             enchantmentID = 23;
         }
 
+        @Override
         public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
             Storage.grabLocs.put(evt.getBlock(), evt.getPlayer().getLocation());
             final Block block = evt.getBlock();
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                @Override
                 public void run() {
                     Storage.grabLocs.remove(block);
                 }
@@ -1141,6 +1152,7 @@ public class CustomEnchantment {
             enchantmentID = 24;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             Location loc = player.getLocation().clone();
             int radius = (int) Math.round(power * level + 2);
@@ -1196,7 +1208,7 @@ public class CustomEnchantment {
                                     block.getRelative(x, y, z).setData(data);
                                 }
                                 if (test) {
-                                    Utilities.display(Utilities.getCenter(block.getRelative(x, y + 1, z)), Particle.VILLAGER_ANGRY, 20, 1f, .3f, .3f, .3f);
+                                    Utilities.display(Utilities.getCenter(block.getRelative(x, y + 1, z)), Particle.VILLAGER_HAPPY, 20, 1f, .3f, .3f, .3f);
                                 }
                                 if (test) {
                                     int chc = Storage.rnd.nextInt(50);
@@ -1240,6 +1252,7 @@ public class CustomEnchantment {
             enchantmentID = 25;
         }
 
+        @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final boolean usedHand) {
             final Player player = evt.getPlayer();
             if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
@@ -1247,13 +1260,9 @@ public class CustomEnchantment {
                     final Block blk = player.getTargetBlock((HashSet<Byte>) null, 10);
                     player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector()).multiply(.25 * power));
                     player.setFallDistance(-40);
-                    EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.MAGIC, 2);
-                    Bukkit.getPluginManager().callEvent(event);
-                    player.setLastDamageCause(event);
-                    if (!event.isCancelled()) {
-                        player.damage(2f);
-                    }
+                    PlayerInteractUtil.damagePlayer(player, 2, DamageCause.MAGIC);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                        @Override
                         public void run() {
                             Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                         }
@@ -1280,6 +1289,7 @@ public class CustomEnchantment {
             enchantmentID = 26;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getAction() == RIGHT_CLICK_BLOCK) {
                 Location loc = evt.getClickedBlock().getLocation();
@@ -1294,20 +1304,17 @@ public class CustomEnchantment {
                                         || ((block.getRelative(x, y + 1, z).getType() == NETHER_WARTS || block.getRelative(x, y + 1, z).getType() == BEETROOT_BLOCK) && block.getRelative(x, y + 1, z).getData() == 3)
                                         || ((block.getRelative(x, y + 1, z).getType() == CROPS || block.getRelative(x, y + 1, z).getType() == POTATO
                                         || (block.getRelative(x, y + 1, z).getType() == CARROT)) && block.getRelative(x, y + 1, z).getData() == 7)) {
-                                    if (!Utilities.canEdit(evt.getPlayer(), block.getRelative(x, y + 1, z))) {
-                                        continue;
-                                    }
-                                    if (Storage.rnd.nextBoolean()) {
-                                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                                    }
-                                    Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
+
                                     final Block blk = block.getRelative(x, y + 1, z);
-                                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                        public void run() {
-                                            Storage.grabLocs.remove(blk);
-                                        }
-                                    }, 3);
-                                    block.getRelative(x, y + 1, z).breakNaturally();
+                                    if (PlayerInteractUtil.breakBlockNMS(block, evt.getPlayer())) {
+                                        Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
+                                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Storage.grabLocs.remove(blk);
+                                            }
+                                        }, 3);
+                                    }
                                 }
                             }
                         }
@@ -1334,6 +1341,7 @@ public class CustomEnchantment {
             enchantmentID = 27;
         }
 
+        @Override
         public boolean onScanHands(Player player, int level, boolean usedHand) {
             Utilities.addPotion(player, FAST_DIGGING, 610, (int) Math.round(level * power));
             player.setMetadata("ze.haste", new FixedMetadataValue(Storage.zenchantments, null));
@@ -1343,6 +1351,16 @@ public class CustomEnchantment {
     }
 
     public static class Haul extends CustomEnchantment {
+
+        public static final int[] incompatibleBlockIds = new int[]{
+            6, 7, 8, 9, 10, 11, 23, 25, 26, 31, 32, 34,
+            36, 37, 38, 39, 40, 50, 51, 52, 54, 59, 61, 62, 63, 64,
+            65, 68, 69, 71, 75, 76, 77, 78, 81, 83, 84, 90, 96, 104,
+            105, 106, 111, 115, 117, 119, 120, 127, 131, 132, 137,
+            140, 141, 142, 143, 144, 146, 154, 158, 166, 167, 171, 175,
+            176, 177, 193, 194, 195, 196, 197, 209, 210, 211, 217, 218, 219, 220,
+            221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+            255};
 
         public Haul() {
             maxLevel = 1;
@@ -1357,38 +1375,29 @@ public class CustomEnchantment {
             enchantmentID = 28;
         }
 
+        @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-            if (evt.getAction().equals(RIGHT_CLICK_BLOCK) && Utilities.canUse(evt.getPlayer(), enchantmentID)) {
-                if (!Storage.haulBlocks.containsKey(evt.getPlayer())) {
-                    int[] bad = new int[]{6, 7, 8, 9, 10, 11, 23, 25, 26, 31, 32, 34,
-                        36, 37, 38, 39, 40, 50, 51, 52, 54, 59, 61, 62, 63, 64,
-                        65, 68, 69, 71, 75, 76, 77, 78, 81, 83, 84, 90, 96, 104,
-                        105, 106, 111, 115, 117, 119, 120, 127, 131, 132, 137,
-                        140, 141, 142, 143, 144, 146, 154, 158, 166, 167, 171, 175,
-                        176, 177, 193, 194, 195, 196, 197, 209, 255};
-                    if (!ArrayUtils.contains(bad, evt.getClickedBlock().getTypeId())) {
-                        Storage.haulBlocks.put(evt.getPlayer(), evt.getClickedBlock());
+            Player player = evt.getPlayer();
+            if (evt.getAction().equals(RIGHT_CLICK_BLOCK) && Utilities.canUse(player, enchantmentID)) {
+                Storage.haulBlockDelay.put(player, 0);
+                if (!Storage.haulBlocks.containsKey(player)) {
+                    if (!ArrayUtils.contains(incompatibleBlockIds, evt.getClickedBlock().getTypeId())) {
+                        Storage.haulBlocks.put(player, evt.getClickedBlock());
                     }
+                    return true;
                 }
-                Storage.haulBlockDelay.put(evt.getPlayer(), 0);
-                if (Storage.haulBlocks.get(evt.getPlayer()) == null) {
-                    return false;
-                }
-                if (!Storage.haulBlocks.get(evt.getPlayer()).equals(evt.getClickedBlock())) {
-                    Block toUse = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 4).getRelative(evt.getBlockFace());
-                    if (toUse.getType() == AIR && evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 4).getType() != AIR) {
-                        if (Utilities.canEdit(evt.getPlayer(), toUse)) {
-                            toUse.setType(Storage.haulBlocks.get(evt.getPlayer()).getType());
-                            toUse.setData(Storage.haulBlocks.get(evt.getPlayer()).getData());
-                            Block toBreak = Storage.haulBlocks.get(evt.getPlayer());
-                            toBreak.setType(AIR);
-                            Storage.haulBlocks.put(evt.getPlayer(), toUse);
-                            Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                if (!Storage.haulBlocks.get(player).equals(evt.getClickedBlock())) {
+                    Block toUse = player.getTargetBlock((HashSet<Byte>) null, 4).getRelative(evt.getBlockFace());
+                    if (toUse.getType() == AIR && player.getTargetBlock((HashSet<Byte>) null, 4).getType() != AIR) {
+                        Block toBreak = Storage.haulBlocks.get(player);
+                        if (PlayerInteractUtil.haulOrBreakBlock(toBreak, toUse, evt.getBlockFace(), player)) {
+                            boolean handUsed = Utilities.usedHand(EquipmentSlot.HAND);
+                            Utilities.addUnbreaking(player, 1, handUsed);
                         }
                     }
                 }
             }
-            EnchantPlayer.matchPlayer(evt.getPlayer()).setCooldown(enchantmentID, cooldown == 0 ? 1 : cooldown);
+            EnchantPlayer.matchPlayer(player).setCooldown(enchantmentID, cooldown == 0 ? 1 : cooldown);
             return false;
         }
     }
@@ -1408,12 +1417,11 @@ public class CustomEnchantment {
             enchantmentID = 29;
         }
 
-        public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
-                Utilities.addPotion((LivingEntity) evt.getEntity(), SLOW,
-                        (int) Math.round(40 + level * power * 40), (int) Math.round(power * level * 2));
-                Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.CLOUD, 10, .1f, 1f, 2f, 1f);
-            }
+        @Override
+        public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+            Utilities.addPotion((LivingEntity) evt.getEntity(), SLOW,
+                    (int) Math.round(40 + level * power * 40), (int) Math.round(power * level * 2));
+            Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.CLOUD, 10, .1f, 1f, 2f, 1f);
             return true;
         }
     }
@@ -1433,6 +1441,7 @@ public class CustomEnchantment {
             enchantmentID = 30;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             Utilities.addPotion(player, JUMP, 610, (int) Math.round(level * power));
             return true;
@@ -1456,9 +1465,12 @@ public class CustomEnchantment {
             enchantmentID = 31;
         }
 
-        public void shoot(Location blk, Player player, int level, boolean usedHand) {
+        public void shoot(Player player, int level, boolean usedHand) {
+            EnchantPlayer.matchPlayer(player).setCooldown(33, 5); // Avoid recursing into Lumber enchant
+            Block blk = player.getTargetBlock((HashSet<Byte>) null, 6
+                    + (int) Math.round(level * power * 3));
             Location playLoc = player.getLocation();
-            Location target = Utilities.getCenter(blk);
+            Location target = Utilities.getCenter(blk.getLocation());
             target.setY(target.getY() + .5);
             Location c = playLoc;
             c.setY(c.getY() + 1.1);
@@ -1469,69 +1481,31 @@ public class CustomEnchantment {
                 tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
                 tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
                 player.getWorld().spawnParticle(Particle.REDSTONE, tempLoc.getX(), tempLoc.getY(), tempLoc.getZ(), 0, 255, 0, 0, 0);
-                for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getEntities()) {
-                    if (ent.getLocation().distance(tempLoc) < 1.5) {
-                        if (Utilities.canDamage(player, ent)) {
-                            LivingEntity e = (LivingEntity) ent;
-                            if (e.getEntityId() != player.getEntityId()) {
-                                EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(player, e, DamageCause.ENTITY_ATTACK, (double) (1 + (level * 2)));
-                                Bukkit.getPluginManager().callEvent(evt);
-                                LivingEntity theE = (LivingEntity) evt.getEntity();
-                                theE.setLastDamageCause(evt);
-                                if (!evt.isCancelled()) {
-                                    if (Storage.rnd.nextInt(20) == 6) {
-                                        Utilities.addUnbreaking(player, 1, usedHand);
-                                    }
-                                    theE.damage(1 + (level * power * 2));
-                                }
-                            }
-                        }
+                for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getNearbyEntities(tempLoc, .3, .3, .3)) {
+                    if (ent instanceof LivingEntity) {
+                        LivingEntity e = (LivingEntity) ent;
+                        PlayerInteractUtil.attackEntityNMS(e, player, 1 + (level + power * 2));
                     }
                 }
             }
+            if (!ArrayUtils.contains(doNotBreak, blk.getTypeId())) {
+                PlayerInteractUtil.breakBlockNMS(blk, player);
+            }
         }
 
+        @Override
         public boolean onEntityInteract(PlayerInteractEntityEvent evt, int level, boolean usedHand) {
             if (!evt.getPlayer().isSneaking()) {
-                Storage.laserTimes.put(evt.getPlayer(), System.nanoTime());
-                final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 6
-                        + (int) Math.round(level * power * 3));
-                shoot(blk.getLocation(), evt.getPlayer(), level, usedHand);
+                shoot(evt.getPlayer(), level, usedHand);
                 return true;
             }
             return false;
         }
 
+        @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-            if (Storage.laserTimes.containsKey(evt.getPlayer()) && System.nanoTime() - Storage.laserTimes.get(evt.getPlayer()) < 500000000) {
-                Storage.laserTimes.remove(evt.getPlayer());
-                return false;
-            }
-            boolean b = false;
-            for (CustomEnchantment e : Config.get(evt.getPlayer().getWorld()).getEnchants(Utilities.usedStack(evt.getPlayer(), usedHand)).keySet()) {
-                if (e.getClass().equals(Lumber.class)) {
-                    b = true;
-                    break;
-                }
-            }
-            if ((!evt.getPlayer().isSneaking() || b) && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
-                final Block blk = evt.getPlayer().getTargetBlock((HashSet<Byte>) null, 6
-                        + (int) Math.round(level * power * 3)).getRelative(0, 0, 0);
-                shoot(blk.getLocation(), evt.getPlayer(), level, usedHand);
-                if (ArrayUtils.contains(doNotBreak, blk.getTypeId())) {
-                    return false;
-                }
-                BlockBreakEvent event = new BlockBreakEvent(blk, evt.getPlayer());
-                Bukkit.getServer().getPluginManager().callEvent(event);
-                if (event.isCancelled()) {
-                    return false;
-                }
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                    public void run() {
-                        Utilities.breakBlockNaturally(blk, evt.getPlayer());
-                    }
-                }, 1);
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+            if (!evt.getPlayer().isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
+                shoot(evt.getPlayer(), level, usedHand);
                 return true;
             }
             return false;
@@ -1553,6 +1527,7 @@ public class CustomEnchantment {
             enchantmentID = 32;
         }
 
+        @Override
         public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
             if (Storage.rnd.nextBoolean()) {
                 evt.setDroppedExp((int) (evt.getDroppedExp() * (1.3 + (level * power * .5))));
@@ -1561,6 +1536,7 @@ public class CustomEnchantment {
             return false;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (Storage.rnd.nextBoolean()) {
                 evt.setExpToDrop((int) (evt.getExpToDrop() * (1.3 + (level * power * .5))));
@@ -1569,6 +1545,7 @@ public class CustomEnchantment {
             return false;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             if (Storage.rnd.nextBoolean()) {
                 EnchantArrow.ArrowEnchantLevel arrow = new EnchantArrow.ArrowEnchantLevel((Projectile) evt.getProjectile(), level, power);
@@ -1595,6 +1572,7 @@ public class CustomEnchantment {
             enchantmentID = 33;
         }
 
+        @Override
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
             if (evt.getEntity().getType() == EntityType.FISHING_HOOK) {
                 evt.getEntity().setVelocity(evt.getEntity().getVelocity().normalize().multiply(Math.min(1.9 + (power * level - 1.2), 2.7)));
@@ -1605,36 +1583,24 @@ public class CustomEnchantment {
 
     public static class Lumber extends CustomEnchantment {
 
-        private void bk(Block blk, List<Block> bks, List<Block> total, List<Block> tester, int i) {
-            i++;
-            if (i >= 150 || total.size() >= 150) {
-                return;
-            }
-            bks.add(blk);
-            Location loc = blk.getLocation().clone();
-            for (int y = -1; y <= 1; y++) {
-                for (int x = -1; x <= 1; x++) {
-                    for (int z = -1; z <= 1; z++) {
-                        Location loc2 = loc.clone();
-                        loc2.setX(loc2.getX() + x);
-                        loc2.setY(loc2.getY() + y);
-                        loc2.setZ(loc2.getZ() + z);
-                        Material mat = loc2.getBlock().getType();
-                        if (mat != LOG && mat != LOG_2 && mat != LEAVES && mat != LEAVES_2 && mat != DIRT && mat != GRASS && mat != VINE && mat != SNOW
-                                && mat != COCOA && mat != AIR && mat != RED_ROSE && mat != YELLOW_FLOWER && mat != LONG_GRASS && mat != GRAVEL
-                                && mat != STONE && mat != DOUBLE_PLANT && mat != WATER && mat != STATIONARY_WATER && mat != SAND && mat != SAPLING
-                                && mat != BROWN_MUSHROOM && mat != RED_MUSHROOM && mat != MOSSY_COBBLESTONE && mat != CLAY && mat != HUGE_MUSHROOM_1 && mat != HUGE_MUSHROOM_2
-                                && mat != SUGAR_CANE_BLOCK && mat != MYCEL && mat != TORCH) {
-                            tester.add(loc2.getBlock());
-                        }
-                        if (!bks.contains(loc2.getBlock()) && (loc2.getBlock().getType() == LOG || loc2.getBlock().getType() == LOG_2 || loc2.getBlock().getType() == HUGE_MUSHROOM_1 || loc2.getBlock().getType() == HUGE_MUSHROOM_2)) {
-                            bk(loc2.getBlock(), bks, total, tester, i);
-                            total.add(loc2.getBlock());
-                        }
-                    }
-                }
-            }
-        }
+        private static final int MAX_BLOCKS = 160;
+        private static final BlockFace[] CARDINAL_BLOCK_FACES = {
+            BlockFace.UP,
+            BlockFace.DOWN,
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
+        };
+
+        private static final Material[] ACCEPTED_NEARBY_BLOCKS = {
+            LOG, LOG_2, LEAVES, LEAVES_2, DIRT, GRASS, VINE, SNOW, COCOA, AIR, RED_ROSE, YELLOW_FLOWER, LONG_GRASS, GRAVEL, STONE, DOUBLE_PLANT, WATER, STATIONARY_WATER,
+            SAND, SAPLING, BROWN_MUSHROOM, RED_MUSHROOM, MOSSY_COBBLESTONE, CLAY, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2, SUGAR_CANE_BLOCK, MYCEL, TORCH
+        };
+
+        private static final Material[] AFFECTED_BLOCKS = {
+            LOG, LOG_2, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2
+        };
 
         public Lumber() {
             maxLevel = 1;
@@ -1649,44 +1615,69 @@ public class CustomEnchantment {
             enchantmentID = 34;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (!evt.getPlayer().isSneaking()) {
                 return false;
             }
-            if (!Utilities.eventStart(evt.getPlayer(), loreName)) {
-                evt.setCancelled(true);
-                List<Block> used = new ArrayList<>();
-                List<Block> total = new ArrayList<>();
-                List<Block> tester = new ArrayList<>();
-                if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2
-                        || evt.getBlock().getType() == Material.HUGE_MUSHROOM_1 || evt.getBlock().getType() == Material.HUGE_MUSHROOM_2) {
-                    bk(evt.getBlock(), used, total, tester, 0);
-                }
-                if ((!(total.size() >= 150)) && tester.isEmpty()) {
-                    int i = 1;
-                    if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2
-                            || evt.getBlock().getType() == Material.HUGE_MUSHROOM_1 || evt.getBlock().getType() == Material.HUGE_MUSHROOM_2) {
-                        total.add(evt.getBlock());
-                    }
-                    for (Block b : total) {
-                        final int i2 = i + 1;
-                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                        final BlockBreakEvent event = new BlockBreakEvent(b, evt.getPlayer());
-                        Bukkit.getPluginManager().callEvent(event);
-                        if (Utilities.canEdit(evt.getPlayer(), b)) {
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                public void run() {
-                                    final Block block = event.getBlock();
-                                    if (event.getBlock().getType() != AIR) {
-                                        event.getBlock().breakNaturally();
-                                    }
+            Block startBlock = evt.getBlock();
+            if (!ArrayUtils.contains(AFFECTED_BLOCKS, startBlock.getType())) {
+                return false;
+            }
+
+            // BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large
+            LinkedHashSet<Block> trunk = new LinkedHashSet<>();
+            LinkedHashSet<Block> searchBody = new LinkedHashSet<>();
+            List<Block> searchPerimeter = new ArrayList<>();
+            searchBody.add(startBlock);
+            searchPerimeter.add(startBlock);
+
+            while (!searchPerimeter.isEmpty()) {
+                Block searchBlock = searchPerimeter.remove(0);
+                searchBody.add(searchBlock);
+
+                // If block is a trunk, add all adjacent blocks to search perimeter
+                if (ArrayUtils.contains(AFFECTED_BLOCKS, searchBlock.getType())) {
+                    trunk.add(searchBlock);
+                    for (int y = -1; y <= 1; y++) {
+                        for (int x = -1; x <= 1; x++) {
+                            for (int z = -1; z <= 1; z++) {
+                                Block testBlock = searchBlock.getRelative(x, y, z);
+                                if (!searchBody.contains(testBlock) && ArrayUtils.contains(ACCEPTED_NEARBY_BLOCKS, searchBlock.getType())) {
+                                    searchPerimeter.add(testBlock);
+                                } else {
+                                    // Trunk is adjacent to a forbidden block. Nothing to do here
+                                    return false;
                                 }
-                            }, 1);
-                            i++;
+                            }
+                        }
+                    }
+
+                    // If block is not a trunk, add only any nearby trunk blocks to search perimeter
+                } else {
+                    for (int y = -1; y <= 1; y++) {
+                        for (int x = -1; x <= 1; x++) {
+                            for (int z = -1; z <= 1; z++) {
+                                Block testBlock = searchBlock.getRelative(x, y, z);
+                                if (!searchBody.contains(testBlock) && ArrayUtils.contains(AFFECTED_BLOCKS, searchBlock.getType())) {
+                                    searchPerimeter.add(testBlock);
+                                } else if (!ArrayUtils.contains(ACCEPTED_NEARBY_BLOCKS, testBlock.getType())) {
+                                    // Trunk is adjacent to a forbidden block. Nothing to do here
+                                    return false;
+                                }
+                            }
                         }
                     }
                 }
-                Utilities.eventEnd(evt.getPlayer(), loreName);
+
+                if (trunk.size() > MAX_BLOCKS) {
+                    // Allowed trunk size exceeded
+                    return false;
+                }
+            }
+
+            for (Block b : trunk) {
+                PlayerInteractUtil.breakBlockNMS(b, evt.getPlayer());
             }
             return true;
         }
@@ -1707,6 +1698,7 @@ public class CustomEnchantment {
             enchantmentID = 35;
         }
 
+        @Override
         public boolean onFastScan(Player player, int level, boolean usedHand) {
             int radius = (int) Math.round(power * level * 2 + 3);
             for (Entity e : player.getNearbyEntities(radius, radius, radius)) {
@@ -1733,6 +1725,7 @@ public class CustomEnchantment {
             enchantmentID = 36;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             player.setWalkSpeed((float) Math.min(.5f + level * power * .05f, 1));
             player.setFlySpeed((float) Math.min(.5f + level * power * .05f, 1));
@@ -1760,38 +1753,34 @@ public class CustomEnchantment {
         private boolean shear(PlayerEvent evt, int level, boolean usedHand) {
             boolean hasSheep = false;
             int radius = (int) Math.round(level * power + 2);
+            Player player = evt.getPlayer();
             for (Entity ent : evt.getPlayer().getNearbyEntities(radius, radius, radius)) {
-                Entity e = ent;
-                if (ent.getType() == SHEEP) {
-                    hasSheep = true;
+                if (ent instanceof Sheep) {
                     Sheep sheep = (Sheep) ent;
-                    PlayerShearEntityEvent event = new PlayerShearEntityEvent(evt.getPlayer(), ent);
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-                    if (sheep.isAdult() && !sheep.isSheared() && !event.isCancelled()) {
-                        short s = sheep.getColor().getDyeData();
-                        int number = Storage.rnd.nextInt(3) + 1;
-                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                        sheep.setSheared(true);
-                        evt.getPlayer().getWorld().dropItemNaturally(Utilities.getCenter(e.getLocation()), new ItemStack(WOOL, number, s));
+                    if (sheep.isAdult()) {
+                        PlayerInteractUtil.shearEntityNMS(sheep, player, usedHand);
+                    }
+                } else if (ent instanceof MushroomCow) {
+                    MushroomCow mCow = (MushroomCow) ent;
+                    if (mCow.isAdult()) {
+                        PlayerInteractUtil.shearEntityNMS(mCow, player, usedHand);
                     }
                 }
             }
             return hasSheep;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
-                return shear(evt, level, usedHand);
+                shear(evt, level, usedHand);
             }
             return false;
         }
 
+        @Override
         public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
-            if (!Utilities.eventStart(evt.getPlayer(), loreName)) {
-                boolean result = shear(evt, level, usedHand);
-                Utilities.eventEnd(evt.getPlayer(), loreName);
-                return result;
-            }
+            shear(evt, level, usedHand);
             return false;
         }
     }
@@ -1811,6 +1800,7 @@ public class CustomEnchantment {
             enchantmentID = 38;
         }
 
+        @Override
         public boolean onPlayerFish(final PlayerFishEvent evt, int level, boolean usedHand) {
             if (Storage.rnd.nextInt(10) < level * power) {
                 if (evt.getCaught() != null) {
@@ -1819,10 +1809,9 @@ public class CustomEnchantment {
                     if (Storage.rnd.nextBoolean()) {
                         ent = evt.getPlayer().getWorld().spawnEntity(location, SQUID);
                     } else {
-                        ent = evt.getPlayer().getWorld().spawnEntity(location, GUARDIAN);
-                        Guardian g = (Guardian) evt.getPlayer().getWorld().spawnEntity(location, GUARDIAN);
-                        g.setElder(Storage.rnd.nextBoolean());
+                        Guardian g = (Guardian) evt.getPlayer().getWorld().spawnEntity(location, Storage.rnd.nextBoolean() ? GUARDIAN : ELDER_GUARDIAN);
                         Storage.guardianMove.put(g, evt.getPlayer());
+                        ent = g;
                     }
                     evt.getCaught().setPassenger(ent);
                 }
@@ -1846,6 +1835,7 @@ public class CustomEnchantment {
             enchantmentID = 39;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             if (player.isSneaking() && player.getLocation().getBlock().getType() == STATIONARY_LAVA && !player.isFlying()) {
                 player.setVelocity(player.getVelocity().setY(.4));
@@ -1854,15 +1844,14 @@ public class CustomEnchantment {
             int radius = (int) Math.round(power * level + 2);
             for (int x = -(radius); x <= radius; x++) {
                 for (int z = -(radius); z <= radius; z++) {
-                    if (block.getRelative(x, -1, z).getLocation().distanceSquared(block.getLocation()) < radius * radius - 2) {
-                        if (Storage.fireLocs.containsKey(block.getRelative(x, -1, z).getLocation())) {
-                            Storage.fireLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
-                        }
+                    if (block.getRelative(x, -1, z).getLocation().distanceSquared(block.getRelative(DOWN).getLocation()) < radius * radius - 2) {
                         if (block.getRelative(x, -1, z).getData() == 0 && block.getRelative(x, -1, z).getType() == STATIONARY_LAVA && block.getRelative(x, 0, z).getType() == AIR) {
-                            if (Utilities.canEdit(player, block)) {
-                                block.getRelative(x, -1, z).setType(OBSIDIAN);
+                            if (PlayerInteractUtil.formBlock(block, SOUL_SAND, (byte) 0, player)) {
                                 Storage.fireLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
                             }
+                        }
+                        if (Storage.fireLocs.containsKey(block.getRelative(x, -1, z).getLocation())) {
+                            Storage.fireLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
                         }
                     }
                 }
@@ -1886,6 +1875,7 @@ public class CustomEnchantment {
             enchantmentID = 40;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             Utilities.addPotion(player, NIGHT_VISION, 610, 5);
             return true;
@@ -1907,6 +1897,7 @@ public class CustomEnchantment {
             enchantmentID = 41;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getAction() == RIGHT_CLICK_BLOCK) {
                 Material mats[] = new Material[]{CARROT_ITEM, POTATO_ITEM, SEEDS, NETHER_STALK, BEETROOT_SEEDS};
@@ -2016,6 +2007,7 @@ public class CustomEnchantment {
             enchantmentID = 42;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             Player player = evt.getPlayer();
             if (!evt.getPlayer().hasMetadata("ze.pierce.mode")) {
@@ -2046,6 +2038,7 @@ public class CustomEnchantment {
             return false;
         }
 
+        @Override
         public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
             //1 = normal; 2 = wide; 3 = deep; 4 = tall; 5 = ore
             Player player = evt.getPlayer();
@@ -2123,8 +2116,9 @@ public class CustomEnchantment {
                         if (!event.isCancelled()) {
                             if (evt.getBlock().getType() != AIR) {
                                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                                    @Override
                                     public void run() {
-                                        Utilities.breakBlockNaturally(event.getBlock(), evt.getPlayer());
+                                        PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
                                     }
                                 }, 1);
                             }
@@ -2153,6 +2147,7 @@ public class CustomEnchantment {
             enchantmentID = 43;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getAction() == RIGHT_CLICK_BLOCK) {
                 Location loc = evt.getClickedBlock().getLocation();
@@ -2199,6 +2194,7 @@ public class CustomEnchantment {
             enchantmentID = 44;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantPotion arrow = new EnchantArrow.ArrowEnchantPotion((Projectile) evt.getProjectile(), level, power);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -2221,6 +2217,7 @@ public class CustomEnchantment {
             enchantmentID = 45;
         }
 
+        @Override
         public boolean onPotionSplash(PotionSplashEvent evt, int level, boolean usedHand) {
             for (LivingEntity ent : evt.getAffectedEntities()) {
                 if (ent instanceof Player) {
@@ -2255,6 +2252,7 @@ public class CustomEnchantment {
             enchantmentID = 46;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantQuickShot arrow = new EnchantArrow.ArrowEnchantQuickShot((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -2277,6 +2275,7 @@ public class CustomEnchantment {
             enchantmentID = 47;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             short itemInfo;
             Material dropMaterial;
@@ -2300,6 +2299,7 @@ public class CustomEnchantment {
             return true;
         }
 
+        @Override
         public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
             Sheep sheep = (Sheep) evt.getEntity();
             if (!sheep.isSheared()) {
@@ -2329,6 +2329,7 @@ public class CustomEnchantment {
             enchantmentID = 48;
         }
 
+        @Override
         public boolean onEntityInteract(final PlayerInteractEntityEvent evt, final int level, boolean usedHand) {
             if (!Utilities.canDamage(evt.getPlayer(), evt.getRightClicked())) {
                 return false;
@@ -2340,6 +2341,7 @@ public class CustomEnchantment {
             for (int i = 0; i < 1200; i++) {
                 final float j = i;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                    @Override
                     public void run() {
                         if (ent.isDead()) {
                             return;
@@ -2361,6 +2363,7 @@ public class CustomEnchantment {
             tester.add(1);
             for (int i = 0; i < 3; i++) {
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                    @Override
                     public void run() {
                         ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.3));
                         if (ent.isOnGround() && tester.size() == 1) {
@@ -2394,13 +2397,15 @@ public class CustomEnchantment {
             enchantmentID = 49;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantReaper arrow = new EnchantArrow.ArrowEnchantReaper((Projectile) evt.getProjectile(), level, power);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
             return true;
         }
 
-        public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+        @Override
+        public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 int pow = (int) Math.round(level * power);
                 int dur = (int) Math.round(10 + level * 20 * power);
@@ -2426,6 +2431,7 @@ public class CustomEnchantment {
             enchantmentID = 50;
         }
 
+        @Override
         public boolean onHungerChange(FoodLevelChangeEvent evt, int level, boolean usedHand) {
             if (evt.getFoodLevel() < ((Player) evt.getEntity()).getFoodLevel() && Storage.rnd.nextInt(10) > 10 - 2 * level * power) {
                 evt.setCancelled(true);
@@ -2449,6 +2455,7 @@ public class CustomEnchantment {
             enchantmentID = 51;
         }
 
+        @Override
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
             if (evt.getEntity().getType() == EntityType.FISHING_HOOK) {
                 evt.getEntity().setVelocity(evt.getEntity().getVelocity().normalize().multiply((.8f / (level * power))));
@@ -2478,6 +2485,7 @@ public class CustomEnchantment {
 
         final Material shovel[] = new Material[]{GLOWSTONE, GRASS, DIRT, MYCEL, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (!ArrayUtils.contains(mats, evt.getBlock().getType()) && !evt.getBlock().getType().equals(AIR)) {
                 return false;
@@ -2503,6 +2511,7 @@ public class CustomEnchantment {
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                        @Override
                         public void run() {
                             if (config.getShredDrops() == 1) {
                                 Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
@@ -2524,7 +2533,7 @@ public class CustomEnchantment {
                                 blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
                             }
                             if ((Tool.PICKAXE.contains(itemType) && ArrayUtils.contains(mats, event.getBlock().getType())) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
-                                Utilities.breakBlockNaturally(event.getBlock(), player);
+                                PlayerInteractUtil.breakBlockNMS(event.getBlock(), player);
                             }
 
                         }
@@ -2564,7 +2573,8 @@ public class CustomEnchantment {
             enchantmentID = 53;
         }
 
-        public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+        @Override
+        public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 Player p = (Player) evt.getDamager();
                 LivingEntity ent = (LivingEntity) evt.getEntity();
@@ -2584,6 +2594,7 @@ public class CustomEnchantment {
             return true;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantSiphon arrow = new EnchantArrow.ArrowEnchantSiphon((Projectile) evt.getProjectile(), level, power);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -2614,6 +2625,7 @@ public class CustomEnchantment {
             enchantmentID = 54;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             Material original = evt.getClickedBlock().getType();
             int originalInt = evt.getClickedBlock().getData();
@@ -2879,6 +2891,7 @@ public class CustomEnchantment {
             enchantmentID = 55;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             player.setWalkSpeed((float) Math.min((.05f * level * power) + .2f, 1));
             player.setFlySpeed((float) Math.min((.05f * level * power) + .2f, 1));
@@ -2902,6 +2915,7 @@ public class CustomEnchantment {
             enchantmentID = 56;
         }
 
+        @Override
         public boolean onFastScan(Player player, int level, boolean usedHand) {
             if (player.getVelocity().getY() < -0.45) {
                 for (Entity e : player.getNearbyEntities(0.0, 0.25, 0.0)) {
@@ -2930,6 +2944,7 @@ public class CustomEnchantment {
             enchantmentID = 57;
         }
 
+        @Override
         public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
             Arrow originalArrow = (Arrow) evt.getEntity();
             Player player = (Player) originalArrow.getShooter();
@@ -2977,7 +2992,8 @@ public class CustomEnchantment {
             enchantmentID = 58;
         }
 
-        public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+        @Override
+        public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 if (evt.getDamage() < ent.getHealth()) {
@@ -2989,6 +3005,7 @@ public class CustomEnchantment {
             return true;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantStationary arrow = new EnchantArrow.ArrowEnchantStationary((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -3020,6 +3037,7 @@ public class CustomEnchantment {
             }
             final Player player = evt.getPlayer();
             Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                @Override
                 public void run() {
                     int current = -1;
                     ItemStack newHandItem = evt.getPlayer().getInventory().getItemInMainHand();
@@ -3062,6 +3080,7 @@ public class CustomEnchantment {
             enchantmentID = 60;
         }
 
+        @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
             ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
             if (evt.getAction() == Action.RIGHT_CLICK_BLOCK && evt.getPlayer().isSneaking()) {
@@ -3097,16 +3116,18 @@ public class CustomEnchantment {
                         Storage.grabLocs.put(event.getBlock(), event.getPlayer().getLocation());
                         final Block block = event.getBlock();
                         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                            @Override
                             public void run() {
                                 Storage.grabLocs.remove(block);
                             }
                         }, 3);
                         evt.setCancelled(true);
-                        Utilities.breakBlockNaturally(event.getBlock(), evt.getPlayer());
+                        PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                         final Material m = mat;
                         final Byte b = bt;
                         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                            @Override
                             public void run() {
                                 evt.getClickedBlock().setType(m);
                                 evt.getClickedBlock().setData(b);
@@ -3158,6 +3179,7 @@ public class CustomEnchantment {
             enchantmentID = 61;
         }
 
+        @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
             if (evt.getPlayer().isSneaking()) {
@@ -3227,19 +3249,22 @@ public class CustomEnchantment {
             enchantmentID = 62;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantToxic arrow = new EnchantArrow.ArrowEnchantToxic((Projectile) evt.getProjectile(), level, power);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
             return true;
         }
 
-        public boolean onHitting(final EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+        @Override
+        public boolean onEntityHit(final EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 final int value = (int) Math.round(level * power);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), CONFUSION, 80 + 60 * value, 4);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 40 + 60 * value, 4);
                 if (evt.getEntity() instanceof Player) {
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                        @Override
                         public void run() {
                             ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
                             Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * value, 0);
@@ -3268,6 +3293,7 @@ public class CustomEnchantment {
             enchantmentID = 63;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantTracer arrow = new EnchantArrow.ArrowEnchantTracer((Projectile) evt.getProjectile(), level, power);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -3293,7 +3319,8 @@ public class CustomEnchantment {
             enchantmentID = 64;
         }
 
-        public boolean onHitting(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+        @Override
+        public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 if (Storage.rnd.nextInt(100) > (100 - (level * power * 5))) {
                     int position = ArrayUtils.indexOf(ENTITY_TYPES, evt.getEntity().getType());
@@ -3334,6 +3361,7 @@ public class CustomEnchantment {
             enchantmentID = 65;
         }
 
+        @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
                 evt.setCancelled(true);
@@ -3365,12 +3393,14 @@ public class CustomEnchantment {
             enchantmentID = 66;
         }
 
+        @Override
         public boolean onEntityKill(final EntityDeathEvent evt, int level, boolean usedHand) {
             Storage.vortexLocs.put(evt.getEntity().getLocation().getBlock(), evt.getEntity().getKiller().getLocation());
             int i = evt.getDroppedExp();
             evt.setDroppedExp(0);
             evt.getEntity().getKiller().giveExp(i);
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                @Override
                 public void run() {
                     Storage.vortexLocs.remove(evt.getEntity().getLocation().getBlock());
                 }
@@ -3378,6 +3408,7 @@ public class CustomEnchantment {
             return true;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowEnchantVortex arrow = new EnchantArrow.ArrowEnchantVortex((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -3401,6 +3432,7 @@ public class CustomEnchantment {
             enchantmentID = 67;
         }
 
+        @Override
         public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 if (evt.getEntity() instanceof Player) {
@@ -3425,6 +3457,7 @@ public class CustomEnchantment {
             return true;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             player.setWalkSpeed((float) (.164f - level * power * .014f));
             Utilities.addPotion(player, INCREASE_DAMAGE, 610, (int) Math.round(power * level));
@@ -3434,11 +3467,11 @@ public class CustomEnchantment {
     }
 
 //In-Development
-    public static class IDK extends CustomEnchantment {
+    public static class Reveal extends CustomEnchantment {
 
-        public IDK() {
+        public Reveal() {
             maxLevel = 4;
-            loreName = "Revealing";
+            loreName = "Reveal";
             probability = 0;
             enchantable = new Tool[]{PICKAXE};
             conflicting = new Class[]{Pierce.class, Spectral.class};
@@ -3449,6 +3482,7 @@ public class CustomEnchantment {
             enchantmentID = 68;
         }
 
+        @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
             Player player = evt.getPlayer();
             if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -3471,6 +3505,7 @@ public class CustomEnchantment {
                                     evt.getPlayer().setCollidable(false);
                                     found++;
                                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
+                                        @Override
                                         public void run() {
                                             s.remove();
                                             evt.getPlayer().setCollidable(true);
@@ -3504,6 +3539,7 @@ public class CustomEnchantment {
             enchantmentID = 69;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowAdminApocalypse arrow = new EnchantArrow.ArrowAdminApocalypse((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -3526,6 +3562,7 @@ public class CustomEnchantment {
             enchantmentID = 70;
         }
 
+        @Override
         public boolean onScanHands(Player player, int level, boolean usedHand) {
             ItemStack stk = Utilities.usedStack(player, usedHand);
             int dura = stk.getDurability();
@@ -3541,6 +3578,7 @@ public class CustomEnchantment {
             return dura != 0;
         }
 
+        @Override
         public boolean onScan(Player player, int level, boolean usedHand) {
             for (ItemStack s : player.getInventory().getArmorContents()) {
                 if (s != null) {
@@ -3569,6 +3607,7 @@ public class CustomEnchantment {
             enchantmentID = 71;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowAdminMissile arrow = new EnchantArrow.ArrowAdminMissile((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
@@ -3594,6 +3633,7 @@ public class CustomEnchantment {
             enchantmentID = 72;
         }
 
+        @Override
         public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
             EnchantArrow.ArrowAdminSingularity arrow = new EnchantArrow.ArrowAdminSingularity((Projectile) evt.getProjectile(), level);
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
