@@ -1901,9 +1901,6 @@ public class CustomEnchantment {
                         for (int z = -(radiusXZ); z <= radiusXZ; z++) {
                             Block block = (Block) loc.getBlock();
                             if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if (!Utilities.canEdit(evt.getPlayer(), block.getRelative(x, y, z))) {
-                                    continue;
-                                }
                                 if ((block.getRelative(x, y, z).getType() == SOUL_SAND || block.getRelative(x, y, z).getType() == SOIL) && block.getRelative(x, y + 1, z).getType() == AIR) {
                                     if (evt.getPlayer().getInventory().contains(mat)) {
                                         Utilities.removeItem(evt.getPlayer(), mat, 1);
@@ -2138,9 +2135,6 @@ public class CustomEnchantment {
                         for (int z = -(radiusXZ); z <= radiusXZ; z++) {
                             Block block = (Block) loc.getBlock();
                             if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if (!Utilities.canEdit(evt.getPlayer(), (block.getRelative(x, y, z)))) {
-                                    continue;
-                                }
                                 if ((block.getRelative(x, y, z).getType() == DIRT || block.getRelative(x, y, z).getType() == GRASS || block.getRelative(x, y, z).getType() == MYCEL) && block.getRelative(x, y + 1, z).getType() == AIR) {
                                     block.getRelative(x, y, z).setType(SOIL);
                                     if (Storage.rnd.nextBoolean()) {
@@ -2600,9 +2594,6 @@ public class CustomEnchantment {
             Material original = evt.getClickedBlock().getType();
             int originalInt = evt.getClickedBlock().getData();
             if (evt.getAction() != RIGHT_CLICK_BLOCK) {
-                return false;
-            }
-            if (!Utilities.canEdit(evt.getPlayer(), evt.getClickedBlock()) || !evt.getPlayer().isSneaking()) {
                 return false;
             }
             int data = evt.getClickedBlock().getData();
@@ -3177,7 +3168,7 @@ public class CustomEnchantment {
                         bt = 14;
                     }
                     for (Block b : total) {
-                        if (Utilities.canEdit(evt.getPlayer(), b) && b.getType().equals(AIR)) {
+                        if (b.getType().equals(AIR)) {
                             if (Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
                                 b.setType(mat);
                                 b.setData(bt);
