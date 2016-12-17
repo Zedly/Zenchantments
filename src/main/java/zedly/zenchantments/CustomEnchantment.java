@@ -2,7 +2,6 @@ package zedly.zenchantments;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.GameMode.CREATIVE;
@@ -15,7 +14,6 @@ import static org.bukkit.block.BlockFace.*;
 import org.bukkit.enchantments.Enchantment;
 import static org.bukkit.entity.EntityType.*;
 import org.bukkit.entity.*;
-import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.event.block.Action;
 import static org.bukkit.event.block.Action.*;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -49,7 +47,7 @@ public class CustomEnchantment {
     private boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
 
     public static void applyForTool(World world, ItemStack tool, BiConsumer<CustomEnchantment, Integer> action) {
-        Config.get(world).getEnchants(tool).forEach((ench, level) -> {
+        Config.get(world).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
             if (!ench.used) {
                 try {
                     ench.used = true;
@@ -463,23 +461,20 @@ public class CustomEnchantment {
                     Utilities.addUnbreaking(player, (int) Math.round(level / 2.0 + 1), usedHand);
                     Utilities.setHand(player, hand, usedHand);
                     for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                            @Override
-                            public void run() {
-                                Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(), player.getLocation().getDirection(), 1, 0);
-                                arrow.setShooter(player);
-                                arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
-                                EntityShootBowEvent shootEvent = new EntityShootBowEvent(player, hand, arrow, 1f);
-                                ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
-                                Bukkit.getPluginManager().callEvent(shootEvent);
-                                Bukkit.getPluginManager().callEvent(launchEvent);
-                                if (shootEvent.isCancelled() || launchEvent.isCancelled()) {
-                                    arrow.remove();
-                                } else {
-                                    arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
-                                    arrow.setCritical(true);
-                                    Utilities.putArrow(arrow, new EnchantArrow.ArrowGenericMulitple(arrow), player);
-                                }
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                            Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(), player.getLocation().getDirection(), 1, 0);
+                            arrow.setShooter(player);
+                            arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
+                            EntityShootBowEvent shootEvent = new EntityShootBowEvent(player, hand, arrow, 1f);
+                            ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
+                            Bukkit.getPluginManager().callEvent(shootEvent);
+                            Bukkit.getPluginManager().callEvent(launchEvent);
+                            if (shootEvent.isCancelled() || launchEvent.isCancelled()) {
+                                arrow.remove();
+                            } else {
+                                arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
+                                arrow.setCritical(true);
+                                Utilities.putArrow(arrow, new EnchantArrow.ArrowGenericMulitple(arrow), player);
                             }
                         }, i * 2);
                     }
@@ -548,11 +543,8 @@ public class CustomEnchantment {
                             player.setLevel((int) (player.getLevel() - 1));
                             player.setHealth(Math.min(20, player.getHealth() + 2 * power * level));
                             for (int i = 0; i < 3; i++) {
-                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Utilities.display(Utilities.getCenter(player.getLocation()), Particle.HEART, 10, .1f, .5f, .5f, .5f);
-                                    }
+                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                                    Utilities.display(Utilities.getCenter(player.getLocation()), Particle.HEART, 10, .1f, .5f, .5f, .5f);
                                 }, ((i * 5) + 1));
                             }
                             return true;
@@ -1127,11 +1119,8 @@ public class CustomEnchantment {
         public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
             Storage.grabLocs.put(evt.getBlock(), evt.getPlayer().getLocation());
             final Block block = evt.getBlock();
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                @Override
-                public void run() {
-                    Storage.grabLocs.remove(block);
-                }
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                Storage.grabLocs.remove(block);
             }, 15);
             return true;
         }
@@ -1261,11 +1250,8 @@ public class CustomEnchantment {
                     player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector()).multiply(.25 * power));
                     player.setFallDistance(-40);
                     PlayerInteractUtil.damagePlayer(player, 2, DamageCause.MAGIC);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                        @Override
-                        public void run() {
-                            Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                        }
+                    int scheduleSyncDelayedTask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                     }, 1);
                     return true;
                 }
@@ -1308,11 +1294,8 @@ public class CustomEnchantment {
                                     final Block blk = block.getRelative(x, y + 1, z);
                                     if (PlayerInteractUtil.breakBlockNMS(block, evt.getPlayer())) {
                                         Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
-                                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Storage.grabLocs.remove(blk);
-                                            }
+                                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                                            Storage.grabLocs.remove(blk);
                                         }, 3);
                                     }
                                 }
@@ -1918,9 +1901,6 @@ public class CustomEnchantment {
                         for (int z = -(radiusXZ); z <= radiusXZ; z++) {
                             Block block = (Block) loc.getBlock();
                             if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if (!Utilities.canEdit(evt.getPlayer(), block.getRelative(x, y, z))) {
-                                    continue;
-                                }
                                 if ((block.getRelative(x, y, z).getType() == SOUL_SAND || block.getRelative(x, y, z).getType() == SOIL) && block.getRelative(x, y + 1, z).getType() == AIR) {
                                     if (evt.getPlayer().getInventory().contains(mat)) {
                                         Utilities.removeItem(evt.getPlayer(), mat, 1);
@@ -2115,11 +2095,8 @@ public class CustomEnchantment {
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
                             if (evt.getBlock().getType() != AIR) {
-                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
-                                    }
+                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                                    PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
                                 }, 1);
                             }
                         }
@@ -2158,9 +2135,6 @@ public class CustomEnchantment {
                         for (int z = -(radiusXZ); z <= radiusXZ; z++) {
                             Block block = (Block) loc.getBlock();
                             if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if (!Utilities.canEdit(evt.getPlayer(), (block.getRelative(x, y, z)))) {
-                                    continue;
-                                }
                                 if ((block.getRelative(x, y, z).getType() == DIRT || block.getRelative(x, y, z).getType() == GRASS || block.getRelative(x, y, z).getType() == MYCEL) && block.getRelative(x, y + 1, z).getType() == AIR) {
                                     block.getRelative(x, y, z).setType(SOIL);
                                     if (Storage.rnd.nextBoolean()) {
@@ -2340,40 +2314,34 @@ public class CustomEnchantment {
             ent.teleport(l);
             for (int i = 0; i < 1200; i++) {
                 final float j = i;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ent.isDead()) {
-                            return;
-                        }
-                        float x, y, z;
-                        Location loc = l.clone();
-                        float j1 = j;
-                        loc.setY(loc.getY() + (j1 / 100));
-                        loc.setX(loc.getX() + Math.sin(Math.toRadians(j1)) * j1 / 330);
-                        loc.setZ(loc.getZ() + Math.cos(Math.toRadians(j1)) * j1 / 330);
-                        Utilities.display(loc, Particle.REDSTONE, 1, 10f, 0, 0, 0);
-                        loc.setY(loc.getY() + 1.3);
-                        ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
-                        ent.setFallDistance((float) (-10 + ((level * power * 2) + 8)));
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    if (ent.isDead()) {
+                        return;
                     }
+                    float x, y, z;
+                    Location loc = l.clone();
+                    float j1 = j;
+                    loc.setY(loc.getY() + (j1 / 100));
+                    loc.setX(loc.getX() + Math.sin(Math.toRadians(j1)) * j1 / 330);
+                    loc.setZ(loc.getZ() + Math.cos(Math.toRadians(j1)) * j1 / 330);
+                    Utilities.display(loc, Particle.REDSTONE, 1, 10f, 0, 0, 0);
+                    loc.setY(loc.getY() + 1.3);
+                    ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
+                    ent.setFallDistance((float) (-10 + ((level * power * 2) + 8)));
                 }, (int) (i / 40));
             }
             final List<Integer> tester = new ArrayList<>();
             tester.add(1);
             for (int i = 0; i < 3; i++) {
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                    @Override
-                    public void run() {
-                        ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.3));
-                        if (ent.isOnGround() && tester.size() == 1) {
-                            tester.clear();
-                            Location ground = ent.getLocation().clone();
-                            ground.setY(l.getY() - 1);
-                            for (int c = 0; c < 1000; c++) {
-                                Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math.toRadians(c))).multiply(.75);
-                                Utilities.display(Utilities.getCenter(l), Particle.BLOCK_DUST, 1, (float) v.length(), 0, 0, 0);
-                            }
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.3));
+                    if (ent.isOnGround() && tester.size() == 1) {
+                        tester.clear();
+                        Location ground = ent.getLocation().clone();
+                        ground.setY(l.getY() - 1);
+                        for (int c = 0; c < 1000; c++) {
+                            Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math.toRadians(c))).multiply(.75);
+                            Utilities.display(Utilities.getCenter(l), Particle.BLOCK_DUST, 1, (float) v.length(), 0, 0, 0);
                         }
                     }
                 }, 35 + (i * 5));
@@ -2510,32 +2478,28 @@ public class CustomEnchantment {
                 final BlockBreakEvent event = new BlockBreakEvent(blk, player);
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                        @Override
-                        public void run() {
-                            if (config.getShredDrops() == 1) {
-                                Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
-                                if (ArrayUtils.contains(ores, event.getBlock().getType())) {
-                                    event.getBlock().setType(STONE);
-                                } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
-                                    event.getBlock().setType(NETHERRACK);
-                                }
-                            } else if (config.getShredDrops() == 2) {
-                                event.getBlock().setType(AIR);
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                        if (config.getShredDrops() == 1) {
+                            Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
+                            if (ArrayUtils.contains(ores, event.getBlock().getType())) {
+                                event.getBlock().setType(STONE);
+                            } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
+                                event.getBlock().setType(NETHERRACK);
                             }
-                            if (event.getBlock().getType() == GRASS) {
-                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRASS_BREAK, 10, 1);
-                            } else if (event.getBlock().getType() == DIRT || event.getBlock().getType() == GRAVEL || event.getBlock().getType() == CLAY) {
-                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRAVEL_BREAK, 10, 1);
-                            } else if (event.getBlock().getType() == SAND) {
-                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_SAND_BREAK, 10, 1);
-                            } else {
-                                blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
-                            }
-                            if ((Tool.PICKAXE.contains(itemType) && ArrayUtils.contains(mats, event.getBlock().getType())) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
-                                PlayerInteractUtil.breakBlockNMS(event.getBlock(), player);
-                            }
-
+                        } else if (config.getShredDrops() == 2) {
+                            event.getBlock().setType(AIR);
+                        }
+                        if (event.getBlock().getType() == GRASS) {
+                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRASS_BREAK, 10, 1);
+                        } else if (event.getBlock().getType() == DIRT || event.getBlock().getType() == GRAVEL || event.getBlock().getType() == CLAY) {
+                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRAVEL_BREAK, 10, 1);
+                        } else if (event.getBlock().getType() == SAND) {
+                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_SAND_BREAK, 10, 1);
+                        } else {
+                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
+                        }
+                        if ((Tool.PICKAXE.contains(itemType) && ArrayUtils.contains(mats, event.getBlock().getType())) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
+                            PlayerInteractUtil.breakBlockNMS(event.getBlock(), player);
                         }
                     }, time / 4);
                     used.add(blk);
@@ -2630,9 +2594,6 @@ public class CustomEnchantment {
             Material original = evt.getClickedBlock().getType();
             int originalInt = evt.getClickedBlock().getData();
             if (evt.getAction() != RIGHT_CLICK_BLOCK) {
-                return false;
-            }
-            if (!Utilities.canEdit(evt.getPlayer(), evt.getClickedBlock()) || !evt.getPlayer().isSneaking()) {
                 return false;
             }
             int data = evt.getClickedBlock().getData();
@@ -3036,29 +2997,26 @@ public class CustomEnchantment {
                 return false;
             }
             final Player player = evt.getPlayer();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                @Override
-                public void run() {
-                    int current = -1;
-                    ItemStack newHandItem = evt.getPlayer().getInventory().getItemInMainHand();
-                    if (newHandItem != null && newHandItem.getType() != AIR) {
-                        return;
-                    }
-                    for (int i = 0; i < evt.getPlayer().getInventory().getContents().length; i++) {
-                        ItemStack s = player.getInventory().getContents()[i];
-                        if (s != null && s.getType().equals(stk.getType())) {
-                            if (s.getData().getData() == stk.getData().getData()) {
-                                current = i;
-                                break;
-                            }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                int current = -1;
+                ItemStack newHandItem = evt.getPlayer().getInventory().getItemInMainHand();
+                if (newHandItem != null && newHandItem.getType() != AIR) {
+                    return;
+                }
+                for (int i = 0; i < evt.getPlayer().getInventory().getContents().length; i++) {
+                    ItemStack s = player.getInventory().getContents()[i];
+                    if (s != null && s.getType().equals(stk.getType())) {
+                        if (s.getData().getData() == stk.getData().getData()) {
                             current = i;
+                            break;
                         }
+                        current = i;
                     }
-                    if (current != -1) {
-                        evt.getPlayer().getInventory().setItemInMainHand(evt.getPlayer().getInventory().getContents()[current]);
-                        evt.getPlayer().getInventory().setItem(current, new ItemStack(AIR));
-                        evt.getPlayer().updateInventory();
-                    }
+                }
+                if (current != -1) {
+                    evt.getPlayer().getInventory().setItemInMainHand(evt.getPlayer().getInventory().getContents()[current]);
+                    evt.getPlayer().getInventory().setItem(current, new ItemStack(AIR));
+                    evt.getPlayer().updateInventory();
                 }
             }, 1);
             return false;
@@ -3115,23 +3073,17 @@ public class CustomEnchantment {
                     if ((!evt.getClickedBlock().isLiquid()) || evt.getClickedBlock().getType().isSolid()) {
                         Storage.grabLocs.put(event.getBlock(), event.getPlayer().getLocation());
                         final Block block = event.getBlock();
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                            @Override
-                            public void run() {
-                                Storage.grabLocs.remove(block);
-                            }
+                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                            Storage.grabLocs.remove(block);
                         }, 3);
                         evt.setCancelled(true);
                         PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                         final Material m = mat;
                         final Byte b = bt;
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                            @Override
-                            public void run() {
-                                evt.getClickedBlock().setType(m);
-                                evt.getClickedBlock().setData(b);
-                            }
+                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                            evt.getClickedBlock().setType(m);
+                            evt.getClickedBlock().setData(b);
                         }, 1);
                         Utilities.removeItem(evt.getPlayer(), evt.getPlayer().getInventory().getItem(c).getType(), (short) bt, 1);
                         evt.getPlayer().updateInventory();
@@ -3216,7 +3168,7 @@ public class CustomEnchantment {
                         bt = 14;
                     }
                     for (Block b : total) {
-                        if (Utilities.canEdit(evt.getPlayer(), b) && b.getType().equals(AIR)) {
+                        if (b.getType().equals(AIR)) {
                             if (Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
                                 b.setType(mat);
                                 b.setData(bt);
@@ -3263,12 +3215,9 @@ public class CustomEnchantment {
                 Utilities.addPotion((LivingEntity) evt.getEntity(), CONFUSION, 80 + 60 * value, 4);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 40 + 60 * value, 4);
                 if (evt.getEntity() instanceof Player) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                        @Override
-                        public void run() {
-                            ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
-                            Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * value, 0);
-                        }
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                        ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
+                        Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * value, 0);
                     }, 20 + 60 * value);
                     Storage.hungerPlayers.put((Player) evt.getEntity(), (1 + value) * 100);
                 }
@@ -3399,11 +3348,8 @@ public class CustomEnchantment {
             int i = evt.getDroppedExp();
             evt.setDroppedExp(0);
             evt.getEntity().getKiller().giveExp(i);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                @Override
-                public void run() {
-                    Storage.vortexLocs.remove(evt.getEntity().getLocation().getBlock());
-                }
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                Storage.vortexLocs.remove(evt.getEntity().getLocation().getBlock());
             }, 3);
             return true;
         }
@@ -3504,12 +3450,9 @@ public class CustomEnchantment {
                                     s.setInvulnerable(true);
                                     evt.getPlayer().setCollidable(false);
                                     found++;
-                                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            s.remove();
-                                            evt.getPlayer().setCollidable(true);
-                                        }
+                                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                                        s.remove();
+                                        evt.getPlayer().setCollidable(true);
                                     }, 100);
                                 }
                             }

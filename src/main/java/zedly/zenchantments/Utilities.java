@@ -435,8 +435,7 @@ public class Utilities {
                     true);
             return (ElementalArrow) ctor.newInstance(
                     (Object) p);
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
         return null;
     }
@@ -460,9 +459,5 @@ public class Utilities {
             default:
                 return 0;
         }
-    }
-
-    public static boolean canEdit(Player player, Block block) {
-        return true;
     }
 }

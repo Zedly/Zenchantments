@@ -14,7 +14,6 @@ import static org.bukkit.Material.QUARTZ_ORE;
 import static org.bukkit.Material.REDSTONE_ORE;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
-import org.bukkit.event.Event;
 
 public class Storage {
 

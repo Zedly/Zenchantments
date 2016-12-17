@@ -93,14 +93,12 @@ public class EnchantArrow implements AdvancedArrow {
     public void die() {
         final Entity e = entity;
         final EnchantArrow arrow = this;
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-            public void run() {
-                if (Storage.advancedProjectiles.containsKey(e)) {
-                    if (Storage.advancedProjectiles.get(e).size() == 1) {
-                        Storage.advancedProjectiles.remove(e);
-                    } else {
-                        Storage.advancedProjectiles.get(e).remove(arrow);
-                    }
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+            if (Storage.advancedProjectiles.containsKey(e)) {
+                if (Storage.advancedProjectiles.get(e).size() == 1) {
+                    Storage.advancedProjectiles.remove(e);
+                } else {
+                    Storage.advancedProjectiles.get(e).remove(arrow);
                 }
             }
         }, 1);
@@ -162,11 +160,8 @@ public class EnchantArrow implements AdvancedArrow {
             d.setPower(1);
             d.addEffect(b.build());
             f.setFireworkMeta(d);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                public void run() {
-                    f.detonate();
-                }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                f.detonate();
             }, 1);
             die();
         }
@@ -275,11 +270,9 @@ public class EnchantArrow implements AdvancedArrow {
                 Utilities.addPotion((LivingEntity) evt.getEntity(), CONFUSION, 80 + 60 * value, 4);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 40 + 60 * value, 4);
                 if (evt.getEntity() instanceof Player) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                        public void run() {
-                            ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
-                            Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * value, 0);
-                        }
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                        ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
+                        Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * value, 0);
                     }, 20 + 60 * value);
                     Storage.hungerPlayers.put((Player) evt.getEntity(), (1 + value) * 100);
                 }
@@ -393,11 +386,8 @@ public class EnchantArrow implements AdvancedArrow {
             int i = evt.getDroppedExp();
             evt.setDroppedExp(0);
             evt.getEntity().getKiller().giveExp(i);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                public void run() {
-                    Storage.vortexLocs.remove(evt.getEntity().getLocation().getBlock());
-                }
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                Storage.vortexLocs.remove(evt.getEntity().getLocation().getBlock());
             }, 3);
             die();
         }
@@ -448,35 +438,32 @@ public class EnchantArrow implements AdvancedArrow {
                 final int lsf = ls;
                 for (int i = 0; i <= 45; i++) {
                     final int c = i + 1;
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                        public void run() {
-                            Entity ent = l.getWorld().spawnFallingBlock(l, FIRE, (byte) 0);
-                            Vector v = l.toVector();
-                            v.setY(Math.abs(Math.sin(c)));
-                            if (lsf % 2 == 0) {
-                                v.setZ((Math.sin(c) / 2));
-                                v.setX((Math.cos(c) / 2));
-                            } else {
-                                v.setX((Math.sin(c) / 2));
-                                v.setZ((Math.cos(c) / 2));
-                            }
-                            ent.setVelocity(v.multiply(1.5));
-                            TNTPrimed prime = (TNTPrimed) getArrow().getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
-                            prime.setFuseTicks(200);
-                            prime.setYield(config.explosionBlockBreak() ? 4 : 0);
-                            Blaze blaze = (Blaze) getArrow().getWorld().spawnEntity(l, BLAZE);
-                            blaze.addPotionEffect(new PotionEffect(ABSORPTION, 150, 100000));
-                            blaze.addPotionEffect(new PotionEffect(HARM, 10000, 1));
-                            if (config.explosionBlockBreak()) {
-                                Entity crystal = getArrow().getWorld().spawnEntity(l, EntityType.ENDER_CRYSTAL);
-                                ent.setPassenger(prime);
-                                crystal.setPassenger(blaze);
-                                prime.setPassenger(crystal);
-                            } else {
-                                ent.setPassenger(prime);
-                                prime.setPassenger(blaze);
-                            }
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                        Entity ent = l.getWorld().spawnFallingBlock(l, FIRE, (byte) 0);
+                        Vector v = l.toVector();
+                        v.setY(Math.abs(Math.sin(c)));
+                        if (lsf % 2 == 0) {
+                            v.setZ((Math.sin(c) / 2));
+                            v.setX((Math.cos(c) / 2));
+                        } else {
+                            v.setX((Math.sin(c) / 2));
+                            v.setZ((Math.cos(c) / 2));
+                        }
+                        ent.setVelocity(v.multiply(1.5));
+                        TNTPrimed prime = (TNTPrimed) getArrow().getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
+                        prime.setFuseTicks(200);
+                        prime.setYield(config.explosionBlockBreak() ? 4 : 0);
+                        Blaze blaze = (Blaze) getArrow().getWorld().spawnEntity(l, BLAZE);
+                        blaze.addPotionEffect(new PotionEffect(ABSORPTION, 150, 100000));
+                        blaze.addPotionEffect(new PotionEffect(HARM, 10000, 1));
+                        if (config.explosionBlockBreak()) {
+                            Entity crystal = getArrow().getWorld().spawnEntity(l, EntityType.ENDER_CRYSTAL);
+                            ent.setPassenger(prime);
+                            crystal.setPassenger(blaze);
+                            prime.setPassenger(crystal);
+                        } else {
+                            ent.setPassenger(prime);
+                            prime.setPassenger(blaze);
                         }
                     }, c);
                 }
@@ -501,27 +488,25 @@ public class EnchantArrow implements AdvancedArrow {
             final double d = target.distance(c);
             for (int i = 9; i <= ((int) (d * 5) + 9); i++) {
                 final int i1 = i;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-                    public void run() {
-                        Location loc = target.clone();
-                        loc.setX(c.getX() + (i1 * ((target.getX() - c.getX()) / (d * 5))));
-                        loc.setY(c.getY() + (i1 * ((target.getY() - c.getY()) / (d * 5))));
-                        loc.setZ(c.getZ() + (i1 * ((target.getZ() - c.getZ()) / (d * 5))));
-                        Location loc2 = target.clone();
-                        loc2.setX(c.getX() + ((i1 + 10) * ((target.getX() - c.getX()) / (d * 5))));
-                        loc2.setY(c.getY() + ((i1 + 10) * ((target.getY() - c.getY()) / (d * 5))));
-                        loc2.setZ(c.getZ() + ((i1 + 10) * ((target.getZ() - c.getZ()) / (d * 5))));
-                        Utilities.display(loc, Particle.FLAME, 10, .001f, 0, 0, 0);
-                        Utilities.display(loc, Particle.FLAME, 1, .1f, 0, 0, 0);
-                        if (i1 % 5 == 0) {
-                            target.getWorld().playSound(loc, Sound.ENTITY_WITHER_SPAWN, 10f, .1f);
-                        }
-                        if (i1 >= ((int) (d * 5) + 9) || loc2.getBlock().getType() != AIR) {
-                            Utilities.display(loc2, Particle.EXPLOSION_HUGE, 10, 0.1f, 0, 0, 0);
-                            Utilities.display(loc, Particle.FLAME, 175, 1f, 0, 0, 0);
-                            loc2.setY(loc2.getY() + 5);
-                            loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10, config.explosionBlockBreak(), config.explosionBlockBreak());
-                        }
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    Location loc = target.clone();
+                    loc.setX(c.getX() + (i1 * ((target.getX() - c.getX()) / (d * 5))));
+                    loc.setY(c.getY() + (i1 * ((target.getY() - c.getY()) / (d * 5))));
+                    loc.setZ(c.getZ() + (i1 * ((target.getZ() - c.getZ()) / (d * 5))));
+                    Location loc2 = target.clone();
+                    loc2.setX(c.getX() + ((i1 + 10) * ((target.getX() - c.getX()) / (d * 5))));
+                    loc2.setY(c.getY() + ((i1 + 10) * ((target.getY() - c.getY()) / (d * 5))));
+                    loc2.setZ(c.getZ() + ((i1 + 10) * ((target.getZ() - c.getZ()) / (d * 5))));
+                    Utilities.display(loc, Particle.FLAME, 10, .001f, 0, 0, 0);
+                    Utilities.display(loc, Particle.FLAME, 1, .1f, 0, 0, 0);
+                    if (i1 % 5 == 0) {
+                        target.getWorld().playSound(loc, Sound.ENTITY_WITHER_SPAWN, 10f, .1f);
+                    }
+                    if (i1 >= ((int) (d * 5) + 9) || loc2.getBlock().getType() != AIR) {
+                        Utilities.display(loc2, Particle.EXPLOSION_HUGE, 10, 0.1f, 0, 0, 0);
+                        Utilities.display(loc, Particle.FLAME, 175, 1f, 0, 0, 0);
+                        loc2.setY(loc2.getY() + 5);
+                        loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10, config.explosionBlockBreak(), config.explosionBlockBreak());
                     }
                 }, (int) (i / 7));
             }
@@ -537,25 +522,16 @@ public class EnchantArrow implements AdvancedArrow {
         public void onImpact() {
             final Location l = getArrow().getLocation().clone();
             Storage.blackholes.put(l, true);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                public void run() {
-                    Storage.blackholes.put(l, false);
-                }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                Storage.blackholes.put(l, false);
             }, 40);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                public void run() {
-                    Storage.blackholes.remove(l);
-                }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                Storage.blackholes.remove(l);
             }, 60);
             for (int i = 1; i <= 61; i++) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, new Runnable() {
-
-                    public void run() {
-                        Utilities.display(l, Particle.SMOKE_LARGE, 50, .001f, .75f, .75f, .75f);
-                        l.getWorld().playSound(l, Sound.ENTITY_ENDERDRAGON_GROWL, 10f, .1f);
-                    }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    Utilities.display(l, Particle.SMOKE_LARGE, 50, .001f, .75f, .75f, .75f);
+                    l.getWorld().playSound(l, Sound.ENTITY_ENDERDRAGON_GROWL, 10f, .1f);
                 }, i);
             }
             die();
