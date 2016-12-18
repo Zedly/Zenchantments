@@ -1465,7 +1465,7 @@ public class CustomEnchantment {
                 tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
                 player.getWorld().spawnParticle(Particle.REDSTONE, tempLoc.getX(), tempLoc.getY(), tempLoc.getZ(), 0, 255, 0, 0, 0);
                 for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getNearbyEntities(tempLoc, .3, .3, .3)) {
-                    if (ent instanceof LivingEntity) {
+                    if (ent instanceof LivingEntity && ent != player) {
                         LivingEntity e = (LivingEntity) ent;
                         PlayerInteractUtil.attackEntity(e, player, 1 + (level + power * 2));
                     }
@@ -2451,6 +2451,7 @@ public class CustomEnchantment {
                 blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
                         0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType());
                 Utilities.addUnbreaking(evt.getPlayer(), broken.size() / 4, usedHand);
+                Bukkit.broadcastMessage(broken.size() + "");
                 Utilities.eventEnd(evt.getPlayer(), loreName);
             }
             return true;

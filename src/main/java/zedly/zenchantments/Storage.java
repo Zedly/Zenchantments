@@ -45,10 +45,10 @@ public class Storage {
     public static final List<Artifact> artifacts = new ArrayList<>();
 
     // Webs from the Web Arrow elemental arrow
-    public static final Set<Block> webs = new HashSet<>();
+    public static final Set<Block> webs = new HashSet<>();//
 
     // Entities an advanced arrow has damaged or killed
-    public static final Map<Entity, AdvancedArrow> killedEntities = new HashMap<>();
+    public static final Map<Entity, AdvancedArrow> killedEntities = new HashMap<>();//
 
     // Map of players who use pierce and what mode they are currently using
     public static final Map<Player, Integer> pierceModes = new HashMap<>();
@@ -81,10 +81,10 @@ public class Storage {
     public static final Set<Entity> damagingPlayer = new HashSet<>();
 
     // Lighting entities created by Lightning Arrows
-    public static final List<Entity> lightnings = new ArrayList<>();
+    public static final List<Entity> lightnings = new ArrayList<>();//
 
     // Entities being affected by the Derp Elemental Arrow
-    public static final Set<LivingEntity> derpingEntities = new HashSet<>();
+    public static final Set<LivingEntity> derpingEntities = new HashSet<>();//
 
     // Arrows mapped to different advanced arrow effects, to be used by the Arrow Watcher to perform these effects
     public static final Map<Entity, Set<AdvancedArrow>> advancedProjectiles = new HashMap<>();

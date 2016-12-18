@@ -99,7 +99,9 @@ public class Config {
         CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
             try {
-                InputStream stream = Zenchantments.class.getResourceAsStream("/resource/defaultconfig.yml");
+                ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+                InputStream stream = classloader.getResourceAsStream("/defaultconfig.yml");
+
                 File file = new File("plugins/Zenchantments/" + world.getName() + ".yml");
                 if (!file.exists()) {
                     try {
@@ -244,14 +246,12 @@ public class Config {
         }
         return null;
     }
-    
-    
 
     // Returns a mapping of custom enchantments and their level on a given tool
     public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk) {
         return getEnchants(stk, false);
     }
-    
+
     public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks) {
         ItemStack stack;
         Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
