@@ -1883,61 +1883,47 @@ public class CustomEnchantment {
         @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getAction() == RIGHT_CLICK_BLOCK) {
-                Material mats[] = new Material[]{CARROT_ITEM, POTATO_ITEM, SEEDS, NETHER_STALK, BEETROOT_SEEDS};
-                Material mat = AIR;
-                for (int i = 0; i < 36; i++) {
-                    if (evt.getPlayer().getInventory().getItem(i) != null) {
-                        if (ArrayUtils.contains(mats, evt.getPlayer().getInventory().getItem(i).getType())) {
-                            mat = evt.getPlayer().getInventory().getItem(i).getType();
-                            break;
-                        }
-                    }
-                }
+                Player player = evt.getPlayer();
                 Location loc = evt.getClickedBlock().getLocation();
                 int radiusXZ = (int) Math.round(power * level + 2);
-                int radiusY = 1;
                 for (int x = -(radiusXZ); x <= radiusXZ; x++) {
-                    for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
+                    for (int y = -2; y <= 0; y++) {
                         for (int z = -(radiusXZ); z <= radiusXZ; z++) {
                             Block block = (Block) loc.getBlock();
                             if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if ((block.getRelative(x, y, z).getType() == SOUL_SAND || block.getRelative(x, y, z).getType() == SOIL) && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                    if (evt.getPlayer().getInventory().contains(mat)) {
-                                        Utilities.removeItem(evt.getPlayer(), mat, 1);
-                                        evt.getPlayer().updateInventory();
-                                    } else {
-                                        continue;
+                                if (block.getRelative(x, y, z).getType() == SOIL
+                                        && block.getRelative(x, y + 1, z).getType() == AIR) {
+                                    if (evt.getPlayer().getInventory().contains(CARROT_ITEM)) {
+                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, CARROT, 0)) {
+                                            Utilities.removeItem(player, CARROT_ITEM, (short) 0, 1);
+                                        }
                                     }
-                                    Material m = AIR;
-                                    switch (mat) {
-                                        case CARROT_ITEM:
-                                            m = CARROT;
-                                            break;
-                                        case POTATO_ITEM:
-                                            m = POTATO;
-                                            break;
-                                        case SEEDS:
-                                            m = CROPS;
-                                            break;
-                                        case NETHER_STALK:
-                                            m = NETHER_WARTS;
-                                            break;
-                                        case BEETROOT_SEEDS:
-                                            m = BEETROOT_BLOCK;
-                                            break;
+                                    if (evt.getPlayer().getInventory().contains(POTATO_ITEM)) {
+                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, POTATO, 0)) {
+                                            Utilities.removeItem(player, POTATO_ITEM, (short) 0, 1);
+                                        }
                                     }
-                                    Boolean b = true;
-                                    if (block.getRelative(x, y, z).getType() == SOUL_SAND && m == NETHER_WARTS) {
-                                        block.getRelative(x, y + 1, z).setType(m);
-                                        b = false;
-                                    } else if (ArrayUtils.contains(mats, mat) && m != NETHER_WARTS && block.getRelative(x, y, z).getType() == SOIL) {
-                                        block.getRelative(x, y + 1, z).setType(m);
-                                        b = false;
+                                    if (evt.getPlayer().getInventory().contains(SEEDS)) {
+                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, 0)) {
+                                            Utilities.removeItem(player, SEEDS, (short) 0, 1);
+                                        }
                                     }
-                                    evt.getPlayer().updateInventory();
-                                    if (Storage.rnd.nextBoolean() && !b) {
-                                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                    if (evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
+                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOT, 0)) {
+                                            Utilities.removeItem(player, BEETROOT_SEEDS, (short) 0, 1);
+                                        }
                                     }
+                                } else if (block.getRelative(x, y, z).getType() == SOUL_SAND) {
+                                    if (evt.getPlayer().getInventory().contains(NETHER_STALK)) {
+                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WARTS, 0)) {
+                                            Utilities.removeItem(player, NETHER_STALK, (short) 0, 1);
+                                        }
+                                    }
+                                } else {
+                                    continue;
+                                }
+                                if (Storage.rnd.nextBoolean()) {
+                                    Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                                 }
                             }
                         }
@@ -2026,85 +2012,83 @@ public class CustomEnchantment {
                 player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
             }
             final int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
-            if (!Utilities.eventStart(evt.getPlayer(), loreName)) {
-                List<Block> total = new ArrayList<>();
-                final Location blkLoc = evt.getBlock().getLocation();
-                if (mode != 1 && mode != 5) {
-                    int add = -1;
-                    boolean b = false;
-                    int[][] ints = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-                    switch (Utilities.getSimpleDirection(evt.getPlayer().getLocation().getYaw(), 0)) {
-                        case 1:
-                            ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
-                            add = 1;
-                            b = true;
-                            break;
-                        case 2:
-                            ints = new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
-                            break;
-                        case 3:
-                            ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
-                            b = true;
-                            break;
-                        case 4:
-                            ints = new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
-                            add = 1;
-                            break;
-                    }
-                    int[] rads = ints[mode - 2];
-                    if (mode == 3) {
-                        if (b) {
-                            blkLoc.setZ(blkLoc.getZ() + add);
-                        } else {
-                            blkLoc.setX(blkLoc.getX() + add);
-                        }
-                    }
-                    if (mode == 4) {
-                        if (evt.getPlayer().getLocation().getPitch() > 65) {
-                            blkLoc.setY(blkLoc.getY() - 1);
-                        } else if (evt.getPlayer().getLocation().getPitch() < -65) {
-                            blkLoc.setY(blkLoc.getY() + 1);
-                        }
-                    }
-                    for (int x = -(rads[0]); x <= rads[0]; x++) {
-                        for (int y = -(rads[1]); y <= rads[1]; y++) {
-                            for (int z = -(rads[2]); z <= rads[2]; z++) {
-                                total.add(blkLoc.getBlock().getRelative(x, y, z));
-                            }
-                        }
-                    }
-                } else if (mode == 5) {
-                    List<Block> used = new ArrayList<>();
-                    if (ArrayUtils.contains(Storage.ores, evt.getBlock().getType())) {
-                        Material mat[];
-                        if (evt.getBlock().getType() != REDSTONE_ORE && evt.getBlock().getType() != GLOWING_REDSTONE_ORE) {
-                            mat = new Material[]{evt.getBlock().getType()};
-                        } else {
-                            mat = new Material[]{REDSTONE_ORE, GLOWING_REDSTONE_ORE};
-                        }
-                        bk(evt.getBlock(), used, total, mat, 0);
+            List<Block> total = new ArrayList<>();
+            final Location blkLoc = evt.getBlock().getLocation();
+            if (mode != 1 && mode != 5) {
+                int add = -1;
+                boolean b = false;
+                int[][] ints = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+                switch (Utilities.getSimpleDirection(evt.getPlayer().getLocation().getYaw(), 0)) {
+                    case 1:
+                        ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
+                        add = 1;
+                        b = true;
+                        break;
+                    case 2:
+                        ints = new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
+                        break;
+                    case 3:
+                        ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
+                        b = true;
+                        break;
+                    case 4:
+                        ints = new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
+                        add = 1;
+                        break;
+                }
+                int[] rads = ints[mode - 2];
+                if (mode == 3) {
+                    if (b) {
+                        blkLoc.setZ(blkLoc.getZ() + add);
                     } else {
-                        Utilities.eventEnd(evt.getPlayer(), loreName);
-                        return false;
+                        blkLoc.setX(blkLoc.getX() + add);
                     }
                 }
-
-                if (total.size() < 128) {
-                    for (Block b : total) {
-                        final BlockBreakEvent event = new BlockBreakEvent(b, evt.getPlayer());
-                        Bukkit.getServer().getPluginManager().callEvent(event);
-                        if (!event.isCancelled()) {
-                            if (evt.getBlock().getType() != AIR) {
-                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                    PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
-                                }, 1);
-                            }
+                if (mode == 4) {
+                    if (evt.getPlayer().getLocation().getPitch() > 65) {
+                        blkLoc.setY(blkLoc.getY() - 1);
+                    } else if (evt.getPlayer().getLocation().getPitch() < -65) {
+                        blkLoc.setY(blkLoc.getY() + 1);
+                    }
+                }
+                for (int x = -(rads[0]); x <= rads[0]; x++) {
+                    for (int y = -(rads[1]); y <= rads[1]; y++) {
+                        for (int z = -(rads[2]); z <= rads[2]; z++) {
+                            total.add(blkLoc.getBlock().getRelative(x, y, z));
                         }
                     }
                 }
-                Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
-                Utilities.eventEnd(evt.getPlayer(), loreName);
+            } else if (mode == 5) {
+                List<Block> used = new ArrayList<>();
+                if (ArrayUtils.contains(Storage.ores, evt.getBlock().getType())) {
+                    Material mat[];
+                    if (evt.getBlock().getType() != REDSTONE_ORE && evt.getBlock().getType() != GLOWING_REDSTONE_ORE) {
+                        mat = new Material[]{evt.getBlock().getType()};
+                    } else {
+                        mat = new Material[]{REDSTONE_ORE, GLOWING_REDSTONE_ORE};
+                    }
+                    bk(evt.getBlock(), used, total, mat, 0);
+                } else {
+                    Utilities.eventEnd(evt.getPlayer(), loreName);
+                    return false;
+                }
             }
+
+            if (total.size() < 128) {
+                for (Block b : total) {
+                    final BlockBreakEvent event = new BlockBreakEvent(b, evt.getPlayer());
+                    Bukkit.getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        if (evt.getBlock().getType() != AIR) {
+                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                                PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
+                            }, 1);
+                        }
+                    }
+                }
+            }
+            Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
+            Utilities.eventEnd(evt.getPlayer(), loreName);
             return true;
         }
     }
