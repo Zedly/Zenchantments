@@ -2503,6 +2503,9 @@ public class CustomEnchantment {
 
         @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
+            if (evt.getClickedBlock() == null) {
+                return false;
+            }
             Material original = evt.getClickedBlock().getType();
             int originalInt = evt.getClickedBlock().getData();
             if (evt.getAction() != RIGHT_CLICK_BLOCK) {
@@ -2791,11 +2794,9 @@ public class CustomEnchantment {
         @Override
         public boolean onFastScan(Player player, int level, boolean usedHand) {
             if (player.getVelocity().getY() < -0.45) {
-                for (Entity e : player.getNearbyEntities(0.0, 0.25, 0.0)) {
+                for (Entity e : player.getNearbyEntities(.75, .5, .75)) {
                     double fall = Math.min(player.getFallDistance(), 20.0);
-                    if (Utilities.canDamage(player, e)) {
-                        ((LivingEntity) e).damage(power * level * fall * 0.25);
-                    }
+                    PlayerInteractUtil.attackEntity((LivingEntity) e, player, power * level * fall * 0.25);
                 }
             }
             return true;
