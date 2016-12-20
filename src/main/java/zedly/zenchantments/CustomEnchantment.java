@@ -1611,8 +1611,7 @@ public class CustomEnchantment {
 
             while (!searchPerimeter.isEmpty()) {
                 Block searchBlock = searchPerimeter.remove(0);
-                searchBody.add(searchBlock);
-
+                
                 // If block is a trunk, add all adjacent blocks to search perimeter
                 if (ArrayUtils.contains(AFFECTED_BLOCKS, searchBlock.getType())) {
                     trunk.add(searchBlock);
@@ -1620,11 +1619,14 @@ public class CustomEnchantment {
                         for (int x = -1; x <= 1; x++) {
                             for (int z = -1; z <= 1; z++) {
                                 Block testBlock = searchBlock.getRelative(x, y, z);
-                                if (!searchBody.contains(testBlock) && ArrayUtils.contains(ACCEPTED_NEARBY_BLOCKS, searchBlock.getType())) {
-                                    searchPerimeter.add(testBlock);
-                                } else {
-                                    // Trunk is adjacent to a forbidden block. Nothing to do here
-                                    return false;
+                                if (!searchBody.contains(testBlock)) {
+                                    if (ArrayUtils.contains(ACCEPTED_NEARBY_BLOCKS, searchBlock.getType())) {
+                                        searchPerimeter.add(testBlock);
+                                        searchBody.add(testBlock);
+                                    } else {
+                                        // Trunk is adjacent to a forbidden block. Nothing to do here
+                                        return false;
+                                    }
                                 }
                             }
                         }
@@ -1638,6 +1640,7 @@ public class CustomEnchantment {
                                 Block testBlock = searchBlock.getRelative(x, y, z);
                                 if (!searchBody.contains(testBlock) && ArrayUtils.contains(AFFECTED_BLOCKS, searchBlock.getType())) {
                                     searchPerimeter.add(testBlock);
+                                    searchBody.add(testBlock);
                                 } else if (!ArrayUtils.contains(ACCEPTED_NEARBY_BLOCKS, testBlock.getType())) {
                                     // Trunk is adjacent to a forbidden block. Nothing to do here
                                     return false;
@@ -2068,7 +2071,6 @@ public class CustomEnchantment {
                     }
                     bk(evt.getBlock(), used, total, mat, 0);
                 } else {
-                    Utilities.eventEnd(evt.getPlayer(), loreName);
                     return false;
                 }
             }
@@ -2087,7 +2089,6 @@ public class CustomEnchantment {
                 }
             }
             Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
-            Utilities.eventEnd(evt.getPlayer(), loreName);
             return true;
         }
     }
@@ -2248,7 +2249,6 @@ public class CustomEnchantment {
                 itemInfo = (short) Storage.rnd.nextInt(4);
                 itemInfo = shorts[itemInfo];
             } else {
-                Utilities.eventEnd(evt.getPlayer(), loreName);
                 return false;
             }
             evt.setCancelled(true);
@@ -2452,7 +2452,6 @@ public class CustomEnchantment {
                 blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
                         0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType());
                 Utilities.addUnbreaking(evt.getPlayer(), broken.size() / 4, usedHand);
-                Utilities.eventEnd(evt.getPlayer(), loreName);
             }
             return true;
         }
@@ -2917,7 +2916,6 @@ public class CustomEnchantment {
                     arrow.setCritical(originalArrow.isCritical());
                     Utilities.putArrow(originalArrow, new EnchantArrow.ArrowGenericMulitple(originalArrow), player);
                 }
-                Utilities.eventEnd(player, loreName);
             }
             return true;
         }

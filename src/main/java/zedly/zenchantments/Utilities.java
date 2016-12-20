@@ -88,11 +88,6 @@ public class Utilities {
         }
     }
 
-    // Removes a player from the map that prevented them from being able to use the enchantment 
-    public static void eventEnd(Player player, String enchantment) {
-        Storage.duringEvents.get(player).remove(enchantment);
-    }
-
     // Returns the item stack in the player's main or off hand, determinted by 'handUsed'
     public static ItemStack usedStack(Player player, boolean handUsed) {
         return handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
