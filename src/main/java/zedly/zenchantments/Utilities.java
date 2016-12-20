@@ -426,20 +426,6 @@ public class Utilities {
         ent.addPotionEffect(new PotionEffect(type, length, intensity));
     }
 
-    // Returns an instance of an AdvancedArrow of the given class
-    public static AdvancedArrow construct(Class cl, Projectile p) {
-        try {
-            Constructor ctor = cl.getDeclaredConstructor(Projectile.class
-            );
-            ctor.setAccessible(
-                    true);
-            return (ElementalArrow) ctor.newInstance(
-                    (Object) p);
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-        }
-        return null;
-    }
-
     // Returns the amount of XP dropped by a given material
     public static int getBlockXP0(Material mat) {
         switch (mat) {

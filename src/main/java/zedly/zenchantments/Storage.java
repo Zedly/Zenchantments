@@ -41,9 +41,6 @@ public class Storage {
     // Time at which a later enchantment was fired; this is used to prevent double firing when clicking an entity
     public static final Map<Player, Long> laserTimes = new HashMap<>();
 
-    // Set of all artifacts from the artifact config file
-    public static final List<Artifact> artifacts = new ArrayList<>();
-
     // Webs from the Web Arrow elemental arrow
     public static final Set<Block> webs = new HashSet<>();//
 
@@ -79,12 +76,6 @@ public class Storage {
 
     // Entites that are being tested by Utilities' canDamage method to prevent infinite recursion
     public static final Set<Entity> damagingPlayer = new HashSet<>();
-
-    // Lighting entities created by Lightning Arrows
-    public static final List<Entity> lightnings = new ArrayList<>();//
-
-    // Entities being affected by the Derp Elemental Arrow
-    public static final Set<LivingEntity> derpingEntities = new HashSet<>();//
 
     // Arrows mapped to different advanced arrow effects, to be used by the Arrow Watcher to perform these effects
     public static final Map<Entity, Set<AdvancedArrow>> advancedProjectiles = new HashMap<>();

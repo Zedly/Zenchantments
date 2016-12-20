@@ -266,33 +266,6 @@ public class CustomEnchantment {
         }
     }
 
-    public static class Archaeology extends CustomEnchantment {
-
-        public Archaeology() {
-            maxLevel = 3;
-            loreName = "Archaeology";
-            probability = 0;
-            enchantable = new Tool[]{PICKAXE, SHOVEL};
-            conflicting = new Class[]{};
-            description = "Occasionally drops ancient artifacts when mining";
-            cooldown = 0;
-            power = .0;
-            handUse = 1;
-            enchantmentID = 3;
-        }
-
-        @Override
-        public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-            if (evt.getBlock().getType() == STONE || evt.getBlock().getType() == DIRT) {
-                if (Storage.rnd.nextInt((int) Math.round(300.0 / (level * power + .001))) == 20) {
-                    Artifact.drop(evt.getBlock());
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     public static class Bind extends CustomEnchantment {
 
         public Bind() {

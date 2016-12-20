@@ -130,22 +130,6 @@ public class HFEffects implements Runnable {
                 }
             }
         }
-        // Remove Webs from Web Arrows
-        it = Storage.webs.iterator();
-        while (it.hasNext()) {
-            Block block = (Block) it.next();
-            if (Storage.rnd.nextInt(175) == 0 && block.getChunk().isLoaded()) {
-                block.setType(AIR);
-                it.remove();
-            }
-        }
-        // Move around derping entities from Derp Arrows
-        for (LivingEntity ent : Storage.derpingEntities) {
-            Location loc = ent.getLocation();
-            loc.setYaw(Storage.rnd.nextFloat() * 360F);
-            loc.setPitch(Storage.rnd.nextFloat() * 180F - 90F);
-            ent.teleport(loc);
-        }
     }
 
     // Move Guardians from MysteryFish towards the player

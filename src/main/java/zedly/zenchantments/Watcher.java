@@ -216,21 +216,6 @@ public class Watcher implements Listener {
         }
     }
 
-    // Determines if a player has permission to craft elemental arrows
-    @EventHandler
-    public void onArrowCraft(CraftItemEvent evt) {
-        Config config = Config.get(evt.getWhoClicked().getWorld());
-        if (evt.getRecipe().getResult().hasItemMeta()) {
-            if (evt.getRecipe().getResult().getItemMeta().hasLore()) {
-                if (config.getArrows().keySet().contains(evt.getRecipe().getResult().getItemMeta().getLore().get(0))) {
-                    if (!evt.getWhoClicked().hasPermission("zenchantments.arrow.get")) {
-                        evt.setCancelled(true);
-                    }
-                }
-            }
-        }
-    }
-
     // Prevents players from being able to eat if they are stored within the 'hungerPlayers' set in Storage
     @EventHandler
     public void onEat(PlayerInteractEvent evt) {

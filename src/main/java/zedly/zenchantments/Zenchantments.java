@@ -19,7 +19,6 @@ public class Zenchantments extends JavaPlugin {
         File file = new File("plugins/Zenchantments/");
         file.mkdir();
         Config.loadConfigs();
-        Artifact.loadConfig();
     }
 
     // Loads configs and starts tasks

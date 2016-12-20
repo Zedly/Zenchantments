@@ -304,92 +304,6 @@ public class CommandProcessor {
         return true;
     }
 
-    // Lists all Elemental Arrows 
-    public static boolean listArrow(EnchantPlayer player, Config config) {
-        if (!player.hasPermission("zenchantments.command.list")) {
-            player.sendMessage(Storage.logo + "You do not have permission to do this!");
-            return true;
-        }
-        player.sendMessage(Storage.logo + "Arrow Types:");
-        for (String str : config.getArrows().keySet()) {
-            player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + str);
-        }
-        return true;
-    }
-
-    // Gives information on the Elemental Arrow on the held arrow or on the one named in the parameter
-    public static boolean infoArrow(EnchantPlayer player, Config config, String[] args, ItemStack stack) {
-        if (!player.hasPermission("zenchantments.command.info")) {
-            player.sendMessage(Storage.logo + "You do not have permission to do this!");
-            return true;
-        }
-        if (args.length >= 2) {
-            for (ElementalArrow ar : config.getArrows().values()) {
-                if (ar.getName().toLowerCase().startsWith(args[1])) {
-                    player.sendMessage(Storage.logo + "Arrow Info:");
-                    player.sendMessage(ChatColor.DARK_AQUA + "- " + ar.getName() + ": " + ChatColor.AQUA + ar.getDescription());
-                    return true;
-                }
-            }
-            player.sendMessage(Storage.logo + "Could not find the type of Arrow you're looking for!");
-        } else {
-            if (stack.getType() == ARROW) {
-                if (stack.getItemMeta().hasLore()) {
-                    String str = stack.getItemMeta().getLore().get(0);
-                    str = ChatColor.stripColor(str);
-                    for (String string : config.getArrows().keySet()) {
-                        if (string.equals(str)) {
-                            player.sendMessage(Storage.logo + "Arrow Info:");
-                            player.sendMessage(ChatColor.DARK_AQUA + "- " + str + ": " + ChatColor.AQUA + config.getArrows().get(str).getDescription());
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    // Lists all the commands associated with Elemental Arrows
-    public static boolean helpArrow(EnchantPlayer player, String label) {
-        if (label.equals("") || label.equals("help")) {
-            player.sendMessage(ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments" + ChatColor.BLUE + "] ");
-            player.sendMessage(ChatColor.DARK_AQUA + "- " + "arrow info: " + ChatColor.AQUA + "Returns information about custom arrows.");
-            player.sendMessage(ChatColor.DARK_AQUA + "- " + "arrow list: " + ChatColor.AQUA + "Returns a list of custom arrows");
-            player.sendMessage(ChatColor.DARK_AQUA + "- " + "arrow <arrow type> <?arguments> <?arguments>: " + ChatColor.AQUA + "Adds the desired arrow effect to the arrow in hand.");
-            return true;
-        }
-        return false;
-    }
-
-    // Turns the held arrow into an Elemental Arrow determined by the parameters
-    public static boolean arrow(EnchantPlayer player, Config config, String[] args, String label, ItemStack stack) {
-        if (!player.hasPermission("zenchantments.command.arrow")) {
-            player.sendMessage(Storage.logo + "You do not have permission to do this!");
-            return true;
-        }
-        if (player.getPlayer().getItemInHand() == null || player.getPlayer().getItemInHand().getType() != ARROW) {
-            player.sendMessage(Storage.logo + "You need to be holding arrows for this command!");
-            return true;
-        }
-        for (ElementalArrow ar : config.getArrows().values()) {
-            if (ar.getName().toLowerCase().startsWith(label)) {
-                List<String> lore = ar.constructArrow(Arrays.copyOfRange(args, 1, args.length));
-                if (lore == null) {
-                    player.sendMessage(Storage.logo + ar.getCommand());
-                    return true;
-                }
-                ItemMeta soMeta = stack.getItemMeta();
-                soMeta.setLore(lore);
-                stack.setItemMeta(soMeta);
-                player.getPlayer().setItemInHand(stack);
-                player.sendMessage(Storage.logo + "Created " + ar.getName() + "s!");
-                return true;
-            }
-        }
-        player.sendMessage(Storage.logo + "That arrow does not exist!");
-        return true;
-    }
-
     // Control flow for the command processor
     public static boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
         if (!(sender instanceof Player)) {
@@ -421,16 +335,6 @@ public class CommandProcessor {
                     case "help":
                     default:
                         return helpEnchantment(player, label) ? true : enchant(player, config, args, label, stack);
-                }
-            case "arrow":
-                switch (label) {
-                    case "list":
-                        return listArrow(player, config);
-                    case "info":
-                        return infoArrow(player, config, args, stack);
-                    case "help":
-                    default:
-                        return helpArrow(player, label) ? true : arrow(player, config, args, label, stack);
                 }
         }
         return true;

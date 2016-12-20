@@ -18,7 +18,6 @@ public class Config {
     public static final Set<Config> CONFIGS = new HashSet<>(); // Set of all world configs on the current server
 
     private final Map<String, CustomEnchantment> enchants;     // Set of active Custom Enchantments 
-    private final Map<String, ElementalArrow> arrows;          // Set of active Elemental Arrows
     private final double enchantRarity;                        // Overall rarity of obtaining enchantments
     private final int maxEnchants;                             // Max number of Custom Enchantments on a tool
     private final boolean enchantPVP;                          // Determines whether enchantments can damage players
@@ -29,11 +28,10 @@ public class Config {
     private final World world;                                 // The World associated with the config
 
     // Constructs a new config object
-    public Config(Map<String, CustomEnchantment> enchants, Map<String, ElementalArrow> arrows, double enchantRarity,
+    public Config(Map<String, CustomEnchantment> enchants, double enchantRarity,
             int maxEnchants, boolean enchantPVP, int shredDrops, boolean explosionBlockBreak,
             boolean descriptionLore, ChatColor descriptionColor, World world) {
         this.enchants = enchants;
-        this.arrows = arrows;
         this.enchantRarity = enchantRarity;
         this.maxEnchants = maxEnchants;
         this.enchantPVP = enchantPVP;
@@ -47,11 +45,6 @@ public class Config {
     // Returns a mapping of enchantment names to custom enchantment objects
     public Map<String, CustomEnchantment> getEnchants() {
         return enchants;
-    }
-
-    // Returns a mapping of elemental arrow names to elemental arrow objects
-    public Map<String, ElementalArrow> getArrows() {
-        return arrows;
     }
 
     // Returns the overall rarity of obtaining an enchantment
@@ -136,34 +129,10 @@ public class Config {
                 UpdateConfig.update(c, version);
 
                 //Init variables
-                Map<String, ElementalArrow> arrows = new HashMap<>();
                 final int shredDrops;
                 //Load Arrows & Recipes
                 ItemStack is = new ItemStack(ARROW);
                 ItemMeta meta = is.getItemMeta();
-                for (Class cl : ElementalArrow.class.getClasses()) {
-                    ElementalArrow ar = (ElementalArrow) Utilities.construct(cl, null);
-                    List<String> lore = new ArrayList<>();
-                    lore.add(ChatColor.AQUA + ar.getName());
-                    meta.setLore(lore);
-                    is.setItemMeta(meta);
-                    Bukkit.getServer().addRecipe(ar.getRecipe(is));
-                    arrows.put(ar.getName(), ar);
-                }
-                //Elemental Arrows
-                for (int x = c.getList("elemental_arrows").size() - 1; x >= 0; x--) {
-                    String str = "" + c.getList("elemental_arrows").get(x);
-                    boolean b;
-                    try {
-                        b = Boolean.parseBoolean(str.split("=")[1].replace("}", ""));
-                    } catch (NumberFormatException e) {
-                        b = false;
-                    }
-                    String name = str.split("=")[0].replace("{", "");
-                    if (arrows.containsKey(name) && !b) {
-                        arrows.remove(name);
-                    }
-                }
                 c.save(file);
                 //Load Variables
                 double rarity = (double) (c.get("enchant_rarity"));
@@ -223,7 +192,7 @@ public class Config {
                         System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
                     }
                 }
-                Config config = new Config(enchantmentMap, arrows, enchantRarity, maxEnchants, enchantPVP, shredDrops,
+                Config config = new Config(enchantmentMap, enchantRarity, maxEnchants, enchantPVP, shredDrops,
                         explosionBlockBreak, descriptionLore, descriptionColor, world);
                 Config.CONFIGS.add(config);
             } catch (IOException | InvalidConfigurationException ex) {
