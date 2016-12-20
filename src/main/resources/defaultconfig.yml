@@ -527,24 +527,6 @@ enchantments:
       Cooldown: 0
       Power: 1.0
 # New Enchantments
-
-#  Determines which arrows are enabled and disabled
-elemental_arrows:
-  - Bouncifying Arrow: true
-  - Command Arrow: true
-  - Derp Arrow: true
-  - Euphoria Arrow: true
-  - Exploding Arrow: true
-  - Fast Arrow: true
-  - Grenade Arrow: true
-  - Harpoon Arrow: true
-  - Ice Arrow: true
-  - Leech Arrow: true
-  - Lightning Arrow: true
-  - Poisoned Arrow: true
-  - Supersonic Arrow: true
-  - Teleport Arrow: true
-  - Web Arrow: true
   
 #  Changes the overall probability of obtaining all custom enchantments
 enchant_rarity: 25.0
