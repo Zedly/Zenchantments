@@ -188,6 +188,7 @@ public class CustomEnchantment {
                         Material mat[] = new Material[]{STONE, GRAVEL, DIRT, GRASS};
                         FallingBlock bk = loc.getWorld().spawnFallingBlock(loc, mat[Storage.rnd.nextInt(4)], (byte) 0x0);
                         bk.setDropItem(false);
+                        bk.setGravity(false);
                         Storage.idleBlocks.put(bk, player);
                         return true;
                     }
@@ -207,6 +208,8 @@ public class CustomEnchantment {
                 }
                 for (FallingBlock blk : toRemove) {
                     Storage.idleBlocks.remove(blk);
+                    blk.setGravity(true);
+                    blk.setGlowing(true);
                 }
             }
             return false;
@@ -3010,7 +3013,7 @@ public class CustomEnchantment {
                 int c = -1;
                 for (int i = 0; i < 9; i++) {
                     if (evt.getPlayer().getInventory().getItem(i) != null) {
-                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && !ArrayUtils.contains(Storage.badBlocks, evt.getPlayer().getInventory().getItem(i).getType().getId())) {
+                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && !ArrayUtils.contains(Storage.badBlocks, evt.getPlayer().getInventory().getItem(i).getType())) {
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
                             c = i;
                             bt = evt.getPlayer().getInventory().getItem(i).getData().getData();

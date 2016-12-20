@@ -75,6 +75,8 @@ public class Watcher implements Listener {
         }
     }
 
+    
+    
     // Prevents falling block entities from Anthropomorphism from becoming solid blocks or disappearing
     @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent evt) {

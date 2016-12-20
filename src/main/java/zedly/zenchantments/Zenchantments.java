@@ -48,9 +48,6 @@ public class Zenchantments extends JavaPlugin {
         for (Entity e : Storage.idleBlocks.keySet()) {
             e.remove();
         }
-        for (Block b : Storage.webs) {
-            b.setType(AIR);
-        }
     }
 
     // Sends commands over to the CommandProcessor for it to handle

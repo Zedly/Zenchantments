@@ -2,16 +2,7 @@ package zedly.zenchantments;
 
 import java.util.*;
 import org.bukkit.*;
-import static org.bukkit.Material.COAL_ORE;
-import static org.bukkit.Material.DIAMOND_ORE;
-import static org.bukkit.Material.EMERALD_ORE;
-import static org.bukkit.Material.GLOWING_REDSTONE_ORE;
-import static org.bukkit.Material.GLOWSTONE;
-import static org.bukkit.Material.GOLD_ORE;
-import static org.bukkit.Material.IRON_ORE;
-import static org.bukkit.Material.LAPIS_ORE;
-import static org.bukkit.Material.QUARTZ_ORE;
-import static org.bukkit.Material.REDSTONE_ORE;
+import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 
@@ -41,11 +32,8 @@ public class Storage {
     // Time at which a later enchantment was fired; this is used to prevent double firing when clicking an entity
     public static final Map<Player, Long> laserTimes = new HashMap<>();
 
-    // Webs from the Web Arrow elemental arrow
-    public static final Set<Block> webs = new HashSet<>();//
-
     // Entities an advanced arrow has damaged or killed
-    public static final Map<Entity, AdvancedArrow> killedEntities = new HashMap<>();//
+    public static final Map<Entity, AdvancedArrow> killedEntities = new HashMap<>();
 
     // Map of players who use pierce and what mode they are currently using
     public static final Map<Player, Integer> pierceModes = new HashMap<>();
@@ -93,21 +81,34 @@ public class Storage {
     public static final Map<Player, Integer> haulBlockDelay = new HashMap<>();
 
     // Block IDs that are not to be used within a player's inventory
-    public static final Integer[] badItems = new Integer[]{0, 8, 9, 10, 11, 26, 34, 36, 43, 51, 55, 59, 63, 64, 68, 71,
-        74, 75, 83, 90, 92, 93, 94, 104, 105, 115, 117, 118, 119, 124, 125, 127, 132, 140, 141, 142, 144, 149, 150, 176,
-        177, 178, 181, 193, 194, 195, 196, 197};
+    public static final Material[] badItems = {AIR, WATER, STATIONARY_WATER, 
+        LAVA, STATIONARY_LAVA, BED_BLOCK, PISTON_EXTENSION, PISTON_MOVING_PIECE, DOUBLE_STEP,
+        FIRE, REDSTONE_WIRE, CROPS, SIGN_POST, WOODEN_DOOR, WALL_SIGN, IRON_DOOR_BLOCK, 
+        GLOWING_REDSTONE_ORE, REDSTONE_TORCH_OFF, SUGAR_CANE_BLOCK, PORTAL, CAKE_BLOCK, 
+        DIODE_BLOCK_OFF, DIODE_BLOCK_ON, PUMPKIN_STEM, MELON_STEM, NETHER_WARTS, BREWING_STAND, 
+        CAULDRON, ENDER_PORTAL, REDSTONE_LAMP_ON, WOOD_DOUBLE_STEP, COCOA, TRIPWIRE, 
+        FLOWER_POT, CARROT, POTATO, SKULL, REDSTONE_COMPARATOR_OFF, REDSTONE_COMPARATOR_ON, 
+        STANDING_BANNER, WALL_BANNER, DAYLIGHT_DETECTOR_INVERTED, DOUBLE_STONE_SLAB2, SPRUCE_DOOR, 
+        BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, DARK_OAK_DOOR};
 
     // Block IDs that are not to be used in events
-    public static final Integer[] badBlocks = {6, 7, 23, 25, 29, 31, 32, 33, 37, 38, 39, 40, 49, 52, 54, 58, 61, 62, 63, 65, 68,
-        69, 77, 81, 83, 84, 90, 106, 107, 111, 119, 120, 130, 131, 143, 145, 146, 151, 158, 166, 166, 175, 178,
-        183, 184, 185, 186, 187, 209, 255, 323, 324, 330, 355, 397, 427, 428, 429, 430, 431};
+    public static final Material[] badBlocks = {SAPLING, BEDROCK, DISPENSER, NOTE_BLOCK, 
+        PISTON_STICKY_BASE, LONG_GRASS, DEAD_BUSH, PISTON_BASE, YELLOW_FLOWER, RED_ROSE, 
+        BROWN_MUSHROOM, RED_MUSHROOM, OBSIDIAN, MOB_SPAWNER, CHEST, WORKBENCH, FURNACE, 
+        BURNING_FURNACE, SIGN_POST, LADDER, WALL_SIGN, LEVER, STONE_BUTTON, CACTUS, 
+        SUGAR_CANE_BLOCK, JUKEBOX, PORTAL, VINE, FENCE_GATE, WATER_LILY, ENDER_PORTAL, 
+        ENDER_PORTAL_FRAME, ENDER_CHEST, TRIPWIRE_HOOK, WOOD_BUTTON, ANVIL, TRAPPED_CHEST,
+        DAYLIGHT_DETECTOR, DROPPER, BARRIER, BARRIER, DOUBLE_PLANT, DAYLIGHT_DETECTOR_INVERTED, 
+        SPRUCE_FENCE_GATE, BIRCH_FENCE_GATE, JUNGLE_FENCE_GATE, DARK_OAK_FENCE_GATE, 
+        ACACIA_FENCE_GATE, END_GATEWAY, STRUCTURE_BLOCK, SIGN, WOOD_DOOR, IRON_DOOR, BED, 
+        SKULL_ITEM, SPRUCE_DOOR_ITEM, BIRCH_DOOR_ITEM, JUNGLE_DOOR_ITEM, ACACIA_DOOR_ITEM, 
+        DARK_OAK_DOOR_ITEM};
 
     // The plugin Logo to be used in chat commands
     public static final String logo = ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments"
             + ChatColor.BLUE + "] " + ChatColor.AQUA;
-    
+
     public static final Material ores[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
-                    IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
-    
+        IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
 
 }
