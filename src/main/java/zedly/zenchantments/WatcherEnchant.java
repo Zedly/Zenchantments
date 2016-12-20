@@ -253,4 +253,18 @@ public class WatcherEnchant implements Listener {
             }
         }
     }
+    
+    @EventHandler
+    public void onCombust(EntityCombustByEntityEvent evt) {
+        Player player = (Player) evt.getEntity();
+        for (ItemStack stk : ArrayUtils.addAll(player.getInventory().getArmorContents(), player.getInventory().getContents())) {
+            if (stk != null && stk.getType() != Material.AIR) {
+                CustomEnchantment.applyForTool(player.getWorld(), stk, (ench, level) -> {
+                    if (ench.onCombust(evt, level, true)) {
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.enchantmentID, ench.cooldown);
+                    }
+                });
+            }
+        }
+    }
 }
