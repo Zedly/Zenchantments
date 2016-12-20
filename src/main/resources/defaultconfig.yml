@@ -35,13 +35,6 @@ enchantments:
       Max Level: 3
       Cooldown: 0
       Power: 1.0
-  - Archaeology:
-      Probability: 1.0
-      Tools: Pickaxe, Shovel
-      Name: Archaeology
-      Max Level: 3
-      Cooldown: 0
-      Power: 1.0
   - Bind:
       Probability: 1.0
       Tools: All
@@ -210,13 +203,6 @@ enchantments:
       Max Level: 4
       Cooldown: 0
       Power: 1.0
-  - Haul:
-      Probability: 1.0
-      Tools: Pickaxe
-      Name: Haul
-      Max Level: 1
-      Cooldown: 0
-      Power: 1.0
   - Ice Aspect:
       Probability: 1.0
       Tools: Sword
@@ -361,6 +347,13 @@ enchantments:
       Probability: 1.0
       Tools: Bow, Sword
       Name: Reaper
+      Max Level: 4
+      Cooldown: 0
+      Power: 1.0
+  - Reveal:
+      Probability: 1.0
+      Tools: Pickaxe
+      Name: Reveal
       Max Level: 4
       Cooldown: 0
       Power: 1.0
