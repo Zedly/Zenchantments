@@ -40,7 +40,6 @@ public class WatcherEnchant implements Listener {
             CustomEnchantment.applyForTool(player.getWorld(), usedStack, (ench, level) -> {
                 if (ench.onBlockBreak(evt, level, usedHand)) {
                     EnchantPlayer.matchPlayer(player).setCooldown(ench.enchantmentID, ench.cooldown);
-                    evt.setCancelled(true);
                 }
             });
         }
@@ -48,19 +47,13 @@ public class WatcherEnchant implements Listener {
 
     @EventHandler(ignoreCancelled = false)
     public void onBlockInteract(PlayerInteractEvent evt) {
-        final Material[] badMats = new Material[]{CHEST, TRAPPED_CHEST, FURNACE, ANVIL, WORKBENCH, ENCHANTMENT_TABLE, DROPPER,
-            DISPENSER, BEACON, STONE_BUTTON, WOOD_BUTTON, LEVER, BURNING_FURNACE, JUKEBOX, DIODE_BLOCK_ON, DIODE_BLOCK_OFF,
-            TRAP_DOOR, BREWING_STAND, ENDER_CHEST, COMMAND, REDSTONE_COMPARATOR_OFF, REDSTONE_COMPARATOR_ON, HOPPER, DAYLIGHT_DETECTOR,
-            DAYLIGHT_DETECTOR_INVERTED, IRON_TRAPDOOR, FENCE_GATE, ACACIA_FENCE_GATE, SPRUCE_FENCE_GATE, DARK_OAK_FENCE_GATE,
-            BIRCH_FENCE_GATE, JUNGLE_FENCE_GATE, WOODEN_DOOR, SPRUCE_DOOR, BIRCH_DOOR, JUNGLE_DOOR, DARK_OAK_DOOR, ACACIA_DOOR};
-        if (evt.getClickedBlock() == null || !ArrayUtils.contains(badMats, evt.getClickedBlock().getType())) {
+        if (evt.getClickedBlock() == null || !ArrayUtils.contains(Storage.INTERACTABLE_BLOCKS, evt.getClickedBlock().getType())) {
             Player player = evt.getPlayer();
             boolean usedHand = Utilities.usedHand(evt.getHand());
             for (ItemStack stk : Utilities.getArmorandMainHandItems(player, usedHand)) {
                 CustomEnchantment.applyForTool(player.getWorld(), stk, (ench, level) -> {
                     if (ench.onBlockInteract(evt, level, usedHand)) {
                         EnchantPlayer.matchPlayer(player).setCooldown(ench.enchantmentID, ench.cooldown);
-                        evt.setCancelled(true);
                     }
                 });
             }
@@ -77,7 +70,6 @@ public class WatcherEnchant implements Listener {
             CustomEnchantment.applyForTool(player.getWorld(), usedStack, (ench, level) -> {
                 if (ench.onEntityInteract(evt, level, usedHand)) {
                     EnchantPlayer.matchPlayer(player).setCooldown(ench.enchantmentID, ench.cooldown);
-                    evt.setCancelled(true);
                 }
             });
         }

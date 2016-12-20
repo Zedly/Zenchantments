@@ -1562,14 +1562,6 @@ public class CustomEnchantment {
     public static class Lumber extends CustomEnchantment {
 
         private static final int MAX_BLOCKS = 160;
-        private static final BlockFace[] CARDINAL_BLOCK_FACES = {
-            BlockFace.UP,
-            BlockFace.DOWN,
-            BlockFace.NORTH,
-            BlockFace.EAST,
-            BlockFace.SOUTH,
-            BlockFace.WEST
-        };
 
         private static final Material[] ACCEPTED_NEARBY_BLOCKS = {
             LOG, LOG_2, LEAVES, LEAVES_2, DIRT, GRASS, VINE, SNOW, COCOA, AIR, RED_ROSE, YELLOW_FLOWER, LONG_GRASS, GRAVEL, STONE, DOUBLE_PLANT, WATER, STATIONARY_WATER,
@@ -2068,26 +2060,15 @@ public class CustomEnchantment {
                     }
                     bk(evt.getBlock(), used, total, mat, 0);
                 } else {
-                    Utilities.eventEnd(evt.getPlayer(), loreName);
                     return false;
                 }
             }
-
             if (total.size() < 128) {
                 for (Block b : total) {
-                    final BlockBreakEvent event = new BlockBreakEvent(b, evt.getPlayer());
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-                    if (!event.isCancelled()) {
-                        if (evt.getBlock().getType() != AIR) {
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
-                            }, 1);
-                        }
-                    }
+                    PlayerInteractUtil.breakBlockNMS(b, evt.getPlayer());
                 }
             }
             Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
-            Utilities.eventEnd(evt.getPlayer(), loreName);
             return true;
         }
     }
@@ -2122,6 +2103,7 @@ public class CustomEnchantment {
                                         || block.getRelative(x, y, z).getType() == GRASS
                                         || block.getRelative(x, y, z).getType() == MYCEL))
                                         && block.getRelative(x, y + 1, z).getType() == AIR) {
+                                    PlayerInteractUtil.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), SOIL, 0);
                                     if (Storage.rnd.nextBoolean()) {
                                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                                     }
@@ -3037,7 +3019,7 @@ public class CustomEnchantment {
                 int c = -1;
                 for (int i = 0; i < 9; i++) {
                     if (evt.getPlayer().getInventory().getItem(i) != null) {
-                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && !ArrayUtils.contains(Storage.badBlocks, evt.getPlayer().getInventory().getItem(i).getType())) {
+                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && !ArrayUtils.contains(ArrayUtils.addAll(Storage.UNBREAKABLE_BLOCKS, Storage.INTERACTABLE_BLOCKS), evt.getPlayer().getInventory().getItem(i).getType())) {
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
                             c = i;
                             bt = evt.getPlayer().getInventory().getItem(i).getData().getData();
@@ -3051,7 +3033,7 @@ public class CustomEnchantment {
                 if (mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
                     bt = 14;
                 }
-                if (ArrayUtils.contains(Storage.badBlocks, mat.getId()) || ArrayUtils.contains(Storage.badBlocks, evt.getClickedBlock().getTypeId())) {
+                if (ArrayUtils.contains(ArrayUtils.addAll(Storage.UNBREAKABLE_BLOCKS, Storage.INTERACTABLE_BLOCKS), mat.getId()) || ArrayUtils.contains(ArrayUtils.addAll(Storage.UNBREAKABLE_BLOCKS, Storage.INTERACTABLE_BLOCKS), evt.getClickedBlock().getTypeId())) {
                     return false;
                 }
                 if (!(mat == evt.getClickedBlock().getType() && evt.getClickedBlock().getData() == bt)) {
