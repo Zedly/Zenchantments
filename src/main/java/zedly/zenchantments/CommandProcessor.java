@@ -4,6 +4,7 @@ import java.util.*;
 import org.apache.commons.lang.*;
 import org.bukkit.*;
 import static org.bukkit.Material.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -320,6 +321,15 @@ public class CommandProcessor {
         switch (cmd) {
             case "ench":
                 switch (label) {
+                    case "shulker":  // TODO: DELET THIS
+                        Player p = (Player) sender;
+                        Block block = p.getTargetBlock((HashSet<Material>) null, 10);
+                        PlayerInteractUtil.showShulker(block, 9000001, p);
+                        break;
+                    case "!shulker":  // TODO: DELET THIS
+                        p = (Player) sender;
+                        PlayerInteractUtil.hideShulker(9000001, p);
+                        break;
                     case "reload":
                         return reload(player);
                     case "give":
