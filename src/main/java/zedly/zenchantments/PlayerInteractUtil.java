@@ -18,6 +18,7 @@ import net.minecraft.server.v1_11_R1.EnumHand;
 import net.minecraft.server.v1_11_R1.PacketDataSerializer;
 import net.minecraft.server.v1_11_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_11_R1.PacketPlayOutSpawnEntityLiving;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.craftbukkit.v1_11_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
@@ -51,16 +52,18 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerInteractUtil {
 
     public static boolean breakBlockNMS(Block block, Player player) {
-        EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
-        return success;
+        if (!ArrayUtils.contains(Storage.UNBREAKABLE_BLOCKS, block.getType())) {
+            EntityPlayer ep = ((CraftPlayer) player).getHandle();
+            boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+            return success;
+        }
+        return false;
     }
 
     /**
-     * Places a block on the given player's behalf. Fires a BlockPlaceEvent with
-     * (nearly) appropriate parameters to probe the legitimacy (permissions etc)
-     * of the action and to communicate to other plugins where the block is
-     * coming from.
+     * Places a block on the given player's behalf. Fires a BlockPlaceEvent with (nearly)
+     * appropriate parameters to probe the legitimacy (permissions etc) of the action and
+     * to communicate to other plugins where the block is coming from.
      *
      * @param blockPlaced the block to be changed
      * @param player the player whose identity to use
