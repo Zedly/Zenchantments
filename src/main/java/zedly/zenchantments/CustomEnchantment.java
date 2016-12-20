@@ -141,6 +141,10 @@ public class CustomEnchantment {
         return false;
     }
 
+    public boolean onCombust(EntityCombustByEntityEvent evt, int level, boolean usedHand) {
+        return false;
+    }
+
     public boolean onFastScan(Player player, int level, boolean usedHand) {
         return false;
     }
@@ -246,6 +250,7 @@ public class CustomEnchantment {
                     stk = new ItemStack(SAPLING, 1, s);
                 }
                 if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
+                    PlayerInteractUtil.breakBlockNMS(blk, evt.getPlayer());
                     if (Storage.rnd.nextInt(3) % 3 == 0) {
                         evt.getBlock().getWorld()
                                 .dropItemNaturally(Utilities.getCenter(evt.getBlock()), stk);
@@ -339,6 +344,16 @@ public class CustomEnchantment {
         public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
             if (evt.getCause() == EntityDamageEvent.DamageCause.LAVA || evt.getCause() == EntityDamageEvent.DamageCause.FIRE || evt.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
                 evt.setCancelled(true);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+            if (evt.getDamager().getType() == EntityType.FIREBALL
+                    || evt.getDamager().getType() == EntityType.SMALL_FIREBALL) {
+                evt.setDamage(0);
                 return true;
             }
             return false;
@@ -491,6 +506,13 @@ public class CustomEnchantment {
                 ent = evt.getDamager();
             }
             return PlayerInteractUtil.igniteEntity(ent, (Player) evt.getEntity(), (int) (50 * level * power));
+        }
+
+        public boolean onCombust(EntityCombustByEntityEvent evt, int level, boolean usedHand) {
+            if (evt.getCombuster().getType() == EntityType.ZOMBIE || evt.getCombuster().getType() == EntityType.ZOMBIE_VILLAGER) {
+                evt.setDuration(0);
+            }
+            return false;
         }
     }
 
@@ -659,17 +681,6 @@ public class CustomEnchantment {
             if (evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
                 ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld().spawnEntity(Utilities.getCenter(evt.getBlock()), EXPERIENCE_ORB);
                 o.setExperience(evt.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
-            }
-            if (evt.getBlock().getType() == CHORUS_PLANT) {
-                if (Storage.rnd.nextBoolean()) {
-                    mat = CHORUS_FRUIT_POPPED;
-                } else {
-                    Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                    evt.setCancelled(true);
-                    evt.getBlock().setType(AIR);
-                    Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
-                    return true;
-                }
             }
             if (evt.getBlock().getType() == SAND) {
                 mat = GLASS;
@@ -907,36 +918,38 @@ public class CustomEnchantment {
                 Location loc = evt.getClickedBlock().getLocation();
                 int radiusXZ = (int) Math.round(power * level + 2);
                 int radiusY = 2;
-                for (int x = -(radiusXZ); x <= radiusXZ; x++) {
-                    for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
-                        for (int z = -(radiusXZ); z <= radiusXZ; z++) {
-                            Block block = (Block) loc.getBlock();
-                            if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if (((block.getRelative(x, y, z).getType() == CROPS
-                                        || block.getRelative(x, y, z).getType() == POTATO
-                                        || block.getRelative(x, y, z).getType() == CARROT
-                                        || block.getRelative(x, y, z).getType() == MELON_STEM
-                                        || block.getRelative(x, y, z).getType() == PUMPKIN_STEM) && block.getRelative(x, y, z).getData() < 7)
-                                        || ((block.getRelative(x, y, z).getType() == COCOA) && block.getRelative(x, y, z).getData() < 8)
-                                        || ((block.getRelative(x, y, z).getType() == BEETROOT_BLOCK) && block.getRelative(x, y, z).getData() < 3)) {
-                                    if (evt.getPlayer().getGameMode().equals(CREATIVE) || Utilities.removeItemCheck(evt.getPlayer(), INK_SACK, (short) 15, 1)) {
-                                        Utilities.grow(block.getRelative(x, y, z));
-                                        if (Storage.rnd.nextBoolean()) {
+                Material[] crops = {CROPS, POTATO, CARROT, MELON_STEM, PUMPKIN_STEM, COCOA, BEETROOT_BLOCK};
+                if (ArrayUtils.contains(crops, evt.getClickedBlock().getType())) {
+                    for (int x = -(radiusXZ); x <= radiusXZ; x++) {
+                        for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
+                            for (int z = -(radiusXZ); z <= radiusXZ; z++) {
+                                Block block = (Block) loc.getBlock();
+                                if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
+                                    if (((block.getRelative(x, y, z).getType() == CROPS
+                                            || block.getRelative(x, y, z).getType() == POTATO
+                                            || block.getRelative(x, y, z).getType() == CARROT
+                                            || block.getRelative(x, y, z).getType() == MELON_STEM
+                                            || block.getRelative(x, y, z).getType() == PUMPKIN_STEM) && block.getRelative(x, y, z).getData() < 7)
+                                            || ((block.getRelative(x, y, z).getType() == COCOA) && block.getRelative(x, y, z).getData() < 8)
+                                            || ((block.getRelative(x, y, z).getType() == BEETROOT_BLOCK) && block.getRelative(x, y, z).getData() < 3)) {
+                                        if (evt.getPlayer().getGameMode().equals(CREATIVE) || Utilities.removeItemCheck(evt.getPlayer(), INK_SACK, (short) 15, 1)) {
                                             Utilities.grow(block.getRelative(x, y, z));
-                                        }
-                                        Utilities.display(Utilities.getCenter(block.getRelative(x, y, z)), Particle.VILLAGER_HAPPY, 30, 1f, .3f, .3f, .3f);
-                                        evt.getPlayer().updateInventory();
-                                        if (Storage.rnd.nextInt(10) == 3) {
-                                            Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                            if (Storage.rnd.nextBoolean()) {
+                                                Utilities.grow(block.getRelative(x, y, z));
+                                            }
+                                            Utilities.display(Utilities.getCenter(block.getRelative(x, y, z)), Particle.VILLAGER_HAPPY, 30, 1f, .3f, .3f, .3f);
+                                            if (Storage.rnd.nextInt(10) == 3) {
+                                                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                            }
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
+                    return true;
                 }
-                return true;
             }
             return false;
         }
@@ -1071,8 +1084,10 @@ public class CustomEnchantment {
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (evt.getBlock().getType() == SAND && Storage.rnd.nextInt(100) >= (100 - (level * power * 3))) {
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(GOLD_NUGGET));
+                PlayerInteractUtil.breakBlockNMS(evt.getBlock(), evt.getPlayer());
+                return true;
             }
-            return true;
+            return false;
         }
     }
 
@@ -1095,6 +1110,7 @@ public class CustomEnchantment {
         public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
             Storage.grabLocs.put(evt.getBlock(), evt.getPlayer().getLocation());
             final Block block = evt.getBlock();
+            PlayerInteractUtil.breakBlockNMS(evt.getBlock(), evt.getPlayer());
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                 Storage.grabLocs.remove(block);
             }, 15);
@@ -1225,7 +1241,7 @@ public class CustomEnchantment {
                     final Block blk = player.getTargetBlock((HashSet<Byte>) null, 10);
                     player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector()).multiply(.25 * power));
                     player.setFallDistance(-40);
-                    PlayerInteractUtil.damagePlayer(player, 2, DamageCause.MAGIC);
+                    PlayerInteractUtil.damagePlayer(player, 3, DamageCause.MAGIC);
                     int scheduleSyncDelayedTask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                     }, 1);
@@ -1257,29 +1273,31 @@ public class CustomEnchantment {
                 Location loc = evt.getClickedBlock().getLocation();
                 int radiusXZ = (int) Math.round(power * level + 2);
                 int radiusY = 1;
-                for (int x = -(radiusXZ); x <= radiusXZ; x++) {
-                    for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
-                        for (int z = -(radiusXZ); z <= radiusXZ; z++) {
-                            Block block = (Block) loc.getBlock();
-                            if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if ((block.getRelative(x, y + 1, z).getType() == MELON_BLOCK || block.getRelative(x, y + 1, z).getType() == PUMPKIN)
-                                        || ((block.getRelative(x, y + 1, z).getType() == NETHER_WARTS || block.getRelative(x, y + 1, z).getType() == BEETROOT_BLOCK) && block.getRelative(x, y + 1, z).getData() == 3)
-                                        || ((block.getRelative(x, y + 1, z).getType() == CROPS || block.getRelative(x, y + 1, z).getType() == POTATO
-                                        || (block.getRelative(x, y + 1, z).getType() == CARROT)) && block.getRelative(x, y + 1, z).getData() == 7)) {
-
-                                    final Block blk = block.getRelative(x, y + 1, z);
-                                    if (PlayerInteractUtil.breakBlockNMS(block, evt.getPlayer())) {
-                                        Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
-                                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                            Storage.grabLocs.remove(blk);
-                                        }, 3);
+                Material[] crops = {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK};
+                if (ArrayUtils.contains(crops, evt.getClickedBlock().getType())) {
+                    for (int x = -(radiusXZ); x <= radiusXZ; x++) {
+                        for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
+                            for (int z = -(radiusXZ); z <= radiusXZ; z++) {
+                                Block block = (Block) loc.getBlock();
+                                if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
+                                    if ((block.getRelative(x, y + 1, z).getType() == MELON_BLOCK || block.getRelative(x, y + 1, z).getType() == PUMPKIN)
+                                            || ((block.getRelative(x, y + 1, z).getType() == NETHER_WARTS || block.getRelative(x, y + 1, z).getType() == BEETROOT_BLOCK) && block.getRelative(x, y + 1, z).getData() == 3)
+                                            || ((block.getRelative(x, y + 1, z).getType() == CROPS || block.getRelative(x, y + 1, z).getType() == POTATO
+                                            || (block.getRelative(x, y + 1, z).getType() == CARROT)) && block.getRelative(x, y + 1, z).getData() == 7)) {
+                                        final Block blk = block.getRelative(x, y + 1, z);
+                                        if (PlayerInteractUtil.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
+                                            Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
+                                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                                                Storage.grabLocs.remove(blk);
+                                            }, 3);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    return true;
                 }
-                return true;
             }
             return false;
         }
@@ -1313,7 +1331,7 @@ public class CustomEnchantment {
 
         public static final int[] incompatibleBlockIds = new int[]{
             6, 7, 8, 9, 10, 11, 23, 25, 26, 31, 32, 34,
-            36, 37, 38, 39, 40, 50, 51, 52, 54, 59, 61, 62, 63, 64,
+            36, 37, 38, 39, 40, 50, 51, 52, 54, 55, 59, 61, 62, 63, 64,
             65, 68, 69, 71, 75, 76, 77, 78, 81, 83, 84, 90, 96, 104,
             105, 106, 111, 115, 117, 119, 120, 127, 131, 132, 137,
             140, 141, 142, 143, 144, 146, 154, 158, 166, 167, 171, 175,
@@ -2427,7 +2445,6 @@ public class CustomEnchantment {
                 blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
                         0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType());
                 Utilities.addUnbreaking(evt.getPlayer(), broken.size() / 4, usedHand);
-                Bukkit.broadcastMessage(broken.size() + "");
                 Utilities.eventEnd(evt.getPlayer(), loreName);
             }
             return true;
@@ -3214,7 +3231,7 @@ public class CustomEnchantment {
 
     public static class Transformation extends CustomEnchantment {
 
-        private final EntityType[] ENTITY_TYPES = new EntityType[]{SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
+        private final EntityType[] ENTITY_TYPES = new EntityType[]{BAT, VEX, STRAY, SKELETON, HUSK, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
 
         public Transformation() {
             maxLevel = 3;
@@ -3241,7 +3258,8 @@ public class CustomEnchantment {
                         int newPosition = position + 1 - 2 * (position % 2);
                         Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f, .5f, 2, .5f);
                         evt.getEntity().remove();
-                        ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(), ENTITY_TYPES[newPosition]);
+                        LivingEntity ent = (LivingEntity) ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(), ENTITY_TYPES[newPosition]);
+                        ent.setHealth(Math.max(1, ((LivingEntity) evt.getEntity()).getHealth()));
                     }
                 }
             }
