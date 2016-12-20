@@ -20,6 +20,9 @@ import net.minecraft.server.v1_11_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_11_R1.PacketPlayOutSpawnEntityLiving;
 import org.bukkit.craftbukkit.v1_11_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftSheep;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -89,12 +92,12 @@ public class PlayerInteractUtil {
     }
 
     public static boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
-        if (target instanceof Sheep) {
-            EntitySheep entitySheep = (EntitySheep) target;
-            return entitySheep.a((EntityHuman) player, mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
-        } else if (target instanceof MushroomCow) {
-            EntityMushroomCow entityMushroomCow = (EntityMushroomCow) target;
-            return entityMushroomCow.a((EntityHuman) player, mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+        if (target instanceof CraftSheep) {
+            EntitySheep entitySheep = ((CraftSheep) target).getHandle();
+            return entitySheep.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+        } else if (target instanceof CraftMushroomCow) {
+            EntityMushroomCow entityMushroomCow = ((CraftMushroomCow) target).getHandle();
+            return entityMushroomCow.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
         }
         return false;
     }
@@ -157,7 +160,9 @@ public class PlayerInteractUtil {
 
     public static void showShulker(Block blockToHighlight, int entityId, Player player) {
         PacketPlayOutSpawnEntityLiving pposel = generateShulkerSpawnPacket(blockToHighlight, entityId);
-
+        if (pposel == null) {
+            return;
+        }
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         ep.playerConnection.networkManager.sendPacket(pposel);
     }
@@ -216,8 +221,8 @@ public class PlayerInteractUtil {
             f.set(pposel, m);
 
         } catch (NoSuchFieldException | IllegalAccessException ex) {
-            System.out.println("argh");
             ex.printStackTrace();
+            return null;
         }
 
         return pposel;
