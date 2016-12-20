@@ -93,9 +93,8 @@ public class Config {
         for (World world : Bukkit.getWorlds()) {
             try {
                 ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-                InputStream stream = classloader.getResourceAsStream("/defaultconfig.yml");
-
-                File file = new File("plugins/Zenchantments/" + world.getName() + ".yml");
+                InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
+                File file = new File(Storage.zenchantments.getDataFolder() , world.getName() + ".yml");
                 if (!file.exists()) {
                     try {
                         String raw = IOUtils.toString(stream, "UTF-8");

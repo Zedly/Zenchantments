@@ -1,4 +1,4 @@
-ZenchantmentsConfigVersion: 1.3.0
+ZenchantmentsConfigVersion: 1.5.0
   
 # Probability: (Decimal) (0 = no probability, -1 = disabled)
 #    Chance of obtaining the enchantment when enchanting
