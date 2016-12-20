@@ -1,7 +1,5 @@
 package zedly.zenchantments;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import org.bukkit.*;
 import static org.bukkit.GameMode.*;
@@ -67,24 +65,6 @@ public class Utilities {
                     is.setDurability((short) (is.getDurability() + 1));
                 }
             }
-        }
-    }
-
-    // Stores a player and an enchantments in a map to prevent infinite recursion of method calls from the WatcherEnchant
-    //      Returns true of the player was already stored with the given enchantment
-    public static boolean eventStart(Player player, String enchantment) {
-        if (Storage.duringEvents.containsKey(player)) {
-            if (Storage.duringEvents.get(player).contains(enchantment)) {
-                return true;
-            } else {
-                Storage.duringEvents.get(player).add(enchantment);
-                return false;
-            }
-        } else {
-            HashSet<String> s = new HashSet<>();
-            s.add(enchantment);
-            Storage.duringEvents.put(player, s);
-            return false;
         }
     }
 

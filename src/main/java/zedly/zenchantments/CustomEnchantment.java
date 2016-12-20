@@ -1328,58 +1328,6 @@ public class CustomEnchantment {
 
     }
 
-    public static class Haul extends CustomEnchantment {
-
-        public static final int[] incompatibleBlockIds = new int[]{
-            6, 7, 8, 9, 10, 11, 23, 25, 26, 31, 32, 34,
-            36, 37, 38, 39, 40, 50, 51, 52, 54, 55, 59, 61, 62, 63, 64,
-            65, 68, 69, 71, 75, 76, 77, 78, 81, 83, 84, 90, 96, 104,
-            105, 106, 111, 115, 117, 119, 120, 127, 131, 132, 137,
-            140, 141, 142, 143, 144, 146, 154, 158, 166, 167, 171, 175,
-            176, 177, 193, 194, 195, 196, 197, 209, 210, 211, 217, 218, 219, 220,
-            221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
-            255};
-
-        public Haul() {
-            maxLevel = 1;
-            loreName = "Haul";
-            probability = 0;
-            enchantable = new Tool[]{PICKAXE};
-            conflicting = new Class[]{Laser.class};
-            description = "Allows for dragging blocks around";
-            cooldown = 0;
-            power = -1.0;
-            handUse = 2;
-            enchantmentID = 28;
-        }
-
-        @Override
-        public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-            Player player = evt.getPlayer();
-            if (evt.getAction().equals(RIGHT_CLICK_BLOCK) && Utilities.canUse(player, enchantmentID)) {
-                Storage.haulBlockDelay.put(player, 0);
-                if (!Storage.haulBlocks.containsKey(player)) {
-                    if (!ArrayUtils.contains(incompatibleBlockIds, evt.getClickedBlock().getTypeId())) {
-                        Storage.haulBlocks.put(player, evt.getClickedBlock());
-                    }
-                    return true;
-                }
-                if (!Storage.haulBlocks.get(player).equals(evt.getClickedBlock())) {
-                    Block toUse = player.getTargetBlock((HashSet<Byte>) null, 4).getRelative(evt.getBlockFace());
-                    if (toUse.getType() == AIR && player.getTargetBlock((HashSet<Byte>) null, 4).getType() != AIR) {
-                        Block toBreak = Storage.haulBlocks.get(player);
-                        if (PlayerInteractUtil.haulOrBreakBlock(toBreak, toUse, evt.getBlockFace(), player)) {
-                            boolean handUsed = Utilities.usedHand(EquipmentSlot.HAND);
-                            Utilities.addUnbreaking(player, 1, handUsed);
-                        }
-                    }
-                }
-            }
-            EnchantPlayer.matchPlayer(player).setCooldown(enchantmentID, cooldown == 0 ? 1 : cooldown);
-            return false;
-        }
-    }
-
     public static class IceAspect extends CustomEnchantment {
 
         public IceAspect() {
@@ -1435,7 +1383,7 @@ public class CustomEnchantment {
             loreName = "Laser";
             probability = 0;
             enchantable = new Tool[]{PICKAXE, AXE};
-            conflicting = new Class[]{Haul.class};
+            conflicting = new Class[]{};
             description = "Breaks blocks and damages mobs using a powerful beam of light";
             cooldown = 0;
             power = 1.0;
@@ -1603,7 +1551,7 @@ public class CustomEnchantment {
 
             while (!searchPerimeter.isEmpty()) {
                 Block searchBlock = searchPerimeter.remove(0);
-                
+
                 // If block is a trunk, add all adjacent blocks to search perimeter
                 if (ArrayUtils.contains(AFFECTED_BLOCKS, searchBlock.getType())) {
                     trunk.add(searchBlock);
@@ -2070,8 +2018,8 @@ public class CustomEnchantment {
                 for (Block b : total) {
                     PlayerInteractUtil.breakBlockNMS(b, evt.getPlayer());
                 }
+                Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
             }
-            Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
             return true;
         }
     }
@@ -2430,13 +2378,10 @@ public class CustomEnchantment {
             int counter = 0;
             ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
             final Config config = Config.get(evt.getBlock().getWorld());
-            if (!Utilities.eventStart(evt.getPlayer(), loreName)) {
-                evt.setCancelled(true);
-                Set<Block> broken = new HashSet<>();
-                blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
-                        0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType());
-                Utilities.addUnbreaking(evt.getPlayer(), broken.size() / 4, usedHand);
-            }
+            Set<Block> broken = new HashSet<>();
+            blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
+                    0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType());
+            Utilities.addUnbreaking(evt.getPlayer(), broken.size() / 4, usedHand);
             return true;
         }
 
@@ -2446,30 +2391,29 @@ public class CustomEnchantment {
                 final BlockBreakEvent event = new BlockBreakEvent(blk, player);
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                        if (config.getShredDrops() == 1) {
-                            Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
-                            if (ArrayUtils.contains(ores, event.getBlock().getType())) {
-                                event.getBlock().setType(STONE);
-                            } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
-                                event.getBlock().setType(NETHERRACK);
-                            }
-                        } else if (config.getShredDrops() == 2) {
-                            event.getBlock().setType(AIR);
+                    PlayerInteractUtil.breakBlockNMS(blk, player);
+                    if (config.getShredDrops() == 1) {
+                        Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
+                        if (ArrayUtils.contains(ores, event.getBlock().getType())) {
+                            event.getBlock().setType(STONE);
+                        } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
+                            event.getBlock().setType(NETHERRACK);
                         }
-                        if (event.getBlock().getType() == GRASS) {
-                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRASS_BREAK, 10, 1);
-                        } else if (event.getBlock().getType() == DIRT || event.getBlock().getType() == GRAVEL || event.getBlock().getType() == CLAY) {
-                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRAVEL_BREAK, 10, 1);
-                        } else if (event.getBlock().getType() == SAND) {
-                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_SAND_BREAK, 10, 1);
-                        } else {
-                            blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
-                        }
-                        if ((Tool.PICKAXE.contains(itemType) && ArrayUtils.contains(mats, event.getBlock().getType())) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
-                            PlayerInteractUtil.breakBlockNMS(event.getBlock(), player);
-                        }
-                    }, time / 4);
+                    } else if (config.getShredDrops() == 2) {
+                        event.getBlock().setType(AIR);
+                    }
+                    if (event.getBlock().getType() == GRASS) {
+                        blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRASS_BREAK, 10, 1);
+                    } else if (event.getBlock().getType() == DIRT || event.getBlock().getType() == GRAVEL || event.getBlock().getType() == CLAY) {
+                        blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GRAVEL_BREAK, 10, 1);
+                    } else if (event.getBlock().getType() == SAND) {
+                        blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_SAND_BREAK, 10, 1);
+                    } else {
+                        blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
+                    }
+                    if ((Tool.PICKAXE.contains(itemType) && ArrayUtils.contains(mats, event.getBlock().getType())) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
+                        PlayerInteractUtil.breakBlockNMS(event.getBlock(), player);
+                    }
                     used.add(blk);
                 }
                 for (int i = 0; i < 3; i++) {
@@ -2881,26 +2825,25 @@ public class CustomEnchantment {
             EnchantArrow.ArrowGenericMulitple ar = new EnchantArrow.ArrowGenericMulitple(originalArrow);
             Utilities.putArrow(originalArrow, ar, player);
             Bukkit.getPluginManager().callEvent(new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length()));
-            if (!Utilities.eventStart(player, loreName)) {
-                Utilities.addUnbreaking(player, (int) Math.round(level / 2.0 + 1), usedHand);
-                for (int i = 0; i < (int) Math.round(power * level * 4); i++) {
-                    Vector v = originalArrow.getVelocity();
-                    v.setX(v.getX() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
-                    v.setZ(v.getZ() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
+            Utilities.addUnbreaking(player, (int) Math.round(level / 2.0 + 1), usedHand);
+            for (int i = 0; i < (int) Math.round(power * level * 4); i++) {
+                Vector v = originalArrow.getVelocity();
+                v.setX(v.getX() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
+                v.setZ(v.getZ() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
 
-                    Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)), v, 1, 0);
-                    arrow.setShooter(player);
-                    arrow.setVelocity(v.normalize().multiply(originalArrow.getVelocity().length()));
+                Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)), v, 1, 0);
+                arrow.setShooter(player);
+                arrow.setVelocity(v.normalize().multiply(originalArrow.getVelocity().length()));
 
-                    arrow.setFireTicks(originalArrow.getFireTicks());
-                    arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
-                    EntityShootBowEvent event = new EntityShootBowEvent(player, hand, arrow, (float) originalArrow.getVelocity().length());
-                    Bukkit.getPluginManager().callEvent(event);
-                    arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
-                    arrow.setCritical(originalArrow.isCritical());
-                    Utilities.putArrow(originalArrow, new EnchantArrow.ArrowGenericMulitple(originalArrow), player);
-                }
+                arrow.setFireTicks(originalArrow.getFireTicks());
+                arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
+                EntityShootBowEvent event = new EntityShootBowEvent(player, hand, arrow, (float) originalArrow.getVelocity().length());
+                Bukkit.getPluginManager().callEvent(event);
+                arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
+                arrow.setCritical(originalArrow.isCritical());
+                Utilities.putArrow(originalArrow, new EnchantArrow.ArrowGenericMulitple(originalArrow), player);
             }
+
             return true;
         }
     }
