@@ -4,6 +4,7 @@ import java.util.*;
 import org.bukkit.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 
 public class Storage {
@@ -63,7 +64,7 @@ public class Storage {
     public static final Map<Location, Long> waterLocs = new HashMap<>();
 
     // Blocks made to glow by the Reveal enchantment
-    public static final Map<Location, Integer> glowingLocs = new HashMap<>();
+    public static final HashMap<Block, Integer> glowingBlocks = new HashMap<>();
 
     // Entites that are being tested by Utilities' canDamage method to prevent infinite recursion
     public static final Set<Entity> damagingPlayer = new HashSet<>();
@@ -106,6 +107,15 @@ public class Storage {
         ACACIA_FENCE_GATE, END_GATEWAY, STRUCTURE_BLOCK, SIGN, WOOD_DOOR, IRON_DOOR, BED,
         SKULL_ITEM, SPRUCE_DOOR_ITEM, BIRCH_DOOR_ITEM, JUNGLE_DOOR_ITEM, ACACIA_DOOR_ITEM,
         DARK_OAK_DOOR_ITEM};
+
+    public static final BlockFace[] CARDINAL_BLOCK_FACES = {
+        BlockFace.UP,
+        BlockFace.DOWN,
+        BlockFace.NORTH,
+        BlockFace.EAST,
+        BlockFace.SOUTH,
+        BlockFace.WEST
+    };
 
     // The plugin Logo to be used in chat commands
     public static final String logo = ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments"

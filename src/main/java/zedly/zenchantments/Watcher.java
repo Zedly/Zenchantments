@@ -5,6 +5,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import static org.bukkit.event.block.Action.*;
@@ -75,8 +76,6 @@ public class Watcher implements Listener {
         }
     }
 
-    
-    
     // Prevents falling block entities from Anthropomorphism from becoming solid blocks or disappearing
     @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent evt) {
@@ -127,6 +126,20 @@ public class Watcher implements Listener {
     public void onIceOrLavaBreak(BlockBreakEvent evt) {
         if (Storage.waterLocs.containsKey(evt.getBlock().getLocation()) || Storage.fireLocs.containsKey(evt.getBlock().getLocation())) {
             evt.setCancelled(true);
+        }
+    }
+
+    // Makes glowing shulkers on an ore block disappear if it is uncovered
+    @EventHandler
+    public void onOreUncover(BlockBreakEvent evt) {
+        for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
+            if (Storage.glowingBlocks.containsKey(evt.getBlock().getRelative(face))) {
+                int entityId = 2000000000 + (evt.getBlock().getRelative(face).hashCode()) % 10000000;
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    PlayerInteractUtil.hideShulker(entityId, player);
+                }
+                Storage.glowingBlocks.remove(evt.getBlock());
+            }
         }
     }
 
@@ -182,7 +195,7 @@ public class Watcher implements Listener {
             config.addDescriptions(evt.getItem(), null);
         }
         List<String> finalLore = stk.getItemMeta().getLore();
-        
+
         Inventory inv = evt.getInventory();
         Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
             ItemStack book = inv.getItem(0);

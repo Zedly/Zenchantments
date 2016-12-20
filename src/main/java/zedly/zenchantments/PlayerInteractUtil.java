@@ -159,21 +159,13 @@ public class PlayerInteractUtil {
         PacketPlayOutSpawnEntityLiving pposel = generateShulkerSpawnPacket(blockToHighlight, entityId);
 
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ep.playerConnection.networkManager.sendPacket(pposel, (future) -> {
-            System.out.println(future.cause());
-        }, (future) -> {
-            System.out.println(future);
-        });
+        ep.playerConnection.networkManager.sendPacket(pposel);
     }
 
     public static void hideShulker(int entityId, Player player) {
         PacketPlayOutEntityDestroy ppoed = new PacketPlayOutEntityDestroy(entityId);
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ep.playerConnection.networkManager.sendPacket(ppoed, (future) -> {
-            System.out.println(future.cause());
-        }, (future) -> {
-            System.out.println(future);
-        });
+        ep.playerConnection.networkManager.sendPacket(ppoed);
     }
 
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(Block blockToHighlight, int entityId) {

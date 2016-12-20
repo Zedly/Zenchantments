@@ -846,14 +846,17 @@ public class CustomEnchantment {
             int radius = (int) Math.round(power * level + 2);
             for (int x = -(radius); x <= radius; x++) {
                 for (int z = -(radius); z <= radius; z++) {
-                    if (block.getRelative(x, -1, z).getLocation().distanceSquared(block.getRelative(DOWN).getLocation()) < radius * radius - 2) {
-                        if (block.getRelative(x, -1, z).getData() == 0 && block.getRelative(x, -1, z).getType() == STATIONARY_WATER && block.getRelative(x, 0, z).getType() == AIR) {
-                            if (PlayerInteractUtil.formBlock(block, PACKED_ICE, (byte) 0, player)) {
-                                Storage.waterLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
+                    Block possiblePlatformBlock = block.getRelative(x, -1, z);
+                    Location possiblePlatformLoc = possiblePlatformBlock.getLocation();
+                    if (possiblePlatformLoc.distanceSquared(block.getLocation()) < radius * radius - 2) {
+                        if (Storage.waterLocs.containsKey(possiblePlatformLoc)) {
+                            Storage.waterLocs.put(possiblePlatformLoc, System.nanoTime());
+                        } else if (possiblePlatformBlock.getType() == STATIONARY_WATER
+                                && possiblePlatformBlock.getData() == 0
+                                && possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
+                            if (PlayerInteractUtil.formBlock(possiblePlatformBlock, PACKED_ICE, (byte) 0, player)) {
+                                Storage.waterLocs.put(possiblePlatformLoc, System.nanoTime());
                             }
-                        }
-                        if (Storage.waterLocs.containsKey(block.getRelative(x, -1, z).getLocation())) {
-                            Storage.waterLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
                         }
                     }
                 }
@@ -1799,18 +1802,21 @@ public class CustomEnchantment {
             if (player.isSneaking() && player.getLocation().getBlock().getType() == STATIONARY_LAVA && !player.isFlying()) {
                 player.setVelocity(player.getVelocity().setY(.4));
             }
-            Block block = (Block) player.getLocation().getBlock();
+            Block block = (Block) player.getLocation().add(0, 0.2, 0).getBlock();
             int radius = (int) Math.round(power * level + 2);
             for (int x = -(radius); x <= radius; x++) {
                 for (int z = -(radius); z <= radius; z++) {
-                    if (block.getRelative(x, -1, z).getLocation().distanceSquared(block.getRelative(DOWN).getLocation()) < radius * radius - 2) {
-                        if (block.getRelative(x, -1, z).getData() == 0 && block.getRelative(x, -1, z).getType() == STATIONARY_LAVA && block.getRelative(x, 0, z).getType() == AIR) {
-                            if (PlayerInteractUtil.formBlock(block, SOUL_SAND, (byte) 0, player)) {
-                                Storage.fireLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
+                    Block possiblePlatformBlock = block.getRelative(x, -1, z);
+                    Location possiblePlatformLoc = possiblePlatformBlock.getLocation();
+                    if (possiblePlatformLoc.distanceSquared(block.getLocation()) < radius * radius - 2) {
+                        if (Storage.fireLocs.containsKey(possiblePlatformLoc)) {
+                            Storage.fireLocs.put(possiblePlatformLoc, System.nanoTime());
+                        } else if (possiblePlatformBlock.getType() == STATIONARY_LAVA
+                                && possiblePlatformBlock.getData() == 0
+                                && possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
+                            if (PlayerInteractUtil.formBlock(possiblePlatformBlock, SOUL_SAND, (byte) 0, player)) {
+                                Storage.fireLocs.put(possiblePlatformLoc, System.nanoTime());
                             }
-                        }
-                        if (Storage.fireLocs.containsKey(block.getRelative(x, -1, z).getLocation())) {
-                            Storage.fireLocs.put(block.getRelative(x, -1, z).getLocation(), System.nanoTime());
                         }
                     }
                 }
@@ -3401,19 +3407,35 @@ public class CustomEnchantment {
                             for (int z = -radius; z <= radius; z++) {
                                 Block blk = evt.getPlayer().getLocation().getBlock().getRelative(x, y, z);
                                 if (ArrayUtils.contains(Storage.ores, blk.getType())) {
-                                    final Slime s = (Slime) blk.getWorld().spawnEntity(Utilities.getCenter(blk), EntityType.SLIME);
-                                    s.setAI(false);
-                                    s.setCollidable(false);
-                                    s.setGravity(false);
-                                    s.setSize(2);
-                                    s.setSilent(true);
-                                    s.setGlowing(true);
-                                    s.setInvulnerable(true);
-                                    evt.getPlayer().setCollidable(false);
+                                    boolean exposed = false;
+                                    for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
+                                        if (blk.getRelative(face).getType() == Material.AIR) {
+                                            exposed = true;
+                                        }
+                                    }
+                                    if (exposed) {
+                                        continue;
+                                    }
+
                                     found++;
+                                    int entityId = 2000000000 + (blk.hashCode()) % 10000000;
+                                    if (Storage.glowingBlocks.containsKey(blk)) {
+                                        Storage.glowingBlocks.put(blk,
+                                                Storage.glowingBlocks.get(blk) + 1);
+                                    } else {
+                                        Storage.glowingBlocks.put(blk, 1);
+                                    }
+
+                                    PlayerInteractUtil.showShulker(blk, entityId, player);
                                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                        s.remove();
-                                        evt.getPlayer().setCollidable(true);
+                                        PlayerInteractUtil.hideShulker(entityId, player);
+                                        if (Storage.glowingBlocks.containsKey(blk)
+                                                && Storage.glowingBlocks.get(blk) > 1) {
+                                            Storage.glowingBlocks.put(blk,
+                                                    Storage.glowingBlocks.get(blk) - 1);
+                                        } else {
+                                            Storage.glowingBlocks.remove(blk);
+                                        }
                                     }, 100);
                                 }
                             }
