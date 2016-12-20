@@ -250,7 +250,6 @@ public class CustomEnchantment {
                     stk = new ItemStack(SAPLING, 1, s);
                 }
                 if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
-                    PlayerInteractUtil.breakBlockNMS(blk, evt.getPlayer());
                     if (Storage.rnd.nextInt(3) % 3 == 0) {
                         evt.getBlock().getWorld()
                                 .dropItemNaturally(Utilities.getCenter(evt.getBlock()), stk);
@@ -1087,7 +1086,6 @@ public class CustomEnchantment {
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (evt.getBlock().getType() == SAND && Storage.rnd.nextInt(100) >= (100 - (level * power * 3))) {
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(GOLD_NUGGET));
-                PlayerInteractUtil.breakBlockNMS(evt.getBlock(), evt.getPlayer());
                 return true;
             }
             return false;
@@ -1604,7 +1602,6 @@ public class CustomEnchantment {
             if (!ArrayUtils.contains(AFFECTED_BLOCKS, startBlock.getType())) {
                 return false;
             }
-
             // BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large
             LinkedHashSet<Block> trunk = new LinkedHashSet<>();
             LinkedHashSet<Block> searchBody = new LinkedHashSet<>();
@@ -1649,13 +1646,11 @@ public class CustomEnchantment {
                         }
                     }
                 }
-
                 if (trunk.size() > MAX_BLOCKS) {
                     // Allowed trunk size exceeded
                     return false;
                 }
             }
-
             for (Block b : trunk) {
                 PlayerInteractUtil.breakBlockNMS(b, evt.getPlayer());
             }
@@ -1886,50 +1881,54 @@ public class CustomEnchantment {
                 Player player = evt.getPlayer();
                 Location loc = evt.getClickedBlock().getLocation();
                 int radiusXZ = (int) Math.round(power * level + 2);
-                for (int x = -(radiusXZ); x <= radiusXZ; x++) {
-                    for (int y = -2; y <= 0; y++) {
-                        for (int z = -(radiusXZ); z <= radiusXZ; z++) {
-                            Block block = (Block) loc.getBlock();
-                            if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if (block.getRelative(x, y, z).getType() == SOIL
-                                        && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                    if (evt.getPlayer().getInventory().contains(CARROT_ITEM)) {
-                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, CARROT, 0)) {
-                                            Utilities.removeItem(player, CARROT_ITEM, (short) 0, 1);
+                Material[] crops = {CROPS, POTATO, CARROT, BEETROOT_BLOCK, NETHER_WARTS, SOUL_SAND, SOIL};
+                if (ArrayUtils.contains(crops, evt.getClickedBlock().getType())) {
+                    for (int x = -(radiusXZ); x <= radiusXZ; x++) {
+                        for (int y = -2; y <= 0; y++) {
+                            for (int z = -(radiusXZ); z <= radiusXZ; z++) {
+                                Block block = (Block) loc.getBlock();
+                                if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
+                                    if (block.getRelative(x, y, z).getType() == SOIL
+                                            && block.getRelative(x, y + 1, z).getType() == AIR) {
+                                        if (evt.getPlayer().getInventory().contains(CARROT_ITEM)) {
+                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, CARROT, 0)) {
+                                                Utilities.removeItem(player, CARROT_ITEM, (short) 0, 1);
+                                            }
                                         }
-                                    }
-                                    if (evt.getPlayer().getInventory().contains(POTATO_ITEM)) {
-                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, POTATO, 0)) {
-                                            Utilities.removeItem(player, POTATO_ITEM, (short) 0, 1);
+                                        if (evt.getPlayer().getInventory().contains(POTATO_ITEM)) {
+                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, POTATO, 0)) {
+                                                Utilities.removeItem(player, POTATO_ITEM, (short) 0, 1);
+                                            }
                                         }
-                                    }
-                                    if (evt.getPlayer().getInventory().contains(SEEDS)) {
-                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, 0)) {
-                                            Utilities.removeItem(player, SEEDS, (short) 0, 1);
+                                        if (evt.getPlayer().getInventory().contains(SEEDS)) {
+                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, CROPS, 0)) {
+                                                Utilities.removeItem(player, SEEDS, (short) 0, 1);
+                                            }
                                         }
-                                    }
-                                    if (evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
-                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOT, 0)) {
-                                            Utilities.removeItem(player, BEETROOT_SEEDS, (short) 0, 1);
+                                        if (evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
+                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, Material.BEETROOT_BLOCK, 0)) {
+                                                Utilities.removeItem(player, BEETROOT_SEEDS, (short) 0, 1);
+                                            }
                                         }
-                                    }
-                                } else if (block.getRelative(x, y, z).getType() == SOUL_SAND) {
-                                    if (evt.getPlayer().getInventory().contains(NETHER_STALK)) {
-                                        if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WARTS, 0)) {
-                                            Utilities.removeItem(player, NETHER_STALK, (short) 0, 1);
+                                    } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
+                                            && block.getRelative(x, y + 1, z).getType() == AIR) {
+                                        if (evt.getPlayer().getInventory().contains(NETHER_STALK)) {
+                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WARTS, 0)) {
+                                                Utilities.removeItem(player, NETHER_STALK, (short) 0, 1);
+                                            }
                                         }
+                                    } else {
+                                        continue;
                                     }
-                                } else {
-                                    continue;
-                                }
-                                if (Storage.rnd.nextBoolean()) {
-                                    Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                    if (Storage.rnd.nextBoolean()) {
+                                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                    }
                                 }
                             }
                         }
                     }
+                    return true;
                 }
-                return true;
             }
             return false;
         }
@@ -2119,8 +2118,11 @@ public class CustomEnchantment {
                         for (int z = -(radiusXZ); z <= radiusXZ; z++) {
                             Block block = (Block) loc.getBlock();
                             if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                                if ((block.getRelative(x, y, z).getType() == DIRT || block.getRelative(x, y, z).getType() == GRASS || block.getRelative(x, y, z).getType() == MYCEL) && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                    block.getRelative(x, y, z).setType(SOIL);
+                                if (((block.getRelative(x, y, z).getType() == DIRT
+                                        || block.getRelative(x, y, z).getType() == GRASS
+                                        || block.getRelative(x, y, z).getType() == MYCEL))
+                                        && block.getRelative(x, y + 1, z).getType() == AIR) {
+                                    PlayerInteractUtil.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), SOIL, 0);
                                     if (Storage.rnd.nextBoolean()) {
                                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                                     }
