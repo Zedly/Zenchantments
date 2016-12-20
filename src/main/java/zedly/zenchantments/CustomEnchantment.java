@@ -2122,7 +2122,6 @@ public class CustomEnchantment {
                                         || block.getRelative(x, y, z).getType() == GRASS
                                         || block.getRelative(x, y, z).getType() == MYCEL))
                                         && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                    PlayerInteractUtil.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), SOIL, 0);
                                     if (Storage.rnd.nextBoolean()) {
                                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                                     }
