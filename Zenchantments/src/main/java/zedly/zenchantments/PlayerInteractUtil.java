@@ -86,11 +86,11 @@ public class PlayerInteractUtil {
         return ADAPTER.formBlock(block, mat, data, player);
     }
 
-    public static void showShulker(Block blockToHighlight, int entityId, Player player) {
-        ADAPTER.showShulker(blockToHighlight, entityId, player);
+    public static boolean showShulker(Block blockToHighlight, int entityId, Player player) {
+        return ADAPTER.showShulker(blockToHighlight, entityId, player);
     }
 
-    public static void hideShulker(int entityId, Player player) {
-        ADAPTER.hideShulker(entityId, player);
+    public static boolean hideShulker(int entityId, Player player) {
+        return ADAPTER.hideShulker(entityId, player);
     }
 }

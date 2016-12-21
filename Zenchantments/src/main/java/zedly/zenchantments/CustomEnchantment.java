@@ -3371,7 +3371,9 @@ public class CustomEnchantment {
                                         Storage.glowingBlocks.put(blk, 1);
                                     }
 
-                                    PlayerInteractUtil.showShulker(blk, entityId, player);
+                                    if(!PlayerInteractUtil.showShulker(blk, entityId, player)) {
+                                        return false;
+                                    }
                                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                         PlayerInteractUtil.hideShulker(entityId, player);
                                         if (Storage.glowingBlocks.containsKey(blk)
