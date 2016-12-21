@@ -73,13 +73,15 @@ public class AnvilMerge implements Listener {
         }
         final Config config = Config.get(evt.getViewers().get(0).getWorld());
         final AnvilInventory anvilInv = (AnvilInventory) evt.getInventory();
-        ItemStack leftItem = anvilInv.getItem(0);
-        ItemStack rightItem = anvilInv.getItem(1);
-        ItemStack outItem = anvilInv.getItem(2);
-        ItemStack stack = doMerge(leftItem, rightItem, outItem, config);
-        if (stack != null) {
-            evt.setResult(stack);
-        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+            ItemStack leftItem = anvilInv.getItem(0);
+            ItemStack rightItem = anvilInv.getItem(1);
+            ItemStack outItem = anvilInv.getItem(2);
+            ItemStack stack = doMerge(leftItem, rightItem, outItem, config);
+            if (stack != null) {
+                anvilInv.setItem(2, stack);
+            }
+        }, 0);
     }
 
     //@EventHandler(priority = MONITOR) // Disabled because unnecessary now?
