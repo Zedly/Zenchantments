@@ -94,7 +94,7 @@ public class Config {
             try {
                 ClassLoader classloader = Thread.currentThread().getContextClassLoader();
                 InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
-                File file = new File(Storage.zenchantments.getDataFolder() , world.getName() + ".yml");
+                File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
                 if (!file.exists()) {
                     try {
                         String raw = IOUtils.toString(stream, "UTF-8");

@@ -23,9 +23,9 @@ public class Zenchantments extends JavaPlugin {
 
     // Loads configs and starts tasks
     public void onEnable() {
-        Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
-        loadConfigs();
         Storage.zenchantments = this;
+        Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
+        loadConfigs(); 
 
         getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
         getServer().getPluginManager().registerEvents(new WatcherArrow(), this);
