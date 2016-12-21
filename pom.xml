@@ -13,6 +13,7 @@
         <module>NMS_1_11_R1</module>
         <module>NMSAdapterInterface</module>
         <module>Bukkit_Only</module>
+        <module>NMS_1_10_R1</module>
     </modules>
     
 </project>

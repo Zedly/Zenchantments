@@ -28,8 +28,11 @@ public class PlayerInteractUtil {
         String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
         System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
         switch (nmsVersionString) {
-            case "v1_11_R2":
+            case "v1_11_R1":
                 ADAPTER = zedly.zenchantments.v1_11_R1.Adapter.getInstance();
+                break;
+            case "v1_10_R1":
+                ADAPTER = zedly.zenchantments.v1_10_R1.Adapter.getInstance();
                 break;
             default:
                 System.out.println("No compatible adapter available, falling back to Bukkit. Not everything will work!");
