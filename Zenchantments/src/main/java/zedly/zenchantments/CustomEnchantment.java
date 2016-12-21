@@ -2794,7 +2794,7 @@ public class CustomEnchantment {
         @Override
         public boolean onFastScan(Player player, int level, boolean usedHand) {
             if (player.getVelocity().getY() < -0.45) {
-                for (Entity e : player.getNearbyEntities(.75, .5, .75)) {
+                for (Entity e : player.getNearbyEntities(0, 2, 0)) {
                     double fall = Math.min(player.getFallDistance(), 20.0);
                     PlayerInteractUtil.attackEntity((LivingEntity) e, player, power * level * fall * 0.25);
                 }
