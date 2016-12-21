@@ -6,6 +6,7 @@
 package zedly.zenchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -13,7 +14,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import zedly.zenchantments.NMSAdapter;
 
 /**
  *
@@ -21,15 +21,26 @@ import zedly.zenchantments.NMSAdapter;
  */
 public class PlayerInteractUtil {
 
-    private static final NMSAdapter adapter;
+    private static final NMSAdapter ADAPTER;
 
     static {
-        adapter = zedly.zenchantments.v1_11_R1.Adapter.getInstance();
+        String versionString = Bukkit.getServer().getClass().getPackage().getName();
+        String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
+        System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
+        switch (nmsVersionString) {
+            case "v1_11_R2":
+                ADAPTER = zedly.zenchantments.v1_11_R1.Adapter.getInstance();
+                break;
+            default:
+                System.out.println("No compatible adapter available, falling back to Bukkit. Not everything will work!");
+                ADAPTER = zedly.zenchantments.bukkit_only.Adapter.getInstance();
+                break;
+        }
     }
 
     public static boolean breakBlockNMS(Block block, Player player) {
         if (!ArrayUtils.contains(Storage.UNBREAKABLE_BLOCKS, block.getType())) {
-            return adapter.breakBlockNMS(block, player);
+            return ADAPTER.breakBlockNMS(block, player);
         } else {
             return false;
         }
@@ -48,38 +59,38 @@ public class PlayerInteractUtil {
      * @return true if the block placement has been successful
      */
     public static boolean placeBlock(Block blockPlaced, Player player, Material mat, int blockData) {
-        return adapter.placeBlock(blockPlaced, player, mat, blockData);
+        return ADAPTER.placeBlock(blockPlaced, player, mat, blockData);
     }
 
     public static boolean attackEntity(LivingEntity target, Player attacker, double damage) {
-        return adapter.attackEntity(target, attacker, damage);
+        return ADAPTER.attackEntity(target, attacker, damage);
     }
 
     public static boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
-        return adapter.shearEntityNMS(target, player, mainHand);
+        return ADAPTER.shearEntityNMS(target, player, mainHand);
     }
 
     public static boolean haulOrBreakBlock(Block from, Block to, BlockFace face, Player player) {
-        return adapter.haulOrBreakBlock(from, to, face, player);
+        return ADAPTER.haulOrBreakBlock(from, to, face, player);
     }
 
     public static boolean igniteEntity(Entity target, Player player, int duration) {
-        return adapter.igniteEntity(target, player, duration);
+        return ADAPTER.igniteEntity(target, player, duration);
     }
 
     public static boolean damagePlayer(Player player, double damage, DamageCause cause) {
-        return adapter.damagePlayer(player, damage, cause);
+        return ADAPTER.damagePlayer(player, damage, cause);
     }
 
     public static boolean formBlock(Block block, Material mat, byte data, Player player) {
-        return adapter.formBlock(block, mat, data, player);
+        return ADAPTER.formBlock(block, mat, data, player);
     }
 
     public static void showShulker(Block blockToHighlight, int entityId, Player player) {
-        adapter.showShulker(blockToHighlight, entityId, player);
+        ADAPTER.showShulker(blockToHighlight, entityId, player);
     }
 
     public static void hideShulker(int entityId, Player player) {
-        adapter.hideShulker(entityId, player);
+        ADAPTER.hideShulker(entityId, player);
     }
 }

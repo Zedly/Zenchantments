@@ -47,8 +47,8 @@ public interface NMSAdapter {
 
     boolean formBlock(Block block, Material mat, byte data, Player player);
 
-    void showShulker(Block blockToHighlight, int entityId, Player player);
+    boolean showShulker(Block blockToHighlight, int entityId, Player player);
 
-    void hideShulker(int entityId, Player player);
+    boolean hideShulker(int entityId, Player player);
 
 }
