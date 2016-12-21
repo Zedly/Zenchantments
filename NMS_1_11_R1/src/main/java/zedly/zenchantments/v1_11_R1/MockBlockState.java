@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.nms_1_11_R1;
+package zedly.zenchantments.v1_11_R1;
 
 import java.util.List;
 import org.bukkit.Chunk;

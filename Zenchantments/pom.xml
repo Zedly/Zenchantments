@@ -10,6 +10,11 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+    <parent>
+        <groupId>zedly</groupId>
+        <artifactId>Zenchantments-parent</artifactId>
+        <version>1.5.0-SNAPSHOT</version>
+    </parent>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -21,19 +26,40 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.11-R0.1-SNAPSHOT</version>
-            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>zedly</groupId>
+            <artifactId>NMS_1_11_R1</artifactId>
+            <version>1.5.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     
     <build>
-        <finalName>${project.name}</finalName>
         <defaultGoal>clean package</defaultGoal>
-
+        <directory>../target</directory> <!-- Build it one level up, because it is the one we care about -->
+        <finalName>Zenchantments</finalName>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>

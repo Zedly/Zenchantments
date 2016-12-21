@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.nms_1_11_R1;
+package zedly.zenchantments.v1_11_R1;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
 import net.minecraft.server.v1_11_R1.BlockPosition;
 import net.minecraft.server.v1_11_R1.DataWatcher;
-import net.minecraft.server.v1_11_R1.EntityHuman;
 import net.minecraft.server.v1_11_R1.EntityMushroomCow;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
 import net.minecraft.server.v1_11_R1.EntitySheep;
@@ -21,7 +20,6 @@ import net.minecraft.server.v1_11_R1.PacketPlayOutSpawnEntityLiving;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.craftbukkit.v1_11_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftSheep;
 
@@ -32,9 +30,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.MushroomCow;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
@@ -44,31 +40,28 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 
 import org.bukkit.inventory.ItemStack;
-
-import zedly.zenchantments.Storage;
+import zedly.zenchantments.NMSAdapter;
 
 /**
  *
  * @author Dennis
  */
-public class PlayerInteractUtil {
+public class Adapter implements NMSAdapter {
 
-    private static PlayerInteractUtil instance;
+    private static Adapter instance = new Adapter();
 
-    public static PlayerInteractUtil getInstance() {
+    public static Adapter getInstance() {
         return instance;
     }
-    
-    private PlayerInteractUtil() {
+
+    private Adapter() {
     }
 
+    @Override
     public boolean breakBlockNMS(Block block, Player player) {
-        if (!ArrayUtils.contains(Storage.UNBREAKABLE_BLOCKS, block.getType())) {
-            EntityPlayer ep = ((CraftPlayer) player).getHandle();
-            boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
-            return success;
-        }
-        return false;
+        EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        return success;
     }
 
     /**
@@ -83,6 +76,7 @@ public class PlayerInteractUtil {
      * @param blockData the block data to set for the block, if allowed
      * @return true if the block placement has been successful
      */
+    @Override
     public boolean placeBlock(Block blockPlaced, Player player, Material mat, int blockData) {
         Block blockAgainst = blockPlaced.getRelative((blockPlaced.getY() == 0) ? BlockFace.UP : BlockFace.DOWN);
         ItemStack itemHeld = new ItemStack(mat, 1, (short) blockData);
@@ -96,6 +90,7 @@ public class PlayerInteractUtil {
         return false;
     }
 
+    @Override
     public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
         EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
         Bukkit.getPluginManager().callEvent(damageEvent);
@@ -106,6 +101,7 @@ public class PlayerInteractUtil {
         return false;
     }
 
+    @Override
     public boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
         if (target instanceof CraftSheep) {
             EntitySheep entitySheep = ((CraftSheep) target).getHandle();
@@ -117,6 +113,7 @@ public class PlayerInteractUtil {
         return false;
     }
 
+    @Override
     public boolean haulOrBreakBlock(Block from, Block to, BlockFace face, Player player) {
         BlockState state = from.getState();
         if (state.getClass() != CraftBlockState.class) {
@@ -141,6 +138,7 @@ public class PlayerInteractUtil {
         return true;
     }
 
+    @Override
     public boolean igniteEntity(Entity target, Player player, int duration) {
         EntityCombustByEntityEvent evt = new EntityCombustByEntityEvent(target, player, duration);
         Bukkit.getPluginManager().callEvent(evt);
@@ -151,6 +149,7 @@ public class PlayerInteractUtil {
         return false;
     }
 
+    @Override
     public boolean damagePlayer(Player player, double damage, DamageCause cause) {
         EntityDamageEvent evt = new EntityDamageEvent(player, cause, damage);
         Bukkit.getPluginManager().callEvent(evt);
@@ -162,6 +161,7 @@ public class PlayerInteractUtil {
         return false;
     }
 
+    @Override
     public boolean formBlock(Block block, Material mat, byte data, Player player) {
         EntityBlockFormEvent evt = new EntityBlockFormEvent(player, block, new MockBlockState(block, Material.FROSTED_ICE, (byte) 0));
         Bukkit.getPluginManager().callEvent(evt);
@@ -173,6 +173,7 @@ public class PlayerInteractUtil {
         return false;
     }
 
+    @Override
     public void showShulker(Block blockToHighlight, int entityId, Player player) {
         PacketPlayOutSpawnEntityLiving pposel = generateShulkerSpawnPacket(blockToHighlight, entityId);
         if (pposel == null) {
@@ -182,6 +183,7 @@ public class PlayerInteractUtil {
         ep.playerConnection.networkManager.sendPacket(pposel);
     }
 
+    @Override
     public void hideShulker(int entityId, Player player) {
         PacketPlayOutEntityDestroy ppoed = new PacketPlayOutEntityDestroy(entityId);
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
