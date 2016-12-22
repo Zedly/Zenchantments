@@ -345,7 +345,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
-            if (evt.getCause() == EntityDamageEvent.DamageCause.LAVA || evt.getCause() == EntityDamageEvent.DamageCause.FIRE || evt.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
+            if (evt.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR || evt.getCause() == EntityDamageEvent.DamageCause.LAVA || evt.getCause() == EntityDamageEvent.DamageCause.FIRE || evt.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
                 evt.setCancelled(true);
                 return true;
             }
@@ -367,6 +367,11 @@ public class CustomEnchantment {
             Material mat = player.getLocation().getBlock().getType();
             if (mat == STATIONARY_WATER || mat == WATER) {
                 ADAPTER.damagePlayer(player, submergeDamage, DamageCause.DROWNING);
+                return true;
+            }
+            mat = player.getLocation().getBlock().getRelative(DOWN).getType();
+            if (mat == ICE || mat == FROSTED_ICE) {
+                ADAPTER.damagePlayer(player, rainDamage, DamageCause.MELTING);
                 return true;
             }
             if (player.getWorld().hasStorm() == true
@@ -2142,7 +2147,7 @@ public class CustomEnchantment {
 
     public static class Rainbow extends CustomEnchantment {
 
-        private static final short[] FLOWER_DATA_VALUES = new short[]{0, 1, 4, 5};
+        private static final short[] FLOWER_DATA_VALUES = new short[]{0, 1, 2, 3, 4, 5, 10};
 
         public Rainbow() {
             maxLevel = 1;
@@ -2166,14 +2171,18 @@ public class CustomEnchantment {
                 dropMaterial = (sh == 7) ? YELLOW_FLOWER : RED_ROSE;
                 blockData = (sh == 7) ? 0 : (short) Storage.rnd.nextInt(9);
             } else if (evt.getBlock().getType() == DOUBLE_PLANT
-                    && (!ArrayUtils.contains(FLOWER_DATA_VALUES, evt.getBlock().getData()))) {
+                    && (ArrayUtils.contains(FLOWER_DATA_VALUES, evt.getBlock().getData()))) {
                 dropMaterial = DOUBLE_PLANT;
-                blockData = (short) Storage.rnd.nextInt(4);
+                blockData = (short) Storage.rnd.nextInt(6);
                 blockData = FLOWER_DATA_VALUES[blockData];
             } else {
                 return false;
             }
             evt.setCancelled(true);
+            if (evt.getBlock().getRelative(DOWN).getType() == DOUBLE_PLANT) {
+
+                evt.getBlock().getRelative(DOWN).setType(AIR);
+            }
             evt.getBlock().setType(AIR);
             Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
             evt.getPlayer().getWorld().dropItem(Utilities.getCenter(evt.getBlock()), new ItemStack(dropMaterial, 1, blockData));
