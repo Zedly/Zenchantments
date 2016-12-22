@@ -136,7 +136,9 @@ public class Watcher implements Listener {
             if (Storage.glowingBlocks.containsKey(evt.getBlock().getRelative(face))) {
                 int entityId = 2000000000 + (evt.getBlock().getRelative(face).hashCode()) % 10000000;
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Storage.COMPATIBILITY_ADAPTER.hideShulker(entityId, player);
+                    if (player.getWorld().equals(evt.getBlock().getWorld())) {
+                        Storage.COMPATIBILITY_ADAPTER.hideShulker(entityId, player);
+                    }
                 }
                 Storage.glowingBlocks.remove(evt.getBlock());
             }
