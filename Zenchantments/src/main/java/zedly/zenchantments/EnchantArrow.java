@@ -14,10 +14,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
+import zedly.zenchantments.compatibility.CompatibilityAdapter;
 
 // EnchantArrows is the defualt structure for these arrows. Each arrow below it will extend this class
 //      and will override any methods as neccecary in its behavior
 public class EnchantArrow implements AdvancedArrow {
+
+    protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
     private final Projectile entity;    // The Arrow associated with the EnchantArrow
     private int tick;                   // The current tick
@@ -115,7 +118,7 @@ public class EnchantArrow implements AdvancedArrow {
             Utilities.display(Utilities.getCenter(getArrow().getLocation()), Particle.CLOUD, 100 * getLevel(), 0.1f, getLevel(), 1.5f, getLevel());
             double radius = 1 + getLevel() * getPower();
             for (Entity e : getArrow().getNearbyEntities(radius, radius, radius)) {
-                if (!e.equals(getArrow().getShooter()) && Utilities.canDamage((Entity) getArrow().getShooter(), e)) {
+                if (e instanceof LivingEntity && !e.equals(getArrow().getShooter()) && ADAPTER.attackEntity((LivingEntity) e, (Player) getArrow().getShooter(), 0)) {
                     Utilities.addPotion((LivingEntity) e, SLOW, (int) Math.round(50 + getLevel()
                             * getPower() * 50), (int) Math.round(getLevel() * getPower() * 2));
                 }
@@ -134,7 +137,7 @@ public class EnchantArrow implements AdvancedArrow {
             Utilities.display(Utilities.getCenter(getArrow().getLocation()), Particle.FLAME, 100 * getLevel(), 0.1f, getLevel(), 1.5f, getLevel());
             double radius = 1 + getLevel() * getPower();
             for (Entity e : getArrow().getNearbyEntities(radius, radius, radius)) {
-                if (!e.equals(getArrow().getShooter()) && Utilities.canDamage((Entity) getArrow().getShooter(), e)) {
+                if (e instanceof LivingEntity && !e.equals(getArrow().getShooter()) && ADAPTER.attackEntity((LivingEntity) e, (Player) getArrow().getShooter(), 0)) {
                     ((LivingEntity) e).setFireTicks((int) Math.round(getLevel() * getPower() * 100));
                 }
             }
@@ -194,7 +197,7 @@ public class EnchantArrow implements AdvancedArrow {
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             Location l = evt.getEntity().getLocation();
-            if (Utilities.canDamage((Entity) getArrow().getShooter(), evt.getEntity())) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 if (evt.getEntity().getType().equals(EntityType.CREEPER)) {
                     Creeper c = (Creeper) evt.getEntity();
                     float power;
@@ -265,7 +268,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(final EntityDamageByEntityEvent evt) {
-            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                 final int value = (int) Math.round(getLevel() * getPower());
                 Utilities.addPotion((LivingEntity) evt.getEntity(), CONFUSION, 80 + 60 * value, 4);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 40 + 60 * value, 4);
@@ -301,7 +304,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
-            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                 int pow = (int) Math.round(getLevel() * getPower());
                 int dur = (int) Math.round(10 + getLevel() * 20 * getPower());
                 Utilities.addPotion((LivingEntity) evt.getEntity(), PotionEffectType.WITHER, dur, pow);
@@ -320,7 +323,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
-            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                 Player p = (Player) ((Projectile) evt.getDamager()).getShooter();
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 int difference = (int) Math.round(getLevel() * getPower());
@@ -348,7 +351,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
-            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 if (evt.getDamage() < ent.getHealth()) {
                     evt.setCancelled(true);

@@ -113,10 +113,9 @@ public class CompatibilityAdapter {
     }
 
     /**
-     * Places a block on the given player's behalf. Fires a BlockPlaceEvent with
-     * (nearly) appropriate parameters to probe the legitimacy (permissions etc)
-     * of the action and to communicate to other plugins where the block is
-     * coming from.
+     * Places a block on the given player's behalf. Fires a BlockPlaceEvent with (nearly)
+     * appropriate parameters to probe the legitimacy (permissions etc) of the action and
+     * to communicate to other plugins where the block is coming from.
      *
      * @param blockPlaced the block to be changed
      * @param player the player whose identity to use
@@ -205,6 +204,9 @@ public class CompatibilityAdapter {
     public boolean damagePlayer(Player player, double damage, DamageCause cause) {
         EntityDamageEvent evt = new EntityDamageEvent(player, cause, damage);
         Bukkit.getPluginManager().callEvent(evt);
+        if (damage == 0){
+            return !evt.isCancelled();
+        }
         if (!evt.isCancelled()) {
             player.setLastDamageCause(evt);
             player.damage(damage);
@@ -302,7 +304,7 @@ public class CompatibilityAdapter {
         if (player != null) {
             return placeBlock(cropBlock, player, mat, dataValue);
         }
-        
+
         BlockGrowEvent evt = new BlockGrowEvent(cropBlock, new MockBlockState(cropBlock, mat, dataValue));
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {

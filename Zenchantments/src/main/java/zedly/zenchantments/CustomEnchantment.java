@@ -1947,20 +1947,20 @@ public class CustomEnchantment {
                 int add = -1;
                 boolean b = false;
                 int[][] ints = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-                switch (Utilities.getSimpleDirection(evt.getPlayer().getLocation().getYaw(), 0)) {
-                    case 1:
+                switch (Utilities.getCardinalDirection(evt.getPlayer().getLocation().getYaw(), 0)) {
+                    case SOUTH:
                         ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
                         add = 1;
                         b = true;
                         break;
-                    case 2:
+                    case WEST:
                         ints = new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
                         break;
-                    case 3:
+                    case NORTH:
                         ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
                         b = true;
                         break;
-                    case 4:
+                    case EAST:
                         ints = new int[][]{{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
                         add = 1;
                         break;

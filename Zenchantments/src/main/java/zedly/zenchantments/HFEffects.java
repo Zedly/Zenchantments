@@ -90,7 +90,7 @@ public class HFEffects implements Runnable {
     // Throws entities in the black hole out in reverse state
     private void blackholes() {
         for (Location l : Storage.blackholes.keySet()) {
-            for (Entity e : Utilities.getNearbyEntities(l, 10, 10, 10)) {
+            for (Entity e : l.getWorld().getNearbyEntities(l, 10, 10, 10)) {
                 if (e instanceof Player) {
                     if (((Player) e).getGameMode().equals(CREATIVE)) {
                         continue;

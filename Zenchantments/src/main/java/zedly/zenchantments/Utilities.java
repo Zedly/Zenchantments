@@ -5,8 +5,8 @@ import org.bukkit.*;
 import static org.bukkit.GameMode.*;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.*;
 import org.bukkit.inventory.*;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
 import org.bukkit.potion.*;
@@ -33,7 +33,7 @@ public class Utilities {
         return stk;
     }
 
-    // Removes the given ItemStack's durability by the given 'damage' and then sets the item in the given players hand.
+    // Removes the given ItemStack's durability by the given 'damage' and then sets the item direction the given players hand.
     //      This also takes into account the unbreaking enchantment
     public static void addUnbreaking(Player player, int damage, boolean handUsed) {
         if (!player.getGameMode().equals(CREATIVE)) {
@@ -68,7 +68,7 @@ public class Utilities {
         }
     }
 
-    // Returns the item stack in the player's main or off hand, determinted by 'handUsed'
+    // Returns the item stack direction the player's main or off hand, determinted by 'handUsed'
     public static ItemStack usedStack(Player player, boolean handUsed) {
         return handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
     }
@@ -114,7 +114,7 @@ public class Utilities {
     }
 
     // Removes a certain number of an item stack of the given description from the players inventory and returns true
-    //      if the item stack was in their inventory
+    //      if the item stack was direction their inventory
     public static boolean removeItemCheck(Player player, Material mat, short data, int amount) {
         if (player.getGameMode().equals(CREATIVE)) {
             return true;
@@ -248,64 +248,58 @@ public class Utilities {
     }
 
     // Returns the nearby entities at any loction within the given range
-    public static Collection<Entity> getNearbyEntities(Location loc, double x, double y, double z) {
-        Collection<Entity> out = loc.getWorld().getNearbyEntities(loc, x, y, z);
-        return out;
-    }
-
     // Returns a direction integer, 0-8, for the given player's pitch and yaw
-    public static int getDirection(Player player) {
-        float direction = player.getLocation().getYaw();
-        int in = 0;
-        if (direction < 0) {
-            direction += 360;
+    public static BlockFace getDirection(Player player) {
+        float yaw = player.getLocation().getYaw();
+        BlockFace direction = BlockFace.SELF;
+        if (yaw < 0) {
+            yaw += 360;
         }
-        direction %= 360;
-        double i = (double) ((direction + 8) / 18);
-        if (i >= 19 || i < 1) {//S
-            in = 1;
-        } else if (i < 3 && i >= 1) {//SW
-            in = 2;
-        } else if (i < 6 && i >= 3) {//W
-            in = 3;
-        } else if (i < 8 && i >= 6) {//NW
-            in = 4;
-        } else if (i < 11 && i >= 8) {//N
-            in = 5;
-        } else if (i < 13 && i >= 11) {//NE
-            in = 6;
-        } else if (i < 16 && i >= 13) {//E
-            in = 7;
-        } else if (i < 18 && i >= 16) {//SE
-            in = 8;
+        yaw %= 360;
+        double i = (double) ((yaw + 8) / 18);
+        if (i >= 19 || i < 1) {
+            direction = BlockFace.SOUTH;
+        } else if (i < 3 && i >= 1) {
+            direction = BlockFace.SOUTH_WEST;
+        } else if (i < 6 && i >= 3) {
+            direction = BlockFace.WEST;
+        } else if (i < 8 && i >= 6) {
+            direction = BlockFace.NORTH_WEST;
+        } else if (i < 11 && i >= 8) {
+            direction = BlockFace.NORTH;
+        } else if (i < 13 && i >= 11) {
+            direction = BlockFace.NORTH_EAST;
+        } else if (i < 16 && i >= 13) {
+            direction = BlockFace.EAST;
+        } else if (i < 18 && i >= 16) {
+            direction = BlockFace.SOUTH_EAST;
         }
-        return in;
+        return direction;
     }
 
     // Returns a more simple direction integer, 0-6, for the given player's pitch and yaw
-    public static int getSimpleDirection(float yaw, float pitch) {
-        float direction = yaw;
-        int in = 0;
-        if (direction < 0) {
-            direction += 360;
+    public static BlockFace getCardinalDirection(float yaw, float pitch) {
+        BlockFace direction = BlockFace.SELF;
+        if (yaw < 0) {
+            yaw += 360;
         }
-        direction %= 360;
-        double i = (double) ((direction + 8) / 18);
-        if (i >= 18 || i < 3) {//S
-            in = 1;
-        } else if (i < 8 && i >= 3) {//W
-            in = 2;
-        } else if (i < 13 && i >= 8) {//N
-            in = 3;
-        } else if (i < 18 && i >= 13) {//E
-            in = 4;
+        yaw %= 360;
+        double i = (double) ((yaw + 8) / 18);
+        if (i >= 18 || i < 3) {
+            direction = BlockFace.SOUTH;
+        } else if (i < 8 && i >= 3) {
+            direction = BlockFace.WEST;
+        } else if (i < 13 && i >= 8) {
+            direction = BlockFace.NORTH;
+        } else if (i < 18 && i >= 13) {
+            direction = BlockFace.EAST;
         }
-        if (pitch < -50) {//U
-            in = 5;
-        } else if (pitch > 50) {//D
-            in = 6;
+        if (pitch < -50) {
+            direction = BlockFace.UP;
+        } else if (pitch > 50) {
+            direction = BlockFace.DOWN;
         }
-        return in;
+        return direction;
     }
 
     // Adds an arrow entity into the arrow storage variable calls its launch method
@@ -333,23 +327,6 @@ public class Utilities {
         return !EnchantPlayer.matchPlayer(player).isDisabled(enchantmentID);
     }
 
-    // Returns true if the first given entity can damage the second given entity, otherwise false
-    public static boolean canDamage(Entity damager, Entity entity) {
-        if (!Storage.damagingPlayer.contains(damager)) {
-            Storage.damagingPlayer.add(damager);
-            EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(damager, entity,
-                    EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1);
-            Bukkit.getPluginManager().callEvent(evt);
-            Storage.damagingPlayer.remove(damager);
-            if ((damager instanceof Player && !Config.get(damager.getWorld()).enchantPVP())
-                    || !(entity instanceof LivingEntity)) {
-                return false;
-            }
-            return !evt.isCancelled();
-        }
-        return false;
-    }
-
     // Adds a potion effect of given length and intensity to the given entity. 
     public static void addPotion(LivingEntity ent, PotionEffectType type, int length, int intensity) {
         for (PotionEffect eff : ent.getActivePotionEffects()) {
@@ -364,26 +341,5 @@ public class Utilities {
             }
         }
         ent.addPotionEffect(new PotionEffect(type, length, intensity));
-    }
-
-    // Returns the amount of XP dropped by a given material
-    public static int getBlockXP0(Material mat) {
-        switch (mat) {
-            case COAL_ORE:
-                return Storage.rnd.nextInt(3);
-            case DIAMOND_ORE:
-            case EMERALD_ORE:
-                return Storage.rnd.nextInt(5) + 3;
-            case LAPIS_ORE:
-            case QUARTZ_ORE:
-                return Storage.rnd.nextInt(4) + 2;
-            case REDSTONE_ORE:
-            case GLOWING_REDSTONE_ORE:
-                return Storage.rnd.nextInt(5) + 1;
-            case MOB_SPAWNER:
-                return Storage.rnd.nextInt(29) + 15;
-            default:
-                return 0;
-        }
     }
 }
