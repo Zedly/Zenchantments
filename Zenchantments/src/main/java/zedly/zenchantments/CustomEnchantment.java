@@ -1359,9 +1359,7 @@ public class CustomEnchantment {
     }
 
     public static class Laser extends CustomEnchantment {
-
-        private final int[] doNotBreak = new int[]{0, 7, 23, 52, 54, 61, 62, 63, 64, 68, 69, 71, 77, 90, 96, 107, 116, 117, 119, 120, 130, 137, 138, 143, 145, 146, 158, 166, 167, 183, 184, 185, 186, 187, 193, 194, 195, 196, 197};
-
+        
         public Laser() {
             maxLevel = 3;
             loreName = "Laser";
