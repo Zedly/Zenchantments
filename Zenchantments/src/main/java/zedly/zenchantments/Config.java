@@ -20,7 +20,6 @@ public class Config {
     private final Map<String, CustomEnchantment> enchants;     // Set of active Custom Enchantments 
     private final double enchantRarity;                        // Overall rarity of obtaining enchantments
     private final int maxEnchants;                             // Max number of Custom Enchantments on a tool
-    private final boolean enchantPVP;                          // Determines whether enchantments can damage players
     private final int shredDrops;                              // The setting (all, block, none) for shred drops 
     private final boolean explosionBlockBreak;                 // Determines whether enchantment explosions cause world damage
     private final boolean descriptionLore;                     // Determines if description lore appears on tools
@@ -29,12 +28,11 @@ public class Config {
 
     // Constructs a new config object
     public Config(Map<String, CustomEnchantment> enchants, double enchantRarity,
-            int maxEnchants, boolean enchantPVP, int shredDrops, boolean explosionBlockBreak,
+            int maxEnchants, int shredDrops, boolean explosionBlockBreak,
             boolean descriptionLore, ChatColor descriptionColor, World world) {
         this.enchants = enchants;
         this.enchantRarity = enchantRarity;
         this.maxEnchants = maxEnchants;
-        this.enchantPVP = enchantPVP;
         this.shredDrops = shredDrops;
         this.explosionBlockBreak = explosionBlockBreak;
         this.descriptionLore = descriptionLore;
@@ -55,11 +53,6 @@ public class Config {
     // Returns the max number of enchantments applicable on a tool
     public int getMaxEnchants() {
         return maxEnchants;
-    }
-
-    // Returns whether enchantments can damage players
-    public boolean enchantPVP() {
-        return enchantPVP;
     }
 
     // Returns which block break setting is enabled for shred (0 = all; 1 = blocks; 2 = none)
@@ -137,7 +130,6 @@ public class Config {
                 double rarity = (double) (c.get("enchant_rarity"));
                 double enchantRarity = ((double) rarity / 100.0);
                 int maxEnchants = (int) c.get("max_enchants");
-                boolean enchantPVP = (boolean) c.get("enchant_PVP");
                 boolean explosionBlockBreak = (boolean) c.get("explosion_block_break");
                 boolean descriptionLore = (boolean) c.get("description_lore");
                 ChatColor color = ChatColor.getByChar("" + c.get("description_color"));
@@ -191,7 +183,7 @@ public class Config {
                         System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
                     }
                 }
-                Config config = new Config(enchantmentMap, enchantRarity, maxEnchants, enchantPVP, shredDrops,
+                Config config = new Config(enchantmentMap, enchantRarity, maxEnchants, shredDrops,
                         explosionBlockBreak, descriptionLore, descriptionColor, world);
                 Config.CONFIGS.add(config);
             } catch (IOException | InvalidConfigurationException ex) {
