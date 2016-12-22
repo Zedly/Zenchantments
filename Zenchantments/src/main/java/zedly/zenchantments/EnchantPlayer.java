@@ -39,12 +39,7 @@ public class EnchantPlayer {
 
     // Returns the cooldown remaining for the given enchantment name in ticks
     public int getCooldown(int enchantmentID) {
-        for (int e : enchantCooldown.keySet()) {
-            if (e == enchantmentID) {
-                return enchantCooldown.get(e);
-            }
-        }
-        return 0;
+        return enchantCooldown.getOrDefault(enchantmentID, 0);
     }
 
     // Sets the given enchantment cooldown to the given amount of ticks

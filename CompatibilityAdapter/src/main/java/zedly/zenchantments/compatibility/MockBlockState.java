@@ -17,7 +17,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 /**
- *
+ * Wrapper class for firing more accurate events
  * @author Dennis
  */
 public class MockBlockState implements BlockState {

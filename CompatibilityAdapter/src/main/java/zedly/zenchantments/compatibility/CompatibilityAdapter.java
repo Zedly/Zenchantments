@@ -127,7 +127,7 @@ public class CompatibilityAdapter {
     public boolean placeBlock(Block blockPlaced, Player player, Material mat, int blockData) {
         Block blockAgainst = blockPlaced.getRelative((blockPlaced.getY() == 0) ? BlockFace.UP : BlockFace.DOWN);
         ItemStack itemHeld = new ItemStack(mat, 1, (short) blockData);
-        BlockPlaceEvent placeEvent = new BlockPlaceEvent(blockPlaced, blockPlaced.getState(), blockAgainst, itemHeld, player, true);
+        BlockPlaceEvent placeEvent = new BlockPlaceEvent(new MockBlock(blockPlaced, mat, (byte) blockData), blockPlaced.getState(), blockAgainst, itemHeld, player, true);
         Bukkit.getPluginManager().callEvent(placeEvent);
         if (!placeEvent.isCancelled()) {
             blockPlaced.setType(mat);
