@@ -527,9 +527,6 @@ enchant_rarity: 25.0
 #  Changes the maximum number of custom enchantments possible per item
 max_enchants: 4
 
-#  Determines if custom enchantments work in PVP
-enchant_PVP: true
-
 #  Determines what the Shred enchantment drops (all, block (no ores), or none)
 shred_drops: all
 
