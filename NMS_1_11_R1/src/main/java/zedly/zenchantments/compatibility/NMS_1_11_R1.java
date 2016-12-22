@@ -25,9 +25,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.Location;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.entity.EntityType.*;
+import org.bukkit.entity.Guardian;
 
 
 /**
@@ -102,7 +104,6 @@ public class NMS_1_11_R1 extends CompatibilityAdapter {
         return TRANSFORMATION_ENTITY_TYPES;
     }
     
-
     private NMS_1_11_R1() {
     }
 
@@ -214,4 +215,15 @@ public class NMS_1_11_R1 extends CompatibilityAdapter {
             pds.writeByte(0xFF); // Index -1 indicates end of Metadata
         }
     }
+    
+    @Override
+    public Entity spawnGuardian(Location loc, boolean elderGuardian) {
+        return loc.getWorld().spawnEntity(loc, elderGuardian? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
+    }
+    
+    @Override
+    public boolean isZombie(Entity e) {
+        return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER;
+    }
+    
 }

@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.11.2-R0.1-SNAPSHOT</version>
+            <version>1.10-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- Apache commons is inbcluded in CB/Spigot -->

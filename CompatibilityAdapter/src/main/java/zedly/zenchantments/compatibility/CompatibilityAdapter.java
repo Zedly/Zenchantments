@@ -8,6 +8,7 @@ package zedly.zenchantments.compatibility;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -28,7 +29,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.entity.EntityType.*;
-
+import org.bukkit.entity.Guardian;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -57,14 +58,13 @@ public class CompatibilityAdapter {
 
     private static final Material ORES[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
         IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
-    
-    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, SKELETON, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
 
+    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, SKELETON, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
 
     public static CompatibilityAdapter getInstance() {
         return INSTANCE;
     }
-    
+
     /**
      * @return the UNBREAKABLE_BLOCKS
      */
@@ -92,7 +92,7 @@ public class CompatibilityAdapter {
     public Material[] getOres() {
         return ORES;
     }
-    
+
     public EntityType[] getTransformationEntityTypes() {
         return TRANSFORMATION_ENTITY_TYPES;
     }
@@ -226,5 +226,17 @@ public class CompatibilityAdapter {
     public boolean hideShulker(int entityId, Player player) {
         // This cannot be done without NMS
         return false;
+    }
+
+    public Entity spawnGuardian(Location loc, boolean elderGuardian) {
+        Guardian g = (Guardian) loc.getWorld().spawnEntity(loc, EntityType.GUARDIAN);
+        if (elderGuardian) {
+            g.setElder(true);
+        }
+        return g;
+    }
+    
+    public boolean isZombie(Entity e) {
+        return e.getType() == EntityType.ZOMBIE;
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.server.v1_10_R1.EnumHand;
 import net.minecraft.server.v1_10_R1.PacketDataSerializer;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_10_R1.PacketPlayOutSpawnEntityLiving;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftMushroomCow;
@@ -26,6 +27,7 @@ import org.bukkit.Material;
 import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
@@ -216,5 +218,5 @@ public class NMS_1_10_R1 extends CompatibilityAdapter {
             pds.writeByte(0x60); // Set Glowing and Invisible bits
             pds.writeByte(0xFF); // Index -1 indicates end of Metadata
         }
-    }
+    }    
 }

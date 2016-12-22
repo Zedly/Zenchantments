@@ -29,11 +29,13 @@ import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
 
 import static zedly.zenchantments.Tool.*;
+import zedly.zenchantments.compatibility.CompatibilityAdapter;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
 public class CustomEnchantment {
 
+    protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
     protected int maxLevel;         // Max level the given enchant can naturally obtain
     protected String loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
     protected float probability;    // Relative probability of obtaining the given enchantment
@@ -362,13 +364,13 @@ public class CustomEnchantment {
         public boolean onScan(Player player, int level, boolean usedHand) {
             Material mat = player.getLocation().getBlock().getType();
             if (mat == STATIONARY_WATER || mat == WATER) {
-                PlayerInteractUtil.damagePlayer(player, submergeDamage, DamageCause.DROWNING);
+                ADAPTER.damagePlayer(player, submergeDamage, DamageCause.DROWNING);
                 return true;
             }
             if (player.getWorld().hasStorm() == true
                     && !ArrayUtils.contains(noRainBiomes, player.getLocation().getBlock().getBiome())
                     && player.getLocation().getY() >= player.getWorld().getHighestBlockYAt(player.getLocation())) {
-                PlayerInteractUtil.damagePlayer(player, rainDamage, DamageCause.CUSTOM);
+                ADAPTER.damagePlayer(player, rainDamage, DamageCause.CUSTOM);
             }
             return true;
         }
@@ -504,11 +506,11 @@ public class CustomEnchantment {
             } else {
                 ent = evt.getDamager();
             }
-            return PlayerInteractUtil.igniteEntity(ent, (Player) evt.getEntity(), (int) (50 * level * power));
+            return ADAPTER.igniteEntity(ent, (Player) evt.getEntity(), (int) (50 * level * power));
         }
 
         public boolean onCombust(EntityCombustByEntityEvent evt, int level, boolean usedHand) {
-            if (evt.getCombuster().getType() == EntityType.ZOMBIE || evt.getCombuster().getType() == EntityType.ZOMBIE_VILLAGER) {
+            if (ADAPTER.isZombie(evt.getCombuster())) {
                 evt.setDuration(0);
             }
             return false;
@@ -864,7 +866,7 @@ public class CustomEnchantment {
                         } else if (possiblePlatformBlock.getType() == STATIONARY_WATER
                                 && possiblePlatformBlock.getData() == 0
                                 && possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
-                            if (PlayerInteractUtil.formBlock(possiblePlatformBlock, PACKED_ICE, (byte) 0, player)) {
+                            if (ADAPTER.formBlock(possiblePlatformBlock, PACKED_ICE, (byte) 0, player)) {
                                 Storage.waterLocs.put(possiblePlatformLoc, System.nanoTime());
                             }
                         }
@@ -1111,7 +1113,7 @@ public class CustomEnchantment {
         public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
             Storage.grabLocs.put(evt.getBlock(), evt.getPlayer().getLocation());
             final Block block = evt.getBlock();
-            PlayerInteractUtil.breakBlockNMS(evt.getBlock(), evt.getPlayer());
+            ADAPTER.breakBlockNMS(evt.getBlock(), evt.getPlayer());
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                 Storage.grabLocs.remove(block);
             }, 15);
@@ -1242,7 +1244,7 @@ public class CustomEnchantment {
                     final Block blk = player.getTargetBlock((HashSet<Byte>) null, 10);
                     player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector()).multiply(.25 * power));
                     player.setFallDistance(-40);
-                    PlayerInteractUtil.damagePlayer(player, 3, DamageCause.MAGIC);
+                    ADAPTER.damagePlayer(player, 3, DamageCause.MAGIC);
                     int scheduleSyncDelayedTask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                     }, 1);
@@ -1286,7 +1288,7 @@ public class CustomEnchantment {
                                             || ((block.getRelative(x, y + 1, z).getType() == CROPS || block.getRelative(x, y + 1, z).getType() == POTATO
                                             || (block.getRelative(x, y + 1, z).getType() == CARROT)) && block.getRelative(x, y + 1, z).getData() == 7)) {
                                         final Block blk = block.getRelative(x, y + 1, z);
-                                        if (PlayerInteractUtil.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
+                                        if (ADAPTER.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
                                             Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
                                             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                                 Storage.grabLocs.remove(blk);
@@ -1410,12 +1412,12 @@ public class CustomEnchantment {
                 for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getNearbyEntities(tempLoc, .3, .3, .3)) {
                     if (ent instanceof LivingEntity && ent != player) {
                         LivingEntity e = (LivingEntity) ent;
-                        PlayerInteractUtil.attackEntity(e, player, 1 + (level + power * 2));
+                        ADAPTER.attackEntity(e, player, 1 + (level + power * 2));
                     }
                 }
             }
             if (!ArrayUtils.contains(doNotBreak, blk.getTypeId())) {
-                PlayerInteractUtil.breakBlockNMS(blk, player);
+                ADAPTER.breakBlockNMS(blk, player);
             }
         }
 
@@ -1595,7 +1597,7 @@ public class CustomEnchantment {
                 }
             }
             for (Block b : trunk) {
-                PlayerInteractUtil.breakBlockNMS(b, evt.getPlayer());
+                ADAPTER.breakBlockNMS(b, evt.getPlayer());
             }
             return true;
         }
@@ -1676,12 +1678,12 @@ public class CustomEnchantment {
                 if (ent instanceof Sheep) {
                     Sheep sheep = (Sheep) ent;
                     if (sheep.isAdult()) {
-                        PlayerInteractUtil.shearEntityNMS(sheep, player, usedHand);
+                        ADAPTER.shearEntityNMS(sheep, player, usedHand);
                     }
                 } else if (ent instanceof MushroomCow) {
                     MushroomCow mCow = (MushroomCow) ent;
                     if (mCow.isAdult()) {
-                        PlayerInteractUtil.shearEntityNMS(mCow, player, usedHand);
+                        ADAPTER.shearEntityNMS(mCow, player, usedHand);
                     }
                 }
             }
@@ -1727,7 +1729,7 @@ public class CustomEnchantment {
                     if (Storage.rnd.nextBoolean()) {
                         ent = evt.getPlayer().getWorld().spawnEntity(location, SQUID);
                     } else {
-                        Guardian g = (Guardian) evt.getPlayer().getWorld().spawnEntity(location, Storage.rnd.nextBoolean() ? GUARDIAN : ELDER_GUARDIAN);
+                        Entity g = Storage.COMPATIBILITY_ADAPTER.spawnGuardian(location, Storage.rnd.nextBoolean());
                         Storage.guardianMove.put(g, evt.getPlayer());
                         ent = g;
                     }
@@ -1770,7 +1772,7 @@ public class CustomEnchantment {
                         } else if (possiblePlatformBlock.getType() == STATIONARY_LAVA
                                 && possiblePlatformBlock.getData() == 0
                                 && possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
-                            if (PlayerInteractUtil.formBlock(possiblePlatformBlock, SOUL_SAND, (byte) 0, player)) {
+                            if (ADAPTER.formBlock(possiblePlatformBlock, SOUL_SAND, (byte) 0, player)) {
                                 Storage.fireLocs.put(possiblePlatformLoc, System.nanoTime());
                             }
                         }
@@ -1834,29 +1836,29 @@ public class CustomEnchantment {
                                     if (block.getRelative(x, y, z).getType() == SOIL
                                             && block.getRelative(x, y + 1, z).getType() == AIR) {
                                         if (evt.getPlayer().getInventory().contains(CARROT_ITEM)) {
-                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, CARROT, 0)) {
+                                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROT, 0)) {
                                                 Utilities.removeItem(player, CARROT_ITEM, (short) 0, 1);
                                             }
                                         }
                                         if (evt.getPlayer().getInventory().contains(POTATO_ITEM)) {
-                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, POTATO, 0)) {
+                                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, POTATO, 0)) {
                                                 Utilities.removeItem(player, POTATO_ITEM, (short) 0, 1);
                                             }
                                         }
                                         if (evt.getPlayer().getInventory().contains(SEEDS)) {
-                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, CROPS, 0)) {
+                                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CROPS, 0)) {
                                                 Utilities.removeItem(player, SEEDS, (short) 0, 1);
                                             }
                                         }
                                         if (evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
-                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, Material.BEETROOT_BLOCK, 0)) {
+                                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, Material.BEETROOT_BLOCK, 0)) {
                                                 Utilities.removeItem(player, BEETROOT_SEEDS, (short) 0, 1);
                                             }
                                         }
                                     } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
                                             && block.getRelative(x, y + 1, z).getType() == AIR) {
                                         if (evt.getPlayer().getInventory().contains(NETHER_STALK)) {
-                                            if (PlayerInteractUtil.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WARTS, 0)) {
+                                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WARTS, 0)) {
                                                 Utilities.removeItem(player, NETHER_STALK, (short) 0, 1);
                                             }
                                         }
@@ -2016,7 +2018,7 @@ public class CustomEnchantment {
             }
             if (total.size() < 128) {
                 for (Block b : total) {
-                    PlayerInteractUtil.breakBlockNMS(b, evt.getPlayer());
+                    ADAPTER.breakBlockNMS(b, evt.getPlayer());
                 }
                 Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
             }
@@ -2054,7 +2056,7 @@ public class CustomEnchantment {
                                         || block.getRelative(x, y, z).getType() == GRASS
                                         || block.getRelative(x, y, z).getType() == MYCEL))
                                         && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                    PlayerInteractUtil.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), SOIL, 0);
+                                    ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), SOIL, 0);
                                     if (Storage.rnd.nextBoolean()) {
                                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                                     }
@@ -2391,7 +2393,7 @@ public class CustomEnchantment {
                 final BlockBreakEvent event = new BlockBreakEvent(blk, player);
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
-                    PlayerInteractUtil.breakBlockNMS(blk, player);
+                    ADAPTER.breakBlockNMS(blk, player);
                     if (config.getShredDrops() == 1) {
                         if (ArrayUtils.contains(Storage.ORES, event.getBlock().getType())) {
                             event.getBlock().setType(STONE);
@@ -2411,7 +2413,7 @@ public class CustomEnchantment {
                         blk.getLocation().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
                     }
                     if ((Tool.PICKAXE.contains(itemType) && ArrayUtils.contains(mats, event.getBlock().getType())) || ArrayUtils.contains(shovel, event.getBlock().getType())) {
-                        PlayerInteractUtil.breakBlockNMS(event.getBlock(), player);
+                        ADAPTER.breakBlockNMS(event.getBlock(), player);
                     }
                     used.add(blk);
                 }
@@ -2795,7 +2797,7 @@ public class CustomEnchantment {
             if (player.getVelocity().getY() < -0.45) {
                 for (Entity e : player.getNearbyEntities(0, 2, 0)) {
                     double fall = Math.min(player.getFallDistance(), 20.0);
-                    PlayerInteractUtil.attackEntity((LivingEntity) e, player, power * level * fall * 0.25);
+                    ADAPTER.attackEntity((LivingEntity) e, player, power * level * fall * 0.25);
                 }
             }
             return true;
@@ -2987,7 +2989,7 @@ public class CustomEnchantment {
                             Storage.grabLocs.remove(block);
                         }, 3);
                         evt.setCancelled(true);
-                        PlayerInteractUtil.breakBlockNMS(event.getBlock(), evt.getPlayer());
+                        ADAPTER.breakBlockNMS(event.getBlock(), evt.getPlayer());
                         Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                         final Material m = mat;
                         final Byte b = bt;
@@ -3369,11 +3371,11 @@ public class CustomEnchantment {
                                         Storage.glowingBlocks.put(blk, 1);
                                     }
 
-                                    if(!PlayerInteractUtil.showShulker(blk, entityId, player)) {
+                                    if(!ADAPTER.showShulker(blk, entityId, player)) {
                                         return false;
                                     }
                                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                        PlayerInteractUtil.hideShulker(entityId, player);
+                                        ADAPTER.hideShulker(entityId, player);
                                         if (Storage.glowingBlocks.containsKey(blk)
                                                 && Storage.glowingBlocks.get(blk) > 1) {
                                             Storage.glowingBlocks.put(blk,

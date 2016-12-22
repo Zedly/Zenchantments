@@ -35,7 +35,7 @@ public class Storage {
     public static final Map<Player, Double> sneakGlide = new HashMap<>();
 
     // Guardians from the Mystery Fish enchantment and the player they should move towards
-    public static final Map<Guardian, Player> guardianMove = new HashMap<>();
+    public static final Map<Entity, Player> guardianMove = new HashMap<>();
 
     // Time at which a later enchantment was fired; this is used to prevent double firing when clicking an entity
     public static final Map<Player, Long> laserTimes = new HashMap<>();
