@@ -4,7 +4,6 @@ import java.util.*;
 import org.apache.commons.lang.*;
 import org.bukkit.*;
 import static org.bukkit.Material.*;
-import org.bukkit.block.Block;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

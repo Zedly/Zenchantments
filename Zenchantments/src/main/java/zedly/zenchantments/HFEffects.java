@@ -4,7 +4,6 @@ import java.util.*;
 import org.bukkit.*;
 import static org.bukkit.GameMode.CREATIVE;
 import static org.bukkit.Material.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;

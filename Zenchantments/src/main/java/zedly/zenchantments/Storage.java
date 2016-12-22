@@ -2,7 +2,6 @@ package zedly.zenchantments;
 
 import java.util.*;
 import org.bukkit.*;
-import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;

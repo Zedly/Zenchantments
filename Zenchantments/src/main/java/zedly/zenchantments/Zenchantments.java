@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.bukkit.*;
 import static org.bukkit.Material.*;
-import org.bukkit.block.Block;
 import org.bukkit.command.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
