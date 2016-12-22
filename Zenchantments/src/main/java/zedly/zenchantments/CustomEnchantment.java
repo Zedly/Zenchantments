@@ -50,7 +50,7 @@ public class CustomEnchantment {
 
     public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
         Config.get(player.getWorld()).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
-            if (!ench.used && EnchantPlayer.matchPlayer(player).getCooldown(ench.enchantmentID) == 0) {
+            if (!ench.used && Utilities.canUse(player, ench.enchantmentID)) {
                 try {
                     ench.used = true;
                     if (action.test(ench, level)) {
@@ -825,7 +825,7 @@ public class CustomEnchantment {
                             Location total = mode ? entLoc.subtract(playLoc) : playLoc.subtract(entLoc);
                             Vector vect = new Vector(total.getX(), total.getY(), total.getZ()).multiply((.1f + (power * level * .2f)));
                             vect.setY(vect.getY() > 1 ? 1 : -1);
-                            if (Utilities.canDamage(player, ent)) {
+                            if (ent instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) ent, player, 0)) {
                                 ent.setVelocity(vect);
                             }
                         }
@@ -2211,7 +2211,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onEntityInteract(final PlayerInteractEntityEvent evt, final int level, boolean usedHand) {
-            if (!Utilities.canDamage(evt.getPlayer(), evt.getRightClicked())) {
+            if (!(evt.getRightClicked() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getRightClicked(), evt.getPlayer(), 0)) {
                 return false;
             }
             Utilities.addUnbreaking(evt.getPlayer(), 9, usedHand);
@@ -2281,7 +2281,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-            if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+            if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                 int pow = (int) Math.round(level * power);
                 int dur = (int) Math.round(10 + level * 20 * power);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), PotionEffectType.WITHER, dur, pow);
@@ -2460,7 +2460,7 @@ public class CustomEnchantment {
 
             @Override
             public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-                if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+                if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                     Player p = (Player) evt.getDamager();
                     LivingEntity ent = (LivingEntity) evt.getEntity();
                     int difference = (int) Math.round(level * power);
@@ -2875,7 +2875,7 @@ public class CustomEnchantment {
 
             @Override
             public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-                if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+                if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                     LivingEntity ent = (LivingEntity) evt.getEntity();
                     if (evt.getDamage() < ent.getHealth()) {
                         evt.setCancelled(true);
@@ -3132,7 +3132,7 @@ public class CustomEnchantment {
 
             @Override
             public boolean onEntityHit(final EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-                if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+                if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                     final int value = (int) Math.round(level * power);
                     Utilities.addPotion((LivingEntity) evt.getEntity(), CONFUSION, 80 + 60 * value, 4);
                     Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 40 + 60 * value, 4);
@@ -3190,7 +3190,7 @@ public class CustomEnchantment {
 
             @Override
             public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-                if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+                if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                     if (Storage.rnd.nextInt(100) > (100 - (level * power * 5))) {
                         int position = ArrayUtils.indexOf(Storage.TRANSFORMATION_ENTITY_TYPES, evt.getEntity().getType());
                         if (position != -1) {
@@ -3302,7 +3302,7 @@ public class CustomEnchantment {
 
             @Override
             public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-                if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
+                if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                     if (evt.getEntity() instanceof Player) {
                         Player player = (Player) evt.getEntity();
                         if (evt.getDamage() < player.getHealth()) {

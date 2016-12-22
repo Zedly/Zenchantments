@@ -333,23 +333,6 @@ public class Utilities {
         return !EnchantPlayer.matchPlayer(player).isDisabled(enchantmentID);
     }
 
-    // Returns true if the first given entity can damage the second given entity, otherwise false
-    public static boolean canDamage(Entity damager, Entity entity) {
-        if (!Storage.damagingPlayer.contains(damager)) {
-            Storage.damagingPlayer.add(damager);
-            EntityDamageByEntityEvent evt = new EntityDamageByEntityEvent(damager, entity,
-                    EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1);
-            Bukkit.getPluginManager().callEvent(evt);
-            Storage.damagingPlayer.remove(damager);
-            if ((damager instanceof Player && !Config.get(damager.getWorld()).enchantPVP())
-                    || !(entity instanceof LivingEntity)) {
-                return false;
-            }
-            return !evt.isCancelled();
-        }
-        return false;
-    }
-
     // Adds a potion effect of given length and intensity to the given entity. 
     public static void addPotion(LivingEntity ent, PotionEffectType type, int length, int intensity) {
         for (PotionEffect eff : ent.getActivePotionEffects()) {
