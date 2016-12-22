@@ -17,6 +17,7 @@ import net.minecraft.server.v1_11_R1.EnumHand;
 import net.minecraft.server.v1_11_R1.PacketDataSerializer;
 import net.minecraft.server.v1_11_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_11_R1.PacketPlayOutSpawnEntityLiving;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftSheep;
@@ -144,6 +145,26 @@ public class NMS_1_11_R1 extends CompatibilityAdapter {
         ep.playerConnection.networkManager.sendPacket(ppoed);
         return true;
     }
+    
+    @Override
+    public Entity spawnGuardian(Location loc, boolean elderGuardian) {
+        return loc.getWorld().spawnEntity(loc, elderGuardian? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
+    }
+    
+    @Override
+    public boolean isZombie(Entity e) {
+        return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER;
+    }
+    
+    @Override
+    public boolean isBlockSafeToBreak(Block b) {
+        Material mat = b.getType();
+        return mat.isSolid()
+                && !b.isLiquid()
+                && !ArrayUtils.contains(INTERACTABLE_BLOCKS, mat)
+                && !ArrayUtils.contains(UNBREAKABLE_BLOCKS, mat)
+                && !ArrayUtils.contains(STORAGE_BLOCKS, mat);
+    }
 
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(Block blockToHighlight, int entityId) {
         PacketPlayOutSpawnEntityLiving pposel = new PacketPlayOutSpawnEntityLiving();
@@ -215,15 +236,4 @@ public class NMS_1_11_R1 extends CompatibilityAdapter {
             pds.writeByte(0xFF); // Index -1 indicates end of Metadata
         }
     }
-    
-    @Override
-    public Entity spawnGuardian(Location loc, boolean elderGuardian) {
-        return loc.getWorld().spawnEntity(loc, elderGuardian? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
-    }
-    
-    @Override
-    public boolean isZombie(Entity e) {
-        return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER;
-    }
-    
 }

@@ -2942,8 +2942,8 @@ public class CustomEnchantment {
             loreName = "Switch";
             probability = 0;
             enchantable = new Tool[]{PICKAXE};
-            conflicting = new Class[]{Shred.class, Anthropomorphism.class, Fire.class, Extraction.class, Pierce.class};
-            description = "Replaces the clicked block with the leftmost block in your inventory when sneaking";
+            conflicting = new Class[]{Shred.class, Anthropomorphism.class, Fire.class, Extraction.class, Pierce.class, Reveal.class};
+            description = "Replaces the clicked block with the leftmost block in your hotbar when sneaking";
             cooldown = 0;
             power = -1.0;
             handUse = 2;
@@ -2952,56 +2952,58 @@ public class CustomEnchantment {
 
         @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-            ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
             if (evt.getAction() == Action.RIGHT_CLICK_BLOCK && evt.getPlayer().isSneaking()) {
-                BlockBreakEvent event = new BlockBreakEvent(evt.getClickedBlock(), evt.getPlayer());
-                Bukkit.getServer().getPluginManager().callEvent(event);
-                if (event.isCancelled()) {
+                // Make sure clicked block is okay to break
+                if (!ADAPTER.isBlockSafeToBreak(evt.getClickedBlock())) {
                     return false;
                 }
-                Material mat = AIR;
-                byte bt = 0;
+
+                Player player = evt.getPlayer();
                 int c = -1;
-                for (int i = 0; i < 9; i++) {
-                    if (evt.getPlayer().getInventory().getItem(i) != null) {
-                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && !ArrayUtils.contains(ArrayUtils.addAll(Storage.UNBREAKABLE_BLOCKS, Storage.INTERACTABLE_BLOCKS), evt.getPlayer().getInventory().getItem(i).getType())) {
-                            mat = evt.getPlayer().getInventory().getItem(i).getType();
-                            c = i;
-                            bt = evt.getPlayer().getInventory().getItem(i).getData().getData();
-                            break;
-                        }
+                ItemStack switchItem = null;
+                for (int i = 0; i < 9; i++) { // Find a suitable block in hotbar
+                    switchItem = player.getInventory().getItem(i);
+                    if (switchItem != null
+                            && switchItem.getType() != AIR
+                            && switchItem.getType().isSolid()
+                            && !ArrayUtils.contains(Storage.UNBREAKABLE_BLOCKS, switchItem.getType())
+                            && !ArrayUtils.contains(Storage.INTERACTABLE_BLOCKS, switchItem.getType())) {
+                        c = i;
+                        break;
                     }
                 }
-                if (mat == AIR) {
+                if (c == -1 || switchItem == null) { // No suitable block in inventory
                     return false;
                 }
+
+                // Block has been selected, attempt breaking
+                if (!ADAPTER.breakBlockNMS(evt.getClickedBlock(), evt.getPlayer())) {
+                    return false;
+                }
+
+                // Breaking succeeded, begin invasive operations
+                Block clickedBlock = evt.getClickedBlock();
+                Storage.grabLocs.put(clickedBlock, evt.getPlayer().getLocation());
+                evt.setCancelled(true);
+
+                Material mat = switchItem.getType();
+                byte blockData;
                 if (mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
-                    bt = 14;
+                    blockData = 14;
+                } else {
+                    blockData = switchItem.getData().getData();
                 }
-                if (ArrayUtils.contains(ArrayUtils.addAll(Storage.UNBREAKABLE_BLOCKS, Storage.INTERACTABLE_BLOCKS), mat.getId()) || ArrayUtils.contains(ArrayUtils.addAll(Storage.UNBREAKABLE_BLOCKS, Storage.INTERACTABLE_BLOCKS), evt.getClickedBlock().getTypeId())) {
-                    return false;
-                }
-                if (!(mat == evt.getClickedBlock().getType() && evt.getClickedBlock().getData() == bt)) {
-                    if ((!evt.getClickedBlock().isLiquid()) || evt.getClickedBlock().getType().isSolid()) {
-                        Storage.grabLocs.put(event.getBlock(), event.getPlayer().getLocation());
-                        final Block block = event.getBlock();
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                            Storage.grabLocs.remove(block);
-                        }, 3);
-                        evt.setCancelled(true);
-                        ADAPTER.breakBlockNMS(event.getBlock(), evt.getPlayer());
-                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                        final Material m = mat;
-                        final Byte b = bt;
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                            evt.getClickedBlock().setType(m);
-                            evt.getClickedBlock().setData(b);
-                        }, 1);
-                        Utilities.removeItem(evt.getPlayer(), evt.getPlayer().getInventory().getItem(c).getType(), (short) bt, 1);
-                        evt.getPlayer().updateInventory();
-                        return true;
-                    }
-                }
+
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    Storage.grabLocs.remove(clickedBlock);
+                }, 3);
+
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    ADAPTER.placeBlock(clickedBlock, player, mat, blockData);
+                }, 1);
+                Utilities.removeItem(evt.getPlayer(), mat, (short) blockData, 1);
+                evt.getPlayer().updateInventory();
+                return true;
             }
             return false;
         }
@@ -3164,7 +3166,7 @@ public class CustomEnchantment {
     }
 
     public static class Transformation extends CustomEnchantment {
-        
+
         public Transformation() {
             maxLevel = 3;
             loreName = "Transformation";
@@ -3190,7 +3192,7 @@ public class CustomEnchantment {
                         int newPosition = position + 1 - 2 * (position % 2);
                         Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f, .5f, 2, .5f);
                         evt.getEntity().remove();
-                        LivingEntity ent = (LivingEntity) ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(), 
+                        LivingEntity ent = (LivingEntity) ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(),
                                 Storage.TRANSFORMATION_ENTITY_TYPES[newPosition]);
                         ent.setHealth(Math.max(1, ((LivingEntity) evt.getEntity()).getHealth()));
                     }
@@ -3371,7 +3373,7 @@ public class CustomEnchantment {
                                         Storage.glowingBlocks.put(blk, 1);
                                     }
 
-                                    if(!ADAPTER.showShulker(blk, entityId, player)) {
+                                    if (!ADAPTER.showShulker(blk, entityId, player)) {
                                         return false;
                                     }
                                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {

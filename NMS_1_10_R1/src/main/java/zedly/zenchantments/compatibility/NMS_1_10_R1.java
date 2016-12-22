@@ -17,6 +17,7 @@ import net.minecraft.server.v1_10_R1.EnumHand;
 import net.minecraft.server.v1_10_R1.PacketDataSerializer;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_10_R1.PacketPlayOutSpawnEntityLiving;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
@@ -147,6 +148,16 @@ public class NMS_1_10_R1 extends CompatibilityAdapter {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         ep.playerConnection.networkManager.sendPacket(ppoed);
         return true;
+    }
+    
+    @Override
+    public boolean isBlockSafeToBreak(Block b) {
+        Material mat = b.getType();
+        return mat.isSolid()
+                && !b.isLiquid()
+                && !ArrayUtils.contains(INTERACTABLE_BLOCKS, mat)
+                && !ArrayUtils.contains(UNBREAKABLE_BLOCKS, mat)
+                && !ArrayUtils.contains(STORAGE_BLOCKS, mat);
     }
 
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(Block blockToHighlight, int entityId) {

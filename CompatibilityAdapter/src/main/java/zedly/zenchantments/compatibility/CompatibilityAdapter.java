@@ -6,6 +6,7 @@
 package zedly.zenchantments.compatibility;
 
 import java.util.Random;
+import org.apache.commons.lang.ArrayUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -135,6 +136,10 @@ public class CompatibilityAdapter {
         return false;
     }
 
+    public boolean placeBlock(Block blockPlaced, Player player, ItemStack is) {
+        return placeBlock(blockPlaced, player, is.getType(), is.getData().getData());
+    }
+
     public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
         EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
         Bukkit.getPluginManager().callEvent(damageEvent);
@@ -235,8 +240,17 @@ public class CompatibilityAdapter {
         }
         return g;
     }
-    
+
     public boolean isZombie(Entity e) {
         return e.getType() == EntityType.ZOMBIE;
+    }
+
+    public boolean isBlockSafeToBreak(Block b) {
+        Material mat = b.getType();
+        return mat.isSolid()
+                && !b.isLiquid()
+                && !ArrayUtils.contains(INTERACTABLE_BLOCKS, mat)
+                && !ArrayUtils.contains(UNBREAKABLE_BLOCKS, mat)
+                && !ArrayUtils.contains(STORAGE_BLOCKS, mat);
     }
 }
