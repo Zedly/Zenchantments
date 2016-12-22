@@ -253,41 +253,6 @@ public class Utilities {
         return out;
     }
 
-    // Advances the growth cycle of the given block if it is a plant. It will return true if it changed anything,
-    // otherwise false
-    public static boolean grow(Block blk) {
-        if (blk != null) {
-            if (blk.getType() == COCOA) {
-                if (blk.getData() < 8) {
-                    blk.setData((byte) (blk.getData() + 4));
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if (blk.getType() == PUMPKIN_STEM || blk.getType() == MELON_STEM
-                    || blk.getType() == CARROT || blk.getType() == CROPS || blk.getType() == POTATO) {
-                if (blk.getData() < 7) {
-                    blk.setData((byte) (blk.getData() + 1));
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if (blk.getType() == NETHER_WARTS || blk.getType() == BEETROOT_BLOCK) {
-                if (blk.getData() < 3) {
-                    blk.setData((byte) (blk.getData() + 1));
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if (blk.getType() == CACTUS) {
-                return false;
-            } else if (blk.getType() == SUGAR_CANE_BLOCK) {
-                return false;
-            }
-        }
-        return false;
-    }
-
     // Returns a direction integer, 0-8, for the given player's pitch and yaw
     public static int getDirection(Player player) {
         float direction = player.getLocation().getYaw();

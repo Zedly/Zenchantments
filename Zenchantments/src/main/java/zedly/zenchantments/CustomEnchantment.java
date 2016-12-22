@@ -937,12 +937,12 @@ public class CustomEnchantment {
                                             || ((block.getRelative(x, y, z).getType() == COCOA) && block.getRelative(x, y, z).getData() < 8)
                                             || ((block.getRelative(x, y, z).getType() == BEETROOT_BLOCK) && block.getRelative(x, y, z).getData() < 3)) {
                                         if (evt.getPlayer().getGameMode().equals(CREATIVE) || Utilities.removeItemCheck(evt.getPlayer(), INK_SACK, (short) 15, 1)) {
-                                            Utilities.grow(block.getRelative(x, y, z));
+                                            ADAPTER.grow(block.getRelative(x, y, z), evt.getPlayer());
                                             if (Storage.rnd.nextBoolean()) {
-                                                Utilities.grow(block.getRelative(x, y, z));
+                                                ADAPTER.grow(block.getRelative(x, y, z), evt.getPlayer());
                                             }
                                             Utilities.display(Utilities.getCenter(block.getRelative(x, y, z)), Particle.VILLAGER_HAPPY, 30, 1f, .3f, .3f, .3f);
-                                            if (Storage.rnd.nextInt(10) == 3) {
+                                            if (Storage.rnd.nextInt(10) <= 3) {
                                                 Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                                             }
                                         }
@@ -1137,7 +1137,7 @@ public class CustomEnchantment {
         }
 
         @Override
-        public boolean onScan(Player player, int level, boolean usedHand) {
+        public boolean onScan(Player player, int level, boolean usedHand) {            
             Location loc = player.getLocation().clone();
             int radius = (int) Math.round(power * level + 2);
             for (int x = -(radius); x <= radius; x++) {
@@ -1183,8 +1183,7 @@ public class CustomEnchantment {
                                     case MELON_STEM:
                                     case COCOA:
                                     case BEETROOT_BLOCK:
-                                        test = Utilities.grow(block.getRelative(x, y, z));
-
+                                        test = ADAPTER.grow(block.getRelative(x, y, z), player);
                                         break;
                                 }
                                 if (block.getRelative(x, y, z).getType() == DIRT && test) {
@@ -3336,7 +3335,7 @@ public class CustomEnchantment {
             enchantable = new Tool[]{PICKAXE};
             conflicting = new Class[]{Pierce.class, Spectral.class};
             description = "Makes nearby ores glow white through the stone.";
-            cooldown = 0;
+            cooldown = 100;
             power = 1.0;
             handUse = 0;
             enchantmentID = 68;

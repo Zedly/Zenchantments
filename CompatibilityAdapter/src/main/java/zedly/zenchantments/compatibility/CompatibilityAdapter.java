@@ -31,6 +31,7 @@ import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.entity.EntityType.*;
 import org.bukkit.entity.Guardian;
+import org.bukkit.event.block.BlockGrowEvent;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -126,7 +127,7 @@ public class CompatibilityAdapter {
     public boolean placeBlock(Block blockPlaced, Player player, Material mat, int blockData) {
         Block blockAgainst = blockPlaced.getRelative((blockPlaced.getY() == 0) ? BlockFace.UP : BlockFace.DOWN);
         ItemStack itemHeld = new ItemStack(mat, 1, (short) blockData);
-        BlockPlaceEvent placeEvent = new BlockPlaceEvent(blockPlaced, blockAgainst.getState(), blockAgainst, itemHeld, player, true);
+        BlockPlaceEvent placeEvent = new BlockPlaceEvent(blockPlaced, blockPlaced.getState(), blockAgainst, itemHeld, player, true);
         Bukkit.getPluginManager().callEvent(placeEvent);
         if (!placeEvent.isCancelled()) {
             blockPlaced.setType(mat);
@@ -252,5 +253,63 @@ public class CompatibilityAdapter {
                 && !ArrayUtils.contains(INTERACTABLE_BLOCKS, mat)
                 && !ArrayUtils.contains(UNBREAKABLE_BLOCKS, mat)
                 && !ArrayUtils.contains(STORAGE_BLOCKS, mat);
+    }
+
+    public boolean grow(Block cropBlock, Player player) {
+        Material mat = cropBlock.getType();
+        byte dataValue = cropBlock.getData();
+        switch (mat) {
+            case COCOA:
+                if (dataValue < 8) {
+                    dataValue = (byte) Math.min(8, dataValue + 4);
+                    break;
+                }
+                return false;
+            case PUMPKIN_STEM:
+            case MELON_STEM:
+            case CARROT:
+            case CROPS:
+            case POTATO:
+                if (dataValue < 7) {
+                    dataValue += 1;
+                    break;
+                }
+                return false;
+
+            case NETHER_WARTS:
+            case BEETROOT_BLOCK:
+                if (dataValue < 7) {
+                    dataValue = (byte) Math.min(7, dataValue + 4);
+                    break;
+                }
+                return false;
+            case CACTUS:
+            case SUGAR_CANE_BLOCK:
+                int height = 1;
+                if (cropBlock.getRelative(BlockFace.DOWN).getType() == mat) { // Only grow if argument is the base block
+                    return false;
+                }
+                while ((cropBlock = cropBlock.getRelative(BlockFace.UP)).getType() == mat) {
+                    if (++height >= 3) { // Cancel if cactus/cane is fully grown
+                        return false;
+                    }
+                }
+                break;
+            default:
+                return false;
+        }
+
+        if (player != null) {
+            return placeBlock(cropBlock, player, mat, dataValue);
+        }
+        
+        BlockGrowEvent evt = new BlockGrowEvent(cropBlock, new MockBlockState(cropBlock, mat, dataValue));
+        Bukkit.getPluginManager().callEvent(evt);
+        if (!evt.isCancelled()) {
+            cropBlock.setType(mat);
+            cropBlock.setData(dataValue);
+            return true;
+        }
+        return false;
     }
 }
