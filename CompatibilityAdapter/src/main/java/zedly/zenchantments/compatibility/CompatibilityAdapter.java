@@ -143,6 +143,9 @@ public class CompatibilityAdapter {
     public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
         EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
         Bukkit.getPluginManager().callEvent(damageEvent);
+        if(damage == 0) {
+            return !damageEvent.isCancelled();
+        }
         if (!damageEvent.isCancelled()) {
             target.damage(damage);
             return true;

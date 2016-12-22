@@ -936,7 +936,7 @@ public class CustomEnchantment {
                     for (int z = -(radiusXZ); z <= radiusXZ; z++) {
                         Block relativeBlock = clickedBlock.getRelative(x, y, z);
                         if (relativeBlock.getLocation().distanceSquared(loc) < radiusXZ * radiusXZ
-                                && player.getInventory().contains(BONE_MEAL)
+                                && player.getInventory().containsAtLeast(BONE_MEAL, 1)
                                 && ADAPTER.grow(relativeBlock, player)) {
                             applied = true;
                             if (Storage.rnd.nextBoolean()) {
@@ -1239,6 +1239,8 @@ public class CustomEnchantment {
 
     public static class Harvest extends CustomEnchantment {
 
+        private static final Material[] CROP_BLOCKS = {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK};
+
         public Harvest() {
             maxLevel = 3;
             loreName = "Harvest";
@@ -1258,8 +1260,8 @@ public class CustomEnchantment {
                 Location loc = evt.getClickedBlock().getLocation();
                 int radiusXZ = (int) Math.round(power * level + 2);
                 int radiusY = 1;
-                Material[] crops = {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK};
-                if (ArrayUtils.contains(crops, evt.getClickedBlock().getType())) {
+                Player player = evt.getPlayer();
+                if (ArrayUtils.contains(CROP_BLOCKS, evt.getClickedBlock().getType())) {
                     for (int x = -(radiusXZ); x <= radiusXZ; x++) {
                         for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
                             for (int z = -(radiusXZ); z <= radiusXZ; z++) {
@@ -1271,6 +1273,7 @@ public class CustomEnchantment {
                                             || (block.getRelative(x, y + 1, z).getType() == CARROT)) && block.getRelative(x, y + 1, z).getData() == 7)) {
                                         final Block blk = block.getRelative(x, y + 1, z);
                                         if (ADAPTER.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
+                                            Utilities.addUnbreaking(player, 1, usedHand);
                                             Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
                                             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                                 Storage.grabLocs.remove(blk);
@@ -2223,7 +2226,6 @@ public class CustomEnchantment {
                         if (ent.isDead()) {
                             return;
                         }
-                        float x, y, z;
                         Location loc = l.clone();
                         float t = 30 * fI + j;
                         loc.setY(loc.getY() + (t / 100));
@@ -2288,7 +2290,7 @@ public class CustomEnchantment {
             return true;
         }
     }
-    
+
     public static class Reveal extends CustomEnchantment {
 
         public Reveal() {
@@ -2432,7 +2434,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-            if (!ArrayUtils.contains(ALLOWED_MATERIALS, evt.getBlock().getType()) && !evt.getBlock().getType().equals(AIR)) {
+            if (evt.getBlock().getType().equals(AIR) || !ArrayUtils.contains(ALLOWED_MATERIALS, evt.getBlock().getType())) {
                 return false;
             }
             ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
@@ -2450,8 +2452,8 @@ public class CustomEnchantment {
                 final Material originalType = relativeBlock.getType();
                 if (config.getShredDrops() == 0) {
                     if (!ArrayUtils.contains(ALLOWED_MATERIALS, relativeBlock.getType())
-                            || !Tool.SHOVEL.contains(itemType)
-                            || !ArrayUtils.contains(SHOVELABLE_MATERIALS, relativeBlock.getType())
+                            || (Tool.SHOVEL.contains(itemType)
+                            && !ArrayUtils.contains(SHOVELABLE_MATERIALS, relativeBlock.getType()))
                             || !ADAPTER.breakBlockNMS(relativeBlock, player)) {
                         return;
                     }
@@ -3410,7 +3412,6 @@ public class CustomEnchantment {
     }
 
 //In-Development
-
 //OP-Enchantments
     public static class Apocalypse extends CustomEnchantment {
 
