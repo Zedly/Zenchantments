@@ -244,7 +244,8 @@ public class Config {
         }
         LinkedHashMap<CustomEnchantment, Integer> finalmap = new LinkedHashMap<>();
         for (Class c : new Class[]{CustomEnchantment.Lumber.class, CustomEnchantment.Shred.class,
-            CustomEnchantment.Mow.class, CustomEnchantment.Pierce.class, CustomEnchantment.Extraction.class}) {
+            CustomEnchantment.Mow.class, CustomEnchantment.Pierce.class, CustomEnchantment.Extraction.class,
+            CustomEnchantment.Plough.class}) {
             CustomEnchantment e = null;
             for (CustomEnchantment en : getEnchants().values()) {
                 if (en.getClass().equals(c)) {

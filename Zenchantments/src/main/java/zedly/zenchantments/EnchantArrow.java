@@ -268,7 +268,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(final EntityDamageByEntityEvent evt) {
-            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 final int value = (int) Math.round(getLevel() * getPower());
                 Utilities.addPotion((LivingEntity) evt.getEntity(), CONFUSION, 80 + 60 * value, 4);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 40 + 60 * value, 4);
@@ -304,7 +304,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
-            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 int pow = (int) Math.round(getLevel() * getPower());
                 int dur = (int) Math.round(10 + getLevel() * 20 * getPower());
                 Utilities.addPotion((LivingEntity) evt.getEntity(), PotionEffectType.WITHER, dur, pow);
@@ -323,7 +323,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
-            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 Player p = (Player) ((Projectile) evt.getDamager()).getShooter();
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 int difference = (int) Math.round(getLevel() * getPower());
@@ -351,7 +351,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
-            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 if (evt.getDamage() < ent.getHealth()) {
                     evt.setCancelled(true);
