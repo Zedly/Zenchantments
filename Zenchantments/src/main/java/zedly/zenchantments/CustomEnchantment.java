@@ -2002,7 +2002,7 @@ public class CustomEnchantment {
                 }
             } else if (mode == 5) {
                 List<Block> used = new ArrayList<>();
-                if (ArrayUtils.contains(Storage.ores, evt.getBlock().getType())) {
+                if (ArrayUtils.contains(Storage.ORES, evt.getBlock().getType())) {
                     Material mat[];
                     if (evt.getBlock().getType() != REDSTONE_ORE && evt.getBlock().getType() != GLOWING_REDSTONE_ORE) {
                         mat = new Material[]{evt.getBlock().getType()};
@@ -2393,8 +2393,7 @@ public class CustomEnchantment {
                 if (!event.isCancelled()) {
                     PlayerInteractUtil.breakBlockNMS(blk, player);
                     if (config.getShredDrops() == 1) {
-                        Material[] ores = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE, LAPIS_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
-                        if (ArrayUtils.contains(ores, event.getBlock().getType())) {
+                        if (ArrayUtils.contains(Storage.ORES, event.getBlock().getType())) {
                             event.getBlock().setType(STONE);
                         } else if (event.getBlock().getType().equals(QUARTZ_ORE)) {
                             event.getBlock().setType(NETHERRACK);
@@ -3163,9 +3162,7 @@ public class CustomEnchantment {
     }
 
     public static class Transformation extends CustomEnchantment {
-
-        private final EntityType[] ENTITY_TYPES = new EntityType[]{BAT, VEX, STRAY, SKELETON, HUSK, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
-
+        
         public Transformation() {
             maxLevel = 3;
             loreName = "Transformation";
@@ -3183,7 +3180,7 @@ public class CustomEnchantment {
         public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (Utilities.canDamage(evt.getDamager(), evt.getEntity())) {
                 if (Storage.rnd.nextInt(100) > (100 - (level * power * 5))) {
-                    int position = ArrayUtils.indexOf(ENTITY_TYPES, evt.getEntity().getType());
+                    int position = ArrayUtils.indexOf(Storage.TRANSFORMATION_ENTITY_TYPES, evt.getEntity().getType());
                     if (position != -1) {
                         if (evt.getDamage() > ((LivingEntity) evt.getEntity()).getHealth()) {
                             evt.setCancelled(true);
@@ -3191,7 +3188,8 @@ public class CustomEnchantment {
                         int newPosition = position + 1 - 2 * (position % 2);
                         Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f, .5f, 2, .5f);
                         evt.getEntity().remove();
-                        LivingEntity ent = (LivingEntity) ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(), ENTITY_TYPES[newPosition]);
+                        LivingEntity ent = (LivingEntity) ((Player) evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(), 
+                                Storage.TRANSFORMATION_ENTITY_TYPES[newPosition]);
                         ent.setHealth(Math.max(1, ((LivingEntity) evt.getEntity()).getHealth()));
                     }
                 }
@@ -3351,7 +3349,7 @@ public class CustomEnchantment {
                         for (int y = -radius; y <= radius; y++) {
                             for (int z = -radius; z <= radius; z++) {
                                 Block blk = evt.getPlayer().getLocation().getBlock().getRelative(x, y, z);
-                                if (ArrayUtils.contains(Storage.ores, blk.getType())) {
+                                if (ArrayUtils.contains(Storage.ORES, blk.getType())) {
                                     boolean exposed = false;
                                     for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
                                         if (blk.getRelative(face).getType() == Material.AIR) {

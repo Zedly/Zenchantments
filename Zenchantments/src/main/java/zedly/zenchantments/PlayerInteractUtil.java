@@ -14,32 +14,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import zedly.zenchantments.compatibility.CompatibilityAdapter;
 
 /**
  *
  * @author Dennis
  */
 public class PlayerInteractUtil {
-
-    private static final NMSAdapter ADAPTER;
-
-    static {
-        String versionString = Bukkit.getServer().getClass().getPackage().getName();
-        String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
-        System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
-        switch (nmsVersionString) {
-            case "v1_11_R1":
-                ADAPTER = zedly.zenchantments.v1_11_R1.Adapter.getInstance();
-                break;
-            case "v1_10_R1":
-                ADAPTER = zedly.zenchantments.v1_10_R1.Adapter.getInstance();
-                break;
-            default:
-                System.out.println("No compatible adapter available, falling back to Bukkit. Not everything will work!");
-                ADAPTER = zedly.zenchantments.bukkit_only.Adapter.getInstance();
-                break;
-        }
-    }
+    
+    private static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
     public static boolean breakBlockNMS(Block block, Player player) {
         if (!ArrayUtils.contains(Storage.UNBREAKABLE_BLOCKS, block.getType())) {

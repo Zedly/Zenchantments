@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.zenchantments.v1_10_R1;
+package zedly.zenchantments.compatibility;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -17,7 +17,6 @@ import net.minecraft.server.v1_10_R1.EnumHand;
 import net.minecraft.server.v1_10_R1.PacketDataSerializer;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_10_R1.PacketPlayOutSpawnEntityLiving;
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.craftbukkit.v1_10_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
@@ -26,6 +25,7 @@ import org.bukkit.craftbukkit.v1_10_R1.entity.CraftSheep;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -41,23 +41,82 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.NMSAdapter;
+import org.bukkit.entity.EntityType;
+import static org.bukkit.entity.EntityType.*;
 
 /**
  *
  * @author Dennis
  */
-public class Adapter implements NMSAdapter {
+public class NMS_1_10_R1 extends CompatibilityAdapter {
 
-    private static Adapter INSTANCE = new Adapter();
+    private static final NMS_1_10_R1 INSTANCE = new NMS_1_10_R1();
 
-    public static Adapter getInstance() {
+    private static final Material[] UNBREAKABLE_BLOCKS = {AIR, BEDROCK, WATER, STATIONARY_WATER,
+        LAVA, STATIONARY_LAVA, PISTON_EXTENSION, PISTON_MOVING_PIECE, PORTAL, ENDER_PORTAL,
+        ENDER_PORTAL_FRAME, DRAGON_EGG, BARRIER, END_GATEWAY, STRUCTURE_BLOCK};
+
+    private static final Material[] STORAGE_BLOCKS = {DISPENSER, MOB_SPAWNER, CHEST, FURNACE,
+        BURNING_FURNACE, JUKEBOX, ENDER_CHEST, COMMAND, BEACON, TRAPPED_CHEST, HOPPER, DROPPER};
+
+    private static final Material[] INTERACTABLE_BLOCKS = {
+        DISPENSER, NOTE_BLOCK, BED_BLOCK, CHEST, WORKBENCH, FURNACE, BURNING_FURNACE,
+        WOODEN_DOOR, LEVER, STONE_BUTTON, JUKEBOX, DIODE_BLOCK_OFF, DIODE_BLOCK_ON, TRAP_DOOR,
+        FENCE_GATE, ENCHANTMENT_TABLE, BREWING_STAND, ENDER_CHEST, COMMAND, BEACON, WOOD_BUTTON,
+        ANVIL, TRAPPED_CHEST, REDSTONE_COMPARATOR_OFF, REDSTONE_COMPARATOR_ON, DAYLIGHT_DETECTOR,
+        HOPPER, DROPPER, SPRUCE_FENCE_GATE, BIRCH_FENCE_GATE, JUNGLE_FENCE_GATE, DARK_OAK_FENCE_GATE,
+        ACACIA_FENCE_GATE, SPRUCE_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, DARK_OAK_DOOR, STRUCTURE_BLOCK};
+
+    private static final Material[] ORES = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
+        IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
+
+    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, SKELETON, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
+
+    
+    private NMS_1_10_R1() {
+    }
+
+    public static NMS_1_10_R1 getInstance() {
         return INSTANCE;
     }
 
-    private Adapter() {
+    /**
+     * @return the UNBREAKABLE_BLOCKS
+     */
+    @Override
+    public Material[] getUnbreakableBlocks() {
+        return UNBREAKABLE_BLOCKS;
     }
 
+    /**
+     * @return the STORAGE_BLOCKS
+     */
+    @Override
+    public Material[] getStorageBlocks() {
+        return STORAGE_BLOCKS;
+    }
+
+    /**
+     * @return the INTERACTABLE_BLOCKS
+     */
+    @Override
+    public Material[] getInteractableBlocks() {
+        return INTERACTABLE_BLOCKS;
+    }
+
+    /**
+     * @return the ores
+     */
+    @Override
+    public Material[] getOres() {
+        return ORES;
+    }
+
+    @Override
+    public EntityType[] getTransformationEntityTypes() {
+        return TRANSFORMATION_ENTITY_TYPES;
+    }
+    
     @Override
     public boolean breakBlockNMS(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();

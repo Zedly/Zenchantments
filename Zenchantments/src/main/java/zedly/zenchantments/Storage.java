@@ -6,15 +6,22 @@ import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import zedly.zenchantments.compatibility.CompatibilityAdapter;
 
 public class Storage {
 
     // Instance of the Zenchantments plugin to be used by the rest of the classes
     public static Zenchantments zenchantments;
 
+    // The plugin Logo to be used in chat commands
+    public static final String logo = ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments"
+            + ChatColor.BLUE + "] " + ChatColor.AQUA;
+    
     // Current Zenchantments version
-    public static String version;
+    public static String version = "";
 
+    public static final CompatibilityAdapter COMPATIBILITY_ADAPTER;
+    
     // Determines if falling entities from Anthropomorphism should fall up or down
     public static boolean fallBool = false;
 
@@ -84,23 +91,6 @@ public class Storage {
     // Players and how long it has been since they last move a block with haul
     public static final Map<Player, Integer> haulBlockDelay = new HashMap<>();
 
-    public static final Material[] UNBREAKABLE_BLOCKS = {AIR, BEDROCK, WATER, STATIONARY_WATER,
-        LAVA, STATIONARY_LAVA, PISTON_EXTENSION, PISTON_MOVING_PIECE, PORTAL, ENDER_PORTAL,
-        ENDER_PORTAL_FRAME, DRAGON_EGG, BARRIER, END_GATEWAY, STRUCTURE_BLOCK};
-
-    public static final Material[] STORAGE_BLOCKS = {DISPENSER, MOB_SPAWNER, CHEST, FURNACE,
-        BURNING_FURNACE, JUKEBOX, ENDER_CHEST, COMMAND, BEACON, TRAPPED_CHEST, HOPPER, DROPPER,
-        OBSERVER, PURPLE_SHULKER_BOX};
-
-    public static final Material[] INTERACTABLE_BLOCKS = {
-        DISPENSER, NOTE_BLOCK, BED_BLOCK, CHEST, WORKBENCH, FURNACE, BURNING_FURNACE,
-        WOODEN_DOOR, LEVER, STONE_BUTTON, JUKEBOX, DIODE_BLOCK_OFF, DIODE_BLOCK_ON, TRAP_DOOR,
-        FENCE_GATE, ENCHANTMENT_TABLE, BREWING_STAND, ENDER_CHEST, COMMAND, BEACON, WOOD_BUTTON,
-        ANVIL, TRAPPED_CHEST, REDSTONE_COMPARATOR_OFF, REDSTONE_COMPARATOR_ON, DAYLIGHT_DETECTOR,
-        HOPPER, DROPPER, SPRUCE_FENCE_GATE, BIRCH_FENCE_GATE, JUNGLE_FENCE_GATE, DARK_OAK_FENCE_GATE,
-        ACACIA_FENCE_GATE, SPRUCE_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, DARK_OAK_DOOR, OBSERVER,
-        PURPLE_SHULKER_BOX, STRUCTURE_BLOCK};
-
     public static final BlockFace[] CARDINAL_BLOCK_FACES = {
         BlockFace.UP,
         BlockFace.DOWN,
@@ -109,12 +99,37 @@ public class Storage {
         BlockFace.SOUTH,
         BlockFace.WEST
     };
+    
+    public static final Material[] UNBREAKABLE_BLOCKS;
 
-    // The plugin Logo to be used in chat commands
-    public static final String logo = ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments"
-            + ChatColor.BLUE + "] " + ChatColor.AQUA;
+    public static final Material[] STORAGE_BLOCKS;
 
-    public static final Material ores[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
-        IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
+    public static final Material[] INTERACTABLE_BLOCKS;
 
+    public static final Material[] ORES;
+
+    public static final EntityType[] TRANSFORMATION_ENTITY_TYPES;
+    
+    static {
+        String versionString = Bukkit.getServer().getClass().getPackage().getName();
+        String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
+        System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
+        switch (nmsVersionString) {
+            case "v1_11_R1":
+                COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_11_R1.getInstance();
+                break;
+            case "v1_10_R1":
+                COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_10_R1.getInstance();
+                break;
+            default:
+                System.out.println("No compatible adapter available, falling back to Bukkit. Not everything will work!");
+                COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.CompatibilityAdapter.getInstance();
+                break;
+        }
+        UNBREAKABLE_BLOCKS = COMPATIBILITY_ADAPTER.getUnbreakableBlocks();
+        STORAGE_BLOCKS = COMPATIBILITY_ADAPTER.getStorageBlocks();
+        INTERACTABLE_BLOCKS = COMPATIBILITY_ADAPTER.getInteractableBlocks();
+        ORES = COMPATIBILITY_ADAPTER.getOres();
+        TRANSFORMATION_ENTITY_TYPES = COMPATIBILITY_ADAPTER.getTransformationEntityTypes();
+    }
 }

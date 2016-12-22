@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.zenchantments.bukkit_only;
+package zedly.zenchantments.compatibility;
 
 import java.util.Random;
 
@@ -25,32 +25,86 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import static org.bukkit.Material.*;
+import org.bukkit.entity.EntityType;
+import static org.bukkit.entity.EntityType.*;
+
 
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.NMSAdapter;
 
 /**
  *
  * @author Dennis
  */
-public class Adapter implements NMSAdapter {
+public class CompatibilityAdapter {
 
-    private static final Adapter INSTANCE = new Adapter();
+    private static final CompatibilityAdapter INSTANCE = new CompatibilityAdapter();
     private static final Random RND = new Random();
 
-    public static Adapter getInstance() {
+    private static final Material[] UNBREAKABLE_BLOCKS = {AIR, BEDROCK, WATER, STATIONARY_WATER,
+        LAVA, STATIONARY_LAVA, PISTON_EXTENSION, PISTON_MOVING_PIECE, PORTAL, ENDER_PORTAL,
+        ENDER_PORTAL_FRAME, DRAGON_EGG};
+
+    private static final Material[] STORAGE_BLOCKS = {DISPENSER, MOB_SPAWNER, CHEST, FURNACE,
+        BURNING_FURNACE, JUKEBOX, ENDER_CHEST, COMMAND, BEACON, TRAPPED_CHEST, HOPPER, DROPPER};
+
+    private static final Material[] INTERACTABLE_BLOCKS = {
+        DISPENSER, NOTE_BLOCK, BED_BLOCK, CHEST, WORKBENCH, FURNACE, BURNING_FURNACE,
+        WOODEN_DOOR, LEVER, STONE_BUTTON, JUKEBOX, DIODE_BLOCK_OFF, DIODE_BLOCK_ON, TRAP_DOOR,
+        FENCE_GATE, ENCHANTMENT_TABLE, BREWING_STAND, ENDER_CHEST, COMMAND, BEACON, WOOD_BUTTON,
+        ANVIL, TRAPPED_CHEST, REDSTONE_COMPARATOR_OFF, REDSTONE_COMPARATOR_ON, DAYLIGHT_DETECTOR,
+        HOPPER, DROPPER};
+
+    private static final Material ORES[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
+        IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
+    
+    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, SKELETON, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
+
+
+    public static CompatibilityAdapter getInstance() {
         return INSTANCE;
     }
-
-    private Adapter() {
+    
+    /**
+     * @return the UNBREAKABLE_BLOCKS
+     */
+    public Material[] getUnbreakableBlocks() {
+        return UNBREAKABLE_BLOCKS;
     }
 
-    @Override
+    /**
+     * @return the STORAGE_BLOCKS
+     */
+    public Material[] getStorageBlocks() {
+        return STORAGE_BLOCKS;
+    }
+
+    /**
+     * @return the INTERACTABLE_BLOCKS
+     */
+    public Material[] getInteractableBlocks() {
+        return INTERACTABLE_BLOCKS;
+    }
+
+    /**
+     * @return the ores
+     */
+    public Material[] getOres() {
+        return ORES;
+    }
+    
+    public EntityType[] getTransformationEntityTypes() {
+        return TRANSFORMATION_ENTITY_TYPES;
+    }
+
+    protected CompatibilityAdapter() {
+    }
+
     public boolean breakBlockNMS(Block block, Player player) {
         BlockBreakEvent evt = new BlockBreakEvent(block, player);
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
-            block.breakNaturally(player.getInventory().getItemInMainHand());
+            block.breakNaturally(player.getInventory().getItemInHand());
             return true;
         }
         return false;
@@ -68,7 +122,6 @@ public class Adapter implements NMSAdapter {
      * @param blockData the block data to set for the block, if allowed
      * @return true if the block placement has been successful
      */
-    @Override
     public boolean placeBlock(Block blockPlaced, Player player, Material mat, int blockData) {
         Block blockAgainst = blockPlaced.getRelative((blockPlaced.getY() == 0) ? BlockFace.UP : BlockFace.DOWN);
         ItemStack itemHeld = new ItemStack(mat, 1, (short) blockData);
@@ -82,7 +135,6 @@ public class Adapter implements NMSAdapter {
         return false;
     }
 
-    @Override
     public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
         EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
         Bukkit.getPluginManager().callEvent(damageEvent);
@@ -93,7 +145,6 @@ public class Adapter implements NMSAdapter {
         return false;
     }
 
-    @Override
     public boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
         if ((target instanceof Sheep && !((Sheep) target).isSheared()) || target instanceof MushroomCow) {
             PlayerShearEntityEvent evt = new PlayerShearEntityEvent(player, target);
@@ -111,7 +162,6 @@ public class Adapter implements NMSAdapter {
         return false;
     }
 
-    @Override
     public boolean haulOrBreakBlock(Block from, Block to, BlockFace face, Player player) {
         BlockState state = from.getState();
         if (state.getClass().getName().endsWith("CraftBlockState")) {
@@ -136,7 +186,6 @@ public class Adapter implements NMSAdapter {
         return true;
     }
 
-    @Override
     public boolean igniteEntity(Entity target, Player player, int duration) {
         EntityCombustByEntityEvent evt = new EntityCombustByEntityEvent(target, player, duration);
         Bukkit.getPluginManager().callEvent(evt);
@@ -147,7 +196,6 @@ public class Adapter implements NMSAdapter {
         return false;
     }
 
-    @Override
     public boolean damagePlayer(Player player, double damage, DamageCause cause) {
         EntityDamageEvent evt = new EntityDamageEvent(player, cause, damage);
         Bukkit.getPluginManager().callEvent(evt);
@@ -159,9 +207,8 @@ public class Adapter implements NMSAdapter {
         return false;
     }
 
-    @Override
     public boolean formBlock(Block block, Material mat, byte data, Player player) {
-        EntityBlockFormEvent evt = new EntityBlockFormEvent(player, block, new MockBlockState(block, Material.FROSTED_ICE, (byte) 0));
+        EntityBlockFormEvent evt = new EntityBlockFormEvent(player, block, new MockBlockState(block, mat, (byte) 0));
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
             block.setType(mat);
@@ -171,13 +218,11 @@ public class Adapter implements NMSAdapter {
         return false;
     }
 
-    @Override
     public boolean showShulker(Block blockToHighlight, int entityId, Player player) {
         // This cannot be done without NMS
         return false;
     }
 
-    @Override
     public boolean hideShulker(int entityId, Player player) {
         // This cannot be done without NMS
         return false;
