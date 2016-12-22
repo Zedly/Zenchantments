@@ -1,7 +1,7 @@
 package zedly.zenchantments;
 
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.*;
 import static org.bukkit.GameMode.CREATIVE;
@@ -20,7 +20,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -48,12 +47,14 @@ public class CustomEnchantment {
     protected int enchantmentID;    // Unique ID for each enchantment
     private boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
 
-    public static void applyForTool(World world, ItemStack tool, BiConsumer<CustomEnchantment, Integer> action) {
-        Config.get(world).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
-            if (!ench.used) {
+    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
+        Config.get(player.getWorld()).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
+            if (!ench.used && EnchantPlayer.matchPlayer(player).getCooldown(ench.enchantmentID) == 0) {
                 try {
                     ench.used = true;
-                    action.accept(ench, level);
+                    if (action.test(ench, level)) {
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.enchantmentID, ench.cooldown);
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -1137,7 +1138,7 @@ public class CustomEnchantment {
         }
 
         @Override
-        public boolean onScan(Player player, int level, boolean usedHand) {            
+        public boolean onScan(Player player, int level, boolean usedHand) {
             Location loc = player.getLocation().clone();
             int radius = (int) Math.round(power * level + 2);
             for (int x = -(radius); x <= radius; x++) {
@@ -3333,7 +3334,7 @@ public class CustomEnchantment {
             loreName = "Reveal";
             probability = 0;
             enchantable = new Tool[]{PICKAXE};
-            conflicting = new Class[]{Pierce.class, Spectral.class};
+            conflicting = new Class[]{Switch.class, Pierce.class, Spectral.class};
             description = "Makes nearby ores glow white through the stone.";
             cooldown = 100;
             power = 1.0;
@@ -3390,6 +3391,7 @@ public class CustomEnchantment {
                         }
                     }
                     Utilities.addUnbreaking(evt.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+                    return true;
                 }
             }
             return false;
