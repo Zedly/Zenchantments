@@ -1156,7 +1156,7 @@ public class CustomEnchantment {
                             boolean applied = false;
                             switch (relativeBlock.getType()) {
                                 case DIRT:
-                                    if (relativeBlock.getData() != 2
+                                    if (relativeBlock.getData() != 2 && relativeBlock.getData() != 1
                                             && relativeBlock.getRelative(0, 1, 0).getType() == AIR) {
                                         byte data = 0;
                                         Material mat;
