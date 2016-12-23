@@ -2011,7 +2011,6 @@ public class CustomEnchantment {
                 for (Block b : total) {
                     ADAPTER.breakBlockNMS(b, evt.getPlayer());
                 }
-                Utilities.addUnbreaking(evt.getPlayer(), (int) (total.size() / (float) 1.5), usedHand);
             }
             return true;
         }
