@@ -64,6 +64,10 @@ public class CustomEnchantment {
         });
     }
 
+    public void loadData() {
+
+    }
+
     // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
     public boolean validMaterial(Material m) {
         for (Tool t : enchantable) {
@@ -2458,11 +2462,13 @@ public class CustomEnchantment {
                 final Player player, final Config config, final Material itemType) {
             if (relativeBlock.getType() != AIR && !used.contains(relativeBlock)) {
                 final Material originalType = relativeBlock.getType();
+                if (!ArrayUtils.contains(ALLOWED_MATERIALS, relativeBlock.getType())
+                        || (Tool.SHOVEL.contains(itemType)
+                        && !ArrayUtils.contains(SHOVELABLE_MATERIALS, relativeBlock.getType()))) {
+                    return;
+                }
                 if (config.getShredDrops() == 0) {
-                    if (!ArrayUtils.contains(ALLOWED_MATERIALS, relativeBlock.getType())
-                            || (Tool.SHOVEL.contains(itemType)
-                            && !ArrayUtils.contains(SHOVELABLE_MATERIALS, relativeBlock.getType()))
-                            || !ADAPTER.breakBlockNMS(relativeBlock, player)) {
+                    if (!ADAPTER.breakBlockNMS(relativeBlock, player)) {
                         return;
                     }
                 } else {
