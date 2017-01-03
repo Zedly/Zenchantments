@@ -12,6 +12,7 @@ import static org.bukkit.event.block.Action.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.enchantment.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.*;
@@ -83,6 +84,14 @@ public class Watcher implements Listener {
             if (Storage.idleBlocks.containsKey((FallingBlock) evt.getEntity()) || Storage.attackBlocks.containsKey((FallingBlock) evt.getEntity())) {
                 evt.setCancelled(true);
             }
+        }
+    }
+    
+    // Prevents mobs affected by Rainbow Slam from being hurt by generic "FALL" event. Damage is instead dealt via an EDBEe in order to make protections and money drops work
+    @EventHandler
+    public void onEntityFall(EntityDamageEvent evt) {
+        if(evt.getCause() == DamageCause.FALL && Storage.rainbowSlamNoFallEntities.contains(evt.getEntity())) {
+            evt.setCancelled(true);
         }
     }
 

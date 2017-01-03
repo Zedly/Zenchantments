@@ -51,6 +51,9 @@ public class MFEffects implements Runnable {
                     player.removeMetadata("ze.haste", Storage.zenchantments);
                 }
             }
+            
+            
+            // Dude this runs four times every second!? xD
             Config config = Config.get(player.getWorld());
             for (ItemStack stk : (ItemStack[]) ArrayUtils.addAll(player.getInventory().getArmorContents(), player.getInventory().getContents())) {
                 if (config.descriptionLore()) {
@@ -59,23 +62,22 @@ public class MFEffects implements Runnable {
                     config.removeDescriptions(stk, null);
                 }
             }
-            Map<CustomEnchantment, Integer> map;
+            
+            
+            EnchantPlayer.matchPlayer(player).tick();
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                map = config.getEnchants(stk);
-                for (CustomEnchantment ench : map.keySet()) {
-                    ench.onScan(player, map.get(ench), true);
-                }
+                CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+                    return ench.onScan(player, level, true);
+                });
             }
-
-            map = config.getEnchants(player.getInventory().getItemInMainHand());
-            for (CustomEnchantment ench : map.keySet()) {
-                ench.onFastScanHands(player, map.get(ench), true);
-            }
-            map = config.getEnchants(player.getInventory().getItemInOffHand());
-            for (CustomEnchantment ench : map.keySet()) {
-                ench.onFastScanHands(player, map.get(ench), false);
-            }
-
+            ItemStack stk = player.getInventory().getItemInMainHand();
+            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+                return ench.onScanHands(player, level, true);
+            });
+            stk = player.getInventory().getItemInOffHand();
+            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+                return ench.onScanHands(player, level, false);
+            });
         }
     }
 

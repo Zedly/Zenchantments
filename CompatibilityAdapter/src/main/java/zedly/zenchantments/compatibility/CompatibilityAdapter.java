@@ -107,15 +107,17 @@ public class CompatibilityAdapter {
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
             block.breakNaturally(player.getInventory().getItemInHand());
+            // TODO: Apply tool damage
             return true;
         }
         return false;
     }
 
     /**
-     * Places a block on the given player's behalf. Fires a BlockPlaceEvent with (nearly)
-     * appropriate parameters to probe the legitimacy (permissions etc) of the action and
-     * to communicate to other plugins where the block is coming from.
+     * Places a block on the given player's behalf. Fires a BlockPlaceEvent with
+     * (nearly) appropriate parameters to probe the legitimacy (permissions etc)
+     * of the action and to communicate to other plugins where the block is
+     * coming from.
      *
      * @param blockPlaced the block to be changed
      * @param player the player whose identity to use
@@ -143,11 +145,12 @@ public class CompatibilityAdapter {
     public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
         EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
         Bukkit.getPluginManager().callEvent(damageEvent);
-        if(damage == 0) {
+        if (damage == 0) {
             return !damageEvent.isCancelled();
         }
         if (!damageEvent.isCancelled()) {
-            target.damage(damage);
+            target.damage(damage, attacker);
+            target.setLastDamageCause(damageEvent);
             return true;
         }
         return false;
@@ -207,7 +210,7 @@ public class CompatibilityAdapter {
     public boolean damagePlayer(Player player, double damage, DamageCause cause) {
         EntityDamageEvent evt = new EntityDamageEvent(player, cause, damage);
         Bukkit.getPluginManager().callEvent(evt);
-        if (damage == 0){
+        if (damage == 0) {
             return !evt.isCancelled();
         }
         if (!evt.isCancelled()) {
@@ -265,8 +268,8 @@ public class CompatibilityAdapter {
         byte dataValue = cropBlock.getData();
         switch (mat) {
             case COCOA:
-                if (dataValue < 8) {
-                    dataValue = (byte) Math.min(8, dataValue + 4);
+                if (dataValue / 4 < 2) {
+                    dataValue = (byte) Math.min(8 + (dataValue % 4), dataValue + 4);
                     break;
                 }
                 return false;
@@ -276,15 +279,14 @@ public class CompatibilityAdapter {
             case CROPS:
             case POTATO:
                 if (dataValue < 7) {
-                    dataValue += 1;
+                    dataValue = (byte) Math.min(7, dataValue + 3);
                     break;
                 }
                 return false;
-
             case NETHER_WARTS:
             case BEETROOT_BLOCK:
-                if (dataValue < 7) {
-                    dataValue = (byte) Math.min(7, dataValue + 4);
+                if (dataValue < 3) {
+                    dataValue = (byte) Math.min(3, dataValue + 1);
                     break;
                 }
                 return false;
@@ -298,6 +300,9 @@ public class CompatibilityAdapter {
                     if (++height >= 3) { // Cancel if cactus/cane is fully grown
                         return false;
                     }
+                }
+                if (cropBlock.getType() != Material.AIR) { // Only grow if argument is the base block
+                    return false;
                 }
                 break;
             default:

@@ -24,6 +24,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
@@ -36,6 +37,22 @@ import zedly.zenchantments.compatibility.CompatibilityAdapter;
 public class CustomEnchantment {
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
+
+    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
+        Config.get(player.getWorld()).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
+            if (!ench.used && Utilities.canUse(player, ench.getEnchantmentId())) {
+                try {
+                    ench.used = true;
+                    if (action.test(ench, level)) {
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.getEnchantmentId(), ench.cooldown);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                ench.used = false;
+            }
+        });
+    }
     protected int maxLevel;         // Max level the given enchant can naturally obtain
     protected String loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
     protected float probability;    // Relative probability of obtaining the given enchantment
@@ -45,23 +62,10 @@ public class CustomEnchantment {
     protected int cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
     protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
     protected int handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
-    protected int enchantmentID;    // Unique ID for each enchantment
     private boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
 
-    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
-        Config.get(player.getWorld()).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
-            if (!ench.used && Utilities.canUse(player, ench.enchantmentID)) {
-                try {
-                    ench.used = true;
-                    if (action.test(ench, level)) {
-                        EnchantPlayer.matchPlayer(player).setCooldown(ench.enchantmentID, ench.cooldown);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                ench.used = false;
-            }
-        });
+    public int getEnchantmentId() {
+        return -1;
     }
 
     public void loadData() {
@@ -161,7 +165,6 @@ public class CustomEnchantment {
         return false;
     }
 
-//Enchantments
     public static class Anthropomorphism extends CustomEnchantment {
 
         public Anthropomorphism() {
@@ -174,7 +177,11 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
-            enchantmentID = 1;
+
+        }
+
+        public int getEnchantmentId() {
+            return 1;
         }
 
         @Override
@@ -198,10 +205,11 @@ public class CustomEnchantment {
                         player.updateInventory();
                         Location loc = player.getLocation();
                         Material mat[] = new Material[]{STONE, GRAVEL, DIRT, GRASS};
-                        FallingBlock bk = loc.getWorld().spawnFallingBlock(loc, mat[Storage.rnd.nextInt(4)], (byte) 0x0);
-                        bk.setDropItem(false);
-                        bk.setGravity(false);
-                        Storage.idleBlocks.put(bk, player);
+                        FallingBlock blockEntity = loc.getWorld().spawnFallingBlock(loc, mat[Storage.rnd.nextInt(4)], (byte) 0x0);
+                        blockEntity.setDropItem(false);
+                        blockEntity.setGravity(false);
+                        blockEntity.setMetadata("ze.anthrothrower", new FixedMetadataValue(Storage.zenchantments, player));
+                        Storage.idleBlocks.put(blockEntity, player);
                         return true;
                     }
                 }
@@ -240,7 +248,11 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
-            enchantmentID = 2;
+
+        }
+
+        public int getEnchantmentId() {
+            return 2;
         }
 
         @Override
@@ -293,7 +305,11 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
-            enchantmentID = 4;
+
+        }
+
+        public int getEnchantmentId() {
+            return 4;
         }
 
         @Override
@@ -344,7 +360,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
-            enchantmentID = 5;
+        }
+
+        public int getEnchantmentId() {
+            return 5;
         }
 
         @Override
@@ -399,7 +418,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 6;
+        }
+
+        public int getEnchantmentId() {
+            return 6;
         }
 
         @Override
@@ -422,7 +444,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 7;
+        }
+
+        public int getEnchantmentId() {
+            return 7;
         }
 
         @Override
@@ -452,7 +477,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 8;
+        }
+
+        public int getEnchantmentId() {
+            return 8;
         }
 
         @Override
@@ -460,10 +488,9 @@ public class CustomEnchantment {
             final Player player = evt.getPlayer();
             final ItemStack hand = Utilities.usedStack(player, usedHand);
             if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-                if (hand.containsEnchantment(Enchantment.ARROW_INFINITE) || Utilities.removeItemCheck(player, Material.ARROW, (short) 0, 1)) {
-                    Utilities.addUnbreaking(player, (int) Math.round(level / 2.0 + 1), usedHand);
-                    Utilities.setHand(player, hand, usedHand);
-                    for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
+                for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
+                    if (hand.containsEnchantment(Enchantment.ARROW_INFINITE) || Utilities.removeItemCheck(player, Material.ARROW, (short) 0, 1)) {
+                        Utilities.setHand(player, hand, usedHand);
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                             Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(), player.getLocation().getDirection(), 1, 0);
                             arrow.setShooter(player);
@@ -478,6 +505,7 @@ public class CustomEnchantment {
                                 arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
                                 arrow.setCritical(true);
                                 Utilities.putArrow(arrow, new EnchantArrow.ArrowGenericMulitple(arrow), player);
+                                Utilities.addUnbreaking(player, 1, usedHand);
                             }
                         }, i * 2);
                     }
@@ -501,7 +529,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 9;
+        }
+
+        public int getEnchantmentId() {
+            return 9;
         }
 
         @Override
@@ -540,7 +571,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 10;
+        }
+
+        public int getEnchantmentId() {
+            return 10;
         }
 
         @Override
@@ -581,7 +615,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
-            enchantmentID = 11;
+        }
+
+        public int getEnchantmentId() {
+            return 11;
         }
 
         @Override
@@ -619,7 +656,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
-            enchantmentID = 12;
+        }
+
+        public int getEnchantmentId() {
+            return 12;
         }
 
         @Override
@@ -652,7 +692,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
-            enchantmentID = 13;
+        }
+
+        public int getEnchantmentId() {
+            return 13;
         }
 
         @Override
@@ -700,7 +743,6 @@ public class CustomEnchantment {
                 mat = COAL;
                 itemInfo = 1;
             } else if (evt.getBlock().getType() == CLAY) {
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
                 Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
@@ -709,8 +751,6 @@ public class CustomEnchantment {
                 }
                 return true;
             } else if (evt.getBlock().getType() == CACTUS) {
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
-                evt.setCancelled(true);
                 Location location = evt.getBlock().getLocation().clone();
                 double height = location.getY();
                 for (double i = location.getY(); i <= 256; i++) {
@@ -724,13 +764,13 @@ public class CustomEnchantment {
                 for (double i = height - 1; i >= evt.getBlock().getLocation().getY(); i--) {
                     location.setY(i);
                     Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+                    evt.setCancelled(true);
                     evt.getBlock().setType(AIR);
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
                     return true;
                 }
             }
             if (mat != AIR) {
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
                 evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
@@ -753,7 +793,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 14;
+        }
+
+        public int getEnchantmentId() {
+            return 14;
         }
 
         @Override
@@ -777,7 +820,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
-            enchantmentID = 15;
+        }
+
+        public int getEnchantmentId() {
+            return 15;
         }
 
         @Override
@@ -801,7 +847,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
-            enchantmentID = 16;
+        }
+
+        public int getEnchantmentId() {
+            return 16;
         }
 
         @Override
@@ -858,7 +907,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 17;
+        }
+
+        public int getEnchantmentId() {
+            return 17;
         }
 
         public boolean onScan(Player player, int level, boolean usedHand) {
@@ -900,7 +952,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
-            enchantmentID = 18;
+        }
+
+        public int getEnchantmentId() {
+            return 18;
         }
 
         @Override
@@ -926,7 +981,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 19;
+        }
+
+        public int getEnchantmentId() {
+            return 19;
         }
 
         @Override
@@ -978,7 +1036,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 20;
+        }
+
+        public int getEnchantmentId() {
+            return 20;
         }
 
         @Override
@@ -1053,7 +1114,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
-            enchantmentID = 21;
+        }
+
+        public int getEnchantmentId() {
+            return 21;
         }
 
         @Override
@@ -1089,7 +1153,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
-            enchantmentID = 22;
+        }
+
+        public int getEnchantmentId() {
+            return 22;
         }
 
         @Override
@@ -1114,7 +1181,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
-            enchantmentID = 23;
+        }
+
+        public int getEnchantmentId() {
+            return 23;
         }
 
         @Override
@@ -1141,7 +1211,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 24;
+        }
+
+        public int getEnchantmentId() {
+            return 24;
         }
 
         @Override
@@ -1224,7 +1297,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 25;
+        }
+
+        public int getEnchantmentId() {
+            return 25;
         }
 
         @Override
@@ -1260,7 +1336,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 26;
+        }
+
+        public int getEnchantmentId() {
+            return 26;
         }
 
         @Override
@@ -1312,7 +1391,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 27;
+        }
+
+        public int getEnchantmentId() {
+            return 27;
         }
 
         @Override
@@ -1336,7 +1418,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
-            enchantmentID = 29;
+        }
+
+        public int getEnchantmentId() {
+            return 29;
         }
 
         @Override
@@ -1360,7 +1445,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 30;
+        }
+
+        public int getEnchantmentId() {
+            return 30;
         }
 
         @Override
@@ -1382,7 +1470,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 31;
+        }
+
+        public int getEnchantmentId() {
+            return 31;
         }
 
         public void shoot(Player player, int level, boolean usedHand) {
@@ -1444,7 +1535,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
-            enchantmentID = 32;
+        }
+
+        public int getEnchantmentId() {
+            return 32;
         }
 
         @Override
@@ -1489,7 +1583,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 33;
+        }
+
+        public int getEnchantmentId() {
+            return 33;
         }
 
         @Override
@@ -1524,7 +1621,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
-            enchantmentID = 34;
+        }
+
+        public int getEnchantmentId() {
+            return 34;
         }
 
         @Override
@@ -1607,7 +1707,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 35;
+        }
+
+        public int getEnchantmentId() {
+            return 35;
         }
 
         @Override
@@ -1634,7 +1737,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 36;
+        }
+
+        public int getEnchantmentId() {
+            return 36;
         }
 
         @Override
@@ -1659,7 +1765,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 37;
+        }
+
+        public int getEnchantmentId() {
+            return 37;
         }
 
         private boolean shear(PlayerEvent evt, int level, boolean usedHand) {
@@ -1709,7 +1818,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 38;
+        }
+
+        public int getEnchantmentId() {
+            return 38;
         }
 
         @Override
@@ -1744,7 +1856,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 39;
+        }
+
+        public int getEnchantmentId() {
+            return 39;
         }
 
         @Override
@@ -1787,7 +1902,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
-            enchantmentID = 40;
+        }
+
+        public int getEnchantmentId() {
+            return 40;
         }
 
         @Override
@@ -1811,7 +1929,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 41;
+        }
+
+        public int getEnchantmentId() {
+            return 41;
         }
 
         @Override
@@ -1876,29 +1997,6 @@ public class CustomEnchantment {
 
     public static class Pierce extends CustomEnchantment {
 
-        private void bk(Block blk, List<Block> bks, List<Block> total, Material[] mat, int i) {
-            i++;
-            if (i >= 128 || total.size() >= 128) {
-                return;
-            }
-            bks.add(blk);
-            Location loc = blk.getLocation().clone();
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    for (int z = -1; z <= 1; z++) {
-                        Location loc2 = loc.clone();
-                        loc2.setX(loc2.getX() + x);
-                        loc2.setY(loc2.getY() + y);
-                        loc2.setZ(loc2.getZ() + z);
-                        if (!bks.contains(loc2.getBlock()) && (ArrayUtils.contains(mat, loc2.getBlock().getType()))) {
-                            bk(loc2.getBlock(), bks, total, mat, i);
-                            total.add(loc2.getBlock());
-                        }
-                    }
-                }
-            }
-        }
-
         public Pierce() {
             maxLevel = 1;
             loreName = "Pierce";
@@ -1909,7 +2007,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
-            enchantmentID = 42;
+        }
+
+        public int getEnchantmentId() {
+            return 42;
         }
 
         @Override
@@ -2006,17 +2107,42 @@ public class CustomEnchantment {
                     } else {
                         mat = new Material[]{REDSTONE_ORE, GLOWING_REDSTONE_ORE};
                     }
-                    bk(evt.getBlock(), used, total, mat, 0);
+                    oreBFS(evt.getBlock(), used, total, mat, 0);
                 } else {
                     return false;
                 }
             }
             if (total.size() < 128) {
                 for (Block b : total) {
-                    ADAPTER.breakBlockNMS(b, evt.getPlayer());
+                    if (ADAPTER.isBlockSafeToBreak(b)) {
+                        ADAPTER.breakBlockNMS(b, evt.getPlayer());
+                    }
                 }
             }
             return true;
+        }
+
+        private void oreBFS(Block blk, List<Block> bks, List<Block> total, Material[] mat, int i) {
+            i++;
+            if (i >= 128 || total.size() >= 128) {
+                return;
+            }
+            bks.add(blk);
+            Location loc = blk.getLocation().clone();
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    for (int z = -1; z <= 1; z++) {
+                        Location loc2 = loc.clone();
+                        loc2.setX(loc2.getX() + x);
+                        loc2.setY(loc2.getY() + y);
+                        loc2.setZ(loc2.getZ() + z);
+                        if (!bks.contains(loc2.getBlock()) && (ArrayUtils.contains(mat, loc2.getBlock().getType()))) {
+                            oreBFS(loc2.getBlock(), bks, total, mat, i);
+                            total.add(loc2.getBlock());
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -2032,7 +2158,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 43;
+        }
+
+        public int getEnchantmentId() {
+            return 43;
         }
 
         @Override
@@ -2079,7 +2208,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 44;
+        }
+
+        public int getEnchantmentId() {
+            return 44;
         }
 
         @Override
@@ -2102,7 +2234,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 45;
+        }
+
+        public int getEnchantmentId() {
+            return 45;
         }
 
         @Override
@@ -2137,7 +2272,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 46;
+        }
+
+        public int getEnchantmentId() {
+            return 46;
         }
 
         @Override
@@ -2162,7 +2300,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
-            enchantmentID = 47;
+        }
+
+        public int getEnchantmentId() {
+            return 47;
         }
 
         @Override
@@ -2219,7 +2360,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 48;
+        }
+
+        public int getEnchantmentId() {
+            return 48;
         }
 
         @Override
@@ -2246,18 +2390,20 @@ public class CustomEnchantment {
                         Utilities.display(loc, Particle.REDSTONE, 1, 10f, 0, 0, 0);
                         loc.setY(loc.getY() + 1.3);
                         ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
-                        ent.setFallDistance((float) (-10 + ((level * power * 2) + 8)));
                     }
                 }, i);
             }
             AtomicBoolean applied = new AtomicBoolean(false);
+            Storage.rainbowSlamNoFallEntities.add(ent);
             for (int i = 0; i < 3; i++) {
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    //ent.setNoDamageTicks(20); // Prevent fall damage
                     ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.3));
+                    ent.setFallDistance(0);
                     if (ent.isOnGround() && !applied.get()) {
                         applied.set(true);
-                        Location ground = ent.getLocation().clone();
-                        ground.setY(l.getY() - 1);
+                        Storage.rainbowSlamNoFallEntities.remove(ent);
+                        ADAPTER.attackEntity(ent, evt.getPlayer(), level * power);
                         for (int c = 0; c < 1000; c++) {
                             Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math.toRadians(c))).multiply(.75);
                             Utilities.display(Utilities.getCenter(l), Particle.BLOCK_DUST, 1, (float) v.length(), 0, 0, 0);
@@ -2281,7 +2427,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
-            enchantmentID = 49;
+        }
+
+        public int getEnchantmentId() {
+            return 49;
         }
 
         @Override
@@ -2315,7 +2464,10 @@ public class CustomEnchantment {
             cooldown = 100;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 68;
+        }
+
+        public int getEnchantmentId() {
+            return 68;
         }
 
         @Override
@@ -2387,7 +2539,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 50;
+        }
+
+        public int getEnchantmentId() {
+            return 50;
         }
 
         @Override
@@ -2411,7 +2566,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 51;
+        }
+
+        public int getEnchantmentId() {
+            return 51;
         }
 
         @Override
@@ -2441,12 +2599,15 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
-            enchantmentID = 52;
+        }
+
+        public int getEnchantmentId() {
+            return 52;
         }
 
         @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-            if (evt.getBlock().getType().equals(AIR) || !ArrayUtils.contains(ALLOWED_MATERIALS, evt.getBlock().getType())) {
+            if (evt.getBlock().getType() != AIR && !ArrayUtils.contains(ALLOWED_MATERIALS, evt.getBlock().getType())) {
                 return false;
             }
             ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
@@ -2454,7 +2615,6 @@ public class CustomEnchantment {
             Set<Block> broken = new HashSet<>();
             blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
                     0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType());
-            Utilities.addUnbreaking(evt.getPlayer(), broken.size() / 4, usedHand);
             return true;
         }
 
@@ -2472,7 +2632,7 @@ public class CustomEnchantment {
                         return;
                     }
                 } else {
-                    BlockBreakEvent relativeEvent = new BlockBreakEvent(relativeBlock, player);
+                    BlockShredEvent relativeEvent = new BlockShredEvent(relativeBlock, player);
                     Bukkit.getServer().getPluginManager().callEvent(relativeEvent);
                     if (relativeEvent.isCancelled()) {
                         return;
@@ -2483,10 +2643,14 @@ public class CustomEnchantment {
                         } else if (ArrayUtils.contains(Storage.ORES, relativeBlock.getType())) {
                             relativeBlock.setType(STONE);
                         }
+                        WatcherEnchant.instance().onBlockShred(relativeEvent);
+                        if (relativeEvent.isCancelled()) {
+                            return;
+                        }
+                        relativeBlock.breakNaturally();
                     } else {
                         relativeBlock.setType(AIR);
                     }
-                    relativeBlock.breakNaturally();
                 }
                 Sound sound = null;
                 switch (originalType) {
@@ -2541,7 +2705,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
-            enchantmentID = 53;
+        }
+
+        public int getEnchantmentId() {
+            return 53;
         }
 
         @Override
@@ -2593,7 +2760,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
-            enchantmentID = 54;
+        }
+
+        public int getEnchantmentId() {
+            return 54;
         }
 
         @Override
@@ -2859,7 +3029,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 55;
+        }
+
+        public int getEnchantmentId() {
+            return 55;
         }
 
         @Override
@@ -2883,7 +3056,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 56;
+        }
+
+        public int getEnchantmentId() {
+            return 56;
         }
 
         @Override
@@ -2910,7 +3086,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 57;
+        }
+
+        public int getEnchantmentId() {
+            return 57;
         }
 
         @Override
@@ -2926,20 +3105,21 @@ public class CustomEnchantment {
                 Vector v = originalArrow.getVelocity();
                 v.setX(v.getX() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
                 v.setZ(v.getZ() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
-
                 Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)), v, 1, 0);
                 arrow.setShooter(player);
                 arrow.setVelocity(v.normalize().multiply(originalArrow.getVelocity().length()));
-
                 arrow.setFireTicks(originalArrow.getFireTicks());
                 arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
                 EntityShootBowEvent event = new EntityShootBowEvent(player, hand, arrow, (float) originalArrow.getVelocity().length());
                 Bukkit.getPluginManager().callEvent(event);
+                if (evt.isCancelled()) {
+                    arrow.remove();
+                    return false;
+                }
                 arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
                 arrow.setCritical(originalArrow.isCritical());
                 Utilities.putArrow(originalArrow, new EnchantArrow.ArrowGenericMulitple(originalArrow), player);
             }
-
             return true;
         }
     }
@@ -2956,7 +3136,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
-            enchantmentID = 58;
+        }
+
+        public int getEnchantmentId() {
+            return 58;
         }
 
         @Override
@@ -2993,7 +3176,10 @@ public class CustomEnchantment {
             cooldown = -1;
             power = -1.0;
             handUse = 0;
-            enchantmentID = 59;
+        }
+
+        public int getEnchantmentId() {
+            return 59;
         }
 
         @Override
@@ -3041,7 +3227,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
-            enchantmentID = 60;
+        }
+
+        public int getEnchantmentId() {
+            return 60;
         }
 
         @Override
@@ -3105,6 +3294,22 @@ public class CustomEnchantment {
 
     public static class Terraformer extends CustomEnchantment {
 
+        public Terraformer() {
+            maxLevel = 1;
+            loreName = "Terraformer";
+            probability = 0;
+            enchantable = new Tool[]{SHOVEL};
+            conflicting = new Class[]{};
+            description = "Places the leftmost blocks in the players inventory within a 7 block radius";
+            cooldown = 0;
+            power = -1.0;
+            handUse = 2;
+        }
+
+        public int getEnchantmentId() {
+            return 61;
+        }
+
         private void bk(Block blk, List<Block> bks, List<Block> total, int i) {
             i++;
             if (i > 16 || total.size() > 64) {
@@ -3124,19 +3329,6 @@ public class CustomEnchantment {
                     }
                 }
             }
-        }
-
-        public Terraformer() {
-            maxLevel = 1;
-            loreName = "Terraformer";
-            probability = 0;
-            enchantable = new Tool[]{SHOVEL};
-            conflicting = new Class[]{};
-            description = "Places the leftmost blocks in the players inventory within a 7 block radius";
-            cooldown = 0;
-            power = -1.0;
-            handUse = 2;
-            enchantmentID = 61;
         }
 
         @Override
@@ -3211,7 +3403,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 3;
-            enchantmentID = 62;
+        }
+
+        public int getEnchantmentId() {
+            return 62;
         }
 
         @Override
@@ -3252,7 +3447,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 2;
-            enchantmentID = 63;
+        }
+
+        public int getEnchantmentId() {
+            return 63;
         }
 
         @Override
@@ -3276,7 +3474,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 1;
-            enchantmentID = 64;
+        }
+
+        public int getEnchantmentId() {
+            return 64;
         }
 
         @Override
@@ -3320,18 +3521,19 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 1;
-            enchantmentID = 65;
+        }
+
+        public int getEnchantmentId() {
+            return 65;
         }
 
         @Override
         public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
             if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
-                evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), logs[Storage.rnd.nextInt(6)]);
                 Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
             } else if (evt.getBlock().getType() == LEAVES || evt.getBlock().getType() == LEAVES_2) {
-                evt.setCancelled(true);
                 evt.getBlock().setType(AIR);
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), leaves[Storage.rnd.nextInt(6)]);
                 Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
@@ -3352,7 +3554,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 3;
-            enchantmentID = 66;
+        }
+
+        public int getEnchantmentId() {
+            return 66;
         }
 
         @Override
@@ -3388,7 +3593,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = 1.0;
             handUse = 0;
-            enchantmentID = 67;
+        }
+
+        public int getEnchantmentId() {
+            return 67;
         }
 
         @Override
@@ -3425,8 +3633,6 @@ public class CustomEnchantment {
         }
     }
 
-//In-Development
-//OP-Enchantments
     public static class Apocalypse extends CustomEnchantment {
 
         public Apocalypse() {
@@ -3439,7 +3645,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
-            enchantmentID = 69;
+        }
+
+        public int getEnchantmentId() {
+            return 69;
         }
 
         @Override
@@ -3462,7 +3671,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
-            enchantmentID = 70;
+        }
+
+        public int getEnchantmentId() {
+            return 70;
         }
 
         @Override
@@ -3507,7 +3719,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
-            enchantmentID = 71;
+        }
+
+        public int getEnchantmentId() {
+            return 71;
         }
 
         @Override
@@ -3533,7 +3748,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 2;
-            enchantmentID = 72;
+        }
+
+        public int getEnchantmentId() {
+            return 72;
         }
 
         @Override
@@ -3557,7 +3775,10 @@ public class CustomEnchantment {
             cooldown = 0;
             power = -1.0;
             handUse = 0;
-            enchantmentID = 73;
+        }
+
+        public int getEnchantmentId() {
+            return 73;
         }
     }
 }

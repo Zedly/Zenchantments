@@ -49,13 +49,13 @@ public class Storage {
     public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
 
     // The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
-    public static final Map<FallingBlock, Double> attackBlocks = new HashMap<>();
+    public static final HashMap<FallingBlock, Double> attackBlocks = new HashMap<>();
 
     // Players currently using the Anthropomorphism enchantment
     public static final List<Entity> anthVortex = new ArrayList<>();
 
-    // Players mapped to a set of enchantment strings to prevent infinite recursion of certain enchantment events
-    public static final Map<Player, Set<String>> duringEvents = new HashMap<>();
+    // Entities affected by Rainbow Slam, protected against fall damage in order to deal damage as the attacker
+    public static final Set<Entity> rainbowSlamNoFallEntities = new HashSet<>();
 
     // Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
     public static final Map<Block, Location> grabLocs = new HashMap<>();

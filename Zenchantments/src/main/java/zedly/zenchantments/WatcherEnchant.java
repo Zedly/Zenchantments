@@ -3,6 +3,7 @@ package zedly.zenchantments;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.*;
 import static org.bukkit.entity.EntityType.*;
@@ -33,6 +34,17 @@ public class WatcherEnchant implements Listener {
 
     @EventHandler(ignoreCancelled = false)
     public void onBlockBreak(BlockBreakEvent evt) {
+        if (!evt.isCancelled() && !(evt instanceof BlockShredEvent) && evt.getBlock().getType() != AIR) {
+            Player player = evt.getPlayer();
+            boolean usedHand = Utilities.usedHand(HAND);
+            ItemStack usedStack = Utilities.usedStack(player, usedHand);
+            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
+                return ench.onBlockBreak(evt, level, usedHand);
+            });
+        }
+    }
+    
+    public void onBlockShred(BlockShredEvent evt) {
         if (!evt.isCancelled() && evt.getBlock().getType() != AIR) {
             Player player = evt.getPlayer();
             boolean usedHand = Utilities.usedHand(HAND);
@@ -68,6 +80,10 @@ public class WatcherEnchant implements Listener {
             });
         }
     }
+    
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent evt) {
+    }
 
     @EventHandler
     public void onEntityKill(EntityDeathEvent evt) {
@@ -88,6 +104,9 @@ public class WatcherEnchant implements Listener {
 
     @EventHandler
     public void onEntityHit(EntityDamageByEntityEvent evt) {
+        if (evt.getDamage() <= 0) {
+            return;
+        }
         if (evt.getDamager() instanceof Player) {
             Player player = (Player) evt.getDamager();
             boolean usedHand = Utilities.usedHand(HAND);

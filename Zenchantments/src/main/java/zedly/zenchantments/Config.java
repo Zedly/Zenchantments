@@ -284,7 +284,7 @@ public class Config {
     // Returns the custom enchantment from the enchantment ID
     private CustomEnchantment getEnchant(int id) {
         for (CustomEnchantment ench : enchants.values()) {
-            if (ench.enchantmentID == id) {
+            if (ench.getEnchantmentId() == id) {
                 return ench;
             }
         }

@@ -30,7 +30,6 @@ import org.bukkit.Location;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.entity.EntityType.*;
-import org.bukkit.entity.Guardian;
 
 
 /**
@@ -114,7 +113,7 @@ public class NMS_1_11_R1 extends CompatibilityAdapter {
         boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
         return success;
     }
-
+    
     @Override
     public boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
         if (target instanceof CraftSheep) {

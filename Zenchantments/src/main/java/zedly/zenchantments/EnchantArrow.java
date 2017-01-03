@@ -370,11 +370,16 @@ public class EnchantArrow implements AdvancedArrow {
 
         public ArrowEnchantTracer(Projectile entity, int level, double power) {
             super(entity, level, power);
+            Storage.tracer.put((Arrow) entity, (int) Math.round(level * power));
         }
 
-        public void onFlight() {
-            Storage.tracer.put((Arrow) getArrow(), (int) Math.round(getLevel() * getPower()));
-            die();
+        @Override
+        public boolean onImpact(EntityDamageByEntityEvent evt) {
+            if (evt.isCancelled()) {
+                Storage.tracer.remove((Arrow) getArrow());
+                die();
+            }
+            return true;
         }
     }
 

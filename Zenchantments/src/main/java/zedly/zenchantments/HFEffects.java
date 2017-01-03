@@ -5,7 +5,6 @@ import org.bukkit.*;
 import static org.bukkit.GameMode.CREATIVE;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -26,24 +25,23 @@ public class HFEffects implements Runnable {
     // Moves Anthropomorphism blocks around depending on their state
     private void anthropomorphism() {
         // Move agressive Anthropomorphism Blocks towards a target & attack
-        for (FallingBlock b : Storage.attackBlocks.keySet()) {
-            if (!Storage.anthVortex.contains(Storage.idleBlocks.get(b))) {
-                for (Entity e : b.getNearbyEntities(7, 7, 7)) {
-                    if (e instanceof LivingEntity) {
-                        LivingEntity entity = (LivingEntity) e;
-                        if (!(entity instanceof Player) && entity instanceof Monster) {
-                            b.setVelocity(e.getLocation().subtract(b.getLocation()).toVector().multiply(.25));
-                            if (entity.getLocation().getWorld().equals(b.getLocation().getWorld())) {
-                                if (entity.getLocation().distance(b.getLocation()) < 1.2) {
-                                    EntityDamageEvent evt = new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.SUFFOCATION, .5);
-                                    Bukkit.getPluginManager().callEvent(evt);
-                                    entity.setLastDamageCause(evt);
-                                    if (!evt.isCancelled()) {
-                                        entity.setNoDamageTicks(0);
-                                        entity.setMaximumNoDamageTicks(0);
-                                        entity.damage(.5 * Storage.attackBlocks.get(b));
-                                        b.remove();
-                                    }
+        Iterator<FallingBlock> anthroIterator = Storage.attackBlocks.keySet().iterator();
+        while (anthroIterator.hasNext()) {
+            FallingBlock blockEntity = anthroIterator.next();
+            if (!Storage.anthVortex.contains(Storage.idleBlocks.get(blockEntity))) {
+                for (Entity e : blockEntity.getNearbyEntities(7, 7, 7)) {
+                    if (e instanceof Monster) {
+                        LivingEntity targetEntity = (LivingEntity) e;
+                        blockEntity.setVelocity(e.getLocation().subtract(blockEntity.getLocation()).toVector().multiply(.25));
+                        if (targetEntity.getLocation().getWorld().equals(blockEntity.getLocation().getWorld())) {
+                            if (targetEntity.getLocation().distance(blockEntity.getLocation()) < 1.2
+                                    && blockEntity.hasMetadata("ze.anthrothrower")) {
+                                Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
+                                if (targetEntity.getNoDamageTicks() == 0
+                                        && Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker, .5 * Storage.attackBlocks.get(blockEntity))) {
+                                    targetEntity.setNoDamageTicks(0);
+                                    anthroIterator.remove();
+                                    blockEntity.remove();
                                 }
                             }
                         }
@@ -172,62 +170,55 @@ public class HFEffects implements Runnable {
 
     // Fast Scan of Player's Armor and their hand to register enchantments 
     private void scanPlayers() {
-        Map<CustomEnchantment, Integer> map;
         for (Player player : Bukkit.getOnlinePlayers()) {
             EnchantPlayer.matchPlayer(player).tick();
-            Config config = Config.get(player.getWorld());
             for (ItemStack stk : player.getInventory().getArmorContents()) {
-                map = config.getEnchants(stk);
-                for (CustomEnchantment ench : map.keySet()) {
-                    ench.onFastScan(player, map.get(ench), true);
-                }
+                CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+                    return ench.onFastScan(player, level, true);
+                });
             }
-
-            map = config.getEnchants(player.getInventory().getItemInMainHand());
-            for (CustomEnchantment ench : map.keySet()) {
-                ench.onScanHands(player, map.get(ench), true);
-            }
-            map = config.getEnchants(player.getInventory().getItemInOffHand());
-            for (CustomEnchantment ench : map.keySet()) {
-                ench.onScanHands(player, map.get(ench), false);
-            }
-
+            ItemStack stk = player.getInventory().getItemInMainHand();
+            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+                return ench.onFastScanHands(player, level, true);
+            });
+            stk = player.getInventory().getItemInOffHand();
+            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+                return ench.onFastScanHands(player, level, false);
+            });
         }
     }
 
     // Moves Tracer arrows towards a target
     private void tracer() {
         for (Arrow e : Storage.tracer.keySet()) {
-            if (Storage.tracer.containsKey(e)) {
-                Entity close = null;
-                double distance = 100;
-                int level = Storage.tracer.get(e);
-                level += 2;
-                for (Entity e1 : e.getNearbyEntities(level, level, level)) {
-                    if (e1.getLocation().getWorld().equals(e.getLocation().getWorld())) {
-                        double d = e1.getLocation().distance(e.getLocation());
-                        if (e.getLocation().getWorld().equals(((Entity) e.getShooter()).getLocation().getWorld())) {
-                            if (d < distance && e1 instanceof LivingEntity && !e1.equals(e.getShooter()) && e.getLocation().distance(((Entity) e.getShooter()).getLocation()) > 15) {
-                                distance = d;
-                                close = e1;
-                            }
+            Entity close = null;
+            double distance = 100;
+            int level = Storage.tracer.get(e);
+            level += 2;
+            for (Entity e1 : e.getNearbyEntities(level, level, level)) {
+                if (e1.getLocation().getWorld().equals(e.getLocation().getWorld())) {
+                    double d = e1.getLocation().distance(e.getLocation());
+                    if (e.getLocation().getWorld().equals(((Entity) e.getShooter()).getLocation().getWorld())) {
+                        if (d < distance && e1 instanceof LivingEntity && !e1.equals(e.getShooter()) && e.getLocation().distance(((Entity) e.getShooter()).getLocation()) > 15) {
+                            distance = d;
+                            close = e1;
                         }
                     }
                 }
-                if (close != null) {
-                    Location location = close.getLocation();
-                    org.bukkit.util.Vector v = new org.bukkit.util.Vector(0D, 0D, 0D);
-                    Location pos = e.getLocation();
-                    double its = location.distance(pos);
-                    if (its == 0) {
-                        its = 1;
-                    }
-                    v.setX((location.getX() - pos.getX()) / its);
-                    v.setY((location.getY() - pos.getY()) / its);
-                    v.setZ((location.getZ() - pos.getZ()) / its);
-                    v.add(e.getLocation().getDirection().multiply(.1));
-                    e.setVelocity(v.multiply(2));
+            }
+            if (close != null) {
+                Location location = close.getLocation();
+                org.bukkit.util.Vector v = new org.bukkit.util.Vector(0D, 0D, 0D);
+                Location pos = e.getLocation();
+                double its = location.distance(pos);
+                if (its == 0) {
+                    its = 1;
                 }
+                v.setX((location.getX() - pos.getX()) / its);
+                v.setY((location.getY() - pos.getY()) / its);
+                v.setZ((location.getZ() - pos.getZ()) / its);
+                v.add(e.getLocation().getDirection().multiply(.1));
+                e.setVelocity(v.multiply(2));
             }
         }
     }
