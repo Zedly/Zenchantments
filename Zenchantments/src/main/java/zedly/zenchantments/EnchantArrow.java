@@ -323,7 +323,7 @@ public class EnchantArrow implements AdvancedArrow {
         }
 
         public boolean onImpact(EntityDamageByEntityEvent evt) {
-            if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
+            if (evt.getEntity() instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 Player p = (Player) ((Projectile) evt.getDamager()).getShooter();
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 int difference = (int) Math.round(getLevel() * getPower());

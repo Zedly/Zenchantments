@@ -224,12 +224,21 @@ public class Utilities {
 
     // Returns the exact center of a block of a given location
     public static Location getCenter(Location loc) {
+        return getCenter(loc, false);
+    }
+    
+    // Returns the exact center of a block of a given location
+    public static Location getCenter(Location loc, boolean centerVertical) {
         double x = loc.getX();
+        double y = loc.getY();
         double z = loc.getZ();
         if (x >= 0) {
             x += .5;
         } else {
             x += .5;
+        }
+        if(centerVertical) {
+            y = (int) y + .5;
         }
         if (z >= 0) {
             z += .5;
@@ -238,6 +247,7 @@ public class Utilities {
         }
         Location lo = loc.clone();
         lo.setX(x);
+        lo.setY(y);
         lo.setZ(z);
         return lo;
     }
@@ -245,6 +255,11 @@ public class Utilities {
     // Returns the exact center of a block of a given block
     public static Location getCenter(Block blk) {
         return getCenter(blk.getLocation());
+    }
+    
+    // Returns the exact center of a block of a given block
+    public static Location getCenter(Block blk, boolean centerVertical) {
+        return getCenter(blk.getLocation(), centerVertical);
     }
 
     // Returns the nearby entities at any loction within the given range

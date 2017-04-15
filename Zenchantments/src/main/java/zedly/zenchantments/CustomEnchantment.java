@@ -743,8 +743,13 @@ public class CustomEnchantment {
                 mat = COAL;
                 itemInfo = 1;
             } else if (evt.getBlock().getType() == CLAY) {
-                evt.setCancelled(true);
-                evt.getBlock().setType(AIR);
+                
+                Block affectedBlock = evt.getBlock();
+                Storage.fireDropLocs.add(affectedBlock);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    Storage.fireDropLocs.remove(affectedBlock);
+                }, 5);
+
                 Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
                 for (int x = 0; x < 4; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(CLAY_BRICK));
@@ -764,15 +769,25 @@ public class CustomEnchantment {
                 for (double i = height - 1; i >= evt.getBlock().getLocation().getY(); i--) {
                     location.setY(i);
                     Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
-                    evt.setCancelled(true);
-                    evt.getBlock().setType(AIR);
+
+                    Block affectedBlock = evt.getBlock();
+                    Storage.fireDropLocs.add(affectedBlock);
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                        Storage.fireDropLocs.remove(affectedBlock);
+                    }, 5);
+
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
                     return true;
                 }
             }
             if (mat != AIR) {
-                evt.setCancelled(true);
-                evt.getBlock().setType(AIR);
+
+                Block affectedBlock = evt.getBlock();
+                Storage.fireDropLocs.add(affectedBlock);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                    Storage.fireDropLocs.remove(affectedBlock);
+                }, 5);
+
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
                 Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
                 return true;
@@ -1324,7 +1339,7 @@ public class CustomEnchantment {
 
     public static class Harvest extends CustomEnchantment {
 
-        private static final Material[] CROP_BLOCKS = {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK};
+        private static final Material[] CROP_BLOCKS = {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK, NETHER_WARTS};
 
         public Harvest() {
             maxLevel = 3;
@@ -2713,7 +2728,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-            if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+            if (evt.getEntity() instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                 Player p = (Player) evt.getDamager();
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 int difference = (int) Math.round(level * power);
@@ -3602,30 +3617,34 @@ public class CustomEnchantment {
         @Override
         public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
             if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
-                if (evt.getEntity() instanceof Player) {
-                    Player player = (Player) evt.getEntity();
-                    if (evt.getDamage() < player.getHealth()) {
-                        evt.setCancelled(true);
-                        player.damage(evt.getDamage());
-                        player.setVelocity(player.getLocation().subtract(evt.getDamager().getLocation()).toVector().multiply((float) (1 / (level * power + 1.5))));
-                        ItemStack[] s = player.getInventory().getArmorContents();
-                        for (int i = 0; i < 4; i++) {
-                            if (s[i] != null) {
-                                Utilities.addUnbreaking(player, s[i], 1);
-                                if (s[i].getDurability() > s[i].getType().getMaxDurability()) {
-                                    s[i] = null;
-                                }
+                return true;
+            }
+
+            if (evt.getEntity() instanceof Player) {
+                Player player = (Player) evt.getEntity();
+                if (evt.getDamage() < player.getHealth()) {
+                    evt.setCancelled(true);
+                    player.damage(evt.getDamage());
+                    player.setVelocity(player.getLocation().subtract(evt.getDamager().getLocation()).toVector().multiply((float) (1 / (level * power + 1.5))));
+                    ItemStack[] s = player.getInventory().getArmorContents();
+                    for (int i = 0; i < 4; i++) {
+                        if (s[i] != null) {
+                            Utilities.addUnbreaking(player, s[i], 1);
+                            if (s[i].getDurability() > s[i].getType().getMaxDurability()) {
+                                s[i] = null;
                             }
                         }
-                        player.getInventory().setArmorContents(s);
                     }
+                    player.getInventory().setArmorContents(s);
                 }
             }
+
             return true;
         }
 
         @Override
-        public boolean onScan(Player player, int level, boolean usedHand) {
+        public boolean onScan(Player player, int level, boolean usedHand
+        ) {
             player.setWalkSpeed((float) (.164f - level * power * .014f));
             Utilities.addPotion(player, INCREASE_DAMAGE, 610, (int) Math.round(power * level));
             player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, true));

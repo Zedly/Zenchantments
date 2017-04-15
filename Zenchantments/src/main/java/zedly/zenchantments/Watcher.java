@@ -86,11 +86,11 @@ public class Watcher implements Listener {
             }
         }
     }
-    
+
     // Prevents mobs affected by Rainbow Slam from being hurt by generic "FALL" event. Damage is instead dealt via an EDBEe in order to make protections and money drops work
     @EventHandler
     public void onEntityFall(EntityDamageEvent evt) {
-        if(evt.getCause() == DamageCause.FALL && Storage.rainbowSlamNoFallEntities.contains(evt.getEntity())) {
+        if (evt.getCause() == DamageCause.FALL && Storage.rainbowSlamNoFallEntities.contains(evt.getEntity())) {
             evt.setCancelled(true);
         }
     }
@@ -128,6 +128,10 @@ public class Watcher implements Listener {
                 }
             }
         }, 1);
+
+        if (Storage.fireDropLocs.contains(evt.getLocation().getBlock())) {
+            evt.setCancelled(true);
+        }
     }
 
     // Prevents players from harvesting materials from the Water Walker and Fire Walker trails

@@ -1,6 +1,7 @@
 package zedly.zenchantments;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -60,6 +61,9 @@ public class Storage {
     // Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
     public static final Map<Block, Location> grabLocs = new HashMap<>();
 
+    // Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
+    public static final Set<Block> fireDropLocs = new HashSet<>();
+    
     // Locations where Vortex has been used on a block and are waiting for the Watcher to handle their teleportation
     public static final Map<Block, Location> vortexLocs = new HashMap<>();
 
