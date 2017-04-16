@@ -743,17 +743,17 @@ public class CustomEnchantment {
                 mat = COAL;
                 itemInfo = 1;
             } else if (evt.getBlock().getType() == CLAY) {
+                Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+                for (int x = 0; x < 4; x++) {
+                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(CLAY_BRICK));
+                }
                 
                 Block affectedBlock = evt.getBlock();
                 Storage.fireDropLocs.add(affectedBlock);
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                     Storage.fireDropLocs.remove(affectedBlock);
                 }, 5);
-
-                Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
-                for (int x = 0; x < 4; x++) {
-                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(CLAY_BRICK));
-                }
+                
                 return true;
             } else if (evt.getBlock().getType() == CACTUS) {
                 Location location = evt.getBlock().getLocation().clone();
@@ -770,26 +770,28 @@ public class CustomEnchantment {
                     location.setY(i);
                     Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
+                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
+                    
                     Block affectedBlock = evt.getBlock();
                     Storage.fireDropLocs.add(affectedBlock);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                         Storage.fireDropLocs.remove(affectedBlock);
                     }, 5);
-
-                    evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
+                    
                     return true;
                 }
             }
             if (mat != AIR) {
+
+                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
+                Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
                 Block affectedBlock = evt.getBlock();
                 Storage.fireDropLocs.add(affectedBlock);
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                     Storage.fireDropLocs.remove(affectedBlock);
                 }, 5);
-
-                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
-                Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+                
                 return true;
             }
             return false;
