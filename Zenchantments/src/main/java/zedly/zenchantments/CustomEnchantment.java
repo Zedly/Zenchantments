@@ -747,13 +747,13 @@ public class CustomEnchantment {
                 for (int x = 0; x < 4; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(CLAY_BRICK));
                 }
-                
+
                 Block affectedBlock = evt.getBlock();
                 Storage.fireDropLocs.add(affectedBlock);
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                     Storage.fireDropLocs.remove(affectedBlock);
                 }, 5);
-                
+
                 return true;
             } else if (evt.getBlock().getType() == CACTUS) {
                 Location location = evt.getBlock().getLocation().clone();
@@ -771,13 +771,13 @@ public class CustomEnchantment {
                     Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
-                    
+
                     Block affectedBlock = evt.getBlock();
                     Storage.fireDropLocs.add(affectedBlock);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                         Storage.fireDropLocs.remove(affectedBlock);
                     }, 5);
-                    
+
                     return true;
                 }
             }
@@ -791,7 +791,7 @@ public class CustomEnchantment {
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                     Storage.fireDropLocs.remove(affectedBlock);
                 }, 5);
-                
+
                 return true;
             }
             return false;
@@ -3084,7 +3084,9 @@ public class CustomEnchantment {
             if (player.getVelocity().getY() < -0.45) {
                 for (Entity e : player.getNearbyEntities(0, 2, 0)) {
                     double fall = Math.min(player.getFallDistance(), 20.0);
-                    ADAPTER.attackEntity((LivingEntity) e, player, power * level * fall * 0.25);
+                    if (e instanceof LivingEntity) {
+                        ADAPTER.attackEntity((LivingEntity) e, player, power * level * fall * 0.25);
+                    }
                 }
             }
             return true;
