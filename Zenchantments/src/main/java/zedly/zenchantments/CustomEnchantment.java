@@ -201,7 +201,7 @@ public class CustomEnchantment {
                     }
                     if (counter < 64 && player.getInventory().contains(COBBLESTONE)) {
                         Utilities.removeItem(player, COBBLESTONE, 1);
-                        Utilities.addUnbreaking(player, 2, usedHand);
+                        Utilities.damageTool(player, 2, usedHand);
                         player.updateInventory();
                         Location loc = player.getLocation();
                         Material mat[] = new Material[]{STONE, GRAVEL, DIRT, GRASS};
@@ -505,7 +505,7 @@ public class CustomEnchantment {
                                 arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
                                 arrow.setCritical(true);
                                 Utilities.putArrow(arrow, new EnchantArrow.ArrowGenericMulitple(arrow), player);
-                                Utilities.addUnbreaking(player, 1, usedHand);
+                                Utilities.damageTool(player, 1, usedHand);
                             }
                         }, i * 2);
                     }
@@ -665,7 +665,7 @@ public class CustomEnchantment {
         @Override
         public boolean onBlockBreak(BlockBreakEvent evt, final int level, boolean usedHand) {
             if (evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                 for (int x = 0; x < Storage.rnd.nextInt((int) Math.round(power * level + 1)) + 1; x++) {
                     evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()),
                             new ItemStack(evt.getBlock().getType() == GOLD_ORE ? GOLD_INGOT : IRON_INGOT));
@@ -1028,7 +1028,7 @@ public class CustomEnchantment {
                             }
                             Utilities.display(Utilities.getCenter(relativeBlock), Particle.VILLAGER_HAPPY, 30, 1f, .3f, .3f, .3f);
                             if (Storage.rnd.nextInt(10) <= 3) {
-                                Utilities.addUnbreaking(player, 1, usedHand);
+                                Utilities.damageTool(player, 1, usedHand);
                             }
                             if (!player.getGameMode().equals(CREATIVE)) {
                                 Utilities.removeItem(player, INK_SACK, (short) 15, 1);
@@ -1330,7 +1330,7 @@ public class CustomEnchantment {
                     player.setFallDistance(-40);
                     ADAPTER.damagePlayer(player, 3, DamageCause.MAGIC);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                        Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                     }, 1);
                     return true;
                 }
@@ -1378,7 +1378,7 @@ public class CustomEnchantment {
                                             || (block.getRelative(x, y + 1, z).getType() == CARROT)) && block.getRelative(x, y + 1, z).getData() == 7)) {
                                         final Block blk = block.getRelative(x, y + 1, z);
                                         if (ADAPTER.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
-                                            Utilities.addUnbreaking(player, 1, usedHand);
+                                            Utilities.damageTool(player, 1, usedHand);
                                             Storage.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
                                             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                                 Storage.grabLocs.remove(blk);
@@ -1523,7 +1523,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onEntityInteract(PlayerInteractEntityEvent evt, int level, boolean usedHand) {
-            if (!evt.getPlayer().isSneaking()) {
+            if (usedHand && !evt.getPlayer().isSneaking()) {
                 shoot(evt.getPlayer(), level, usedHand);
                 return true;
             }
@@ -1532,7 +1532,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-            if (!evt.getPlayer().isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
+            if (usedHand && !evt.getPlayer().isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
                 shoot(evt.getPlayer(), level, usedHand);
                 return true;
             }
@@ -1999,7 +1999,7 @@ public class CustomEnchantment {
                                         continue;
                                     }
                                     if (Storage.rnd.nextBoolean()) {
-                                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                        Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                                     }
                                 }
                             }
@@ -2198,7 +2198,7 @@ public class CustomEnchantment {
                                         && block.getRelative(x, y + 1, z).getType() == AIR) {
                                     ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), SOIL, 0);
                                     if (Storage.rnd.nextBoolean()) {
-                                        Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                        Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                                     }
                                 }
                             }
@@ -2345,7 +2345,7 @@ public class CustomEnchantment {
                 evt.getBlock().getRelative(DOWN).setType(AIR);
             }
             evt.getBlock().setType(AIR);
-            Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+            Utilities.damageTool(evt.getPlayer(), 1, usedHand);
             evt.getPlayer().getWorld().dropItem(Utilities.getCenter(evt.getBlock()), new ItemStack(dropMaterial, 1, blockData));
             return true;
         }
@@ -2356,7 +2356,7 @@ public class CustomEnchantment {
             if (!sheep.isSheared()) {
                 int color = Storage.rnd.nextInt(16);
                 int number = Storage.rnd.nextInt(3) + 1;
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                 evt.setCancelled(true);
                 sheep.setSheared(true);
                 evt.getEntity().getWorld().dropItemNaturally(Utilities.getCenter(evt.getEntity().getLocation()), new ItemStack(WOOL, number, (short) color));
@@ -2388,7 +2388,7 @@ public class CustomEnchantment {
             if (!(evt.getRightClicked() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getRightClicked(), evt.getPlayer(), 0)) {
                 return false;
             }
-            Utilities.addUnbreaking(evt.getPlayer(), 9, usedHand);
+            Utilities.damageTool(evt.getPlayer(), 9, usedHand);
             final LivingEntity ent = (LivingEntity) evt.getRightClicked();
             final Location l = ent.getLocation().clone();
             ent.teleport(l);
@@ -2459,7 +2459,7 @@ public class CustomEnchantment {
 
         @Override
         public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-            if (!(evt.getEntity() instanceof LivingEntity) || !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+            if (evt.getEntity() instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
                 int pow = (int) Math.round(level * power);
                 int dur = (int) Math.round(10 + level * 20 * power);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), PotionEffectType.WITHER, dur, pow);
@@ -2535,7 +2535,7 @@ public class CustomEnchantment {
                             }
                         }
                     }
-                    Utilities.addUnbreaking(evt.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+                    Utilities.damageTool(evt.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
                     return true;
                 }
             }
@@ -2631,12 +2631,12 @@ public class CustomEnchantment {
             final Config config = Config.get(evt.getBlock().getWorld());
             Set<Block> broken = new HashSet<>();
             blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
-                    0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType());
+                    0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType(), usedHand);
             return true;
         }
 
         public void blocks(Block centerBlock, final Block relativeBlock, int[] coords, int time, double size, Set<Block> used,
-                final Player player, final Config config, final Material itemType) {
+                final Player player, final Config config, final Material itemType, boolean usedHand) {
             if (relativeBlock.getType() != AIR && !used.contains(relativeBlock)) {
                 final Material originalType = relativeBlock.getType();
                 if (!ArrayUtils.contains(ALLOWED_MATERIALS, relativeBlock.getType())
@@ -2691,6 +2691,9 @@ public class CustomEnchantment {
                 if (sound != null) {
                     relativeBlock.getLocation().getWorld().playSound(relativeBlock.getLocation(), sound, 10, 1);
                 }
+
+                Utilities.damageTool(player, 1, usedHand);
+
                 used.add(relativeBlock);
                 for (int i = 0; i < 3; i++) {
                     if (coords[i] > 0) {
@@ -2698,10 +2701,10 @@ public class CustomEnchantment {
                         Block blk1 = relativeBlock.getRelative(i == 0 ? -1 : 0, i == 1 ? -1 : 0, i == 2 ? -1 : 0);
                         Block blk2 = relativeBlock.getRelative(i == 0 ? 1 : 0, i == 1 ? 1 : 0, i == 2 ? 1 : 0);
                         if (blk1.getLocation().distanceSquared(centerBlock.getLocation()) < size + (-1 + 2 * Math.random())) {
-                            blocks(centerBlock, blk1, coords, time + 2, size, used, player, config, itemType);
+                            blocks(centerBlock, blk1, coords, time + 2, size, used, player, config, itemType, usedHand);
                         }
                         if (blk2.getLocation().distanceSquared(centerBlock.getLocation()) < size + (-1 + 2 * Math.random())) {
-                            blocks(centerBlock, blk2, coords, time + 2, size, used, player, config, itemType);
+                            blocks(centerBlock, blk2, coords, time + 2, size, used, player, config, itemType, usedHand);
                         }
                         coords[i] += 1;
                     }
@@ -3026,7 +3029,7 @@ public class CustomEnchantment {
             }
             if (!evt.getClickedBlock().getType().equals(original) || data != originalInt) {
                 evt.getClickedBlock().setData((byte) data);
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                 return true;
             }
             return false;
@@ -3119,7 +3122,7 @@ public class CustomEnchantment {
             EnchantArrow.ArrowGenericMulitple ar = new EnchantArrow.ArrowGenericMulitple(originalArrow);
             Utilities.putArrow(originalArrow, ar, player);
             Bukkit.getPluginManager().callEvent(new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length()));
-            Utilities.addUnbreaking(player, (int) Math.round(level / 2.0 + 1), usedHand);
+            Utilities.damageTool(player, (int) Math.round(level / 2.0 + 1), usedHand);
             for (int i = 0; i < (int) Math.round(power * level * 4); i++) {
                 Vector v = originalArrow.getVelocity();
                 v.setX(v.getX() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
@@ -3167,7 +3170,7 @@ public class CustomEnchantment {
                 LivingEntity ent = (LivingEntity) evt.getEntity();
                 if (evt.getDamage() < ent.getHealth()) {
                     evt.setCancelled(true);
-                    Utilities.addUnbreaking(((Player) evt.getDamager()), 1, usedHand);
+                    Utilities.damageTool(((Player) evt.getDamager()), 1, usedHand);
                     ent.damage(evt.getDamage());
                 }
             }
@@ -3398,7 +3401,7 @@ public class CustomEnchantment {
                                 b.setData(bt);
                                 evt.getPlayer().updateInventory();
                                 if (Storage.rnd.nextInt(10) == 5) {
-                                    Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                                    Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                                 }
                             }
                         }
@@ -3551,11 +3554,11 @@ public class CustomEnchantment {
             if (evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
                 evt.getBlock().setType(AIR);
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), logs[Storage.rnd.nextInt(6)]);
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
             } else if (evt.getBlock().getType() == LEAVES || evt.getBlock().getType() == LEAVES_2) {
                 evt.getBlock().setType(AIR);
                 evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), leaves[Storage.rnd.nextInt(6)]);
-                Utilities.addUnbreaking(evt.getPlayer(), 1, usedHand);
+                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
             }
             return true;
         }
@@ -3753,7 +3756,7 @@ public class CustomEnchantment {
             EnchantArrow.ArrowAdminMissile arrow = new EnchantArrow.ArrowAdminMissile((Projectile) evt.getProjectile());
             Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
             evt.setCancelled(true);
-            Utilities.addUnbreaking((Player) evt.getEntity(), 1, usedHand);
+            Utilities.damageTool((Player) evt.getEntity(), 1, usedHand);
             Utilities.removeItem(((Player) evt.getEntity()), Material.ARROW, 1);
             return true;
         }

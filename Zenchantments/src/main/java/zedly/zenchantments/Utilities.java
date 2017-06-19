@@ -14,15 +14,15 @@ import org.bukkit.potion.*;
 public class Utilities {
 
     // Returns true for main hand slots, false otherwise
-    public static boolean usedHand(EquipmentSlot preferred) {
+    public static boolean isMainHand(EquipmentSlot preferred) {
         return preferred == HAND;
     }
 
     // Returns an ArrayList of ItemStacks of the player's held item and armor
-    public static List<ItemStack> getArmorandMainHandItems(Player player, boolean usedHand) {
+    public static List<ItemStack> getArmorandMainHandItems(Player player, boolean mainHand) {
         List<ItemStack> stk = new ArrayList<>();
         stk.addAll(Arrays.asList(player.getInventory().getArmorContents()));
-        stk.add(usedStack(player, usedHand));
+        stk.add(mainHand ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand());
         Iterator<ItemStack> it = stk.iterator();
         while (it.hasNext()) {
             ItemStack is = it.next();
@@ -35,7 +35,7 @@ public class Utilities {
 
     // Removes the given ItemStack's durability by the given 'damage' and then sets the item direction the given players hand.
     //      This also takes into account the unbreaking enchantment
-    public static void addUnbreaking(Player player, int damage, boolean handUsed) {
+    public static void damageTool(Player player, int damage, boolean handUsed) {
         if (!player.getGameMode().equals(CREATIVE)) {
             ItemStack hand = handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
             for (int i = 0; i < damage; i++) {
