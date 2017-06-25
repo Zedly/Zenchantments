@@ -3397,8 +3397,7 @@ public class CustomEnchantment {
                     for (Block b : total) {
                         if (b.getType().equals(AIR)) {
                             if (Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
-                                b.setType(mat);
-                                b.setData(bt);
+                                Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, bt);
                                 evt.getPlayer().updateInventory();
                                 if (Storage.rnd.nextInt(10) == 5) {
                                     Utilities.damageTool(evt.getPlayer(), 1, usedHand);

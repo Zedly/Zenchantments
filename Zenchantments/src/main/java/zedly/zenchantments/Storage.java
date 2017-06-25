@@ -118,6 +118,9 @@ public class Storage {
         String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
         System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
         switch (nmsVersionString) {
+            case "v1_12_R1":
+                COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_12_R1.getInstance();
+                break;
             case "v1_11_R1":
                 COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_11_R1.getInstance();
                 break;
