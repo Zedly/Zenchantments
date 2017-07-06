@@ -22,6 +22,7 @@ public enum Tool {
     CHESTPLATE("Chestplate", new Material[]{DIAMOND_CHESTPLATE, IRON_CHESTPLATE, GOLD_CHESTPLATE, CHAINMAIL_CHESTPLATE, LEATHER_CHESTPLATE, ELYTRA}, false),
     LEGGINGS("Leggings", new Material[]{DIAMOND_LEGGINGS, IRON_LEGGINGS, GOLD_LEGGINGS, CHAINMAIL_LEGGINGS, LEATHER_LEGGINGS}, false),
     BOOTS("Boots", new Material[]{DIAMOND_BOOTS, IRON_BOOTS, GOLD_BOOTS, CHAINMAIL_BOOTS, LEATHER_BOOTS}, false),
+    WINGS("Elytra", new Material[]{ELYTRA}, false),
     ALL("All", Material.values(), false);
 
     private final String id;              // The identification String of the enum

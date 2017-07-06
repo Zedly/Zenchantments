@@ -52,8 +52,8 @@ public class Utilities {
     }
 
     // Displays a particle with the given data
-    public static void display(Location loc, Particle particle, int amount, float speed, float xO, float yO, float zO) {
-        loc.getWorld().spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), amount, xO, yO, zO, speed);
+    public static void display(Location loc, Particle particle, int amount, double speed, double xO, double yO, double zO) {
+        loc.getWorld().spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), amount, (float) xO, (float) yO, (float) zO, (float) speed);
     }
 
     // Removes the given ItemStack's durability by the given 'damage'

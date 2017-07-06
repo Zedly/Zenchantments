@@ -3237,6 +3237,93 @@ public class CustomEnchantment {
         }
     }
 
+    public static class Stream extends CustomEnchantment {
+
+        private static final Particle[] trailTypes = {
+            Particle.CLOUD,
+            Particle.CRIT,
+            Particle.VILLAGER_HAPPY,
+            Particle.REDSTONE,
+            Particle.HEART,};
+
+        public Stream() {
+            maxLevel = 1;
+            loreName = "Stream";
+            probability = 0;
+            enchantable = new Tool[]{WINGS};
+            conflicting = new Class[]{};
+            description = "Creates a trail of particles when in flight";
+            cooldown = 0;
+            power = 1.0;
+            handUse = 0;
+        }
+
+        public int getEnchantmentId() {
+            return 420;
+        }
+
+        @Override
+        public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
+            if (evt.getItem() == null || evt.getItem().getType() != Material.ELYTRA) {
+                return false;
+            }
+            Player player = evt.getPlayer();
+
+            if (!evt.getPlayer().hasMetadata("ze.stream.mode")) {
+                player.setMetadata("ze.stream.mode", new FixedMetadataValue(Storage.zenchantments, 0));
+            }
+            if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
+                int b = player.getMetadata("ze.stream.mode").get(0).asInt();
+                b = b == 4 ? 0 : b + 1;
+                player.setMetadata("ze.stream.mode", new FixedMetadataValue(Storage.zenchantments, b));
+                switch (b) {
+                    case 0:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Clouds");
+                        break;
+                    case 1:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Gold Sparks");
+                        break;
+                    case 2:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Green Sparks");
+                        break;
+                    case 3:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Rainbow Dust");
+                        break;
+                    case 4:
+                        player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Hearts");
+                        break;
+                }
+                evt.setCancelled(true);
+
+                // Prevent auto-equipping
+                if ((player.getInventory().getChestplate() == null || player.getInventory().getChestplate().getType() == Material.AIR)) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                        if ((player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR)) {
+                            ItemStack stack = player.getInventory().getChestplate();
+                            player.getInventory().setItemInMainHand(stack);
+                            player.getInventory().setChestplate(new ItemStack(Material.AIR));
+                        }
+                    }, 0);
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onFastScan(Player player, int level, boolean usedHand) {
+            if (player.isGliding() && player.getVelocity().length() >= 0.5) {
+                if (!player.hasMetadata("ze.stream.mode")) {
+                    player.setMetadata("ze.stream.mode", new FixedMetadataValue(Storage.zenchantments, 0));
+                }
+                int b = player.getMetadata("ze.stream.mode").get(0).asInt();
+                Utilities.display(player.getLocation(), trailTypes[b], 3, 0.1, 0, 0, 0);
+                return true;
+            }
+            return false;
+        }
+
+    }
+
     public static class Switch extends CustomEnchantment {
 
         public Switch() {
@@ -3316,6 +3403,13 @@ public class CustomEnchantment {
 
     public static class Terraformer extends CustomEnchantment {
 
+        private static final BlockFace[] SEARCH_FACES = {
+            BlockFace.NORTH,
+            BlockFace.SOUTH,
+            BlockFace.EAST,
+            BlockFace.WEST,
+            BlockFace.DOWN,};
+
         public Terraformer() {
             maxLevel = 1;
             loreName = "Terraformer";
@@ -3355,22 +3449,11 @@ public class CustomEnchantment {
 
         @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-            ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
             if (evt.getPlayer().isSneaking()) {
                 if (evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-                    List<Block> used = new ArrayList<>();
-                    List<Block> total = new ArrayList<>();
-                    Location l = evt.getClickedBlock().getLocation();
-                    if (evt.getClickedBlock().getRelative(0, 0, 1).getType() != AIR
-                            && evt.getClickedBlock().getRelative(0, 0, -1).getType() != AIR
-                            && evt.getClickedBlock().getRelative(-1, 0, 0).getType() != AIR
-                            && evt.getClickedBlock().getRelative(1, 0, 0).getType() != AIR) {
-                        l.setY(l.getY() + 1);
-                    }
-                    if (l.getBlock().getType().equals(AIR)) {
-                        total.add(l.getBlock());
-                    }
-                    bk(l.getBlock(), used, total, 0);
+                    Block start = evt.getClickedBlock().getRelative(evt.getBlockFace());
+                    List<Block> blocks = bfs(start);
+                    
                     Material[] mats = {STONE, GRASS, DIRT, COBBLESTONE, WOOD, SAND, GRAVEL,
                         GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE, WOOL,
                         DOUBLE_STEP, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK,
@@ -3378,9 +3461,13 @@ public class CustomEnchantment {
                         MYCEL, NETHER_BRICK, ENDER_STONE, WOOD_DOUBLE_STEP, EMERALD_ORE, QUARTZ_ORE,
                         QUARTZ_BLOCK, STAINED_CLAY, LEAVES_2, LOG_2, SLIME_BLOCK, PRISMARINE, HARD_CLAY,
                         PACKED_ICE, RED_SANDSTONE, DOUBLE_STONE_SLAB2};
+                    
+                    
                     Material mat = AIR;
                     byte bt = 0;
                     int c = -1;
+                    
+                    
                     for (int i = 0; i < 9; i++) {
                         if (evt.getPlayer().getInventory().getItem(i) != null) {
                             if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && ArrayUtils.contains(mats, evt.getPlayer().getInventory().getItem(i).getType())) {
@@ -3394,22 +3481,45 @@ public class CustomEnchantment {
                     if (mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
                         bt = 14;
                     }
-                    for (Block b : total) {
+                    
+                    for (Block b : blocks) {
                         if (b.getType().equals(AIR)) {
                             if (Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
                                 Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, bt);
-                                evt.getPlayer().updateInventory();
                                 if (Storage.rnd.nextInt(10) == 5) {
                                     Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                                 }
                             }
                         }
                     }
+                    evt.getPlayer().updateInventory();
                     return true;
                 }
             }
             return false;
         }
+
+        private List<Block> bfs(Block start) {
+            LinkedList<Block> core = new LinkedList<>();
+            LinkedList<Block> perimeter = new LinkedList<>();
+            perimeter.add(start);
+
+            while (!perimeter.isEmpty() && core.size() < 64) {
+                Block block = perimeter.remove(0);
+                for (BlockFace bf : SEARCH_FACES) {
+                    Block rBlock = block.getRelative(bf);
+                    if (rBlock.getType() == Material.AIR
+                            && rBlock.getLocation().distanceSquared(start.getLocation()) < 48
+                            && !core.contains(rBlock)
+                            && !perimeter.contains(rBlock)) {
+                        perimeter.add(rBlock);
+                    }
+                    core.add(block);
+                }
+            }
+            return core;
+        }
+
     }
 
     public static class Toxic extends CustomEnchantment {
