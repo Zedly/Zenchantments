@@ -1733,10 +1733,9 @@ public class CustomEnchantment {
         @Override
         public boolean onFastScan(Player player, int level, boolean usedHand) {
             if (player.isGliding() && player.getVelocity().length() >= 1) {
-                System.out.print(player.getVelocity().length());
                 for (Entity e : player.getNearbyEntities(2 + level, 3, 2 + level)) {
                     double damage = player.getVelocity().length() * 1.5 * level;
-                    if (e instanceof LivingEntity) {
+                    if (e instanceof Monster) {
                         ADAPTER.attackEntity((LivingEntity) e, player, power * damage);
                     }
                 }
