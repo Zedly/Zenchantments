@@ -3426,27 +3426,6 @@ public class CustomEnchantment {
             return 61;
         }
 
-        private void bk(Block blk, List<Block> bks, List<Block> total, int i) {
-            i++;
-            if (i > 16 || total.size() > 64) {
-                return;
-            }
-            bks.add(blk);
-            Location[] locs = new Location[]{blk.getRelative(-1, 0, 0).getLocation(), blk.getRelative(1, 0, 0).getLocation(),
-                blk.getRelative(0, 0, -1).getLocation(), blk.getRelative(0, 0, 1).getLocation(), blk.getRelative(0, -1, 0).getLocation()};
-            for (Location l : locs) {
-                if (!bks.contains(l.getBlock()) && l.getBlock().getType().equals(AIR)) {
-                    if (total.size() > 64) {
-                        continue;
-                    }
-                    bk(l.getBlock(), bks, total, i);
-                    if (l.distance(bks.get(0).getLocation()) < 6) {
-                        total.add(l.getBlock());
-                    }
-                }
-            }
-        }
-
         @Override
         public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
             if (evt.getPlayer().isSneaking()) {
@@ -3455,7 +3434,7 @@ public class CustomEnchantment {
                     List<Block> blocks = bfs(start);
                     
                     Material[] mats = {STONE, GRASS, DIRT, COBBLESTONE, WOOD, SAND, GRAVEL,
-                        GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE, WOOL,
+                        GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE,
                         DOUBLE_STEP, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK,
                         CLAY, NETHERRACK, SOUL_SAND, SMOOTH_BRICK, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2,
                         MYCEL, NETHER_BRICK, ENDER_STONE, WOOD_DOUBLE_STEP, EMERALD_ORE, QUARTZ_ORE,
@@ -3509,13 +3488,13 @@ public class CustomEnchantment {
                 for (BlockFace bf : SEARCH_FACES) {
                     Block rBlock = block.getRelative(bf);
                     if (rBlock.getType() == Material.AIR
-                            && rBlock.getLocation().distanceSquared(start.getLocation()) < 48
-                            && !core.contains(rBlock)
-                            && !perimeter.contains(rBlock)) {
+                            && rBlock.getLocation().distanceSquared(start.getLocation()) < 25
+                            && !perimeter.contains(rBlock)
+                            && !core.contains(rBlock)) {
                         perimeter.add(rBlock);
                     }
-                    core.add(block);
                 }
+                core.add(block);
             }
             return core;
         }
