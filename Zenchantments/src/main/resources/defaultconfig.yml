@@ -4,7 +4,7 @@ ZenchantmentsConfigVersion: 1.5.0
 #    Chance of obtaining the enchantment when enchanting
 
 # Tools: (Axe, Shovel, Sword, Pickaxe, Rod, Shears, Bow, Lighter,
-#            Hoe, Helmet, Chestplate, Leggings, Boots, All)
+#            Hoe, Helmet, Chestplate, Leggings, Boots, Elytra, All)
 #    Determines what tools can recieve the enchantment
 
 # Name: (For color use '§' instead of "&")
@@ -385,6 +385,13 @@ enchantments:
       Max Level: 4
       Cooldown: 0
       Power: 1.0
+  - Sonic Shock:
+      Probability: 1.0
+      Tools: Elytra
+      Name: Sonic Shock
+      Max Level: 3
+      Cooldown: 0
+      Power: 1.0
   - Spectral:
       Probability: 1.0
       Tools: Shovel
@@ -426,7 +433,13 @@ enchantments:
       Name: Stock
       Max Level: 1
       Cooldown: 0
-      Power: 1.0
+      Power: 1.0ma
+  - Stream:
+      Probability: 1.0
+      Tools: Elytra
+      Max Level: 1
+      Name: Stream
+      Cooldown: 0      
   - Switch:
       Probability: 1.0
       Tools: Pickaxe

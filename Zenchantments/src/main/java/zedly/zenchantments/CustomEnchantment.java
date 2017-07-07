@@ -1712,6 +1712,39 @@ public class CustomEnchantment {
         }
     }
 
+    public static class SonicShock extends CustomEnchantment {
+
+        public SonicShock() {
+            maxLevel = 3;
+            loreName = "Sonic Shock";
+            probability = 0;
+            enchantable = new Tool[]{WINGS};
+            conflicting = new Class[]{};
+            description = "Damages mobs when flying past at high speed";
+            cooldown = 0;
+            power = 1.0;
+            handUse = 0;
+        }
+
+        public int getEnchantmentId() {
+            return 56;
+        }
+
+        @Override
+        public boolean onFastScan(Player player, int level, boolean usedHand) {
+            if (player.isGliding() && player.getVelocity().length() >= 1) {
+                System.out.print(player.getVelocity().length());
+                for (Entity e : player.getNearbyEntities(2 + level, 3, 2 + level)) {
+                    double damage = player.getVelocity().length() * 1.5 * level;
+                    if (e instanceof LivingEntity) {
+                        ADAPTER.attackEntity((LivingEntity) e, player, power * damage);
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
     public static class Magnetism extends CustomEnchantment {
 
         public Magnetism() {
@@ -3432,7 +3465,7 @@ public class CustomEnchantment {
                 if (evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
                     Block start = evt.getClickedBlock().getRelative(evt.getBlockFace());
                     List<Block> blocks = bfs(start);
-                    
+
                     Material[] mats = {STONE, GRASS, DIRT, COBBLESTONE, WOOD, SAND, GRAVEL,
                         GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE,
                         DOUBLE_STEP, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK,
@@ -3440,13 +3473,11 @@ public class CustomEnchantment {
                         MYCEL, NETHER_BRICK, ENDER_STONE, WOOD_DOUBLE_STEP, EMERALD_ORE, QUARTZ_ORE,
                         QUARTZ_BLOCK, STAINED_CLAY, LEAVES_2, LOG_2, SLIME_BLOCK, PRISMARINE, HARD_CLAY,
                         PACKED_ICE, RED_SANDSTONE, DOUBLE_STONE_SLAB2};
-                    
-                    
+
                     Material mat = AIR;
                     byte bt = 0;
                     int c = -1;
-                    
-                    
+
                     for (int i = 0; i < 9; i++) {
                         if (evt.getPlayer().getInventory().getItem(i) != null) {
                             if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() && ArrayUtils.contains(mats, evt.getPlayer().getInventory().getItem(i).getType())) {
@@ -3460,7 +3491,7 @@ public class CustomEnchantment {
                     if (mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
                         bt = 14;
                     }
-                    
+
                     for (Block b : blocks) {
                         if (b.getType().equals(AIR)) {
                             if (Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
