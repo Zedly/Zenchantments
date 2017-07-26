@@ -9,4 +9,4 @@ See [Releases] (https://github.com/Zedly/Zenchantments/releases) for downloads
 To compile the entire project yourself, you need multiple versions of CraftBukkit as Maven repositories. These are created automatically when you use [BuildTools] (https://www.spigotmc.org/wiki/buildtools/) to obtain CB and/or Spigot. If you are making a private build and only need support for one server version, you can easily add and remove compatibility adapters by editing the parent POM and a switch in PlayerInteractUtil.
 
 ## Compatibility
-The current version of this plugin is fully compatible with CraftBukkit and Spigot versions 1.10.x and 1.11.x. Other versions have partial support through Bukkit-only fallback code, but integration with protection and logging plugins will be limited.
+The current version of this plugin is fully compatible with CraftBukkit and Spigot versions 1.10.x, 1.11.x and 1.12. Other versions have partial support through Bukkit-only fallback code, but integration with protection and logging plugins will be limited.
