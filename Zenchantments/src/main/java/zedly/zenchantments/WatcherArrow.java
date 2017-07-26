@@ -1,0 +1,59 @@
+package zedly.zenchantments;
+
+import java.util.*;
+import org.bukkit.entity.*;
+import org.bukkit.event.*;
+import org.bukkit.event.entity.*;
+
+// This is the watcher used by the EnchantArrow class. Each method checks for certain events
+// and conditions and will call the relevant methods defined in the AdvancedArrow interface
+//      
+public class WatcherArrow implements Listener {
+
+
+    // Called when an arrow hits a block
+    @EventHandler
+    public boolean impact(ProjectileHitEvent evt) {
+        if (Storage.advancedProjectiles.containsKey(evt.getEntity())) {
+            Set<AdvancedArrow> ar = Storage.advancedProjectiles.get(evt.getEntity());
+            for (AdvancedArrow a : ar) {
+                a.onImpact();
+            }
+        }
+        return true;
+    }
+
+    // Called when an arrow hits an entity
+    @EventHandler
+    public boolean entityHit(EntityDamageByEntityEvent evt) {
+        if (evt.getDamager() instanceof Arrow) {
+            if (Storage.advancedProjectiles.containsKey(evt.getDamager())) {
+                Set<AdvancedArrow> arrows = Storage.advancedProjectiles.get(evt.getDamager());
+                for (AdvancedArrow arrow : arrows) {
+                    if (evt.getEntity() instanceof LivingEntity) {
+                        if (!arrow.onImpact(evt)) {
+                            evt.setDamage(0);
+                        }
+                    }
+                    Storage.advancedProjectiles.remove(evt.getDamager());
+                    if (evt.getEntity() instanceof LivingEntity && evt.getDamage() >= ((LivingEntity) evt.getEntity()).getHealth()) {
+                        Storage.killedEntities.put(evt.getEntity(), arrow);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    // Called when an arrow kills an entity; the advanced arrow is removed after this event
+    @EventHandler
+    public boolean entityDeath(EntityDeathEvent evt) {
+        if (Storage.killedEntities.containsKey(evt.getEntity())) {
+            AdvancedArrow arrow = Storage.killedEntities.get(evt.getEntity());
+            arrow.onKill(evt);
+            Storage.killedEntities.remove(evt.getEntity());
+        }
+        return true;
+    }
+
+}
