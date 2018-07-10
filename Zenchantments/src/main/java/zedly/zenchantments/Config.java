@@ -1,15 +1,24 @@
 package zedly.zenchantments;
 
-import java.io.*;
-import java.util.*;
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.apache.commons.io.IOUtils;
-import org.bukkit.*;
-import static org.bukkit.Material.ARROW;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import zedly.zenchantments.enchantments.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
+import static org.bukkit.Material.ARROW;
 
 // This class manages indivudual world configs, loading them each from the config file. It will start the process
 //      to automatically update the config files if they are old
@@ -17,10 +26,10 @@ public class Config {
 
     public static final Set<Config> CONFIGS = new HashSet<>(); // Set of all world configs on the current server
 
-    private final Map<String, CustomEnchantment> enchants;     // Set of active Custom Enchantments 
+    private final Map<String, CustomEnchantment> enchants;     // Set of active Custom Enchantments
     private final double enchantRarity;                        // Overall rarity of obtaining enchantments
     private final int maxEnchants;                             // Max number of Custom Enchantments on a tool
-    private final int shredDrops;                              // The setting (all, block, none) for shred drops 
+    private final int shredDrops;                              // The setting (all, block, none) for shred drops
     private final boolean explosionBlockBreak;                 // Determines whether enchantment explosions cause world damage
     private final boolean descriptionLore;                     // Determines if description lore appears on tools
     private final ChatColor descriptionColor;                  // The color of the description lore
@@ -156,9 +165,14 @@ public class Config {
                         configInfo.put(name, part.get(name));
                     }
                 }
-                for (Class cl : CustomEnchantment.class.getClasses()) {
+
+                List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+                new FastClasspathScanner(CustomEnchantment.class.getPackage().getName())
+                    .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
+                    .scan();
+                for (Class<? extends CustomEnchantment> cl : customEnchantments) {
                     try {
-                        CustomEnchantment ench = (CustomEnchantment) cl.newInstance();
+                        CustomEnchantment ench = cl.newInstance();
                         if (configInfo.containsKey(ench.loreName)) {
                             LinkedHashMap<String, Object> data = configInfo.get(ench.loreName);
                             ench.probability = (float) (double) data.get("Probability");
@@ -243,9 +257,9 @@ public class Config {
             }
         }
         LinkedHashMap<CustomEnchantment, Integer> finalmap = new LinkedHashMap<>();
-        for (Class c : new Class[]{CustomEnchantment.Lumber.class, CustomEnchantment.Shred.class,
-            CustomEnchantment.Mow.class, CustomEnchantment.Pierce.class, CustomEnchantment.Extraction.class,
-            CustomEnchantment.Plough.class}) {
+        for (Class c : new Class[]{Lumber.class, Shred.class,
+                                   Mow.class, Pierce.class, Extraction.class,
+                                   Plough.class}) {
             CustomEnchantment e = null;
             for (CustomEnchantment en : getEnchants().values()) {
                 if (en.getClass().equals(c)) {

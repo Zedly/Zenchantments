@@ -1,18 +1,24 @@
 package zedly.zenchantments;
 
-import java.util.*;
-import java.util.Map.Entry;
-import org.bukkit.ChatColor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import static org.bukkit.event.EventPriority.MONITOR;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
-import org.bukkit.Material;
-import org.bukkit.inventory.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import zedly.zenchantments.enchantments.Unrepairable;
+
+import java.util.*;
+import java.util.Map.*;
+
+import static org.bukkit.event.EventPriority.MONITOR;
 
 // This class manages the combination of enchantments in an anvil. It takes into account conflicting enchantments, 
 //      the max number of enchantments per tool, and the enchantment's max level. It shuffles the results every time
@@ -34,12 +40,12 @@ public class AnvilMerge implements Listener {
         Map<CustomEnchantment, Integer> rightEnchantments = config.getEnchants(rightItem, true);
 
         for (CustomEnchantment e : leftEnchantments.keySet()) {
-            if (e.getClass().equals(CustomEnchantment.Unrepairable.class)) {
+            if (e.getClass().equals(Unrepairable.class)) {
                 return new ItemStack(Material.AIR);
             }
         }
         for (CustomEnchantment e : rightEnchantments.keySet()) {
-            if (e.getClass().equals(CustomEnchantment.Unrepairable.class)) {
+            if (e.getClass().equals(Unrepairable.class)) {
                 return new ItemStack(Material.AIR);
             }
         }

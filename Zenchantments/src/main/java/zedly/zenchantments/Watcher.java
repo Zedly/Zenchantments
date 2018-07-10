@@ -1,26 +1,38 @@
 package zedly.zenchantments;
 
-import java.util.*;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.*;
-import static org.bukkit.Material.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
-import org.bukkit.event.*;
-import static org.bukkit.event.block.Action.*;
-import org.bukkit.event.block.*;
-import org.bukkit.event.enchantment.*;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
+import zedly.zenchantments.enchantments.*;
+
+import java.util.*;
+
+import static org.bukkit.Material.*;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 // This contains extraneous watcher methods that are not relevant to arrows or enchantments
 public class Watcher implements Listener {
@@ -32,10 +44,10 @@ public class Watcher implements Listener {
         if (evt.getBlock().getType() == DISPENSER) {
             ItemStack stk = evt.getItem();
             if (stk != null) {
-                CustomEnchantment.Laser ench = null;
+                Laser ench = null;
                 for (CustomEnchantment e : config.getEnchants().values()) {
-                    if (e.getClass().equals(CustomEnchantment.Laser.class)) {
-                        ench = (CustomEnchantment.Laser) e;
+                    if (e.getClass().equals(Laser.class)) {
+                        ench = (Laser) e;
                     }
                 }
                 if (ench == null) {
@@ -230,13 +242,13 @@ public class Watcher implements Listener {
                     if (evt.getCurrentItem().getItemMeta().hasLore()) {
                         Player player = (Player) evt.getWhoClicked();
                         for (CustomEnchantment e : Config.get(evt.getWhoClicked().getWorld()).getEnchants(evt.getCurrentItem()).keySet()) {
-                            if (e.getClass().equals(CustomEnchantment.Jump.class) || e.getClass().equals(CustomEnchantment.Meador.class)) {
+                            if (e.getClass().equals(Jump.class) || e.getClass().equals(Meador.class)) {
                                 player.removePotionEffect(PotionEffectType.JUMP);
                             }
-                            if (e.getClass().equals(CustomEnchantment.NightVision.class)) {
+                            if (e.getClass().equals(NightVision.class)) {
                                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
                             }
-                            if (e.getClass().equals(CustomEnchantment.Weight.class)) {
+                            if (e.getClass().equals(Weight.class)) {
                                 player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
                             }
                         }

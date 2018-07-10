@@ -1,20 +1,28 @@
 package zedly.zenchantments;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang3.ArrayUtils;
-import org.bukkit.Bukkit;
-import static org.bukkit.Material.*;
-import org.bukkit.entity.*;
-import static org.bukkit.entity.EntityType.*;
-import org.bukkit.event.*;
-import org.bukkit.event.block.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
-import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import static org.bukkit.inventory.EquipmentSlot.HAND;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
+import java.util.concurrent.atomic.*;
+
+import static org.bukkit.Material.AIR;
+import static org.bukkit.entity.EntityType.HORSE;
+import static org.bukkit.entity.EntityType.VILLAGER;
+import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
+import static org.bukkit.inventory.EquipmentSlot.HAND;
 import static zedly.zenchantments.Tool.BOW_;
 
 // This is the watcher used by the CustomEnchantment class. Each method checks the enchantments on relevant items,

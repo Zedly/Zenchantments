@@ -1,12 +1,21 @@
 package zedly.zenchantments;
 
-import java.util.*;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.*;
-import static org.bukkit.Material.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import static org.bukkit.potion.PotionEffectType.*;
+import zedly.zenchantments.enchantments.Haste;
+import zedly.zenchantments.enchantments.Meador;
+import zedly.zenchantments.enchantments.Speed;
+import zedly.zenchantments.enchantments.Weight;
+
+import java.util.*;
+
+import static org.bukkit.Material.STATIONARY_LAVA;
+import static org.bukkit.Material.STATIONARY_WATER;
+import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
 // This is "Medium Frequency Effects", called every 5 ticks to perform certain actions within the plugin
 public class MFEffects implements Runnable {
@@ -42,7 +51,7 @@ public class MFEffects implements Runnable {
             if (player.hasMetadata("ze.haste")) {
                 boolean has = false;
                 for (CustomEnchantment e : Config.get(player.getWorld()).getEnchants(player.getInventory().getItemInMainHand()).keySet()) {
-                    if (e.getClass().equals(CustomEnchantment.Haste.class)) {
+                    if (e.getClass().equals(Haste.class)) {
                         has = true;
                     }
                 }
@@ -88,7 +97,7 @@ public class MFEffects implements Runnable {
             boolean check = false;
             for (ItemStack stk : player.getInventory().getArmorContents()) {
                 Map<CustomEnchantment, Integer> map = world.getEnchants(stk);
-                Class[] enchs = new Class[]{CustomEnchantment.Weight.class, CustomEnchantment.Speed.class, CustomEnchantment.Meador.class};
+                Class[] enchs = new Class[]{Weight.class, Speed.class, Meador.class};
                 for (CustomEnchantment ench : map.keySet()) {
                     if (ArrayUtils.contains(enchs, ench.getClass())) {
                         check = true;
