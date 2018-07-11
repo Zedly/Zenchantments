@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/NMS_1_10_R1/NMS_1_10_R1.iml" filepath="$PROJECT_DIR$/NMS_1_10_R1/NMS_1_10_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NMS_1_11_R1/NMS_1_11_R1.iml" filepath="$PROJECT_DIR$/NMS_1_11_R1/NMS_1_11_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NMS_1_12_R1/NMS_1_12_R1.iml" filepath="$PROJECT_DIR$/NMS_1_12_R1/NMS_1_12_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Zenchantments/Zenchantments.iml" filepath="$PROJECT_DIR$/Zenchantments/Zenchantments.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Zenchantments-parent.iml" filepath="$PROJECT_DIR$/Zenchantments-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CompatibilityAdapter/compatibility-adapter.iml" filepath="$PROJECT_DIR$/CompatibilityAdapter/compatibility-adapter.iml" />
+    </modules>
+  </component>
+</project>

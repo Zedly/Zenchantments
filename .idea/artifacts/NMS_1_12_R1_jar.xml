@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="NMS_1_12_R1:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/NMS_1_12_R1_jar</output-path>
+    <root id="archive" name="NMS_1_12_R1.jar">
+      <element id="module-output" name="NMS_1_12_R1" />
+      <element id="module-output" name="compatibility-adapter" />
+    </root>
+  </artifact>
+</component>

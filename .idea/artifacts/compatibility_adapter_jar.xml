@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="compatibility-adapter:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/compatibility_adapter_jar</output-path>
+    <root id="archive" name="compatibility-adapter.jar">
+      <element id="module-output" name="compatibility-adapter" />
+    </root>
+  </artifact>
+</component>
