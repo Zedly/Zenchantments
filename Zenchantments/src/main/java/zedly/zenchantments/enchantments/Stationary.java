@@ -7,7 +7,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static zedly.zenchantments.enums.Tool.BOW_;
@@ -24,7 +24,7 @@ public class Stationary extends CustomEnchantment {
         description = "Negates any knockback when attacking mobs, leaving them clueless as to who is attacking";
         cooldown = 0;
         power = -1.0;
-        handUse = 3;
+        handUse = Hand.BOTH;
     }
 
     public int getEnchantmentId() {

@@ -14,10 +14,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.entity.EntityType.HORSE;

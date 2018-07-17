@@ -1,7 +1,8 @@
 package zedly.zenchantments;
 
-import java.util.*;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.util.*;
 
 // This manages any changes to the config of the plugin. Beyond 1.4.1, there should be mininal changes.
 public class UpdateConfig {

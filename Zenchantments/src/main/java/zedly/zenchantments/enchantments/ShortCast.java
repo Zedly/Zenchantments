@@ -3,7 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.ROD;
 
@@ -18,7 +18,7 @@ public class ShortCast extends CustomEnchantment {
         description = "Launches fishing hooks closer in when casting";
         cooldown = 0;
         power = 1.0;
-        handUse = 2;
+        handUse = Hand.RIGHT;
     }
 
     public int getEnchantmentId() {

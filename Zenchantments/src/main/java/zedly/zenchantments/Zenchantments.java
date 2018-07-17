@@ -1,15 +1,20 @@
 package zedly.zenchantments;
 //For Bukkit & Spigot 1.10.X-1.11.X
 
-import java.io.*;
-import java.util.Map;
-import java.util.TreeMap;
-import org.bukkit.*;
-import static org.bukkit.Material.*;
-import org.bukkit.command.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
+
+import static org.bukkit.Material.STATIONARY_LAVA;
+import static org.bukkit.Material.STATIONARY_WATER;
 
 public class Zenchantments extends JavaPlugin {
 

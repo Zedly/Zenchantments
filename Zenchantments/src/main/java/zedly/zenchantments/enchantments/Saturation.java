@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
@@ -19,7 +19,7 @@ public class Saturation extends CustomEnchantment {
         description = "Uses less of the player's hunger";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

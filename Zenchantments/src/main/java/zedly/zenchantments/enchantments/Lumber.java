@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ public class Lumber extends CustomEnchantment {
         description = "Breaks the entire tree at once";
         cooldown = 0;
         power = -1.0;
-        handUse = 1;
+        handUse = Hand.LEFT;
     }
 
     public int getEnchantmentId() {

@@ -1,7 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.ALL;
 
@@ -16,7 +16,7 @@ public class Unrepairable extends CustomEnchantment {
         description = "Prevents an item from being repaired";
         cooldown = 0;
         power = -1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

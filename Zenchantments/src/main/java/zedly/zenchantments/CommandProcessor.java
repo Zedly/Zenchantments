@@ -1,13 +1,20 @@
 package zedly.zenchantments;
 
-import java.util.*;
-import org.apache.commons.lang.*;
-import org.bukkit.*;
-import static org.bukkit.Material.*;
-import org.bukkit.command.*;
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.*;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.*;
+
+import static org.bukkit.Material.*;
 
 // This class handles all commands used by this plugin
 public class CommandProcessor {

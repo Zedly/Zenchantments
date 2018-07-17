@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.BOW_;
 
@@ -24,7 +24,7 @@ public class Spread extends CustomEnchantment {
         description = "Fires an array of arrows simultaneously";
         cooldown = 0;
         power = 1.0;
-        handUse = 2;
+        handUse = Hand.RIGHT;
     }
 
     public int getEnchantmentId() {

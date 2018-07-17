@@ -6,7 +6,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.*;
 
@@ -21,7 +21,7 @@ public class Level extends CustomEnchantment {
         description = "Drops more XP when killing mobs or mining ores";
         cooldown = 0;
         power = 1.0;
-        handUse = 3;
+        handUse = Hand.BOTH;
     }
 
     public int getEnchantmentId() {

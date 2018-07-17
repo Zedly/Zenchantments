@@ -5,7 +5,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static zedly.zenchantments.enums.Tool.BOW_;
@@ -21,7 +21,7 @@ public class Blizzard extends CustomEnchantment {
         description = "Spawns a blizzard where the arrow strikes freezing nearby entities";
         cooldown = 0;
         power = 1.0;
-        handUse = 2;
+        handUse = Hand.RIGHT;
     }
 
     public int getEnchantmentId() {

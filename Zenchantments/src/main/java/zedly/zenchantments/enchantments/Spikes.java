@@ -4,7 +4,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
@@ -19,7 +19,7 @@ public class Spikes extends CustomEnchantment {
         description = "Damages entities the player jumps onto";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

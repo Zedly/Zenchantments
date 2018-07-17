@@ -5,7 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.*;
 
@@ -20,7 +20,7 @@ public class Grab extends CustomEnchantment {
         description = "Teleports mined items and XP directly to the player";
         cooldown = 0;
         power = -1.0;
-        handUse = 1;
+        handUse = Hand.LEFT;
     }
 
     public int getEnchantmentId() {

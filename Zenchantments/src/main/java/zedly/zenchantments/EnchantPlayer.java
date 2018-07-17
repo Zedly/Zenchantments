@@ -1,8 +1,12 @@
 package zedly.zenchantments;
 
-import java.util.*;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 // This is used to manage players on the server. It allows for easy access in enabling/disabling enchantments
 //      and for adding cooldowns for different enchantments as they are used

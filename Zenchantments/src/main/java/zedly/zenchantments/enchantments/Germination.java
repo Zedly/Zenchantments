@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.GameMode.CREATIVE;
@@ -30,7 +30,7 @@ public class Germination extends CustomEnchantment {
         description = "Uses bonemeal from the player's inventory to grow nearby plants";
         cooldown = 0;
         power = 1.0;
-        handUse = 2;
+        handUse = Hand.RIGHT;
     }
 
     public int getEnchantmentId() {

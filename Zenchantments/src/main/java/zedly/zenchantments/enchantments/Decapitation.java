@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.entity.EntityType.*;
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -27,7 +27,7 @@ public class Decapitation extends CustomEnchantment {
         description = "Increases the chance for dropping the enemies head on death";
         cooldown = 0;
         power = 1.0;
-        handUse = 1;
+        handUse = Hand.LEFT;
     }
 
     public int getEnchantmentId() {

@@ -6,7 +6,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.Material.AIR;
 import static zedly.zenchantments.enums.Tool.CHESTPLATE;
@@ -22,7 +22,7 @@ public class Stock extends CustomEnchantment {
         description = "Refills the player's item in hand when they run out";
         cooldown = -1;
         power = -1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

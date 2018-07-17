@@ -6,7 +6,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static zedly.zenchantments.enums.Tool.BOW_;
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -22,7 +22,7 @@ public class Siphon extends CustomEnchantment {
         description = "Drains the health of the mob that you attack, giving it to you";
         cooldown = 0;
         power = 1.0;
-        handUse = 3;
+        handUse = Hand.BOTH;
     }
 
     public int getEnchantmentId() {

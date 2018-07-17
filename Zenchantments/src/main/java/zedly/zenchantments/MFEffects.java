@@ -11,7 +11,8 @@ import zedly.zenchantments.enchantments.Meador;
 import zedly.zenchantments.enchantments.Speed;
 import zedly.zenchantments.enchantments.Weight;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.bukkit.Material.STATIONARY_LAVA;
 import static org.bukkit.Material.STATIONARY_WATER;

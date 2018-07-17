@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import java.util.*;
@@ -31,7 +31,7 @@ public class Anthropomorphism extends CustomEnchantment {
                 "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
         cooldown = 0;
         power = 1.0;
-        handUse = 3;
+        handUse = Hand.BOTH;
 
     }
 

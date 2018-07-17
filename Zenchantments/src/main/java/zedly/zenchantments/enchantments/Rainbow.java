@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.*;
@@ -28,7 +28,7 @@ public class Rainbow extends CustomEnchantment {
         description = "Drops random flowers and wool colors when used";
         cooldown = 0;
         power = -1.0;
-        handUse = 3;
+        handUse = Hand.BOTH;
     }
 
     public int getEnchantmentId() {

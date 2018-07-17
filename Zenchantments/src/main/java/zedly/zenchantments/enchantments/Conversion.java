@@ -7,7 +7,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -23,7 +23,7 @@ public class Conversion extends CustomEnchantment {
         description = "Converts XP to health when right clicking and sneaking";
         cooldown = 0;
         power = 1.0;
-        handUse = 2;
+        handUse = Hand.RIGHT;
     }
 
     public int getEnchantmentId() {

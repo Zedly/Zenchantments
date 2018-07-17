@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -23,7 +23,7 @@ public class Transformation extends CustomEnchantment {
         description = "Occasionally causes the attacked mob to be transformed into its similar cousin";
         cooldown = 0;
         power = 1.0;
-        handUse = 1;
+        handUse = Hand.LEFT;
     }
 
     public int getEnchantmentId() {

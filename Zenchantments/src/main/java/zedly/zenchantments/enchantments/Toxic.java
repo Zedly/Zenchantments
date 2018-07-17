@@ -7,7 +7,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
@@ -25,7 +25,7 @@ public class Toxic extends CustomEnchantment {
         description = "Sickens the target, making them nauseous and unable to eat";
         cooldown = 0;
         power = 1.0;
-        handUse = 3;
+        handUse = Hand.BOTH;
     }
 
     public int getEnchantmentId() {

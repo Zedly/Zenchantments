@@ -1,10 +1,11 @@
 package zedly.zenchantments;
 
-import java.util.List;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import java.util.List;
 
 // Basic Structure for both EnchantmentArrows and ElementalArrows
 public interface AdvancedArrow {

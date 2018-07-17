@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class Glide extends CustomEnchantment {
         description = "Gently brings the player back to the ground when sneaking";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

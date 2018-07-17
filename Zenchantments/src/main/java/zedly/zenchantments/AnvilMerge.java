@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.enchantments.Unrepairable;
 
 import java.util.*;
-import java.util.Map.*;
+import java.util.Map.Entry;
 
 import static org.bukkit.event.EventPriority.MONITOR;
 

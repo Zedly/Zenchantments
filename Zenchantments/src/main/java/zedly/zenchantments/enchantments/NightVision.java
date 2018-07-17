@@ -2,7 +2,7 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
@@ -19,7 +19,7 @@ public class NightVision extends CustomEnchantment {
         description = "Lets the player see in the darkness";
         cooldown = 0;
         power = -1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

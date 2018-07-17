@@ -28,7 +28,10 @@ import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.enchantments.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;

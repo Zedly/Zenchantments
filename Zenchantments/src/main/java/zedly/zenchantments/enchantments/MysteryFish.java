@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerFishEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.entity.EntityType.SQUID;
 import static zedly.zenchantments.enums.Tool.ROD;
@@ -21,7 +21,7 @@ public class MysteryFish extends CustomEnchantment {
         description = "Catches water mobs like Squid and Guardians";
         cooldown = 0;
         power = 1.0;
-        handUse = 2;
+        handUse = Hand.RIGHT;
     }
 
     public int getEnchantmentId() {

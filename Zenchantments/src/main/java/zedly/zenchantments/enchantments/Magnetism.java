@@ -3,7 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.entity.EntityType.DROPPED_ITEM;
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
@@ -19,7 +19,7 @@ public class Magnetism extends CustomEnchantment {
         description = "Slowly attracts nearby items to the players inventory";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

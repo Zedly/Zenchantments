@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class Bind extends CustomEnchantment {
         description = "Keeps items with this enchantment in your inventory after death";
         cooldown = 0;
         power = -1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
 
     }
 

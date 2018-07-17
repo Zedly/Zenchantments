@@ -1,9 +1,14 @@
 package zedly.zenchantments;
 
-import java.util.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.*;
-import org.bukkit.event.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+
+import java.util.Set;
 
 // This is the watcher used by the EnchantArrow class. Each method checks for certain events
 // and conditions and will call the relevant methods defined in the AdvancedArrow interface

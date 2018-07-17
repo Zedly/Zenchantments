@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ public class Shred extends CustomEnchantment {
         description = "Breaks the blocks within a radius of the original block mined";
         cooldown = 0;
         power = -1.0;
-        handUse = 1;
+        handUse = Hand.LEFT;
     }
 
     public int getEnchantmentId() {

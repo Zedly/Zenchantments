@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE;
@@ -24,7 +24,7 @@ public class Weight extends CustomEnchantment {
         description = "Slows the player down but makes them stronger and more resistant to knockback";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

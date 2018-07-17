@@ -1,15 +1,24 @@
 package zedly.zenchantments;
 
-import java.util.*;
-import org.bukkit.*;
-import static org.bukkit.GameMode.*;
-import static org.bukkit.Material.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
-import org.bukkit.inventory.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.*;
+
+import static org.bukkit.GameMode.CREATIVE;
+import static org.bukkit.Material.AIR;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
-import org.bukkit.potion.*;
 
 public class Utilities {
 

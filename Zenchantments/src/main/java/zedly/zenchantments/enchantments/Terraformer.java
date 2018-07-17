@@ -7,7 +7,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import java.util.*;
@@ -34,7 +34,7 @@ public class Terraformer extends CustomEnchantment {
         description = "Places the leftmost blocks in the players inventory within a 7 block radius";
         cooldown = 0;
         power = -1.0;
-        handUse = 2;
+        handUse = Hand.RIGHT;
     }
 
     public int getEnchantmentId() {

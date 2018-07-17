@@ -1,12 +1,16 @@
 package zedly.zenchantments;
 
-import java.util.*;
-import org.bukkit.*;
-import static org.bukkit.GameMode.CREATIVE;
-import static org.bukkit.Material.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import static org.bukkit.GameMode.CREATIVE;
+import static org.bukkit.Material.AIR;
 
 // This is "High Frequency Effects", called every tick to perform certain actions within the plugin
 public class HFEffects implements Runnable {

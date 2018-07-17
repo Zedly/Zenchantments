@@ -5,7 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.BOOTS;
@@ -21,7 +21,7 @@ public class FrozenStep extends CustomEnchantment {
         description = "Allows the player to walk on water and safely emerge from it when sneaking";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

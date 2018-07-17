@@ -13,7 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class Force extends CustomEnchantment {
         description = "Pushes and pulls nearby mobs, configurable through shift clicking";
         cooldown = 0;
         power = 1.0;
-        handUse = 3;
+        handUse = Hand.BOTH;
     }
 
     public int getEnchantmentId() {

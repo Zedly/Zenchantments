@@ -2,8 +2,9 @@ package zedly.zenchantments.enums;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Material;
-import static org.bukkit.Material.*;
 import org.bukkit.inventory.ItemStack;
+
+import static org.bukkit.Material.*;
 
 // Enum for Tool sets within the game, used by enchantment classes to easily define what tools can be used on each
 //      enchantment. Each enum has a String representation used in the config, and an array of materials it represents

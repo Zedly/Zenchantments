@@ -2,7 +2,7 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.Material.SLIME_BLOCK;
 import static zedly.zenchantments.enums.Tool.BOOTS;
@@ -18,7 +18,7 @@ public class Bounce extends CustomEnchantment {
         description = "Preserves momentum when on slime blocks";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

@@ -5,7 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.*;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.BOOTS;
@@ -21,7 +21,7 @@ public class NetherStep extends CustomEnchantment {
         description = "Allows the player to slowly but safely walk on lava";
         cooldown = 0;
         power = 1.0;
-        handUse = 0;
+        handUse = Hand.NONE;
     }
 
     public int getEnchantmentId() {

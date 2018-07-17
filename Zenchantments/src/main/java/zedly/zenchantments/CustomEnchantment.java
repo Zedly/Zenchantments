@@ -10,9 +10,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.*;
 
-import java.util.function.*;
+import java.util.function.BiPredicate;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
@@ -43,8 +44,8 @@ public class CustomEnchantment {
     protected String  description;   // Description of what the enchantment does
     protected int     cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
     protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
-    protected int handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
-    private boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
+    protected Hand    handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
+    private   boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
 
     public int getEnchantmentId() {
         return -1;

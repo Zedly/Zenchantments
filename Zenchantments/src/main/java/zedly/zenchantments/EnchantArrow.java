@@ -1,20 +1,23 @@
 package zedly.zenchantments;
 
-import java.util.*;
 import org.bukkit.*;
-import static org.bukkit.Material.*;
-import org.bukkit.Sound;
 import org.bukkit.entity.*;
-import static org.bukkit.entity.EntityType.BLAZE;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.inventory.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import static org.bukkit.potion.PotionEffectType.*;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+
+import java.util.HashSet;
+import java.util.List;
+
+import static org.bukkit.Material.*;
+import static org.bukkit.entity.EntityType.BLAZE;
+import static org.bukkit.potion.PotionEffectType.*;
 
 // EnchantArrows is the defualt structure for these arrows. Each arrow below it will extend this class
 //      and will override any methods as neccecary in its behavior
