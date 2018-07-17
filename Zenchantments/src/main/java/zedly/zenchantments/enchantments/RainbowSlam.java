@@ -8,12 +8,12 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import java.util.concurrent.atomic.*;
 
-import static zedly.zenchantments.Tool.SWORD;
+import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class RainbowSlam extends CustomEnchantment {
 

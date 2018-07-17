@@ -5,10 +5,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.Tool.BOOTS;
+import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class FrozenStep extends CustomEnchantment {
 

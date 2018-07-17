@@ -4,11 +4,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
-import static zedly.zenchantments.Tool.SWORD;
+import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class IceAspect extends CustomEnchantment {
 

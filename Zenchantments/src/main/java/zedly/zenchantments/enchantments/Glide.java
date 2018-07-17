@@ -6,11 +6,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.*;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.*;
 
 import static org.bukkit.Material.AIR;
-import static zedly.zenchantments.Tool.LEGGINGS;
+import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Glide extends CustomEnchantment {
 

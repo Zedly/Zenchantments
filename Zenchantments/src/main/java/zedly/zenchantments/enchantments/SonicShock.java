@@ -5,9 +5,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.WINGS;
+import static zedly.zenchantments.enums.Tool.WINGS;
 
 public class SonicShock extends CustomEnchantment {
 

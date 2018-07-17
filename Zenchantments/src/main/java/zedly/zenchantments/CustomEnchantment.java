@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.function.*;
 
@@ -34,14 +35,14 @@ public class CustomEnchantment {
             }
         });
     }
-    protected int maxLevel;         // Max level the given enchant can naturally obtain
-    protected String loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
-    protected float probability;    // Relative probability of obtaining the given enchantment
-    protected Tool[] enchantable;   // Enums that represent tools that can receive and work with given enchantment
+    protected int     maxLevel;         // Max level the given enchant can naturally obtain
+    protected String  loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
+    protected float   probability;    // Relative probability of obtaining the given enchantment
+    protected Tool[]  enchantable;   // Enums that represent tools that can receive and work with given enchantment
     protected Class[] conflicting;  // Classes of enchantments that don't work with given enchantment
-    protected String description;   // Description of what the enchantment does
-    protected int cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
-    protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
+    protected String  description;   // Description of what the enchantment does
+    protected int     cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
+    protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
     protected int handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
     private boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
 

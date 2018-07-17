@@ -3,10 +3,10 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.entity.EntityType.DROPPED_ITEM;
-import static zedly.zenchantments.Tool.LEGGINGS;
+import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Magnetism extends CustomEnchantment {
 

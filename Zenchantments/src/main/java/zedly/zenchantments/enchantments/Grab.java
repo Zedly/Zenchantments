@@ -5,9 +5,9 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.*;
+import static zedly.zenchantments.enums.Tool.*;
 
 public class Grab extends CustomEnchantment {
 

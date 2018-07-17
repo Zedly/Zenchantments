@@ -10,11 +10,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.Tool.PICKAXE;
+import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Switch extends CustomEnchantment {
 

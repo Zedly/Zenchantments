@@ -10,10 +10,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.Tool.PICKAXE;
+import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Reveal extends CustomEnchantment {
 

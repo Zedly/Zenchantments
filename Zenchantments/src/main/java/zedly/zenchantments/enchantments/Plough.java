@@ -5,12 +5,12 @@ import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.Tool.HOE;
+import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Plough extends CustomEnchantment {
 

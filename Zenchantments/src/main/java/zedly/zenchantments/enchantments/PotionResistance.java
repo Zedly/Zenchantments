@@ -6,11 +6,11 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.*;
 
-import static zedly.zenchantments.Tool.*;
+import static zedly.zenchantments.enums.Tool.*;
 
 public class PotionResistance extends CustomEnchantment {
 

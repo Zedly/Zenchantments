@@ -5,11 +5,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.Tool.AXE;
+import static zedly.zenchantments.enums.Tool.AXE;
 
 public class Arborist extends CustomEnchantment {
 

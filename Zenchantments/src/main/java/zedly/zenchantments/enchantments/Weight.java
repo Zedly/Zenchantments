@@ -7,11 +7,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE;
-import static zedly.zenchantments.Tool.BOOTS;
+import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Weight extends CustomEnchantment {
 

@@ -4,12 +4,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.GOLD_NUGGET;
 import static org.bukkit.Material.SAND;
-import static zedly.zenchantments.Tool.SHOVEL;
+import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class GoldRush extends CustomEnchantment {
 

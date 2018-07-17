@@ -11,10 +11,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.*;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW_;
 
 public class Burst extends CustomEnchantment {
 

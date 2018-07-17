@@ -2,11 +2,11 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.JUMP;
-import static zedly.zenchantments.Tool.BOOTS;
+import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Jump extends CustomEnchantment {
 

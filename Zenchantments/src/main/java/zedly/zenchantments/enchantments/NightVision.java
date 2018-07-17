@@ -2,11 +2,11 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
-import static zedly.zenchantments.Tool.HELMET;
+import static zedly.zenchantments.enums.Tool.HELMET;
 
 public class NightVision extends CustomEnchantment {
 

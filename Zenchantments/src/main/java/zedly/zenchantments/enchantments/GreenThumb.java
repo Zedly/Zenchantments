@@ -7,11 +7,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.*;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.*;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.Tool.LEGGINGS;
+import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class GreenThumb extends CustomEnchantment {
 

@@ -9,8 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.*;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW_;
 
 public class Spread extends CustomEnchantment {
 

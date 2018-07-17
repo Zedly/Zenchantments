@@ -8,10 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.entity.EntityType.*;
-import static zedly.zenchantments.Tool.SWORD;
+import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Decapitation extends CustomEnchantment {
 

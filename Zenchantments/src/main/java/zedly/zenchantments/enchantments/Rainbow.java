@@ -8,12 +8,12 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
-import static zedly.zenchantments.Tool.SHEAR;
+import static zedly.zenchantments.enums.Tool.SHEAR;
 
 public class Rainbow extends CustomEnchantment {
 

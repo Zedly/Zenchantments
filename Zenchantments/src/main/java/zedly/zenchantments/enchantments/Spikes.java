@@ -4,9 +4,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.BOOTS;
+import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Spikes extends CustomEnchantment {
 

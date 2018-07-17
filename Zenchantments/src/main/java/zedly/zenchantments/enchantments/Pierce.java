@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import java.util.*;
@@ -20,7 +20,7 @@ import static org.bukkit.Material.GLOWING_REDSTONE_ORE;
 import static org.bukkit.Material.REDSTONE_ORE;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.Tool.PICKAXE;
+import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Pierce extends CustomEnchantment {
 

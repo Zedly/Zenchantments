@@ -4,11 +4,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
-import static zedly.zenchantments.Tool.*;
+import static zedly.zenchantments.enums.Tool.*;
 
 public class Haste extends CustomEnchantment {
 

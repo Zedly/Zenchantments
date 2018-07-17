@@ -6,8 +6,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.*;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.*;
+import static zedly.zenchantments.enums.Tool.*;
 
 public class Level extends CustomEnchantment {
 

@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.*;
 import java.util.concurrent.atomic.*;
@@ -23,7 +24,7 @@ import static org.bukkit.entity.EntityType.HORSE;
 import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
-import static zedly.zenchantments.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW_;
 
 // This is the watcher used by the CustomEnchantment class. Each method checks the enchantments on relevant items,
 //      ensures that the item is not an enchantment book, and calls each enchantment's method if the player can

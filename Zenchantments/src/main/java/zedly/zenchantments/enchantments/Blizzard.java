@@ -5,10 +5,10 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW_;
 
 public class Blizzard extends CustomEnchantment {
 

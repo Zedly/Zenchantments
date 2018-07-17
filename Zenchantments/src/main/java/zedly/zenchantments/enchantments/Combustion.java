@@ -4,9 +4,9 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.CHESTPLATE;
+import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class Combustion extends CustomEnchantment {
 

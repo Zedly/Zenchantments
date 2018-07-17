@@ -2,10 +2,10 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.SLIME_BLOCK;
-import static zedly.zenchantments.Tool.BOOTS;
+import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Bounce extends CustomEnchantment {
 

@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.enums;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Material;
@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 // Enum for Tool sets within the game, used by enchantment classes to easily define what tools can be used on each
 //      enchantment. Each enum has a String representation used in the config, and an array of materials it represents
 public enum Tool {
-
     AXE("Axe", new Material[]{WOOD_AXE, STONE_AXE, GOLD_AXE, IRON_AXE, DIAMOND_AXE}, false),
     SHOVEL("Shovel", new Material[]{WOOD_SPADE, STONE_SPADE, GOLD_SPADE, IRON_SPADE, DIAMOND_SPADE}, false),
     SWORD("Sword", new Material[]{WOOD_SWORD, STONE_SWORD, GOLD_SWORD, IRON_SWORD, DIAMOND_SWORD}, false),

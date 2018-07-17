@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.Tool.SWORD;
+import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Transformation extends CustomEnchantment {
 

@@ -7,11 +7,12 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.*;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
-import static zedly.zenchantments.Tool.BOW_;
-import static zedly.zenchantments.Tool.SWORD;
+import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Toxic extends CustomEnchantment {
 

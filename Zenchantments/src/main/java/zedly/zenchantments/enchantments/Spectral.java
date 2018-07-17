@@ -4,14 +4,14 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
 import static org.bukkit.block.BlockFace.UP;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.Tool.SHOVEL;
+import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class Spectral extends CustomEnchantment {
 
@@ -67,7 +67,7 @@ public class Spectral extends CustomEnchantment {
             case RED_SANDSTONE:
                 if(data < 2) {
                     data++;
-                } else {
+                } else {/**/
                     data = 0;
                     evt.getClickedBlock().setType(SANDSTONE);
                 }

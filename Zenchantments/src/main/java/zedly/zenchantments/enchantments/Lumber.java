@@ -5,12 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.*;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.Tool.AXE;
+import static zedly.zenchantments.enums.Tool.AXE;
 
 public class Lumber extends CustomEnchantment {
 

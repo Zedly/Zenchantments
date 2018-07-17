@@ -1,9 +1,9 @@
 package zedly.zenchantments.enchantments;
 
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.ALL;
+import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Unrepairable extends CustomEnchantment {
 

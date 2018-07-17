@@ -4,9 +4,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
-import static zedly.zenchantments.Tool.LEGGINGS;
+import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Saturation extends CustomEnchantment {
 

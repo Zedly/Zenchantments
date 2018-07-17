@@ -4,11 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.Tool.HELMET;
+import static zedly.zenchantments.enums.Tool.HELMET;
 
 public class Gluttony extends CustomEnchantment {
 

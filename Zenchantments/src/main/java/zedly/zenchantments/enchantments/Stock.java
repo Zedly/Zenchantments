@@ -6,10 +6,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.AIR;
-import static zedly.zenchantments.Tool.CHESTPLATE;
+import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class Stock extends CustomEnchantment {
 

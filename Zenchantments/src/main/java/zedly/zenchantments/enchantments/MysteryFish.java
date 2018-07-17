@@ -5,10 +5,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerFishEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Tool;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.entity.EntityType.SQUID;
-import static zedly.zenchantments.Tool.ROD;
+import static zedly.zenchantments.enums.Tool.ROD;
 
 public class MysteryFish extends CustomEnchantment {
 
