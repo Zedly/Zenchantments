@@ -11,14 +11,13 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.function.BiPredicate;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
 public abstract class CustomEnchantment {
-
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
     protected int     maxLevel;         // Max level the given enchant can naturally obtain
@@ -31,7 +30,11 @@ public abstract class CustomEnchantment {
     protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
     protected Hand    handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
     private   boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
-    protected int     id;
+    private   int     id;
+
+    public CustomEnchantment(int id) {
+        this.id = id;
+    }
 
     //region Enchanment Events
 

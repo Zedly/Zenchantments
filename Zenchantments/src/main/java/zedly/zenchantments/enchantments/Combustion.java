@@ -4,13 +4,15 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class Combustion extends CustomEnchantment {
 
     public Combustion() {
+        super(9);
         maxLevel = 4;
         loreName = "Combustion";
         probability = 0;
@@ -20,7 +22,6 @@ public class Combustion extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 9;
     }
 
     @Override

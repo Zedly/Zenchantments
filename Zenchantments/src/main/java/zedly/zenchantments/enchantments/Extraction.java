@@ -6,8 +6,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
@@ -16,6 +17,7 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 public class Extraction extends CustomEnchantment {
 
     public Extraction() {
+        super(12);
         maxLevel = 3;
         loreName = "Extraction";
         probability = 0;
@@ -25,7 +27,6 @@ public class Extraction extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.LEFT;
-        id = 12;
     }
 
     @Override

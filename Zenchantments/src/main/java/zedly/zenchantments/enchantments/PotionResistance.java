@@ -6,15 +6,17 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.Map;
 
 import static zedly.zenchantments.enums.Tool.*;
 
 public class PotionResistance extends CustomEnchantment {
 
     public PotionResistance() {
+        super(45);
         maxLevel = 4;
         loreName = "Potion Resistance";
         probability = 0;
@@ -24,7 +26,6 @@ public class PotionResistance extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 45;
     }
 
     @Override

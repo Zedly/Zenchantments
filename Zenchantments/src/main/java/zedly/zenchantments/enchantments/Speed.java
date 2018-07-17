@@ -4,13 +4,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Speed extends CustomEnchantment {
 
     public Speed() {
+        super(55);
         maxLevel = 4;
         loreName = "Speed";
         probability = 0;
@@ -20,7 +22,6 @@ public class Speed extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 55;
     }
 
     @Override

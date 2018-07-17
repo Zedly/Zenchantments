@@ -7,14 +7,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Conversion extends CustomEnchantment {
 
     public Conversion() {
+        super(10);
         maxLevel = 4;
         loreName = "Conversion";
         probability = 0;
@@ -24,7 +26,6 @@ public class Conversion extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 10;
     }
 
     @Override

@@ -9,9 +9,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
@@ -24,12 +26,13 @@ public class Shred extends CustomEnchantment {
                            NETHERRACK, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GRASS, SOUL_SAND,
                            GLOWING_REDSTONE_ORE,
                            DIRT, MYCEL, SAND, GRAVEL, SOUL_SAND, CLAY, HARD_CLAY, STAINED_CLAY, SANDSTONE,
-                           RED_SANDSTONE};
+                           RED_SANDSTONE, ICE, PACKED_ICE};
 
     private static final Material SHOVELABLE_MATERIALS[] =
             new Material[]{GLOWSTONE, GRASS, DIRT, MYCEL, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
 
     public Shred() {
+        super(52);
         maxLevel = 5;
         loreName = "Shred";
         probability = 0;
@@ -39,7 +42,6 @@ public class Shred extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.LEFT;
-        id = 52;
     }
 
     @Override
@@ -66,9 +68,7 @@ public class Shred extends CustomEnchantment {
                 return;
             }
             if(config.getShredDrops() == 0) {
-                if(!ADAPTER.breakBlockNMS(relativeBlock, player)) {
-                    return;
-                }
+                ADAPTER.breakBlockNMS(relativeBlock, player);
             } else {
                 BlockShredEvent relativeEvent = new BlockShredEvent(relativeBlock, player);
                 Bukkit.getServer().getPluginManager().callEvent(relativeEvent);

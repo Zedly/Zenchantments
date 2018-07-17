@@ -7,8 +7,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -16,6 +17,7 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class Stationary extends CustomEnchantment {
 
     public Stationary() {
+        super(58);
         maxLevel = 1;
         loreName = "Stationary";
         probability = 0;
@@ -25,7 +27,6 @@ public class Stationary extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.BOTH;
-        id = 58;
     }
 
     @Override

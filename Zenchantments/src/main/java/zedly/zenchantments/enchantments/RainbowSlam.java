@@ -8,16 +8,18 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class RainbowSlam extends CustomEnchantment {
 
     public RainbowSlam() {
+        super(48);
         maxLevel = 4;
         loreName = "Rainbow Slam";
         probability = 0;
@@ -27,7 +29,6 @@ public class RainbowSlam extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 48;
     }
 
     @Override

@@ -13,9 +13,10 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.List;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -24,6 +25,7 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class Force extends CustomEnchantment {
 
     public Force() {
+        super(16);
         maxLevel = 3;
         loreName = "Force";
         probability = 0;
@@ -33,7 +35,6 @@ public class Force extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-        id = 16;
     }
 
     @Override

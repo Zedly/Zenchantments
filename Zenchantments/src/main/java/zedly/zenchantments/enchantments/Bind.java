@@ -7,15 +7,18 @@ import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Bind extends CustomEnchantment {
 
     public Bind() {
+        super(4);
         maxLevel = 1;
         loreName = "Bind";
         probability = 0;
@@ -25,7 +28,6 @@ public class Bind extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-        id = 4;
     }
 
     @Override

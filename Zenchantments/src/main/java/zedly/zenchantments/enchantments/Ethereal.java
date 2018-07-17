@@ -4,16 +4,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.Map;
 
 import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Ethereal extends CustomEnchantment {
 
     public Ethereal() {
+        super(70);
         maxLevel = 1;
         loreName = "Ethereal";
         probability = 0;
@@ -23,7 +25,6 @@ public class Ethereal extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-        id = 70;
     }
 
     @Override

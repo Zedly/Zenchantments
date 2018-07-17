@@ -8,10 +8,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.HashSet;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -20,6 +21,7 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class Gust extends CustomEnchantment {
 
     public Gust() {
+        super(25);
         maxLevel = 1;
         loreName = "Gust";
         probability = 0;
@@ -29,7 +31,6 @@ public class Gust extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 25;
     }
 
     @Override

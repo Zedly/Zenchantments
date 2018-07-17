@@ -21,6 +21,7 @@ import static zedly.zenchantments.enums.Tool.BOW;
 public class Singularity extends CustomEnchantment {
 
     public Singularity() {
+        super(72);
         maxLevel = 1;
         loreName = "Singularity";
         probability = 0;
@@ -30,7 +31,6 @@ public class Singularity extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-        id = 72;
     }
 
     @Override

@@ -5,14 +5,16 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Fireworks extends CustomEnchantment {
 
     public Fireworks() {
+        super(15);
         maxLevel = 4;
         loreName = "Fireworks";
         probability = 0;
@@ -22,7 +24,6 @@ public class Fireworks extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-        id = 15;
     }
 
     @Override

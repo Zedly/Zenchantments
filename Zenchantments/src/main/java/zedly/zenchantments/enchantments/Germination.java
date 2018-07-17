@@ -9,8 +9,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.GameMode.CREATIVE;
 import static org.bukkit.Material.INK_SACK;
@@ -22,6 +23,7 @@ public class Germination extends CustomEnchantment {
     private static final ItemStack BONE_MEAL = new ItemStack(Material.INK_SACK, 1, (short) 15);
 
     public Germination() {
+        super(19);
         maxLevel = 3;
         loreName = "Germination";
         probability = 0;
@@ -31,7 +33,6 @@ public class Germination extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 19;
     }
 
     @Override

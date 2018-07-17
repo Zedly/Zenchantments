@@ -3,13 +3,15 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.ROD;
 
 public class ShortCast extends CustomEnchantment {
 
     public ShortCast() {
+        super(51);
         maxLevel = 2;
         loreName = "Short Cast";
         probability = 0;
@@ -19,7 +21,6 @@ public class ShortCast extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 51;
     }
 
     @Override

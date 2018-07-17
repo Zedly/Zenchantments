@@ -5,14 +5,16 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Apocalypse extends CustomEnchantment {
 
     public Apocalypse() {
+        super(69);
         maxLevel = 1;
         loreName = "Apocalypse";
         probability = 0;
@@ -22,7 +24,6 @@ public class Apocalypse extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-        id = 69;
     }
 
     @Override

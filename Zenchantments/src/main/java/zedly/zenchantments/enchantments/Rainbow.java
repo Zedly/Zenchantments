@@ -8,8 +8,9 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
@@ -20,6 +21,7 @@ public class Rainbow extends CustomEnchantment {
     private static final short[] FLOWER_DATA_VALUES = new short[]{0, 1, 2, 3, 4, 5, 10};
 
     public Rainbow() {
+        super(47);
         maxLevel = 1;
         loreName = "Rainbow";
         probability = 0;
@@ -29,7 +31,6 @@ public class Rainbow extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.BOTH;
-        id = 47;
     }
 
     @Override

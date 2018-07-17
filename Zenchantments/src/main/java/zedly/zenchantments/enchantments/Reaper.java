@@ -8,8 +8,9 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.potion.PotionEffectType.BLINDNESS;
 import static zedly.zenchantments.enums.Tool.BOW;
@@ -18,6 +19,7 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class Reaper extends CustomEnchantment {
 
     public Reaper() {
+        super(49);
         maxLevel = 4;
         loreName = "Reaper";
         probability = 0;
@@ -27,7 +29,6 @@ public class Reaper extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-        id = 49;
     }
 
     @Override

@@ -7,14 +7,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Transformation extends CustomEnchantment {
 
     public Transformation() {
+        super(64);
         maxLevel = 3;
         loreName = "Transformation";
         probability = 0;
@@ -24,7 +26,6 @@ public class Transformation extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.LEFT;
-        id = 64;
     }
 
     @Override

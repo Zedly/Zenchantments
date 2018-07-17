@@ -3,7 +3,8 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.entity.EntityType.DROPPED_ITEM;
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
@@ -11,6 +12,7 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 public class Magnetism extends CustomEnchantment {
 
     public Magnetism() {
+        super(35);
         maxLevel = 3;
         loreName = "Magnetism";
         probability = 0;
@@ -20,7 +22,6 @@ public class Magnetism extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 35;
     }
 
     @Override

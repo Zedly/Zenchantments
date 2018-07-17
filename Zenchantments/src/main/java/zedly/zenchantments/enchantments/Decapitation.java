@@ -8,7 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.entity.EntityType.*;
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -19,6 +20,7 @@ public class Decapitation extends CustomEnchantment {
     private static final int BASE_MOB_DROP_CHANCE    = 150;
 
     public Decapitation() {
+        super(11);
         maxLevel = 4;
         loreName = "Decapitation";
         probability = 0;
@@ -28,7 +30,6 @@ public class Decapitation extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.LEFT;
-        id = 11;
     }
 
     @Override

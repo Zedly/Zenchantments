@@ -12,10 +12,11 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantPlayer;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.HashSet;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -25,6 +26,7 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 public class Laser extends CustomEnchantment {
 
     public Laser() {
+        super(31);
         maxLevel = 3;
         loreName = "Laser";
         probability = 0;
@@ -34,7 +36,6 @@ public class Laser extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 31;
     }
 
     public void shoot(Player player, int level, boolean usedHand) {

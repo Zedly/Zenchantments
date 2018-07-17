@@ -17,16 +17,16 @@ import static zedly.zenchantments.enums.Tool.BOW;
 public class Tracer extends CustomEnchantment {
 
     public Tracer() {
-        maxLevel = 4;
-        loreName = "Tracer";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{};
-        description = "Guides the arrow to targets and then attacks";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
-        id = 63;
+	    super(63);
+	    maxLevel = 4;
+	    loreName = "Tracer";
+	    probability = 0;
+	    enchantable = new Tool[]{BOW};
+	    conflicting = new Class[]{};
+	    description = "Guides the arrow to targets and then attacks";
+	    cooldown = 0;
+	    power = 1.0;
+	    handUse = Hand.RIGHT;
     }
 
     @Override

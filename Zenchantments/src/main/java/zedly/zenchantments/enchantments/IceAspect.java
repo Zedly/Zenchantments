@@ -4,8 +4,9 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -13,6 +14,7 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class IceAspect extends CustomEnchantment {
 
     public IceAspect() {
+        super(29);
         maxLevel = 2;
         loreName = "Ice Aspect";
         probability = 0;
@@ -22,7 +24,6 @@ public class IceAspect extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.LEFT;
-        id = 29;
     }
 
     @Override

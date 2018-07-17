@@ -10,8 +10,12 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -20,6 +24,7 @@ import static zedly.zenchantments.enums.Tool.BOW;
 public class Burst extends CustomEnchantment {
 
     public Burst() {
+        super(8);
         maxLevel = 3;
         loreName = "Burst";
         probability = 0;
@@ -29,7 +34,6 @@ public class Burst extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 8;
     }
 
     @Override

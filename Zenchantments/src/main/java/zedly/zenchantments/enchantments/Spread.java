@@ -8,14 +8,19 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Spread extends CustomEnchantment {
 
     public Spread() {
+        super(57);
         maxLevel = 5;
         loreName = "Spread";
         probability = 0;
@@ -25,7 +30,6 @@ public class Spread extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 57;
     }
 
     @Override

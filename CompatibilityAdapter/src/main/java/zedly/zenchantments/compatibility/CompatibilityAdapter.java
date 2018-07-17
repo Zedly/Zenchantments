@@ -63,6 +63,14 @@ public class CompatibilityAdapter {
 
     private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, SKELETON, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
 
+    private static final Material[] TERRAFORMER_MATERIALS = {STONE, GRASS, DIRT, COBBLESTONE, WOOD, SAND, GRAVEL,
+                        GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE,
+                        DOUBLE_STEP, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK,
+                        CLAY, NETHERRACK, SOUL_SAND, SMOOTH_BRICK, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2,
+                        MYCEL, NETHER_BRICK, ENDER_STONE, WOOD_DOUBLE_STEP, EMERALD_ORE, QUARTZ_ORE,
+                        QUARTZ_BLOCK, STAINED_CLAY, LEAVES_2, LOG_2, SLIME_BLOCK, PRISMARINE, HARD_CLAY,
+                        PACKED_ICE, RED_SANDSTONE, DOUBLE_STONE_SLAB2};
+    
     public static CompatibilityAdapter getInstance() {
         return INSTANCE;
     }
@@ -93,6 +101,10 @@ public class CompatibilityAdapter {
      */
     public Material[] getOres() {
         return ORES;
+    }
+    
+    public static Material[] getTerraformerMaterials() {
+        return TERRAFORMER_MATERIALS;
     }
 
     public EntityType[] getTransformationEntityTypes() {

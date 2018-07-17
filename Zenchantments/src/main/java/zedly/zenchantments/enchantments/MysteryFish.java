@@ -19,16 +19,16 @@ import static zedly.zenchantments.enums.Tool.ROD;
 public class MysteryFish extends CustomEnchantment {
 
     public MysteryFish() {
-        maxLevel = 3;
-        loreName = "Mystery Fish";
-        probability = 0;
-        enchantable = new Tool[]{ROD};
-        conflicting = new Class[]{};
-        description = "Catches water mobs like Squid and Guardians";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
-        id = 38;
+	    super(38);
+	    maxLevel = 3;
+	    loreName = "Mystery Fish";
+	    probability = 0;
+	    enchantable = new Tool[]{ROD};
+	    conflicting = new Class[]{};
+	    description = "Catches water mobs like Squid and Guardians";
+	    cooldown = 0;
+	    power = 1.0;
+	    handUse = Hand.RIGHT;
     }
 
     @Override

@@ -1,5 +1,5 @@
 package zedly.zenchantments;
-//For Bukkit & Spigot 1.10.X-1.11.X
+//For Bukkit & Spigot 1.12.X
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;

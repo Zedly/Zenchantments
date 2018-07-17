@@ -4,8 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.HELMET;
@@ -23,6 +24,7 @@ public class Gluttony extends CustomEnchantment {
                                                                  MELON, BEETROOT};
 
     public Gluttony() {
+        super(21);
         maxLevel = 1;
         loreName = "Gluttony";
         probability = 0;
@@ -32,7 +34,6 @@ public class Gluttony extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-        id = 21;
     }
 
     @Override

@@ -2,8 +2,9 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
 import static zedly.zenchantments.enums.Tool.HELMET;
@@ -11,6 +12,7 @@ import static zedly.zenchantments.enums.Tool.HELMET;
 public class NightVision extends CustomEnchantment {
 
     public NightVision() {
+        super(40);
         maxLevel = 1;
         loreName = "Night Vision";
         probability = 0;
@@ -20,7 +22,6 @@ public class NightVision extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-        id = 40;
     }
 
     @Override

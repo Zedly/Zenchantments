@@ -4,13 +4,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Spikes extends CustomEnchantment {
 
     public Spikes() {
+        super(56);
         maxLevel = 3;
         loreName = "Spikes";
         probability = 0;
@@ -20,7 +22,6 @@ public class Spikes extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 56;
     }
 
     @Override

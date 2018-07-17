@@ -7,10 +7,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -26,6 +29,7 @@ public class Terraformer extends CustomEnchantment {
             BlockFace.DOWN,};
 
     public Terraformer() {
+        super(61);
         maxLevel = 1;
         loreName = "Terraformer";
         probability = 0;
@@ -35,7 +39,6 @@ public class Terraformer extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-        id = 61;
     }
 
     @Override
@@ -45,14 +48,6 @@ public class Terraformer extends CustomEnchantment {
                 Block start = evt.getClickedBlock().getRelative(evt.getBlockFace());
                 List<Block> blocks = bfs(start);
 
-                Material[] mats = {STONE, GRASS, DIRT, COBBLESTONE, WOOD, SAND, GRAVEL,
-                                   GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE,
-                                   DOUBLE_STEP, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK,
-                                   CLAY, NETHERRACK, SOUL_SAND, SMOOTH_BRICK, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2,
-                                   MYCEL, NETHER_BRICK, ENDER_STONE, WOOD_DOUBLE_STEP, EMERALD_ORE, QUARTZ_ORE,
-                                   QUARTZ_BLOCK, STAINED_CLAY, LEAVES_2, LOG_2, SLIME_BLOCK, PRISMARINE, HARD_CLAY,
-                                   PACKED_ICE, RED_SANDSTONE, DOUBLE_STONE_SLAB2};
-
                 Material mat = AIR;
                 byte bt = 0;
                 int c = -1;
@@ -60,7 +55,7 @@ public class Terraformer extends CustomEnchantment {
                 for(int i = 0; i < 9; i++) {
                     if(evt.getPlayer().getInventory().getItem(i) != null) {
                         if(evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
-                           ArrayUtils.contains(mats, evt.getPlayer().getInventory().getItem(i).getType())) {
+                           ArrayUtils.contains(CompatibilityAdapter.getTerraformerMaterials(), evt.getPlayer().getInventory().getItem(i).getType())) {
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
                             c = i;
                             bt = evt.getPlayer().getInventory().getItem(i).getData().getData();

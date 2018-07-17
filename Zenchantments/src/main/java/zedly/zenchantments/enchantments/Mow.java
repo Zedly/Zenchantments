@@ -8,7 +8,8 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -17,6 +18,7 @@ import static zedly.zenchantments.enums.Tool.SHEAR;
 public class Mow extends CustomEnchantment {
 
     public Mow() {
+        super(37);
         maxLevel = 3;
         loreName = "Mow";
         probability = 0;
@@ -26,7 +28,6 @@ public class Mow extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 37;
     }
 
     private boolean shear(PlayerEvent evt, int level, boolean usedHand) {

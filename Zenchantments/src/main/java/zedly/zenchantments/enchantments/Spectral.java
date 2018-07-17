@@ -4,8 +4,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
@@ -24,6 +25,7 @@ public class Spectral extends CustomEnchantment {
     }
 
     public Spectral() {
+        super(54);
         maxLevel = 1;
         loreName = "Spectral";
         probability = 0;
@@ -33,7 +35,6 @@ public class Spectral extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-        id = 54;
     }
 
     @Override
@@ -194,15 +195,17 @@ public class Spectral extends CustomEnchantment {
                     evt.getClickedBlock().setType(YELLOW_FLOWER);
                 }
                 break;
+	        case GRASS_PATH:
+		        evt.getClickedBlock().setType(GRASS);
+		        break;
             case GRASS:
-                evt.getClickedBlock().setType(DIRT);
+	            evt.getClickedBlock().setType(GRASS_PATH);
                 break;
             case DIRT:
                 if(data < 2) {
                     data++;
                 } else {
                     data = 0;
-                    evt.getClickedBlock().setType(GRASS);
                 }
                 break;
             case FENCE:

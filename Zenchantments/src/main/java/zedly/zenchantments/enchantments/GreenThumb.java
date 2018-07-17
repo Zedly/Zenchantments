@@ -6,10 +6,14 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.Config;
+import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.Map;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
@@ -17,6 +21,7 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 public class GreenThumb extends CustomEnchantment {
 
     public GreenThumb() {
+        super(24);
         maxLevel = 3;
         loreName = "Green Thumb";
         probability = 0;
@@ -26,7 +31,6 @@ public class GreenThumb extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 24;
     }
 
     @Override

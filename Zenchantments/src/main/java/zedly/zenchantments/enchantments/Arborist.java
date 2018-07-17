@@ -5,8 +5,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.AXE;
@@ -14,6 +15,7 @@ import static zedly.zenchantments.enums.Tool.AXE;
 public class Arborist extends CustomEnchantment {
 
     public Arborist() {
+        super(2);
         maxLevel = 3;
         loreName = "Arborist";
         probability = 0;
@@ -23,7 +25,6 @@ public class Arborist extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.LEFT;
-        id = 2;
     }
 
     @Override

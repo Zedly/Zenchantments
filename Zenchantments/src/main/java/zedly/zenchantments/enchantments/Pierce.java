@@ -11,10 +11,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.bukkit.Material.GLOWING_REDSTONE_ORE;
 import static org.bukkit.Material.REDSTONE_ORE;
@@ -25,6 +27,7 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 public class Pierce extends CustomEnchantment {
 
     public Pierce() {
+        super(42);
         maxLevel = 1;
         loreName = "Pierce";
         probability = 0;
@@ -34,7 +37,6 @@ public class Pierce extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.BOTH;
-        id = 42;
     }
 
     @Override

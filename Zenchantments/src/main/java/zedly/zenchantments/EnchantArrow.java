@@ -331,7 +331,7 @@ public class EnchantArrow implements AdvancedArrow {
         public boolean onImpact(EntityDamageByEntityEvent evt) {
             if (ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 int pow = (int) Math.round(getLevel() * getPower());
-                int dur = (int) Math.round(10 + getLevel() * 20 * getPower());
+                int dur = (int) Math.round(20 + getLevel() * 10 * getPower());
                 Utilities.addPotion((LivingEntity) evt.getEntity(), PotionEffectType.WITHER, dur, pow);
                 Utilities.addPotion((LivingEntity) evt.getEntity(), BLINDNESS, dur, pow);
             }
@@ -351,17 +351,12 @@ public class EnchantArrow implements AdvancedArrow {
             if (evt.getEntity() instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) getArrow().getShooter(), 0)) {
                 Player p = (Player) ((Projectile) evt.getDamager()).getShooter();
                 LivingEntity ent = (LivingEntity) evt.getEntity();
-                int difference = (int) Math.round(getLevel() * getPower());
-                if (Storage.rnd.nextInt(4) == 2) {
-                    while (difference > 0) {
-                        if (p.getHealth() <= 19) {
-                            p.setHealth(p.getHealth() + 1);
-                        }
-                        if (ent.getHealth() > 2) {
-                            ent.setHealth(ent.getHealth() - 1);
-                        }
-                        difference--;
+                int difference = (int) Math.round(.17 * getLevel() * getPower() * evt.getDamage());
+                while (difference > 0) {
+                    if (p.getHealth() <= 19) {
+                        p.setHealth(p.getHealth() + 1);
                     }
+                    difference--;
                 }
             }
             die();
@@ -514,7 +509,7 @@ public class EnchantArrow implements AdvancedArrow {
         public void onLaunch(LivingEntity player, List<String> lore) {
             final Config config = Config.get(player.getWorld());
             Location playLoc = player.getLocation();
-            final Location target = Utilities.getCenter(player.getTargetBlock((HashSet<Byte>) null, 220));
+            final Location target = Utilities.getCenter(player.getTargetBlock((HashSet<Material>) null, 220));
             target.setY(target.getY() + .5);
             final Location c = playLoc;
             c.setY(c.getY() + 1.1);
@@ -532,7 +527,7 @@ public class EnchantArrow implements AdvancedArrow {
                     loc2.setZ(c.getZ() + ((i1 + 10) * ((target.getZ() - c.getZ()) / (d * 5))));
                     Utilities.display(loc, Particle.FLAME, 10, .001f, 0, 0, 0);
                     Utilities.display(loc, Particle.FLAME, 1, .1f, 0, 0, 0);
-                    if (i1 % 5 == 0) {
+                    if (i1 % 50 == 0) {
                         target.getWorld().playSound(loc, Sound.ENTITY_WITHER_SPAWN, 10f, .1f);
                     }
                     if (i1 >= ((int) (d * 5) + 9) || loc2.getBlock().getType() != AIR) {

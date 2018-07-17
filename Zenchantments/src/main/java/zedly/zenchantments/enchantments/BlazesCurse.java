@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.Biome.*;
@@ -30,6 +31,7 @@ public class BlazesCurse extends CustomEnchantment {
     private static final float   rainDamage     = .5f;
 
     public BlazesCurse() {
+        super(5);
         maxLevel = 1;
         loreName = "Blaze's Curse";
         probability = 0;
@@ -39,7 +41,6 @@ public class BlazesCurse extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-        id = 5;
     }
 
     @Override
@@ -81,6 +82,7 @@ public class BlazesCurse extends CustomEnchantment {
            && player.getLocation().getY() >= player.getWorld().getHighestBlockYAt(player.getLocation())) {
             ADAPTER.damagePlayer(player, rainDamage, EntityDamageEvent.DamageCause.CUSTOM);
         }
+        player.setFireTicks(0);
         return true;
     }
 }

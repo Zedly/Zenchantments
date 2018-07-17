@@ -5,14 +5,19 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.*;
 
 public class Level extends CustomEnchantment {
 
     public Level() {
+        super(32);
         maxLevel = 3;
         loreName = "Level";
         probability = 0;
@@ -22,7 +27,6 @@ public class Level extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-        id = 32;
     }
 
     @Override

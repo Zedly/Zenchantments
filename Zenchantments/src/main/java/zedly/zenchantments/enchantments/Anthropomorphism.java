@@ -30,17 +30,17 @@ public class Anthropomorphism extends CustomEnchantment {
 	private static final Material[] MAT = new Material[]{STONE, GRAVEL, DIRT, GRASS};
 
     public Anthropomorphism() {
-        maxLevel = 1;
-        loreName = "Anthropomorphism";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE};
-        conflicting = new Class[]{Pierce.class, Switch.class};
-        description =
+	    super(1);
+	    maxLevel = 1;
+	    loreName = "Anthropomorphism";
+	    probability = 0;
+	    enchantable = new Tool[]{PICKAXE};
+	    conflicting = new Class[]{Pierce.class, Switch.class};
+	    description =
                 "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.BOTH;
-        id = 1;
+	    cooldown = 0;
+	    power = 1.0;
+	    handUse = Hand.BOTH;
     }
 
 	@EffectTask(Frequency.MEDIUM)

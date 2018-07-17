@@ -7,8 +7,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE;
 import static zedly.zenchantments.enums.Tool.BOOTS;
@@ -16,6 +17,7 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 public class Weight extends CustomEnchantment {
 
     public Weight() {
+        super(67);
         maxLevel = 4;
         loreName = "Weight";
         probability = 0;
@@ -25,7 +27,6 @@ public class Weight extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 67;
     }
 
     @Override

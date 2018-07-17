@@ -5,9 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.AXE;
@@ -28,6 +31,7 @@ public class Lumber extends CustomEnchantment {
     };
 
     public Lumber() {
+        super(34);
         maxLevel = 1;
         loreName = "Lumber";
         probability = 0;
@@ -37,7 +41,6 @@ public class Lumber extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.LEFT;
-        id = 34;
     }
 
     @Override

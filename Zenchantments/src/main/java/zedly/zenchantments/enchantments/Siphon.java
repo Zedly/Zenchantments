@@ -5,8 +5,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
@@ -14,6 +17,7 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class Siphon extends CustomEnchantment {
 
     public Siphon() {
+        super(53);
         maxLevel = 4;
         loreName = "Siphon";
         probability = 0;
@@ -23,7 +27,6 @@ public class Siphon extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-        id = 53;
     }
 
     @Override
@@ -32,17 +35,12 @@ public class Siphon extends CustomEnchantment {
            ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
             Player p = (Player) evt.getDamager();
             LivingEntity ent = (LivingEntity) evt.getEntity();
-            int difference = (int) Math.round(level * power);
-            if(Storage.rnd.nextInt(4) == 2) {
-                while(difference > 0) {
-                    if(p.getHealth() <= 19) {
-                        p.setHealth(p.getHealth() + 1);
-                    }
-                    if(ent.getHealth() > 2) {
-                        ent.setHealth(ent.getHealth() - 1);
-                    }
-                    difference--;
+            int difference = (int) Math.round(.17 * level * power * evt.getDamage());
+            while (difference > 0) {
+                if (p.getHealth() <= 19) {
+                    p.setHealth(p.getHealth() + 1);
                 }
+                difference--;
             }
         }
         return true;

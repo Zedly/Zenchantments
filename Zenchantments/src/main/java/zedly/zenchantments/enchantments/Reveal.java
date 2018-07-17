@@ -10,14 +10,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Reveal extends CustomEnchantment {
 
     public Reveal() {
+        super(68);
         maxLevel = 4;
         loreName = "Reveal";
         probability = 0;
@@ -27,7 +29,6 @@ public class Reveal extends CustomEnchantment {
         cooldown = 100;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 68;
     }
 
     @Override

@@ -25,16 +25,16 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class Toxic extends CustomEnchantment {
 
     public Toxic() {
-        maxLevel = 4;
-        loreName = "Toxic";
-        probability = 0;
-        enchantable = new Tool[]{BOW, SWORD};
-        conflicting = new Class[]{};
-        description = "Sickens the target, making them nauseous and unable to eat";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.BOTH;
-        id = 62;
+	    super(62);
+	    maxLevel = 4;
+	    loreName = "Toxic";
+	    probability = 0;
+	    enchantable = new Tool[]{BOW, SWORD};
+	    conflicting = new Class[]{};
+	    description = "Sickens the target, making them nauseous and unable to eat";
+	    cooldown = 0;
+	    power = 1.0;
+	    handUse = Hand.BOTH;
     }
 
     @Override

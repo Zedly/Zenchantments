@@ -5,10 +5,14 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.Config;
+import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.Map;
 
 import static org.bukkit.Material.AIR;
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
@@ -16,6 +20,7 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 public class Glide extends CustomEnchantment {
 
     public Glide() {
+        super(20);
         maxLevel = 3;
         loreName = "Glide";
         probability = 0;
@@ -25,7 +30,6 @@ public class Glide extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 20;
     }
 
     @Override

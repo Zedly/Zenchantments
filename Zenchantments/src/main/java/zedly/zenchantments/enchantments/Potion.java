@@ -6,8 +6,9 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.EnchantArrow;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
@@ -16,6 +17,7 @@ public class Potion extends CustomEnchantment {
     PotionEffectType[] potions;
 
     public Potion() {
+        super(44);
         maxLevel = 3;
         loreName = "Potion";
         probability = 0;
@@ -25,7 +27,6 @@ public class Potion extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 44;
     }
 
     @Override

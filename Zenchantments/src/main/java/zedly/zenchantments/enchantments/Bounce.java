@@ -11,6 +11,7 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 public class Bounce extends CustomEnchantment {
 
     public Bounce() {
+        super(7);
         maxLevel = 5;
         loreName = "Bounce";
         probability = 0;
@@ -20,7 +21,6 @@ public class Bounce extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 7;
     }
 
     @Override

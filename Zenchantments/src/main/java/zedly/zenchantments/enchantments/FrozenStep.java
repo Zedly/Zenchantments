@@ -5,7 +5,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.BOOTS;
@@ -13,6 +14,7 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 public class FrozenStep extends CustomEnchantment {
 
     public FrozenStep() {
+        super(17);
         maxLevel = 3;
         loreName = "Frozen Step";
         probability = 0;
@@ -22,7 +24,6 @@ public class FrozenStep extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 17;
     }
 
     public boolean onScan(Player player, int level, boolean usedHand) {

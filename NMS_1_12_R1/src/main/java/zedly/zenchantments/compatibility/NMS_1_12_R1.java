@@ -31,7 +31,6 @@ import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.entity.EntityType.*;
 
-
 /**
  *
  * @author Dennis
@@ -46,8 +45,8 @@ public class NMS_1_12_R1 extends CompatibilityAdapter {
 
     private static final Material[] STORAGE_BLOCKS = {DISPENSER, MOB_SPAWNER, CHEST, FURNACE,
         BURNING_FURNACE, JUKEBOX, ENDER_CHEST, COMMAND, BEACON, TRAPPED_CHEST, HOPPER, DROPPER,
-        OBSERVER, 
-        PURPLE_SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX, 
+        OBSERVER,
+        PURPLE_SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX,
         LIME_SHULKER_BOX, GREEN_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, BLUE_SHULKER_BOX,
         BLACK_SHULKER_BOX, GRAY_SHULKER_BOX, WHITE_SHULKER_BOX, BROWN_SHULKER_BOX,
         CYAN_SHULKER_BOX, MAGENTA_SHULKER_BOX, PINK_SHULKER_BOX, SILVER_SHULKER_BOX
@@ -64,9 +63,16 @@ public class NMS_1_12_R1 extends CompatibilityAdapter {
 
     private static final Material ORES[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
         IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
-    
-    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, VEX, STRAY, SKELETON, HUSK, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
 
+    private static final Material[] TERRAFORMER_MATERIALS = {STONE, GRASS, DIRT, COBBLESTONE, WOOD, SAND, GRAVEL,
+        GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE,
+        DOUBLE_STEP, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK,
+        CLAY, NETHERRACK, SOUL_SAND, SMOOTH_BRICK, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2,
+        MYCEL, NETHER_BRICK, ENDER_STONE, WOOD_DOUBLE_STEP, EMERALD_ORE, QUARTZ_ORE,
+        QUARTZ_BLOCK, STAINED_CLAY, LEAVES_2, LOG_2, SLIME_BLOCK, PRISMARINE, HARD_CLAY,
+        PACKED_ICE, RED_SANDSTONE, DOUBLE_STONE_SLAB2};
+
+    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, VEX, STRAY, SKELETON, HUSK, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
 
     public static NMS_1_12_R1 getInstance() {
         return INSTANCE;
@@ -103,12 +109,16 @@ public class NMS_1_12_R1 extends CompatibilityAdapter {
     public Material[] getOres() {
         return ORES;
     }
-    
+
+    public static Material[] getTerraformerMaterials() {
+        return TERRAFORMER_MATERIALS;
+    }
+
     @Override
     public EntityType[] getTransformationEntityTypes() {
         return TRANSFORMATION_ENTITY_TYPES;
     }
-    
+
     private NMS_1_12_R1() {
     }
 
@@ -118,7 +128,7 @@ public class NMS_1_12_R1 extends CompatibilityAdapter {
         boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
         return success;
     }
-    
+
     @Override
     public boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
         if (target instanceof CraftSheep) {
@@ -149,17 +159,17 @@ public class NMS_1_12_R1 extends CompatibilityAdapter {
         ep.playerConnection.networkManager.sendPacket(ppoed);
         return true;
     }
-    
+
     @Override
     public Entity spawnGuardian(Location loc, boolean elderGuardian) {
-        return loc.getWorld().spawnEntity(loc, elderGuardian? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
+        return loc.getWorld().spawnEntity(loc, elderGuardian ? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
     }
-    
+
     @Override
     public boolean isZombie(Entity e) {
         return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER;
     }
-    
+
     @Override
     public boolean isBlockSafeToBreak(Block b) {
         Material mat = b.getType();

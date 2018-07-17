@@ -9,8 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -22,6 +23,7 @@ public class Harvest extends CustomEnchantment {
             {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK, NETHER_WARTS};
 
     public Harvest() {
+        super(26);
         maxLevel = 3;
         loreName = "Harvest";
         probability = 0;
@@ -31,7 +33,6 @@ public class Harvest extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-        id = 26;
     }
 
     @Override

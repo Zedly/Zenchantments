@@ -10,8 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -27,6 +28,7 @@ public class Stream extends CustomEnchantment {
             Particle.HEART,};
 
     public Stream() {
+        super(420);
         maxLevel = 1;
         loreName = "Stream";
         probability = 0;
@@ -36,7 +38,6 @@ public class Stream extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-        id = 420;
     }
 
     @Override

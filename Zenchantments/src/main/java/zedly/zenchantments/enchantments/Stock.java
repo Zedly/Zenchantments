@@ -6,7 +6,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.AIR;
 import static zedly.zenchantments.enums.Tool.CHESTPLATE;
@@ -14,6 +15,7 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 public class Stock extends CustomEnchantment {
 
     public Stock() {
+        super(59);
         maxLevel = 1;
         loreName = "Stock";
         probability = 0;
@@ -23,7 +25,6 @@ public class Stock extends CustomEnchantment {
         cooldown = -1;
         power = -1.0;
         handUse = Hand.NONE;
-        id = 59;
     }
 
     @Override

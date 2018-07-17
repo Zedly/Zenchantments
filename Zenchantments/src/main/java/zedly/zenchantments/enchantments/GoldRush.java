@@ -4,8 +4,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.GOLD_NUGGET;
 import static org.bukkit.Material.SAND;
@@ -14,6 +15,7 @@ import static zedly.zenchantments.enums.Tool.SHOVEL;
 public class GoldRush extends CustomEnchantment {
 
     public GoldRush() {
+        super(22);
         maxLevel = 3;
         loreName = "Gold Rush";
         probability = 0;
@@ -23,7 +25,6 @@ public class GoldRush extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.LEFT;
-        id = 22;
     }
 
     @Override
