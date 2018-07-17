@@ -2,10 +2,16 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Guardian;
 import org.bukkit.event.player.PlayerFishEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
+
+import java.util.Iterator;
 
 import static org.bukkit.entity.EntityType.SQUID;
 import static zedly.zenchantments.enums.Tool.ROD;
@@ -43,4 +49,19 @@ public class MysteryFish extends CustomEnchantment {
         }
         return true;
     }
+
+	// Move Guardians from MysteryFish towards the player
+	@EffectTask(Frequency.HIGH)
+	public static void guardian() {
+		Iterator it = Storage.guardianMove.keySet().iterator();
+		while (it.hasNext()) {
+			Guardian g = (Guardian) it.next();
+			if (g.getLocation().distance(Storage.guardianMove.get(g).getLocation()) > 2 && g.getTicksLived() < 160) {
+				g.setVelocity(
+						Storage.guardianMove.get(g).getLocation().toVector().subtract(g.getLocation().toVector()));
+			} else {
+				it.remove();
+			}
+		}
+	}
 }

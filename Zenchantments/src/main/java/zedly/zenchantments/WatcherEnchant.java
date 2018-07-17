@@ -1,6 +1,7 @@
 package zedly.zenchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -14,7 +15,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.enchantments.Haste;
+import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -25,6 +29,7 @@ import static org.bukkit.entity.EntityType.HORSE;
 import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
+import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.enums.Tool.BOW;
 
 // This is the watcher used by the CustomEnchantment class. Each method checks the enchantments on relevant items,
@@ -257,4 +262,74 @@ public class WatcherEnchant implements Listener {
             }
         }
     }
+
+	@EffectTask(Frequency.MEDIUM)
+	// TODO: rename
+	// Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
+	public static void scanPlayers2() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (player.hasMetadata("ze.haste")) {
+				boolean has = false;
+				for (CustomEnchantment e : Config.get(player.getWorld()).getEnchants(
+						player.getInventory().getItemInMainHand()).keySet()) {
+					if (e.getClass().equals(Haste.class)) {
+						has = true;
+					}
+				}
+				if (!has) {
+					player.removePotionEffect(FAST_DIGGING);
+					player.removeMetadata("ze.haste", Storage.zenchantments);
+				}
+			}
+
+
+			// Dude this runs four times every second!? xD
+			Config config = Config.get(player.getWorld());
+			for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
+					player.getInventory().getArmorContents(), player.getInventory().getContents())) {
+				if (config.descriptionLore()) {
+					config.addDescriptions(stk, null);
+				} else {
+					config.removeDescriptions(stk, null);
+				}
+			}
+
+
+			EnchantPlayer.matchPlayer(player).tick();
+			for (ItemStack stk : player.getInventory().getArmorContents()) {
+				CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+					return ench.onScan(player, level, true);
+				});
+			}
+			ItemStack stk = player.getInventory().getItemInMainHand();
+			CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+				return ench.onScanHands(player, level, true);
+			});
+			stk = player.getInventory().getItemInOffHand();
+			CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+				return ench.onScanHands(player, level, false);
+			});
+		}
+	}
+
+	@EffectTask(Frequency.HIGH)
+	// Fast Scan of Player's Armor and their hand to register enchantments
+	public static void scanPlayers() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			EnchantPlayer.matchPlayer(player).tick();
+			for (ItemStack stk : player.getInventory().getArmorContents()) {
+				CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+					return ench.onFastScan(player, level, true);
+				});
+			}
+			ItemStack stk = player.getInventory().getItemInMainHand();
+			CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+				return ench.onFastScanHands(player, level, true);
+			});
+			stk = player.getInventory().getItemInOffHand();
+			CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+				return ench.onFastScanHands(player, level, false);
+			});
+		}
+	}
 }

@@ -10,10 +10,14 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import zedly.zenchantments.annotations.EffectTask;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.enums.Frequency;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.BLAZE;
@@ -108,6 +112,24 @@ public class EnchantArrow implements AdvancedArrow {
                 }
             }
         }, 1);
+    }
+
+    @EffectTask(Frequency.HIGH)
+    // Repeated actions for certain elemental arrows
+    public static void elementalArrows() {
+        // Remove arrows if they don't exist or if it's been longer than 30 seconds
+        Iterator it = Storage.advancedProjectiles.values().iterator();
+        while (it.hasNext()) {
+            for (AdvancedArrow a : (Set<AdvancedArrow>) it.next()) {
+                a.onFlight();
+                a.tick();
+                if (a.getArrow().isDead() || a.getTick() > 600) {
+                    it.remove();
+                    a.getArrow().remove();
+                    break;
+                }
+            }
+        }
     }
 
 // Enchantment Arrows
@@ -548,5 +570,4 @@ public class EnchantArrow implements AdvancedArrow {
             die();
         }
     }
-
 }

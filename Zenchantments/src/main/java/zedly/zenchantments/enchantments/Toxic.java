@@ -6,8 +6,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.*;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
+
+import java.util.Iterator;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
@@ -55,4 +63,17 @@ public class Toxic extends CustomEnchantment {
         return true;
     }
 
+	@EffectTask(Frequency.HIGH)
+	// Manages time left for players affected by Toxic enchantment
+	public static void hunger() {
+		Iterator it = Storage.hungerPlayers.keySet().iterator();
+		while (it.hasNext()) {
+			Player player = (Player) it.next();
+			if (Storage.hungerPlayers.get(player) < 1) {
+				it.remove();
+			} else {
+				Storage.hungerPlayers.put(player, Storage.hungerPlayers.get(player) - 1);
+			}
+		}
+	}
 }

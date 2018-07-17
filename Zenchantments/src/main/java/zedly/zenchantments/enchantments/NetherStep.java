@@ -5,7 +5,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.*;
+import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.enums.Hand;
+import zedly.zenchantments.enums.Tool;
+
+import java.util.Iterator;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.BOOTS;
@@ -52,4 +57,25 @@ public class NetherStep extends CustomEnchantment {
         }
         return true;
     }
+
+	@EffectTask(Frequency.MEDIUM)
+	// Removes the blocks from NetherStep and FrozenStep after a peroid of time
+	public static void updateBlocks() {
+		Iterator it = Storage.waterLocs.keySet().iterator();
+		while (it.hasNext()) {
+			Location location = (Location) it.next();
+			if (Math.abs(System.nanoTime() - Storage.waterLocs.get(location)) > 9E8) {
+				location.getBlock().setType(STATIONARY_WATER);
+				it.remove();
+			}
+		}
+		it = Storage.fireLocs.keySet().iterator();
+		while (it.hasNext()) {
+			Location location = (Location) it.next();
+			if (Math.abs(System.nanoTime() - Storage.fireLocs.get(location)) > 9E8) {
+				location.getBlock().setType(STATIONARY_LAVA);
+				it.remove();
+			}
+		}
+	}
 }

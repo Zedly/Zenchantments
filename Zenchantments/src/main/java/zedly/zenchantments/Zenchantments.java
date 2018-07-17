@@ -1,13 +1,20 @@
 package zedly.zenchantments;
 //For Bukkit & Spigot 1.10.X-1.11.X
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.enchantments.Meador;
+import zedly.zenchantments.enchantments.Speed;
+import zedly.zenchantments.enchantments.Weight;
+import zedly.zenchantments.enums.Frequency;
 
 import java.io.File;
 import java.util.Map;
@@ -25,23 +32,37 @@ public class Zenchantments extends JavaPlugin {
         Config.loadConfigs();
     }
 
-    // Loads configs and starts tasks
-    public void onEnable() {
-        Storage.zenchantments = this;
-        Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
-        loadConfigs(); 
+	@EffectTask(Frequency.MEDIUM)
+	public static void speedPlayers() {
+		speedPlayers(false);
+	}
 
-        getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
-        getServer().getPluginManager().registerEvents(new WatcherArrow(), this);
-        getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);
-        getServer().getPluginManager().registerEvents(new Watcher(), this);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new HFEffects(), 1, 1);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new MFEffects(), 1, 5);
-    }
+	// Sets player fly and walk speed to default after certain enchantments are removed
+	private static void speedPlayers(boolean checkAll) {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			Config world = Config.get(player.getWorld());
+			boolean check = false;
+			for (ItemStack stk : player.getInventory().getArmorContents()) {
+				Map<CustomEnchantment, Integer> map = world.getEnchants(stk);
+				Class[] enchs = new Class[]{Weight.class, Speed.class, Meador.class};
+				for (CustomEnchantment ench : map.keySet()) {
+					if (ArrayUtils.contains(enchs, ench.getClass())) {
+						check = true;
+					}
+				}
+			}
+			if (player.hasMetadata("ze.speed") && (!check || checkAll)) {
+				player.removeMetadata("ze.speed", Storage.zenchantments);
+				player.setFlySpeed(.1f);
+				player.setWalkSpeed(.2f);
+				break;
+			}
+		}
+	}
 
     // Sets blocks to their natural states at shutdown
     public void onDisable() {
-        MFEffects.speedPlayers(true);
+	    speedPlayers(true);
         getServer().getScheduler().cancelTasks(this);
         for (Location l : Storage.waterLocs.keySet()) {
             l.getBlock().setType(STATIONARY_WATER);
@@ -123,4 +144,19 @@ public class Zenchantments extends JavaPlugin {
         return false;
     }
 
+	// Loads configs and starts tasks
+	public void onEnable() {
+		Storage.zenchantments = this;
+		Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription()
+		                        .getVersion();
+		loadConfigs();
+
+		getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
+		getServer().getPluginManager().registerEvents(new WatcherArrow(), this);
+		getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);
+		getServer().getPluginManager().registerEvents(new Watcher(), this);
+		for (Frequency f : Frequency.values()) {
+			getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
+		}
+	}
 }
