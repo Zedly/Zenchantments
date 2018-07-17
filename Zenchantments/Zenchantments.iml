@@ -25,6 +25,6 @@
     <orderEntry type="module" module-name="NMS_1_12_R1" />
     <orderEntry type="module" module-name="NMS_1_11_R1" />
     <orderEntry type="module" module-name="NMS_1_10_R1" />
-    <orderEntry type="library" name="Maven: io.github.lukehutch:fast-classpath-scanner:3.1.9" level="project" />
+    <orderEntry type="library" name="Maven: io.github.lukehutch:fast-classpath-scanner:3.1.11" level="project" />
   </component>
 </module>
