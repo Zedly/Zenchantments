@@ -33,10 +33,13 @@ public class TaskRunner implements Runnable {
 
 		tasks = new HashSet<>();
 
-		new FastClasspathScanner(Zenchantments.class.getPackage().getName()).matchClassesWithMethodAnnotation(
-				EffectTask.class, (clazz, method) -> {
+		new FastClasspathScanner(Zenchantments.class.getPackage().getName())
+			.matchClassesWithMethodAnnotation(
+				EffectTask.class,
+				(clazz, method) -> {
 					if (!Modifier.isStatic(method.getModifiers())) {
-						this.logger.warning("EffectTask on non-static method '" + method.getName() + "' in class '"
+						this.logger.warning(
+							"EffectTask on non-static method '" + method.getName() + "' in class '"
 								+ clazz.getName() + "'");
 					}
 					if (method.getAnnotation(EffectTask.class).value() == freq) {
