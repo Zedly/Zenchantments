@@ -11,7 +11,6 @@
       <option name="JD_KEEP_EMPTY_PARAMETER" value="false" />
       <option name="JD_KEEP_EMPTY_EXCEPTION" value="false" />
       <option name="JD_KEEP_EMPTY_RETURN" value="false" />
-      <option name="JD_LEADING_ASTERISKS_ARE_ENABLED" value="false" />
       <option name="JD_PRESERVE_LINE_FEEDS" value="true" />
       <option name="JD_INDENT_ON_CONTINUATION" value="true" />
     </JavaCodeStyleSettings>
