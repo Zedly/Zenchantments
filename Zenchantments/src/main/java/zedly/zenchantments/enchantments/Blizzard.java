@@ -8,7 +8,7 @@ import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Blizzard extends CustomEnchantment {
 
@@ -16,7 +16,7 @@ public class Blizzard extends CustomEnchantment {
         maxLevel = 3;
         loreName = "Blizzard";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{Firestorm.class};
         description = "Spawns a blizzard where the arrow strikes freezing nearby entities";
         cooldown = 0;

@@ -10,7 +10,7 @@ import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Stationary extends CustomEnchantment {
@@ -19,7 +19,7 @@ public class Stationary extends CustomEnchantment {
         maxLevel = 1;
         loreName = "Stationary";
         probability = 0;
-        enchantable = new Tool[]{BOW_, SWORD};
+        enchantable = new Tool[]{BOW, SWORD};
         conflicting = new Class[]{};
         description = "Negates any knockback when attacking mobs, leaving them clueless as to who is attacking";
         cooldown = 0;

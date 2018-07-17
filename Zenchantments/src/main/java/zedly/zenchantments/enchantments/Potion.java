@@ -9,7 +9,7 @@ import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Potion extends CustomEnchantment {
 
@@ -19,7 +19,7 @@ public class Potion extends CustomEnchantment {
         maxLevel = 3;
         loreName = "Potion";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{};
         description = "Gives the shooter random positive potion effects when attacking";
         cooldown = 0;

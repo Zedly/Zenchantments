@@ -12,7 +12,7 @@ import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.BLINDNESS;
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Reaper extends CustomEnchantment {
@@ -21,7 +21,7 @@ public class Reaper extends CustomEnchantment {
         maxLevel = 4;
         loreName = "Reaper";
         probability = 0;
-        enchantable = new Tool[]{BOW_, SWORD};
+        enchantable = new Tool[]{BOW, SWORD};
         conflicting = new Class[]{};
         description = "Gives the target temporary wither effect and blindness";
         cooldown = 0;

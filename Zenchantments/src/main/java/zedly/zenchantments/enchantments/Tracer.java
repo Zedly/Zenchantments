@@ -8,7 +8,7 @@ import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Tracer extends CustomEnchantment {
 
@@ -16,7 +16,7 @@ public class Tracer extends CustomEnchantment {
         maxLevel = 4;
         loreName = "Tracer";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{};
         description = "Guides the arrow to targets and then attacks";
         cooldown = 0;

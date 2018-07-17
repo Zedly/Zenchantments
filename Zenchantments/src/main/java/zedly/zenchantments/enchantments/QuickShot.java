@@ -8,7 +8,7 @@ import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class QuickShot extends CustomEnchantment {
 
@@ -16,7 +16,7 @@ public class QuickShot extends CustomEnchantment {
         maxLevel = 1;
         loreName = "Quick Shot";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{};
         description = "Shoots arrows at full speed, instantly";
         cooldown = 0;

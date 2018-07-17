@@ -15,7 +15,7 @@ public enum Tool {
     PICKAXE("Pickaxe", new Material[]{WOOD_PICKAXE, STONE_PICKAXE, GOLD_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE}, false),
     ROD("Rod", new Material[]{FISHING_ROD}, true),
     SHEAR("Shears", new Material[]{SHEARS}, true),
-    BOW_("Bow", new Material[]{BOW}, true),
+    BOW("Bow", new Material[]{Material.BOW}, true),
     LIGHTER("Lighter", new Material[]{FLINT_AND_STEEL}, true),
     HOE("Hoe", new Material[]{WOOD_HOE, STONE_HOE, GOLD_HOE, IRON_HOE, DIAMOND_HOE}, true),
     HELMET("Helmet", new Material[]{DIAMOND_HELMET, IRON_HELMET, GOLD_HELMET, CHAINMAIL_HELMET, LEATHER_HELMET}, false),

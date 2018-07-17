@@ -15,7 +15,7 @@ import zedly.zenchantments.enums.*;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Burst extends CustomEnchantment {
 
@@ -23,7 +23,7 @@ public class Burst extends CustomEnchantment {
         maxLevel = 3;
         loreName = "Burst";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{Spread.class};
         description = "Rapidly fires arrows in series";
         cooldown = 0;

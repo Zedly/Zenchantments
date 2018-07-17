@@ -9,7 +9,7 @@ import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Missile extends CustomEnchantment {
 
@@ -17,7 +17,7 @@ public class Missile extends CustomEnchantment {
         maxLevel = 1;
         loreName = "Missile";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{};
         description = "Shoots a missile from the bow";
         cooldown = 0;

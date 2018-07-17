@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
 import zedly.zenchantments.*;
 import zedly.zenchantments.enums.*;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Spread extends CustomEnchantment {
 
@@ -19,7 +19,7 @@ public class Spread extends CustomEnchantment {
         maxLevel = 5;
         loreName = "Spread";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{Burst.class};
         description = "Fires an array of arrows simultaneously";
         cooldown = 0;

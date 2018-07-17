@@ -11,7 +11,7 @@ import zedly.zenchantments.enums.*;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Toxic extends CustomEnchantment {
@@ -20,7 +20,7 @@ public class Toxic extends CustomEnchantment {
         maxLevel = 4;
         loreName = "Toxic";
         probability = 0;
-        enchantable = new Tool[]{BOW_, SWORD};
+        enchantable = new Tool[]{BOW, SWORD};
         conflicting = new Class[]{};
         description = "Sickens the target, making them nauseous and unable to eat";
         cooldown = 0;

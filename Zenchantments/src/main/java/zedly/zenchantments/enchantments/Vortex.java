@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.*;
 import zedly.zenchantments.enums.*;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Vortex extends CustomEnchantment {
@@ -17,7 +17,7 @@ public class Vortex extends CustomEnchantment {
         maxLevel = 1;
         loreName = "Vortex";
         probability = 0;
-        enchantable = new Tool[]{BOW_, SWORD};
+        enchantable = new Tool[]{BOW, SWORD};
         conflicting = new Class[]{};
         description = "Teleports mob loot and XP directly to the player";
         cooldown = 0;

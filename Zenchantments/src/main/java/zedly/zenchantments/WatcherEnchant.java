@@ -25,7 +25,7 @@ import static org.bukkit.entity.EntityType.HORSE;
 import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 // This is the watcher used by the CustomEnchantment class. Each method checks the enchantments on relevant items,
 //      ensures that the item is not an enchantment book, and calls each enchantment's method if the player can
@@ -101,8 +101,8 @@ public class WatcherEnchant implements Listener {
             if (evt.getEntity().getKiller() instanceof Player) {
                 Player player = evt.getEntity().getKiller();
                 EquipmentSlot slot = evt.getEntity().getLastDamageCause().getCause() == PROJECTILE
-                        && Tool.fromItemStack(player.getInventory().getItemInOffHand()) == BOW_
-                        && Tool.fromItemStack(player.getInventory().getItemInMainHand()) != BOW_ ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
+                        && Tool.fromItemStack(player.getInventory().getItemInOffHand()) == BOW
+                        && Tool.fromItemStack(player.getInventory().getItemInMainHand()) != BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
                 boolean usedHand = Utilities.isMainHand(slot);
                 ItemStack usedStack = Utilities.usedStack(player, usedHand);
                 CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
@@ -194,7 +194,7 @@ public class WatcherEnchant implements Listener {
             Player player = (Player) evt.getEntity();
             Tool main = Tool.fromItemStack(player.getInventory().getItemInMainHand());
             Tool off = Tool.fromItemStack(player.getInventory().getItemInOffHand());
-            boolean usedHand = Utilities.isMainHand(main != BOW_ && off == BOW_ ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
+            boolean usedHand = Utilities.isMainHand(main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
             ItemStack usedStack = Utilities.usedStack(player, usedHand);
             LinkedHashMap<CustomEnchantment, Integer> map = Config.get(player.getWorld()).getEnchants(evt.getBow());
             CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
@@ -228,7 +228,7 @@ public class WatcherEnchant implements Listener {
             Player player = (Player) evt.getEntity().getShooter();
             Tool main = Tool.fromItemStack(player.getInventory().getItemInMainHand());
             Tool off = Tool.fromItemStack(player.getInventory().getItemInOffHand());
-            boolean usedHand = Utilities.isMainHand(main != BOW_ && main != Tool.ROD && (off == BOW_ || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
+            boolean usedHand = Utilities.isMainHand(main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
             ItemStack usedStack = Utilities.usedStack(player, usedHand);
             CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                 return ench.onProjectileLaunch(evt, level, usedHand);

@@ -16,7 +16,7 @@ public class Level extends CustomEnchantment {
         maxLevel = 3;
         loreName = "Level";
         probability = 0;
-        enchantable = new Tool[]{PICKAXE, SWORD, BOW_};
+        enchantable = new Tool[]{PICKAXE, SWORD, BOW};
         conflicting = new Class[]{};
         description = "Drops more XP when killing mobs or mining ores";
         cooldown = 0;

@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.*;
 import zedly.zenchantments.enums.*;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Siphon extends CustomEnchantment {
@@ -17,7 +17,7 @@ public class Siphon extends CustomEnchantment {
         maxLevel = 4;
         loreName = "Siphon";
         probability = 0;
-        enchantable = new Tool[]{BOW_, SWORD};
+        enchantable = new Tool[]{BOW, SWORD};
         conflicting = new Class[]{};
         description = "Drains the health of the mob that you attack, giving it to you";
         cooldown = 0;

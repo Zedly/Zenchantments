@@ -8,7 +8,7 @@ import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.enums.*;
 import zedly.zenchantments.Utilities;
 
-import static zedly.zenchantments.enums.Tool.BOW_;
+import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Singularity extends CustomEnchantment {
 
@@ -16,7 +16,7 @@ public class Singularity extends CustomEnchantment {
         maxLevel = 1;
         loreName = "Singularity";
         probability = 0;
-        enchantable = new Tool[]{BOW_};
+        enchantable = new Tool[]{BOW};
         conflicting = new Class[]{};
         description = "Creates a black hole that attracts nearby entities and then discharges them";
         cooldown = 0;
