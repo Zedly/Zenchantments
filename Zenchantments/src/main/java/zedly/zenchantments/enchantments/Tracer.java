@@ -22,10 +22,7 @@ public class Tracer extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 63;
+        id = 63;
     }
 
     @Override

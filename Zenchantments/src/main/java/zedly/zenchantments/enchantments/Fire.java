@@ -29,10 +29,7 @@ public class Fire extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.LEFT;
-    }
-
-    public int getEnchantmentId() {
-        return 13;
+        id = 13;
     }
 
     @Override

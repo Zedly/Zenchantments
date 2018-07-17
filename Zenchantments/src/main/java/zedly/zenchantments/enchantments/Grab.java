@@ -21,10 +21,7 @@ public class Grab extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.LEFT;
-    }
-
-    public int getEnchantmentId() {
-        return 23;
+        id = 23;
     }
 
     @Override

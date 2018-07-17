@@ -22,10 +22,7 @@ public class Firestorm extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 14;
+        id = 14;
     }
 
     @Override

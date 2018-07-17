@@ -17,25 +17,10 @@ import java.util.function.BiPredicate;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
-public class CustomEnchantment {
+public abstract class CustomEnchantment {
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
-    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
-        Config.get(player.getWorld()).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
-            if (!ench.used && Utilities.canUse(player, ench.getEnchantmentId())) {
-                try {
-                    ench.used = true;
-                    if (action.test(ench, level)) {
-                        EnchantPlayer.matchPlayer(player).setCooldown(ench.getEnchantmentId(), ench.cooldown);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                ench.used = false;
-            }
-        });
-    }
     protected int     maxLevel;         // Max level the given enchant can naturally obtain
     protected String  loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
     protected float   probability;    // Relative probability of obtaining the given enchantment
@@ -46,32 +31,10 @@ public class CustomEnchantment {
     protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
     protected Hand    handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
     private   boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
+    protected int     id;
 
-    public int getEnchantmentId() {
-        return -1;
-    }
+    //region Enchanment Events
 
-    public void loadData() {
-
-    }
-
-    // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
-    public boolean validMaterial(Material m) {
-        for (Tool t : enchantable) {
-            if (t.contains(m)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Returns true if the given item stack (tool) is compatible with the enchantment, otherwise false
-    public boolean validMaterial(ItemStack m) {
-        return validMaterial(m.getType());
-    }
-
-    //Empty Methods for Events and Scanning Tasks: These are empty by default so that the WatcherEnchant can call these 
-    //      for any enchantment without performing any checks. Each enchantment will override them as neccecary
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
         return false;
     }
@@ -146,5 +109,126 @@ public class CustomEnchantment {
 
     public boolean onFastScanHands(Player player, int level, boolean usedHand) {
         return false;
+    }
+    
+    //endregion
+
+    //region Getters and Setters
+
+    int getMaxLevel() {
+        return maxLevel;
+    }
+
+    void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+
+    String getLoreName() {
+        return loreName;
+    }
+
+    void setLoreName(String loreName) {
+        this.loreName = loreName;
+    }
+
+    float getProbability() {
+        return probability;
+    }
+
+    void setProbability(float probability) {
+        this.probability = probability;
+    }
+
+    Tool[] getEnchantable() {
+        return enchantable;
+    }
+
+    void setEnchantable(Tool[] enchantable) {
+        this.enchantable = enchantable;
+    }
+
+    Class[] getConflicting() {
+        return conflicting;
+    }
+
+    void setConflicting(Class[] conflicting) {
+        this.conflicting = conflicting;
+    }
+
+    String getDescription() {
+        return description;
+    }
+
+    void setDescription(String description) {
+        this.description = description;
+    }
+
+    int getCooldown() {
+        return cooldown;
+    }
+
+    void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    double getPower() {
+        return power;
+    }
+
+    void setPower(double power) {
+        this.power = power;
+    }
+
+    Hand getHandUse() {
+        return handUse;
+    }
+
+    int getId() {
+        return id;
+    }
+
+
+    //endregion
+
+    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
+        Config.get(player.getWorld()).getEnchants(tool).forEach((CustomEnchantment ench, Integer level) -> {
+            if (!ench.used && Utilities.canUse(player, ench.id)) {
+                try {
+                    ench.used = true;
+                    if (action.test(ench, level)) {
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                ench.used = false;
+            }
+        });
+    }
+
+    /**
+     * Determines if the material provided is enchantable with this enchantment.
+     *
+     * @param m The material to test.
+     * @return true iff the material can be enchanted with this enchantment.
+     */
+    // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
+    public boolean validMaterial(Material m) {
+        for (Tool t : enchantable) {
+            if (t.contains(m)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines if the stack of material provided is enchantable with this enchantment.
+     *
+     * @param m The stack of material to test.
+     * @return true iff the stack of material can be enchanted with this enchantment.
+     */
+    public boolean validMaterial(ItemStack m) {
+        return validMaterial(m.getType());
     }
 }

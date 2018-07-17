@@ -22,10 +22,7 @@ public class QuickShot extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 46;
+        id = 46;
     }
 
     @Override

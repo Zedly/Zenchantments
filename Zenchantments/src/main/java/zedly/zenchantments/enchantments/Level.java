@@ -22,10 +22,7 @@ public class Level extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-    }
-
-    public int getEnchantmentId() {
-        return 32;
+        id = 32;
     }
 
     @Override

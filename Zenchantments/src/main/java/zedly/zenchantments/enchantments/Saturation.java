@@ -20,10 +20,7 @@ public class Saturation extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 50;
+        id = 50;
     }
 
     @Override

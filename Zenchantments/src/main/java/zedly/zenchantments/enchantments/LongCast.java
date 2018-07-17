@@ -19,10 +19,7 @@ public class LongCast extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 33;
+        id = 33;
     }
 
     @Override

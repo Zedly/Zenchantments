@@ -34,10 +34,7 @@ public class Pierce extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.BOTH;
-    }
-
-    public int getEnchantmentId() {
-        return 42;
+        id = 42;
     }
 
     @Override

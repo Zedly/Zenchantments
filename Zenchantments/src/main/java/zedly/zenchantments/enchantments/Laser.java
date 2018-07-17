@@ -34,10 +34,7 @@ public class Laser extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 31;
+        id = 31;
     }
 
     public void shoot(Player player, int level, boolean usedHand) {

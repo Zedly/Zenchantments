@@ -27,10 +27,7 @@ public class RainbowSlam extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 48;
+        id = 48;
     }
 
     @Override

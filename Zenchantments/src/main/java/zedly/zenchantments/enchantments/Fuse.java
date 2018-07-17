@@ -22,10 +22,7 @@ public class Fuse extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 18;
+        id = 18;
     }
 
     @Override

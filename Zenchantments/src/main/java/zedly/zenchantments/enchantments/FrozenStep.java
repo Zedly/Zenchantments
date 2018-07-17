@@ -22,10 +22,7 @@ public class FrozenStep extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 17;
+        id = 17;
     }
 
     public boolean onScan(Player player, int level, boolean usedHand) {

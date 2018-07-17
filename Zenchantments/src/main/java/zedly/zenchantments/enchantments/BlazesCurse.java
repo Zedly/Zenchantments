@@ -39,10 +39,7 @@ public class BlazesCurse extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 5;
+        id = 5;
     }
 
     @Override

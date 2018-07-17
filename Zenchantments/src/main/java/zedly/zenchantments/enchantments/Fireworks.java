@@ -22,10 +22,7 @@ public class Fireworks extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 15;
+        id = 15;
     }
 
     @Override

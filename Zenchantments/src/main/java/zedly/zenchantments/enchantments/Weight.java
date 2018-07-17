@@ -25,10 +25,7 @@ public class Weight extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 67;
+        id = 67;
     }
 
     @Override

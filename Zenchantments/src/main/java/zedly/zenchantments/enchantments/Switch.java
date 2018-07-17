@@ -29,10 +29,7 @@ public class Switch extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 60;
+        id = 60;
     }
 
     @Override

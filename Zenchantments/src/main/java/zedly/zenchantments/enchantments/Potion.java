@@ -25,10 +25,7 @@ public class Potion extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 44;
+        id = 44;
     }
 
     @Override

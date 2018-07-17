@@ -24,10 +24,7 @@ public class PotionResistance extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 45;
+        id = 45;
     }
 
     @Override

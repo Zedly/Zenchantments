@@ -24,10 +24,7 @@ public class Conversion extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 10;
+        id = 10;
     }
 
     @Override

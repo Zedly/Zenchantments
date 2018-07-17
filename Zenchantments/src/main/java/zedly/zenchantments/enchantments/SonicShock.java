@@ -21,10 +21,7 @@ public class SonicShock extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 56;
+        id = 56;
     }
 
     @Override

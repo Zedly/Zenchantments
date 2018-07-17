@@ -25,10 +25,7 @@ public class Stationary extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.BOTH;
-    }
-
-    public int getEnchantmentId() {
-        return 58;
+        id = 58;
     }
 
     @Override

@@ -29,10 +29,7 @@ public class Burst extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 8;
+        id = 8;
     }
 
     @Override

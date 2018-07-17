@@ -25,10 +25,7 @@ public class Glide extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 20;
+        id = 20;
     }
 
     @Override

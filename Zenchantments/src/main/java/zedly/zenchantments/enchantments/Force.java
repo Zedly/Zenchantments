@@ -33,10 +33,7 @@ public class Force extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-    }
-
-    public int getEnchantmentId() {
-        return 16;
+        id = 16;
     }
 
     @Override

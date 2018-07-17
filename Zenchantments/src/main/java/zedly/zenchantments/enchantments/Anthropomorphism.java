@@ -20,6 +20,7 @@ import static org.bukkit.event.block.Action.*;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Anthropomorphism extends CustomEnchantment {
+	private static final Material[] MAT = new Material[]{STONE, GRAVEL, DIRT, GRASS};
 
     public Anthropomorphism() {
         maxLevel = 1;
@@ -32,17 +33,14 @@ public class Anthropomorphism extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-
-    }
-
-    public int getEnchantmentId() {
-        return 1;
+        id = 1;
     }
 
     @Override
     public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
         Player player = evt.getPlayer();
         ItemStack hand = Utilities.usedStack(player, usedHand);
+
         if(evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
             if(player.isSneaking()) {
                 if(!Storage.anthVortex.contains(player)) {
@@ -59,9 +57,8 @@ public class Anthropomorphism extends CustomEnchantment {
                     Utilities.damageTool(player, 2, usedHand);
                     player.updateInventory();
                     Location loc = player.getLocation();
-                    Material mat[] = new Material[]{STONE, GRAVEL, DIRT, GRASS};
                     FallingBlock blockEntity =
-                            loc.getWorld().spawnFallingBlock(loc, mat[Storage.rnd.nextInt(4)], (byte) 0x0);
+                            loc.getWorld().spawnFallingBlock(loc, MAT[Storage.rnd.nextInt(4)], (byte) 0x0);
                     blockEntity.setDropItem(false);
                     blockEntity.setGravity(false);
                     blockEntity

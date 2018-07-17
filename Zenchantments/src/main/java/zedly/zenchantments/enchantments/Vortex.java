@@ -23,10 +23,7 @@ public class Vortex extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.BOTH;
-    }
-
-    public int getEnchantmentId() {
-        return 66;
+        id = 66;
     }
 
     @Override

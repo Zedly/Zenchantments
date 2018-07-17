@@ -25,11 +25,7 @@ public class Bind extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-
-    }
-
-    public int getEnchantmentId() {
-        return 4;
+        id = 4;
     }
 
     @Override

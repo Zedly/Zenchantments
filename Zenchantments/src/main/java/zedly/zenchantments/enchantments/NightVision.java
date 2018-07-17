@@ -20,10 +20,7 @@ public class NightVision extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 40;
+        id = 40;
     }
 
     @Override

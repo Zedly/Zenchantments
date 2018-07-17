@@ -23,10 +23,7 @@ public class Siphon extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.BOTH;
-    }
-
-    public int getEnchantmentId() {
-        return 53;
+        id = 53;
     }
 
     @Override

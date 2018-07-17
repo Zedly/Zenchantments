@@ -31,10 +31,7 @@ public class Germination extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 19;
+        id = 19;
     }
 
     @Override

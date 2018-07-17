@@ -24,10 +24,7 @@ public class Plough extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 43;
+        id = 43;
     }
 
     @Override

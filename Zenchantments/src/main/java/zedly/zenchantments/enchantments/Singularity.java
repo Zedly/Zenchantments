@@ -22,10 +22,7 @@ public class Singularity extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 72;
+        id = 72;
     }
 
     @Override

@@ -20,10 +20,7 @@ public class Speed extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 55;
+        id = 55;
     }
 
     @Override

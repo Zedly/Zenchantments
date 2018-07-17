@@ -23,10 +23,7 @@ public class Stock extends CustomEnchantment {
         cooldown = -1;
         power = -1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 59;
+        id = 59;
     }
 
     @Override

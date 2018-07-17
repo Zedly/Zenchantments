@@ -35,10 +35,7 @@ public class Terraformer extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.RIGHT;
-    }
-
-    public int getEnchantmentId() {
-        return 61;
+        id = 61;
     }
 
     @Override

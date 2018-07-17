@@ -6,7 +6,6 @@ import zedly.zenchantments.enums.*;
 import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Unrepairable extends CustomEnchantment {
-
     public Unrepairable() {
         maxLevel = 1;
         loreName = "Unrepairable";
@@ -17,9 +16,6 @@ public class Unrepairable extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 73;
+        id = 73;
     }
 }

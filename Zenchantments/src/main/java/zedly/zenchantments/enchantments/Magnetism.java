@@ -20,10 +20,7 @@ public class Magnetism extends CustomEnchantment {
         cooldown = 0;
         power = 1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 35;
+        id = 35;
     }
 
     @Override

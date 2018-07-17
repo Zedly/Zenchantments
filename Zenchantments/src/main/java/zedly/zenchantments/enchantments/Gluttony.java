@@ -32,10 +32,7 @@ public class Gluttony extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.NONE;
-    }
-
-    public int getEnchantmentId() {
-        return 21;
+        id = 21;
     }
 
     @Override

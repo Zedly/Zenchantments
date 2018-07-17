@@ -29,10 +29,7 @@ public class Rainbow extends CustomEnchantment {
         cooldown = 0;
         power = -1.0;
         handUse = Hand.BOTH;
-    }
-
-    public int getEnchantmentId() {
-        return 47;
+        id = 47;
     }
 
     @Override
