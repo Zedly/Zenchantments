@@ -36,7 +36,7 @@
             <resource>
                 <targetPath>.</targetPath>
                 <filtering>true</filtering>
-                <directory>src/main/resources</directory>
+                <directory>resources</directory>
             </resource>
         </resources>
     </build>
