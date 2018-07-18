@@ -48,7 +48,9 @@ public class CommandProcessor {
             meta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 1, true);
             stack.setItemMeta(meta);
         }
-        List<String> lore = stack.getItemMeta().getLore();
+
+        ItemMeta meta = stack.getItemMeta();
+        List<String> lore = meta.getLore();
         if (config.getEnchants(stack, true).containsKey(enchantment)) {
             Iterator it = lore.iterator();
             while (it.hasNext()) {
@@ -58,6 +60,9 @@ public class CommandProcessor {
                 }
             }
         }
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+
         if (level != 0) {
             enchantment.addEnchantment(stack, level);
             if (isHeld) {
@@ -75,9 +80,7 @@ public class CommandProcessor {
                         + ChatColor.AQUA + " has been removed.");
             }
         }
-        ItemMeta meta = stack.getItemMeta();
-        meta.setLore(lore);
-        stack.setItemMeta(meta);
+
         return config.descriptionLore() ? config.addDescriptions(stack, enchantment) : stack;
     }
 
