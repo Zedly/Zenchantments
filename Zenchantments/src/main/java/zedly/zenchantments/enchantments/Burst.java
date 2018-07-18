@@ -11,9 +11,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.arrows.enchanted.MultiArrow;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -59,7 +59,7 @@ public class Burst extends CustomEnchantment {
                         } else {
                             arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
                             arrow.setCritical(true);
-                            Utilities.putArrow(arrow, new EnchantArrow.ArrowGenericMulitple(arrow), player);
+                            Utilities.putArrow(arrow, new MultiArrow(arrow), player);
                             Utilities.damageTool(player, 1, usedHand);
                         }
                     }, i * 2);

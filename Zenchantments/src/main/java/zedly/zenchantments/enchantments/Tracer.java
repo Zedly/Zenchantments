@@ -4,10 +4,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.arrows.enchanted.TracerArrow;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -31,9 +32,8 @@ public class Tracer extends CustomEnchantment {
 
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        EnchantArrow.ArrowEnchantTracer arrow =
-                new EnchantArrow.ArrowEnchantTracer((Projectile) evt.getProjectile(), level, power);
-        Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
+	    TracerArrow arrow = new TracerArrow((Arrow) evt.getProjectile(), level, power);
+        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 

@@ -1,14 +1,16 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.arrows.enchanted.VortexArrow;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -44,9 +46,8 @@ public class Vortex extends CustomEnchantment {
 
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        EnchantArrow.ArrowEnchantVortex arrow =
-                new EnchantArrow.ArrowEnchantVortex((Projectile) evt.getProjectile());
-        Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
+        VortexArrow arrow = new VortexArrow((Arrow) evt.getProjectile());
+        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 

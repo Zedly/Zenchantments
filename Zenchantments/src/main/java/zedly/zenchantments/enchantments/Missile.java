@@ -1,12 +1,13 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.arrows.admin.MissileArrow;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -29,8 +30,8 @@ public class Missile extends CustomEnchantment {
 
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        EnchantArrow.ArrowAdminMissile arrow = new EnchantArrow.ArrowAdminMissile((Projectile) evt.getProjectile());
-        Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
+        MissileArrow arrow = new MissileArrow((Arrow) evt.getProjectile());
+        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         evt.setCancelled(true);
         Utilities.damageTool((Player) evt.getEntity(), 1, usedHand);
         Utilities.removeItem(((Player) evt.getEntity()), Material.ARROW, 1);

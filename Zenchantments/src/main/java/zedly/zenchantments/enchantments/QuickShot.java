@@ -1,11 +1,13 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.EnchantArrow;
+import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.arrows.enchanted.QuickArrow;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -28,9 +30,8 @@ public class QuickShot extends CustomEnchantment {
 
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        EnchantArrow.ArrowEnchantQuickShot arrow =
-                new EnchantArrow.ArrowEnchantQuickShot((Projectile) evt.getProjectile());
-        Utilities.putArrow(evt.getProjectile(), arrow, (Player) evt.getEntity());
+        QuickArrow arrow = new QuickArrow((Arrow) evt.getProjectile());
+        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 }

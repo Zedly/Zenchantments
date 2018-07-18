@@ -9,9 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.EnchantArrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.arrows.enchanted.MultiArrow;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -37,7 +37,7 @@ public class Spread extends CustomEnchantment {
         Arrow originalArrow = (Arrow) evt.getEntity();
         Player player = (Player) originalArrow.getShooter();
         ItemStack hand = Utilities.usedStack(player, usedHand);
-        EnchantArrow.ArrowGenericMulitple ar = new EnchantArrow.ArrowGenericMulitple(originalArrow);
+        MultiArrow ar = new MultiArrow(originalArrow);
         Utilities.putArrow(originalArrow, ar, player);
         Bukkit.getPluginManager().callEvent(
                 new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length()));
@@ -61,7 +61,7 @@ public class Spread extends CustomEnchantment {
             }
             arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
             arrow.setCritical(originalArrow.isCritical());
-            Utilities.putArrow(originalArrow, new EnchantArrow.ArrowGenericMulitple(originalArrow), player);
+            Utilities.putArrow(originalArrow, new MultiArrow(originalArrow), player);
         }
         return true;
     }

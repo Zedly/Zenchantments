@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import zedly.zenchantments.arrows.EnchantedArrow;
 
 import java.util.*;
 
@@ -327,8 +329,8 @@ public class Utilities {
     }
 
     // Adds an arrow entity into the arrow storage variable calls its launch method
-    public static void putArrow(Entity e, EnchantArrow a, Player p) {
-        Set<AdvancedArrow> ars;
+    public static void putArrow(Arrow e, EnchantedArrow a, Player p) {
+        Set<EnchantedArrow> ars;
         if (Storage.advancedProjectiles.containsKey(e)) {
             ars = Storage.advancedProjectiles.get(e);
         } else {

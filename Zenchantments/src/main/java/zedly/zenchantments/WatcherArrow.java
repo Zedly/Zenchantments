@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import zedly.zenchantments.arrows.EnchantedArrow;
 
 import java.util.Set;
 
@@ -20,8 +21,8 @@ public class WatcherArrow implements Listener {
     @EventHandler
     public boolean impact(ProjectileHitEvent evt) {
         if (Storage.advancedProjectiles.containsKey(evt.getEntity())) {
-            Set<AdvancedArrow> ar = Storage.advancedProjectiles.get(evt.getEntity());
-            for (AdvancedArrow a : ar) {
+            Set<EnchantedArrow> ar = Storage.advancedProjectiles.get(evt.getEntity());
+            for (EnchantedArrow a : ar) {
                 a.onImpact();
             }
         }
@@ -33,8 +34,8 @@ public class WatcherArrow implements Listener {
     public boolean entityHit(EntityDamageByEntityEvent evt) {
         if (evt.getDamager() instanceof Arrow) {
             if (Storage.advancedProjectiles.containsKey(evt.getDamager())) {
-                Set<AdvancedArrow> arrows = Storage.advancedProjectiles.get(evt.getDamager());
-                for (AdvancedArrow arrow : arrows) {
+                Set<EnchantedArrow> arrows = Storage.advancedProjectiles.get(evt.getDamager());
+                for (EnchantedArrow arrow : arrows) {
                     if (evt.getEntity() instanceof LivingEntity) {
                         if (!arrow.onImpact(evt)) {
                             evt.setDamage(0);
@@ -54,7 +55,7 @@ public class WatcherArrow implements Listener {
     @EventHandler
     public boolean entityDeath(EntityDeathEvent evt) {
         if (Storage.killedEntities.containsKey(evt.getEntity())) {
-            AdvancedArrow arrow = Storage.killedEntities.get(evt.getEntity());
+            EnchantedArrow arrow = Storage.killedEntities.get(evt.getEntity());
             arrow.onKill(evt);
             Storage.killedEntities.remove(evt.getEntity());
         }

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 
 import java.util.*;
@@ -44,7 +45,7 @@ public class Storage {
     public static final Map<Player, Long> laserTimes = new HashMap<>();
 
     // Entities an advanced arrow has damaged or killed
-    public static final Map<Entity, AdvancedArrow> killedEntities = new HashMap<>();
+    public static final Map<Entity, EnchantedArrow> killedEntities = new HashMap<>();
 
     // Map of players who use pierce and what mode they are currently using
     public static final Map<Player, Integer> pierceModes = new HashMap<>();
@@ -83,7 +84,7 @@ public class Storage {
     public static final Set<Entity> damagingPlayer = new HashSet<>();
 
     // Arrows mapped to different advanced arrow effects, to be used by the Arrow Watcher to perform these effects
-    public static final Map<Entity, Set<AdvancedArrow>> advancedProjectiles = new HashMap<>();
+    public static final Map<Arrow, Set<EnchantedArrow>> advancedProjectiles = new HashMap<>();
 
     // Players that have been affected by the Toxic enchantment who cannot currently eat
     public static final Map<Player, Integer> hungerPlayers = new HashMap<>();
