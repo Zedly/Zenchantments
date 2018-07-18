@@ -21,7 +21,7 @@ public class CommandProcessor {
 
     // Adds or removes the given enchantment of the given level to the item stack
     public static ItemStack addEnchantments(World world, Player player, CustomEnchantment enchantment, ItemStack stack,
-            String level, boolean isHeld) {
+            String levelStr, boolean isHeld) {
         Config config = Config.get(world);
         if (stack.getType() == AIR) {
             if (player != null) {
@@ -36,10 +36,11 @@ public class CommandProcessor {
             }
             return stack;
         }
+        int level;
         try {
-            level = Utilities.getRomanString(Integer.parseInt(level), enchantment.maxLevel);
+            level = Math.min(Integer.parseInt(levelStr), enchantment.maxLevel);
         } catch (NumberFormatException e) {
-            level = "I";
+            level = 1;
         }
         if (stack.getType() == BOOK) {
             stack.setType(ENCHANTED_BOOK);
@@ -47,11 +48,7 @@ public class CommandProcessor {
             meta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 1, true);
             stack.setItemMeta(meta);
         }
-        String finalEnch = ChatColor.GRAY + enchantment.loreName + " " + level;
-        List<String> lore = new ArrayList<>();
-        if (stack.getItemMeta().hasLore()) {
-            lore = stack.getItemMeta().getLore();
-        }
+        List<String> lore = stack.getItemMeta().getLore();
         if (config.getEnchants(stack, true).containsKey(enchantment)) {
             Iterator it = lore.iterator();
             while (it.hasNext()) {
@@ -61,8 +58,8 @@ public class CommandProcessor {
                 }
             }
         }
-        if (!level.equals("-")) {
-            lore.add(finalEnch);
+        if (level != 0) {
+            enchantment.addEnchantment(stack, level);
             if (isHeld) {
                 if (player != null) {
                     player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName

@@ -10,14 +10,19 @@ import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class NetherStep extends CustomEnchantment {
 
-    public NetherStep() {
+	// Blocks spawned from the NatherStep enchantment
+	public static final Map<Location, Long> fireLocs = new HashMap<>();
+
+	public NetherStep() {
 	    super(39);
 	    maxLevel = 3;
 	    loreName = "Nether Step";
@@ -43,13 +48,13 @@ public class NetherStep extends CustomEnchantment {
                 Block possiblePlatformBlock = block.getRelative(x, -1, z);
                 Location possiblePlatformLoc = possiblePlatformBlock.getLocation();
                 if(possiblePlatformLoc.distanceSquared(block.getLocation()) < radius * radius - 2) {
-                    if(Storage.fireLocs.containsKey(possiblePlatformLoc)) {
-                        Storage.fireLocs.put(possiblePlatformLoc, System.nanoTime());
+                    if(fireLocs.containsKey(possiblePlatformLoc)) {
+                        fireLocs.put(possiblePlatformLoc, System.nanoTime());
                     } else if(possiblePlatformBlock.getType() == STATIONARY_LAVA
                               && possiblePlatformBlock.getData() == 0
                               && possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
                         if(ADAPTER.formBlock(possiblePlatformBlock, SOUL_SAND, (byte) 0, player)) {
-                            Storage.fireLocs.put(possiblePlatformLoc, System.nanoTime());
+                            fireLocs.put(possiblePlatformLoc, System.nanoTime());
                         }
                     }
                 }
@@ -69,10 +74,10 @@ public class NetherStep extends CustomEnchantment {
 				it.remove();
 			}
 		}
-		it = Storage.fireLocs.keySet().iterator();
+		it = fireLocs.keySet().iterator();
 		while (it.hasNext()) {
 			Location location = (Location) it.next();
-			if (Math.abs(System.nanoTime() - Storage.fireLocs.get(location)) > 9E8) {
+			if (Math.abs(System.nanoTime() - fireLocs.get(location)) > 9E8) {
 				location.getBlock().setType(STATIONARY_LAVA);
 				it.remove();
 			}

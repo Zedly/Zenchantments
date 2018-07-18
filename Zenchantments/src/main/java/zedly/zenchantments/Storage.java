@@ -54,7 +54,7 @@ public class Storage {
     public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
 
     // The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
-    public static final HashMap<FallingBlock, Double> attackBlocks = new HashMap<>();
+    public static final Map<FallingBlock, Double> attackBlocks = new HashMap<>();
 
     // Players currently using the Anthropomorphism enchantment
     public static final List<Entity> anthVortex = new ArrayList<>();
@@ -71,14 +71,11 @@ public class Storage {
     // Locations where Vortex has been used on a block and are waiting for the Watcher to handle their teleportation
     public static final Map<Block, Location> vortexLocs = new HashMap<>();
 
-    // Blocks spawned from the Fire Walker enchantment
-    public static final Map<Location, Long> fireLocs = new HashMap<>();
-
     // Blocks spawned from the Water Walker enchantment
     public static final Map<Location, Long> waterLocs = new HashMap<>();
 
     // Blocks made to glow by the Reveal enchantment
-    public static final HashMap<Block, Integer> glowingBlocks = new HashMap<>();
+    public static final Map<Block, Integer> glowingBlocks = new HashMap<>();
 
     // Entites that are being tested by Utilities' canDamage method to prevent infinite recursion
     public static final Set<Entity> damagingPlayer = new HashSet<>();

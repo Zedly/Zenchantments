@@ -1,5 +1,6 @@
 package zedly.zenchantments;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -9,10 +10,13 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiPredicate;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
@@ -31,6 +35,7 @@ public abstract class CustomEnchantment {
     protected Hand    handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
     private   boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
     private   int     id;
+    protected boolean isCursed;
 
     public CustomEnchantment(int id) {
         this.id = id;
@@ -233,5 +238,18 @@ public abstract class CustomEnchantment {
      */
     public boolean validMaterial(ItemStack m) {
         return validMaterial(m.getType());
+    }
+
+    public void addEnchantment(ItemStack stk, int level) {
+       ItemMeta meta = stk.getItemMeta();
+       List<String> lore = new LinkedList<>();
+       if (meta.hasLore()) {
+           lore.addAll(meta.getLore());
+       }
+       String levelStr = Utilities.getRomanString(level);
+       lore.add((isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr));
+       //ChatColor.COLOR_CHAR
+       meta.setLore(lore);
+       stk.setItemMeta(meta);
     }
 }

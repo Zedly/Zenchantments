@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import zedly.zenchantments.annotations.EffectTask;
 import zedly.zenchantments.enchantments.Meador;
+import zedly.zenchantments.enchantments.NetherStep;
 import zedly.zenchantments.enchantments.Speed;
 import zedly.zenchantments.enchantments.Weight;
 import zedly.zenchantments.enums.Frequency;
@@ -67,7 +68,7 @@ public class Zenchantments extends JavaPlugin {
         for (Location l : Storage.waterLocs.keySet()) {
             l.getBlock().setType(STATIONARY_WATER);
         }
-        for (Location l : Storage.fireLocs.keySet()) {
+        for (Location l : NetherStep.fireLocs.keySet()) {
             l.getBlock().setType(STATIONARY_LAVA);
         }
         for (Entity e : Storage.idleBlocks.keySet()) {

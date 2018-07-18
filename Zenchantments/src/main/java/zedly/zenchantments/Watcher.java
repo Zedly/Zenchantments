@@ -2,7 +2,6 @@ package zedly.zenchantments;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -21,15 +20,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.enchantments.*;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -152,7 +148,7 @@ public class Watcher implements Listener {
     // Prevents players from harvesting materials from the Water Walker and Fire Walker trails
     @EventHandler
     public void onIceOrLavaBreak(BlockBreakEvent evt) {
-        if (Storage.waterLocs.containsKey(evt.getBlock().getLocation()) || Storage.fireLocs.containsKey(evt.getBlock().getLocation())) {
+        if (Storage.waterLocs.containsKey(evt.getBlock().getLocation()) || NetherStep.fireLocs.containsKey(evt.getBlock().getLocation())) {
             evt.setCancelled(true);
         }
     }
@@ -184,15 +180,10 @@ public class Watcher implements Listener {
             return;
         }
         Config config = Config.get(evt.getEnchantBlock().getWorld());
-        int max = Math.min(config.getMaxEnchants(), 3);
         Set<CustomEnchantment> enchAdd = new HashSet<>();
         ItemStack stk = evt.getItem();
-        ItemMeta meta = stk.getItemMeta();
-        LinkedList<String> lore = new LinkedList<>();
-        if (meta.hasLore()) {
-            lore.addAll(meta.getLore());
-        }
-        for (int l = 1; l <= max; l++) {
+
+        for (int l = 1; l <= config.getMaxEnchants(); l++) {
             float totalChance = 0;
             Set<CustomEnchantment> enchs = new HashSet<>();
             for (CustomEnchantment ench : config.getEnchants().values()) {
@@ -212,28 +203,26 @@ public class Watcher implements Listener {
             for (CustomEnchantment ench : enchs) {
                 running += ench.probability;
                 if (running > decision) {
-                    String level = Utilities.getRomanString(Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost()));
-                    lore.add(ChatColor.GRAY + ench.loreName + " " + level);
+                    int level = Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost());
+                    ench.addEnchantment(stk, level);
                     enchAdd.add(ench);
                     break;
                 }
             }
         }
-        meta.setLore(lore);
-        stk.setItemMeta(meta);
         if (config.descriptionLore()) {
             config.addDescriptions(evt.getItem(), null);
         }
         List<String> finalLore = stk.getItemMeta().getLore();
 
-        Inventory inv = evt.getInventory();
+        /*Inventory inv = evt.getInventory();
         Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
             ItemStack book = inv.getItem(0);
             ItemMeta bookMeta = book.getItemMeta();
             bookMeta.setLore(finalLore);
             book.setItemMeta(bookMeta);
             inv.setItem(0, book);
-        }, 0);
+        }, 0);*/
     }
 
     // Removes certain potion effects given by enchantments when the enchanted items are removed

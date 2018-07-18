@@ -237,13 +237,15 @@ public class Config {
                     List<String> lore = stack.getItemMeta().getLore();
                     for (String rawEnchant : lore) {
                         int index1 = rawEnchant.lastIndexOf(" ");
-                        if (index1 == -1) {
-                            continue;
+                        Integer level = 1;
+                        if (index1 != -1) {
+                          level = Utilities.getNumber(rawEnchant.substring(index1 + 1));
+                        } else {
+                        	index1 = rawEnchant.length();
                         }
                         if (rawEnchant.length() > 2) {
                             try {
-                                Integer level = Utilities.getNumber(rawEnchant.substring(index1 + 1));
-                                String enchant = rawEnchant.substring(2, index1);//ERROR
+                                String enchant = rawEnchant.substring(2, index1); // ERROR
                                 if (getEnchants().containsKey(enchant.replace(" ", "").toLowerCase())) {
                                     CustomEnchantment ench = getEnchants().get(enchant.replace(" ", "").toLowerCase());
                                     map.put(ench, level);
