@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.enchantments.Toxic;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
@@ -33,7 +34,7 @@ public class ToxicArrow extends EnchantedArrow {
                     ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
                     Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * value, 0);
                 }, 20 + 60 * value);
-                Storage.hungerPlayers.put((Player) evt.getEntity(), (1 + value) * 100);
+                Toxic.hungerPlayers.put((Player) evt.getEntity(), (1 + value) * 100);
             }
         }
         die();

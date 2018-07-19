@@ -12,6 +12,7 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.bukkit.Material.AIR;
@@ -19,7 +20,10 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Glide extends CustomEnchantment {
 
-    public Glide() {
+	// The players using glide and their most recent Y coordinate
+	public static final Map<Player, Double> sneakGlide = new HashMap<>();
+
+	public Glide() {
         super(20);
         maxLevel = 3;
         loreName = "Glide";
@@ -34,10 +38,10 @@ public class Glide extends CustomEnchantment {
 
     @Override
     public boolean onFastScan(Player player, int level, boolean usedHand) {
-        if(!Storage.sneakGlide.containsKey(player)) {
-            Storage.sneakGlide.put(player, player.getLocation().getY());
+        if(!sneakGlide.containsKey(player)) {
+            sneakGlide.put(player, player.getLocation().getY());
         }
-        if(!player.isSneaking() || Storage.sneakGlide.get(player) == player.getLocation().getY()) {
+        if(!player.isSneaking() || sneakGlide.get(player) == player.getLocation().getY()) {
             return false;
         }
         boolean b = false;
@@ -79,7 +83,7 @@ public class Glide extends CustomEnchantment {
             }
             player.getInventory().setArmorContents(s);
         }
-        Storage.sneakGlide.put(player, player.getLocation().getY());
+        sneakGlide.put(player, player.getLocation().getY());
         return true;
     }
 

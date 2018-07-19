@@ -92,7 +92,7 @@ public class Watcher implements Listener {
     @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent evt) {
         if ((evt.getEntityType() == EntityType.FALLING_BLOCK)) {
-            if (Storage.idleBlocks.containsKey((FallingBlock) evt.getEntity()) || Storage.attackBlocks.containsKey((FallingBlock) evt.getEntity())) {
+            if (Anthropomorphism.idleBlocks.containsKey((FallingBlock) evt.getEntity()) || Anthropomorphism.attackBlocks.containsKey((FallingBlock) evt.getEntity())) {
                 evt.setCancelled(true);
             }
         }
@@ -101,7 +101,7 @@ public class Watcher implements Listener {
     // Prevents mobs affected by Rainbow Slam from being hurt by generic "FALL" event. Damage is instead dealt via an EDBEe in order to make protections and money drops work
     @EventHandler
     public void onEntityFall(EntityDamageEvent evt) {
-        if (evt.getCause() == DamageCause.FALL && Storage.rainbowSlamNoFallEntities.contains(evt.getEntity())) {
+        if (evt.getCause() == DamageCause.FALL && RainbowSlam.rainbowSlamNoFallEntities.contains(evt.getEntity())) {
             evt.setCancelled(true);
         }
     }
@@ -111,36 +111,36 @@ public class Watcher implements Listener {
     @EventHandler
     public void onItemSpawn(final ItemSpawnEvent evt) {
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            for (Block block : Storage.grabLocs.keySet()) {
+            for (Block block : Grab.grabLocs.keySet()) {
                 Location loc = evt.getEntity().getLocation();
                 for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (e instanceof ExperienceOrb) {
-                        e.teleport(Storage.grabLocs.get(block));
+                        e.teleport(Grab.grabLocs.get(block));
                     }
                 }
                 if (block.getLocation().getBlockX() == loc.getBlockX() && block.getLocation().getBlockY() == loc.getBlockY()
                         && block.getLocation().getBlockZ() == loc.getBlockZ()) {
-                    evt.getEntity().teleport(Storage.grabLocs.get(block));
+                    evt.getEntity().teleport(Grab.grabLocs.get(block));
                     evt.getEntity().setPickupDelay(0);
                 }
             }
-            for (Block block : Storage.vortexLocs.keySet()) {
+            for (Block block : Vortex.vortexLocs.keySet()) {
                 Location loc = evt.getEntity().getLocation();
                 if (block.getLocation().getWorld().equals(loc.getWorld())) {
                     for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
                         if (e instanceof ExperienceOrb) {
-                            e.teleport(Storage.vortexLocs.get(block));
+                            e.teleport(Vortex.vortexLocs.get(block));
                         }
                     }
                     if (block.getLocation().distance(loc) < 2) {
-                        evt.getEntity().teleport(Storage.vortexLocs.get(block));
+                        evt.getEntity().teleport(Vortex.vortexLocs.get(block));
                         evt.getEntity().setPickupDelay(0);
                     }
                 }
             }
         }, 1);
 
-        if (Storage.fireDropLocs.contains(evt.getLocation().getBlock())) {
+        if (Grab.fireDropLocs.contains(evt.getLocation().getBlock())) {
             evt.setCancelled(true);
         }
     }
@@ -148,7 +148,7 @@ public class Watcher implements Listener {
     // Prevents players from harvesting materials from the Water Walker and Fire Walker trails
     @EventHandler
     public void onIceOrLavaBreak(BlockBreakEvent evt) {
-        if (Storage.waterLocs.containsKey(evt.getBlock().getLocation()) || NetherStep.fireLocs.containsKey(evt.getBlock().getLocation())) {
+        if (FrozenStep.frozenLocs.containsKey(evt.getBlock().getLocation()) || NetherStep.netherstepLocs.containsKey(evt.getBlock().getLocation())) {
             evt.setCancelled(true);
         }
     }
@@ -157,14 +157,14 @@ public class Watcher implements Listener {
     @EventHandler
     public void onOreUncover(BlockBreakEvent evt) {
         for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
-            if (Storage.glowingBlocks.containsKey(evt.getBlock().getRelative(face))) {
+            if (Reveal.glowingBlocks.containsKey(evt.getBlock().getRelative(face))) {
                 int entityId = 2000000000 + (evt.getBlock().getRelative(face).hashCode()) % 10000000;
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getWorld().equals(evt.getBlock().getWorld())) {
                         Storage.COMPATIBILITY_ADAPTER.hideShulker(entityId, player);
                     }
                 }
-                Storage.glowingBlocks.remove(evt.getBlock());
+                Reveal.glowingBlocks.remove(evt.getBlock());
             }
         }
     }
@@ -254,7 +254,7 @@ public class Watcher implements Listener {
     @EventHandler
     public void onEat(PlayerInteractEvent evt) {
         if (evt.getPlayer().getItemInHand().getType().isEdible() && (evt.getAction().equals(RIGHT_CLICK_AIR)
-                || evt.getAction().equals(RIGHT_CLICK_BLOCK)) && Storage.hungerPlayers.keySet().contains(evt.getPlayer())) {
+                || evt.getAction().equals(RIGHT_CLICK_BLOCK)) && Toxic.hungerPlayers.keySet().contains(evt.getPlayer())) {
             evt.setCancelled(true);
         }
     }

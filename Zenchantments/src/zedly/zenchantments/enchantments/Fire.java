@@ -87,9 +87,9 @@ public class Fire extends CustomEnchantment {
             }
 
             Block affectedBlock = evt.getBlock();
-            Storage.fireDropLocs.add(affectedBlock);
+            Grab.fireDropLocs.add(affectedBlock);
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                Storage.fireDropLocs.remove(affectedBlock);
+                Grab.fireDropLocs.remove(affectedBlock);
             }, 5);
 
             return true;
@@ -112,9 +112,9 @@ public class Fire extends CustomEnchantment {
                    .dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
 
                 Block affectedBlock = evt.getBlock();
-                Storage.fireDropLocs.add(affectedBlock);
+                Grab.fireDropLocs.add(affectedBlock);
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                    Storage.fireDropLocs.remove(affectedBlock);
+                    Grab.fireDropLocs.remove(affectedBlock);
                 }, 5);
 
                 return true;
@@ -127,9 +127,9 @@ public class Fire extends CustomEnchantment {
             Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
             Block affectedBlock = evt.getBlock();
-            Storage.fireDropLocs.add(affectedBlock);
+            Grab.fireDropLocs.add(affectedBlock);
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                Storage.fireDropLocs.remove(affectedBlock);
+                Grab.fireDropLocs.remove(affectedBlock);
             }, 5);
 
             return true;

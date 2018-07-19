@@ -6,7 +6,6 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -24,23 +23,16 @@ import static org.bukkit.inventory.EquipmentSlot.HAND;
 
 public class Utilities {
 
-    // Returns true for main hand slots, false otherwise
+	// Returns true for main hand slots, false otherwise
     public static boolean isMainHand(EquipmentSlot preferred) {
         return preferred == HAND;
     }
 
     // Returns an ArrayList of ItemStacks of the player's held item and armor
     public static List<ItemStack> getArmorandMainHandItems(Player player, boolean mainHand) {
-        List<ItemStack> stk = new ArrayList<>();
-        stk.addAll(Arrays.asList(player.getInventory().getArmorContents()));
+        List<ItemStack> stk = new ArrayList<>(Arrays.asList(player.getInventory().getArmorContents()));
         stk.add(mainHand ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand());
-        Iterator<ItemStack> it = stk.iterator();
-        while (it.hasNext()) {
-            ItemStack is = it.next();
-            if (is == null || is.getType() == Material.AIR) {
-                it.remove();
-            }
-        }
+        stk.removeIf((ItemStack is) -> is == null || is.getType() == Material.AIR);
         return stk;
     }
 
@@ -140,7 +132,6 @@ public class Utilities {
                     inv.setItem(i, rest);
                     return true;
                 } else {
-                    amount -= inv.getItem(i).getAmount();
                     inv.setItem(i, null);
                     return true;
                 }
@@ -285,19 +276,20 @@ public class Utilities {
         double i = (double) ((yaw + 8) / 18);
         if (i >= 19 || i < 1) {
             direction = BlockFace.SOUTH;
-        } else if (i < 3 && i >= 1) {
+        } else if (i < 3) {
             direction = BlockFace.SOUTH_WEST;
-        } else if (i < 6 && i >= 3) {
+        } else if (i < 6) {
             direction = BlockFace.WEST;
-        } else if (i < 8 && i >= 6) {
+        } else if (i < 8) {
             direction = BlockFace.NORTH_WEST;
-        } else if (i < 11 && i >= 8) {
+        } else if (i < 11) {
+
             direction = BlockFace.NORTH;
-        } else if (i < 13 && i >= 11) {
+        } else if (i < 13) {
             direction = BlockFace.NORTH_EAST;
-        } else if (i < 16 && i >= 13) {
+        } else if (i < 16) {
             direction = BlockFace.EAST;
-        } else if (i < 18 && i >= 16) {
+        } else if (i < 18) {
             direction = BlockFace.SOUTH_EAST;
         }
         return direction;
@@ -305,7 +297,7 @@ public class Utilities {
 
     // Returns a more simple direction integer, 0-6, for the given player's pitch and yaw
     public static BlockFace getCardinalDirection(float yaw, float pitch) {
-        BlockFace direction = BlockFace.SELF;
+        BlockFace direction;
         if (yaw < 0) {
             yaw += 360;
         }
@@ -313,11 +305,11 @@ public class Utilities {
         double i = (double) ((yaw + 8) / 18);
         if (i >= 18 || i < 3) {
             direction = BlockFace.SOUTH;
-        } else if (i < 8 && i >= 3) {
+        } else if (i < 8) {
             direction = BlockFace.WEST;
-        } else if (i < 13 && i >= 8) {
+        } else if (i < 13) {
             direction = BlockFace.NORTH;
-        } else if (i < 18 && i >= 13) {
+        } else  {
             direction = BlockFace.EAST;
         }
         if (pitch < -50) {
@@ -331,13 +323,13 @@ public class Utilities {
     // Adds an arrow entity into the arrow storage variable calls its launch method
     public static void putArrow(Arrow e, EnchantedArrow a, Player p) {
         Set<EnchantedArrow> ars;
-        if (Storage.advancedProjectiles.containsKey(e)) {
-            ars = Storage.advancedProjectiles.get(e);
+        if (EnchantedArrow.advancedProjectiles.containsKey(e)) {
+            ars = EnchantedArrow.advancedProjectiles.get(e);
         } else {
             ars = new HashSet<>();
         }
         ars.add(a);
-        Storage.advancedProjectiles.put(e, ars);
+        EnchantedArrow.advancedProjectiles.put(e, ars);
         a.onLaunch(p, null);
     }
 

@@ -16,7 +16,9 @@ import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.bukkit.Material.GLOWING_REDSTONE_ORE;
 import static org.bukkit.Material.REDSTONE_ORE;
@@ -26,7 +28,10 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Pierce extends CustomEnchantment {
 
-    public Pierce() {
+	// Map of players who use pierce and what mode they are currently using
+	public static final Map<Player, Integer> pierceModes = new HashMap<>();
+
+	public Pierce() {
         super(42);
         maxLevel = 1;
         loreName = "Pierce";

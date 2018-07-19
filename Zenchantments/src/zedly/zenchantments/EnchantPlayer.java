@@ -15,7 +15,9 @@ public class EnchantPlayer {
     public static final Set<EnchantPlayer> PLAYERS = new HashSet<>();   // Collection of all players on the server
 
     private final Player player;                          // Reference to the actual player object
-    private final Map<Integer, Integer> enchantCooldown;   // Enchantment names mapped to their remaining cooldown                // Collection of disabled enchantments for the player
+    private final Map<Integer, Integer> enchantCooldown;   // Enchantment names mapped to their remaining cooldown
+    // Collection of disabled enchantments for the player
+
 
     // Creates a new enchant player objects and reads the player config file for their information
     public EnchantPlayer(Player player) {

@@ -16,7 +16,9 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -25,7 +27,10 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Laser extends CustomEnchantment {
 
-    public Laser() {
+	// Time at which a later enchantment was fired; this is used to prevent double firing when clicking an entity
+	public static final Map<Player, Long> laserTimes = new HashMap<>();
+
+	public Laser() {
         super(31);
         maxLevel = 3;
         loreName = "Laser";

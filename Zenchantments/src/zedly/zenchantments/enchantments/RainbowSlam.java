@@ -3,6 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
@@ -12,13 +13,18 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class RainbowSlam extends CustomEnchantment {
 
-    public RainbowSlam() {
+	// Entities affected by Rainbow Slam, protected against fall damage in order to deal damage as the attacker
+	public static final Set<Entity> rainbowSlamNoFallEntities = new HashSet<>();
+
+	public RainbowSlam() {
         super(48);
         maxLevel = 4;
         loreName = "Rainbow Slam";
@@ -60,7 +66,7 @@ public class RainbowSlam extends CustomEnchantment {
             }, i);
         }
         AtomicBoolean applied = new AtomicBoolean(false);
-        Storage.rainbowSlamNoFallEntities.add(ent);
+        rainbowSlamNoFallEntities.add(ent);
         for(int i = 0; i < 3; i++) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                 //ent.setNoDamageTicks(20); // Prevent fall damage
@@ -68,7 +74,7 @@ public class RainbowSlam extends CustomEnchantment {
                 ent.setFallDistance(0);
                 if(ent.isOnGround() && !applied.get()) {
                     applied.set(true);
-                    Storage.rainbowSlamNoFallEntities.remove(ent);
+                    rainbowSlamNoFallEntities.remove(ent);
                     ADAPTER.attackEntity(ent, evt.getPlayer(), level * power);
                     for(int c = 0; c < 1000; c++) {
                         Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(),

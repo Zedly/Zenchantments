@@ -3,6 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerFishEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
@@ -11,14 +12,19 @@ import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import static org.bukkit.entity.EntityType.SQUID;
 import static zedly.zenchantments.enums.Tool.ROD;
 
 public class MysteryFish extends CustomEnchantment {
 
-    public MysteryFish() {
+	// Guardians from the Mystery Fish enchantment and the player they should move towards
+	public static final Map<Entity, Player> guardianMove = new HashMap<>();
+
+	public MysteryFish() {
 	    super(38);
 	    maxLevel = 3;
 	    loreName = "Mystery Fish";
@@ -41,7 +47,7 @@ public class MysteryFish extends CustomEnchantment {
                     ent = evt.getPlayer().getWorld().spawnEntity(location, SQUID);
                 } else {
                     Entity g = Storage.COMPATIBILITY_ADAPTER.spawnGuardian(location, Storage.rnd.nextBoolean());
-                    Storage.guardianMove.put(g, evt.getPlayer());
+                    guardianMove.put(g, evt.getPlayer());
                     ent = g;
                 }
                 evt.getCaught().setPassenger(ent);
@@ -53,12 +59,12 @@ public class MysteryFish extends CustomEnchantment {
 	// Move Guardians from MysteryFish towards the player
 	@EffectTask(Frequency.HIGH)
 	public static void guardian() {
-		Iterator it = Storage.guardianMove.keySet().iterator();
+		Iterator it = guardianMove.keySet().iterator();
 		while (it.hasNext()) {
 			Guardian g = (Guardian) it.next();
-			if (g.getLocation().distance(Storage.guardianMove.get(g).getLocation()) > 2 && g.getTicksLived() < 160) {
+			if (g.getLocation().distance(guardianMove.get(g).getLocation()) > 2 && g.getTicksLived() < 160) {
 				g.setVelocity(
-						Storage.guardianMove.get(g).getLocation().toVector().subtract(g.getLocation().toVector()));
+						guardianMove.get(g).getLocation().toVector().subtract(g.getLocation().toVector()));
 			} else {
 				it.remove();
 			}

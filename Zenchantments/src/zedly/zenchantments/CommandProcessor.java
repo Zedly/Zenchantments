@@ -20,8 +20,8 @@ import static org.bukkit.Material.*;
 public class CommandProcessor {
 
     // Adds or removes the given enchantment of the given level to the item stack
-    public static ItemStack addEnchantments(World world, Player player, CustomEnchantment enchantment, ItemStack stack,
-            String levelStr, boolean isHeld) {
+    static ItemStack addEnchantments(World world, Player player, CustomEnchantment enchantment, ItemStack stack,
+	    String levelStr, boolean isHeld) {
         Config config = Config.get(world);
         if (stack.getType() == AIR) {
             if (player != null) {
@@ -85,7 +85,7 @@ public class CommandProcessor {
     }
 
     // Reloads the Zenchantments plugin
-    public static boolean reload(EnchantPlayer player) {
+    private static boolean reload(EnchantPlayer player) {
         if (!player.hasPermission("zenchantments.command.reload")) {
             player.sendMessage(Storage.logo + "You do not have permission to do this!");
             return true;
@@ -96,7 +96,7 @@ public class CommandProcessor {
     }
 
     // Gives the given player an item with certain enchantments determined by the arguments
-    public static boolean give(EnchantPlayer player, String[] args, Config config) {
+    private static boolean give(EnchantPlayer player, String[] args, Config config) {
         if (!player.hasPermission("zenchantments.command.give")) {
             player.sendMessage(Storage.logo + "You do not have permission to do this!");
             return true;
@@ -156,15 +156,23 @@ public class CommandProcessor {
             }
 
             ItemStack stk = new ItemStack(mat);
-            String message = Storage.logo + "Gave " + ChatColor.DARK_AQUA + toAdd.getName()
-                    + ChatColor.AQUA + " the enchantments ";
+            StringBuilder msgBldr = new StringBuilder(Storage.logo);
+	        {
+		        msgBldr.append("Gave ");
+		        msgBldr.append(ChatColor.DARK_AQUA);
+		        msgBldr.append(toAdd.getName());
+		        msgBldr.append(ChatColor.AQUA);
+		        msgBldr.append(" the enchantments ");
+	        }
             for (CustomEnchantment e : enchantments.keySet()) {
                 addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), e, stk,
                         enchantments.get(e) + "", false);
-                message += e.loreName + ", ";
+	            msgBldr.append(e.loreName);
+	            msgBldr.append(", ");
             }
             if (!enchantments.isEmpty()) {
                 toAdd.getInventory().addItem(stk);
+                String message = msgBldr.toString();
                 player.sendMessage(message.substring(0, message.length() - 2) + ".");
             }
         } else {
@@ -174,7 +182,7 @@ public class CommandProcessor {
     }
 
     // Lists the Custom Enchantments applicable to the held tool
-    public static boolean listEnchantment(EnchantPlayer player, Config config, ItemStack stack) {
+    private static boolean listEnchantment(EnchantPlayer player, Config config, ItemStack stack) {
         if (!player.hasPermission("zenchantments.command.list")) {
             player.sendMessage(Storage.logo + "You do not have permission to do this!");
             return true;
@@ -190,7 +198,7 @@ public class CommandProcessor {
     }
 
     // Gives information on each enchantment on the given tool or on the enchantment named in the parameter
-    public static boolean infoEnchantment(EnchantPlayer player, Config config, String[] args) {
+    private static boolean infoEnchantment(EnchantPlayer player, Config config, String[] args) {
         if (!player.hasPermission("zenchantments.command.info")) {
             player.sendMessage(Storage.logo + "You do not have permission to do this!");
             return true;
@@ -221,7 +229,7 @@ public class CommandProcessor {
     }
 
     // Disables the given enchantment for the player
-    public static boolean disable(EnchantPlayer player, Config config, String[] args) {
+    private static boolean disable(EnchantPlayer player, Config config, String[] args) {
         if (!player.hasPermission("zenchantments.command.onoff")) {
             player.sendMessage(Storage.logo + "You do not have permission to do this!");
             return true;
@@ -245,7 +253,7 @@ public class CommandProcessor {
     }
 
     // Enables the given enchantment for the player
-    public static boolean enable(EnchantPlayer player, Config config, String[] args) {
+    private static boolean enable(EnchantPlayer player, Config config, String[] args) {
         if (!player.hasPermission("zenchantments.command.onoff")) {
             player.sendMessage(Storage.logo + "You do not have permission to do this!");
             return true;
@@ -269,7 +277,7 @@ public class CommandProcessor {
     }
 
     // Lists all the commands associated with Custom Enchantments
-    public static boolean helpEnchantment(EnchantPlayer player, String label) {
+    private static boolean helpEnchantment(EnchantPlayer player, String label) {
         if (label.isEmpty() || label.equals("help")) {
             player.sendMessage(Storage.logo);
             player.sendMessage(ChatColor.DARK_AQUA + "- " + "ench info <?enchantment>: " + ChatColor.AQUA + "Returns information about custom enchantments.");
@@ -284,7 +292,7 @@ public class CommandProcessor {
     }
 
     // Enchants the held item with enchantments determined by the parameters
-    public static boolean enchant(EnchantPlayer player, Config config, String[] args, String label, ItemStack stack) {
+    private static boolean enchant(EnchantPlayer player, Config config, String[] args, String label, ItemStack stack) {
         if (!player.hasPermission("zenchantments.command.enchant")) {
             player.sendMessage(Storage.logo + "You do not have permission to do this!");
             return true;
@@ -300,9 +308,9 @@ public class CommandProcessor {
         if (contains) {
             CustomEnchantment ench = config.getEnchants().get(enchantName);
             if (args.length >= 2) {
-                player.getPlayer().setItemInHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, args[1], true));
+                player.getPlayer().getInventory().setItemInMainHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, args[1], true));
             } else {
-                player.getPlayer().setItemInHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, "1", true));
+                player.getPlayer().getInventory().setItemInMainHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, "1", true));
             }
         } else {
             player.sendMessage(Storage.logo + "That enchantment does not exist!");
@@ -311,13 +319,13 @@ public class CommandProcessor {
     }
 
     // Control flow for the command processor
-    public static boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
+    static boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
         if (!(sender instanceof Player)) {
             return false;
         }
         EnchantPlayer player = EnchantPlayer.matchPlayer((Player) sender);
         Config config = Config.get(player.getPlayer().getWorld());
-        ItemStack stack = player.getPlayer().getItemInHand();
+        ItemStack stack = player.getPlayer().getInventory().getItemInMainHand();
         String label = "";
         if (!(args.length == 0)) {
             label = args[0].toLowerCase().replace("_", "");

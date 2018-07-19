@@ -61,11 +61,11 @@ public class Harvest extends CustomEnchantment {
                                     final Block blk = block.getRelative(x, y + 1, z);
                                     if(ADAPTER.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
                                         Utilities.damageTool(player, 1, usedHand);
-                                        Storage.grabLocs
+                                        Grab.grabLocs
                                                 .put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
                                         Bukkit.getServer().getScheduler()
                                               .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                                  Storage.grabLocs.remove(blk);
+                                                  Grab.grabLocs.remove(blk);
                                               }, 3);
                                     }
                                 }

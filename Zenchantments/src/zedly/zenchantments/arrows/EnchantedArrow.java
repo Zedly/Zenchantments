@@ -5,14 +5,10 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Zenchantments;
 import zedly.zenchantments.annotations.EffectTask;
 import zedly.zenchantments.enums.Frequency;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Proxy for {@link Arrow} which allows subclasses to define custom
@@ -21,10 +17,14 @@ import java.util.Set;
  * @author rfrowe
  */
 public class EnchantedArrow {
-    protected final Arrow      arrow;
-    protected final int        level;
-    protected final double     power;
-    private   int              tick;
+	// Entities an enchanted arrow has damaged or killed
+	public static final Map<Entity, EnchantedArrow> killedEntities = new HashMap<>();
+    // Arrows mapped to different advanced arrow effects, to be used by the Arrow Watcher to perform these effects
+    public static final Map<Arrow, Set<EnchantedArrow>> advancedProjectiles = new HashMap<>();
+    protected final     Arrow                       arrow;
+    protected final     int                         level;
+    protected final     double                      power;
+    private             int                         tick;
 
     private   static final Set<EnchantedArrow> dieQueue = new HashSet<>();
 
@@ -65,10 +65,10 @@ public class EnchantedArrow {
         onDie();
         arrow.remove();
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            if (Storage.advancedProjectiles.containsKey(arrow)) {
-                Storage.advancedProjectiles.get(arrow).remove(this);
-                if (Storage.advancedProjectiles.get(arrow).isEmpty()) {
-                    Storage.advancedProjectiles.remove(arrow);
+            if (advancedProjectiles.containsKey(arrow)) {
+                advancedProjectiles.get(arrow).remove(this);
+                if (advancedProjectiles.get(arrow).isEmpty()) {
+                    advancedProjectiles.remove(arrow);
                 }
             }
         }, 1);
@@ -179,12 +179,12 @@ public class EnchantedArrow {
 
     @EffectTask(Frequency.MEDIUM)
     public static void scanAndReap() {
-        synchronized (Storage.advancedProjectiles) {
-            for (Arrow a : Storage.advancedProjectiles.keySet()) {
+        synchronized (advancedProjectiles) {
+            for (Arrow a : advancedProjectiles.keySet()) {
                 if (a.isDead()) {
-                    dieQueue.addAll(Storage.advancedProjectiles.get(a));
+                    dieQueue.addAll(advancedProjectiles.get(a));
                 }
-                for (EnchantedArrow ea : Storage.advancedProjectiles.get(a)) {
+                for (EnchantedArrow ea : advancedProjectiles.get(a)) {
                     if (ea.getTick() > 600) {
                         dieQueue.add(ea);
                     }
@@ -200,8 +200,8 @@ public class EnchantedArrow {
 
     @EffectTask(Frequency.HIGH)
     public static void doTick() {
-        synchronized (Storage.advancedProjectiles) {
-            Storage.advancedProjectiles.values().forEach((set) -> set.forEach(EnchantedArrow::tick));
+        synchronized (advancedProjectiles) {
+            advancedProjectiles.values().forEach((set) -> set.forEach(EnchantedArrow::tick));
         }
     }
 }

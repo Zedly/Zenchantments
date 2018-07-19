@@ -8,6 +8,7 @@ import org.bukkit.entity.Arrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.enchantments.Singularity;
 
 /**
  * Description
@@ -22,12 +23,12 @@ public class SingularityArrow extends EnchantedArrow {
 
 	public void onImpact() {
 		final Location l = arrow.getLocation().clone();
-		Storage.blackholes.put(l, true);
+		Singularity.blackholes.put(l, true);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			Storage.blackholes.put(l, false);
+			Singularity.blackholes.put(l, false);
 		}, 40);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			Storage.blackholes.remove(l);
+			Singularity.blackholes.remove(l);
 		}, 60);
 		for (int i = 1; i <= 61; i++) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {

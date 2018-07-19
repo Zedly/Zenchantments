@@ -17,19 +17,24 @@ import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Anthropomorphism extends CustomEnchantment {
-	private static final Material[] MAT = new Material[]{STONE, GRAVEL, DIRT, GRASS};
+	// The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
+	public static final  Map<FallingBlock, Double> attackBlocks = new HashMap<>();
+	// Players currently using the Anthropomorphism enchantment
+	public static final List<Entity> anthVortex = new ArrayList<>();
+	// The falling blocks from the Anthropomorphism enchantment that are idle, staying within the relative region
+	public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
+	private static final Material[]                MAT          = new Material[]{STONE, GRAVEL, DIRT, GRASS};
+	// Determines if falling entities from Anthropomorphism should fall up or down
+	public static boolean fallBool = false;
 
-    public Anthropomorphism() {
+	public Anthropomorphism() {
 	    super(1);
 	    maxLevel = 1;
 	    loreName = "Anthropomorphism";
@@ -46,14 +51,14 @@ public class Anthropomorphism extends CustomEnchantment {
 	@EffectTask(Frequency.MEDIUM)
 	// Removes Anthropomorphism blocks when they are dead
 	public static void anthropomorphism2() {
-		Iterator it = Storage.idleBlocks.keySet().iterator();
+		Iterator it = idleBlocks.keySet().iterator();
 		while (it.hasNext()) {
 			FallingBlock b = (FallingBlock) it.next();
 			if (b.isDead()) {
 				it.remove();
 			}
 		}
-		it = Storage.attackBlocks.keySet().iterator();
+		it = attackBlocks.keySet().iterator();
 		while (it.hasNext()) {
 			FallingBlock b = (FallingBlock) it.next();
 			if (b.isDead()) {
@@ -66,10 +71,10 @@ public class Anthropomorphism extends CustomEnchantment {
 	@EffectTask(Frequency.HIGH)
 	public static void anthropomorphism() {
 		// Move agressive Anthropomorphism Blocks towards a target & attack
-		Iterator<FallingBlock> anthroIterator = Storage.attackBlocks.keySet().iterator();
+		Iterator<FallingBlock> anthroIterator = attackBlocks.keySet().iterator();
 		while (anthroIterator.hasNext()) {
 			FallingBlock blockEntity = anthroIterator.next();
-			if (!Storage.anthVortex.contains(Storage.idleBlocks.get(blockEntity))) {
+			if (!anthVortex.contains(idleBlocks.get(blockEntity))) {
 				for (Entity e : blockEntity.getNearbyEntities(7, 7, 7)) {
 					if (e instanceof Monster) {
 						LivingEntity targetEntity = (LivingEntity) e;
@@ -81,7 +86,7 @@ public class Anthropomorphism extends CustomEnchantment {
 								Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
 								if (targetEntity.getNoDamageTicks() == 0
 										&& Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
-										.5 * Storage.attackBlocks.get(blockEntity))) {
+										.5 * attackBlocks.get(blockEntity))) {
 									targetEntity.setNoDamageTicks(0);
 									anthroIterator.remove();
 									blockEntity.remove();
@@ -93,13 +98,13 @@ public class Anthropomorphism extends CustomEnchantment {
 			}
 		}
 		// Move passive Anthropomorphism Blocks around
-		Storage.fallBool = !Storage.fallBool;
-		for (FallingBlock b : Storage.idleBlocks.keySet()) {
-			if (Storage.anthVortex.contains(Storage.idleBlocks.get(b))) {
-				Location loc = Storage.idleBlocks.get(b).getLocation();
+		fallBool = !fallBool;
+		for (FallingBlock b : idleBlocks.keySet()) {
+			if (anthVortex.contains(idleBlocks.get(b))) {
+				Location loc = idleBlocks.get(b).getLocation();
 				Vector v;
-				if (b.getLocation().getWorld().equals(Storage.idleBlocks.get(b).getLocation().getWorld())) {
-					if (Storage.fallBool && b.getLocation().distance(Storage.idleBlocks.get(b).getLocation()) < 10) {
+				if (b.getLocation().getWorld().equals(idleBlocks.get(b).getLocation().getWorld())) {
+					if (fallBool && b.getLocation().distance(idleBlocks.get(b).getLocation()) < 10) {
 						v = b.getLocation().subtract(loc).toVector();
 					} else {
 						double x = 6f * Math.sin(b.getTicksLived() / 10f);
@@ -134,11 +139,11 @@ public class Anthropomorphism extends CustomEnchantment {
 
 		if (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
 			if (player.isSneaking()) {
-				if (!Storage.anthVortex.contains(player)) {
-					Storage.anthVortex.add(player);
+				if (!anthVortex.contains(player)) {
+					anthVortex.add(player);
 				}
 				int counter = 0;
-				for (Entity p : Storage.idleBlocks.values()) {
+				for (Entity p : idleBlocks.values()) {
 					if (p.equals(player)) {
 						counter++;
 					}
@@ -154,18 +159,18 @@ public class Anthropomorphism extends CustomEnchantment {
 					blockEntity.setGravity(false);
 					blockEntity
 							.setMetadata("ze.anthrothrower", new FixedMetadataValue(Storage.zenchantments, player));
-					Storage.idleBlocks.put(blockEntity, player);
+					idleBlocks.put(blockEntity, player);
 					return true;
 				}
 			}
 			return false;
 		} else if ((evt.getAction() == LEFT_CLICK_AIR || evt.getAction() == LEFT_CLICK_BLOCK)
 				|| hand.getType() == AIR) {
-			Storage.anthVortex.remove(player);
+			anthVortex.remove(player);
 			List<FallingBlock> toRemove = new ArrayList<>();
-			for (FallingBlock blk : Storage.idleBlocks.keySet()) {
-				if (Storage.idleBlocks.get(blk).equals(player)) {
-					Storage.attackBlocks.put(blk, power);
+			for (FallingBlock blk : idleBlocks.keySet()) {
+				if (idleBlocks.get(blk).equals(player)) {
+					attackBlocks.put(blk, power);
 					toRemove.add(blk);
 					Block targetBlock = player.getTargetBlock((Set<Material>) null, 7);
 					Bukkit.getLogger().info(targetBlock.toString());
@@ -174,7 +179,7 @@ public class Anthropomorphism extends CustomEnchantment {
 				}
 			}
 			for (FallingBlock blk : toRemove) {
-				Storage.idleBlocks.remove(blk);
+				idleBlocks.remove(blk);
 				blk.setGravity(true);
 				blk.setGlowing(true);
 			}

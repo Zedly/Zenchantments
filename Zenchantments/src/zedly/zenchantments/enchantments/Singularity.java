@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.CustomEnchantment;
@@ -16,12 +15,18 @@ import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.bukkit.GameMode.CREATIVE;
 import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Singularity extends CustomEnchantment {
 
-    public Singularity() {
+	// Locations of black holes from the singularity enchantment and whether or not they are attracting or repelling
+	public static final Map<Location, Boolean> blackholes = new HashMap<>();
+
+	public Singularity() {
         super(72);
         maxLevel = 1;
         loreName = "Singularity";
@@ -45,14 +50,14 @@ public class Singularity extends CustomEnchantment {
     // Throws entities in the black hole out in reverse state
     @EffectTask(Frequency.HIGH)
     public static void blackholes() {
-        for (Location l : Storage.blackholes.keySet()) {
+        for (Location l : blackholes.keySet()) {
             for (Entity e : l.getWorld().getNearbyEntities(l, 10, 10, 10)) {
                 if (e instanceof Player) {
                     if (((Player) e).getGameMode().equals(CREATIVE)) {
                         continue;
                     }
                 }
-                if (Storage.blackholes.get(l)) {
+                if (blackholes.get(l)) {
                     Vector v = l.clone().subtract(e.getLocation()).toVector();
                     v.setX(v.getX() + (-.5f + Storage.rnd.nextFloat()) * 10);
                     v.setY(v.getY() + (-.5f + Storage.rnd.nextFloat()) * 10);

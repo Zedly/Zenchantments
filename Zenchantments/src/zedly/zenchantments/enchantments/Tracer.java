@@ -4,8 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.annotations.EffectTask;
 import zedly.zenchantments.arrows.enchanted.TracerArrow;
@@ -13,11 +11,17 @@ import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Tracer extends CustomEnchantment {
 
-    public Tracer() {
+	// Map of tracer arrows to their expected accuracy
+	public static final Map<Arrow, Integer> tracer = new HashMap<>();
+
+	public Tracer() {
 	    super(63);
 	    maxLevel = 4;
 	    loreName = "Tracer";
@@ -40,10 +44,10 @@ public class Tracer extends CustomEnchantment {
 	@EffectTask(Frequency.HIGH)
 	// Moves Tracer arrows towards a target
 	public static void tracer() {
-		for (Arrow e : Storage.tracer.keySet()) {
+		for (Arrow e : tracer.keySet()) {
 			Entity close = null;
 			double distance = 100;
-			int level = Storage.tracer.get(e);
+			int level = tracer.get(e);
 			level += 2;
 			for (Entity e1 : e.getNearbyEntities(level, level, level)) {
 				if (e1.getLocation().getWorld().equals(e.getLocation().getWorld())) {

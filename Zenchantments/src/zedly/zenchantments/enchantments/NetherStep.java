@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.annotations.EffectTask;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
@@ -20,7 +19,7 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 public class NetherStep extends CustomEnchantment {
 
 	// Blocks spawned from the NatherStep enchantment
-	public static final Map<Location, Long> fireLocs = new HashMap<>();
+	public static final Map<Location, Long> netherstepLocs = new HashMap<>();
 
 	public NetherStep() {
 	    super(39);
@@ -48,13 +47,13 @@ public class NetherStep extends CustomEnchantment {
                 Block possiblePlatformBlock = block.getRelative(x, -1, z);
                 Location possiblePlatformLoc = possiblePlatformBlock.getLocation();
                 if(possiblePlatformLoc.distanceSquared(block.getLocation()) < radius * radius - 2) {
-                    if(fireLocs.containsKey(possiblePlatformLoc)) {
-                        fireLocs.put(possiblePlatformLoc, System.nanoTime());
+                    if(netherstepLocs.containsKey(possiblePlatformLoc)) {
+                        netherstepLocs.put(possiblePlatformLoc, System.nanoTime());
                     } else if(possiblePlatformBlock.getType() == STATIONARY_LAVA
                               && possiblePlatformBlock.getData() == 0
                               && possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
                         if(ADAPTER.formBlock(possiblePlatformBlock, SOUL_SAND, (byte) 0, player)) {
-                            fireLocs.put(possiblePlatformLoc, System.nanoTime());
+                            netherstepLocs.put(possiblePlatformLoc, System.nanoTime());
                         }
                     }
                 }
@@ -66,18 +65,18 @@ public class NetherStep extends CustomEnchantment {
 	@EffectTask(Frequency.MEDIUM)
 	// Removes the blocks from NetherStep and FrozenStep after a peroid of time
 	public static void updateBlocks() {
-		Iterator it = Storage.waterLocs.keySet().iterator();
+		Iterator it = FrozenStep.frozenLocs.keySet().iterator();
 		while (it.hasNext()) {
 			Location location = (Location) it.next();
-			if (Math.abs(System.nanoTime() - Storage.waterLocs.get(location)) > 9E8) {
+			if (Math.abs(System.nanoTime() - FrozenStep.frozenLocs.get(location)) > 9E8) {
 				location.getBlock().setType(STATIONARY_WATER);
 				it.remove();
 			}
 		}
-		it = fireLocs.keySet().iterator();
+		it = netherstepLocs.keySet().iterator();
 		while (it.hasNext()) {
 			Location location = (Location) it.next();
-			if (Math.abs(System.nanoTime() - fireLocs.get(location)) > 9E8) {
+			if (Math.abs(System.nanoTime() - netherstepLocs.get(location)) > 9E8) {
 				location.getBlock().setType(STATIONARY_LAVA);
 				it.remove();
 			}

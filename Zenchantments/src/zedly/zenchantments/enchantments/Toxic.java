@@ -4,11 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.annotations.EffectTask;
@@ -17,7 +15,9 @@ import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
@@ -26,7 +26,10 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Toxic extends CustomEnchantment {
 
-    public Toxic() {
+	// Players that have been affected by the Toxic enchantment who cannot currently eat
+	public static final Map<Player, Integer> hungerPlayers = new HashMap<>();
+
+	public Toxic() {
 	    super(62);
 	    maxLevel = 4;
 	    loreName = "Toxic";
@@ -58,7 +61,7 @@ public class Toxic extends CustomEnchantment {
                     ((LivingEntity) evt.getEntity()).removePotionEffect(HUNGER);
                     Utilities.addPotion((LivingEntity) evt.getEntity(), HUNGER, 60 + 40 * value, 0);
                 }, 20 + 60 * value);
-                Storage.hungerPlayers.put((Player) evt.getEntity(), (1 + value) * 100);
+                hungerPlayers.put((Player) evt.getEntity(), (1 + value) * 100);
             }
         }
         return true;
@@ -67,13 +70,13 @@ public class Toxic extends CustomEnchantment {
 	@EffectTask(Frequency.HIGH)
 	// Manages time left for players affected by Toxic enchantment
 	public static void hunger() {
-		Iterator it = Storage.hungerPlayers.keySet().iterator();
+		Iterator it = hungerPlayers.keySet().iterator();
 		while (it.hasNext()) {
 			Player player = (Player) it.next();
-			if (Storage.hungerPlayers.get(player) < 1) {
+			if (hungerPlayers.get(player) < 1) {
 				it.remove();
 			} else {
-				Storage.hungerPlayers.put(player, Storage.hungerPlayers.get(player) - 1);
+				hungerPlayers.put(player, hungerPlayers.get(player) - 1);
 			}
 		}
 	}

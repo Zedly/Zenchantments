@@ -20,8 +20,8 @@ public class WatcherArrow implements Listener {
     // Called when an arrow hits a block
     @EventHandler
     public boolean impact(ProjectileHitEvent evt) {
-        if (Storage.advancedProjectiles.containsKey(evt.getEntity())) {
-            Set<EnchantedArrow> ar = Storage.advancedProjectiles.get(evt.getEntity());
+        if (EnchantedArrow.advancedProjectiles.containsKey(evt.getEntity())) {
+            Set<EnchantedArrow> ar = EnchantedArrow.advancedProjectiles.get(evt.getEntity());
             for (EnchantedArrow a : ar) {
                 a.onImpact();
             }
@@ -33,17 +33,17 @@ public class WatcherArrow implements Listener {
     @EventHandler
     public boolean entityHit(EntityDamageByEntityEvent evt) {
         if (evt.getDamager() instanceof Arrow) {
-            if (Storage.advancedProjectiles.containsKey(evt.getDamager())) {
-                Set<EnchantedArrow> arrows = Storage.advancedProjectiles.get(evt.getDamager());
+            if (EnchantedArrow.advancedProjectiles.containsKey(evt.getDamager())) {
+                Set<EnchantedArrow> arrows = EnchantedArrow.advancedProjectiles.get(evt.getDamager());
                 for (EnchantedArrow arrow : arrows) {
                     if (evt.getEntity() instanceof LivingEntity) {
                         if (!arrow.onImpact(evt)) {
                             evt.setDamage(0);
                         }
                     }
-                    Storage.advancedProjectiles.remove(evt.getDamager());
+                    EnchantedArrow.advancedProjectiles.remove(evt.getDamager());
                     if (evt.getEntity() instanceof LivingEntity && evt.getDamage() >= ((LivingEntity) evt.getEntity()).getHealth()) {
-                        Storage.killedEntities.put(evt.getEntity(), arrow);
+                        EnchantedArrow.killedEntities.put(evt.getEntity(), arrow);
                     }
                 }
             }
@@ -54,10 +54,10 @@ public class WatcherArrow implements Listener {
     // Called when an arrow kills an entity; the advanced arrow is removed after this event
     @EventHandler
     public boolean entityDeath(EntityDeathEvent evt) {
-        if (Storage.killedEntities.containsKey(evt.getEntity())) {
-            EnchantedArrow arrow = Storage.killedEntities.get(evt.getEntity());
+        if (EnchantedArrow.killedEntities.containsKey(evt.getEntity())) {
+            EnchantedArrow arrow = EnchantedArrow.killedEntities.get(evt.getEntity());
             arrow.onKill(evt);
-            Storage.killedEntities.remove(evt.getEntity());
+            EnchantedArrow.killedEntities.remove(evt.getEntity());
         }
         return true;
     }

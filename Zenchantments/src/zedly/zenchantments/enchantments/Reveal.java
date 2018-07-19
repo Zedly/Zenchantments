@@ -14,11 +14,17 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Reveal extends CustomEnchantment {
 
-    public Reveal() {
+	// Blocks made to glow by the Reveal enchantment
+	public static final Map<Block, Integer> glowingBlocks = new HashMap<>();
+
+	public Reveal() {
         super(68);
         maxLevel = 4;
         loreName = "Reveal";
@@ -55,11 +61,11 @@ public class Reveal extends CustomEnchantment {
 
                                 found++;
                                 int entityId = 2000000000 + (blk.hashCode()) % 10000000;
-                                if(Storage.glowingBlocks.containsKey(blk)) {
-                                    Storage.glowingBlocks.put(blk,
-                                                              Storage.glowingBlocks.get(blk) + 1);
+                                if(glowingBlocks.containsKey(blk)) {
+                                    glowingBlocks.put(blk,
+                                                              glowingBlocks.get(blk) + 1);
                                 } else {
-                                    Storage.glowingBlocks.put(blk, 1);
+                                    glowingBlocks.put(blk, 1);
                                 }
 
                                 if(!ADAPTER.showShulker(blk, entityId, player)) {
@@ -68,12 +74,12 @@ public class Reveal extends CustomEnchantment {
                                 Bukkit.getServer().getScheduler()
                                       .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                           ADAPTER.hideShulker(entityId, player);
-                                          if(Storage.glowingBlocks.containsKey(blk)
-                                             && Storage.glowingBlocks.get(blk) > 1) {
-                                              Storage.glowingBlocks.put(blk,
-                                                                        Storage.glowingBlocks.get(blk) - 1);
+                                          if(glowingBlocks.containsKey(blk)
+                                             && glowingBlocks.get(blk) > 1) {
+                                              glowingBlocks.put(blk,
+                                                                        glowingBlocks.get(blk) - 1);
                                           } else {
-                                              Storage.glowingBlocks.remove(blk);
+                                              glowingBlocks.remove(blk);
                                           }
                                       }, 100);
                             }
