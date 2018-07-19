@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Transformation extends CustomEnchantment {
 
-    public Transformation() {
-        super(64);
-        maxLevel = 3;
-        loreName = "Transformation";
-        probability = 0;
-        enchantable = new Tool[]{SWORD};
-        conflicting = new Class[]{};
-        description = "Occasionally causes the attacked mob to be transformed into its similar cousin";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Transformation> defaults() {
+        return new Builder<>(Transformation::new, 64)
+            .maxLevel(3)
+            .loreName("Transformation")
+            .probability(0)
+            .enchantable(new Tool[]{SWORD})
+            .conflicting(new Class[]{})
+            .description("Occasionally causes the attacked mob to be transformed into its similar cousin")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

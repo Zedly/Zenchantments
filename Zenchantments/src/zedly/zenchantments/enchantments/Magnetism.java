@@ -11,17 +11,18 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Magnetism extends CustomEnchantment {
 
-    public Magnetism() {
-        super(35);
-        maxLevel = 3;
-        loreName = "Magnetism";
-        probability = 0;
-        enchantable = new Tool[]{LEGGINGS};
-        conflicting = new Class[]{};
-        description = "Slowly attracts nearby items to the players inventory";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Magnetism> defaults() {
+        return new Builder<>(Magnetism::new, 35)
+            .maxLevel(3)
+            .loreName("Magnetism")
+            .probability(0)
+            .enchantable(new Tool[]{LEGGINGS})
+            .conflicting(new Class[]{})
+            .description("Slowly attracts nearby items to the players inventory")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

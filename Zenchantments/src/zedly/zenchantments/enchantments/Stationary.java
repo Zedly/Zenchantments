@@ -18,17 +18,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Stationary extends CustomEnchantment {
 
-    public Stationary() {
-        super(58);
-        maxLevel = 1;
-        loreName = "Stationary";
-        probability = 0;
-        enchantable = new Tool[]{BOW, SWORD};
-        conflicting = new Class[]{};
-        description = "Negates any knockback when attacking mobs, leaving them clueless as to who is attacking";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Stationary> defaults() {
+        return new Builder<>(Stationary::new, 58)
+            .maxLevel(1)
+            .loreName("Stationary")
+            .probability(0)
+            .enchantable(new Tool[]{BOW, SWORD})
+            .conflicting(new Class[]{})
+            .description("Negates any knockback when attacking mobs, leaving them clueless as to who is attacking")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

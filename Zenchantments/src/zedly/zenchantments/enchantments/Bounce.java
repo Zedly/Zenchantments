@@ -10,17 +10,18 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Bounce extends CustomEnchantment {
 
-    public Bounce() {
-        super(7);
-        maxLevel = 5;
-        loreName = "Bounce";
-        probability = 0;
-        enchantable = new Tool[]{BOOTS};
-        conflicting = new Class[]{};
-        description = "Preserves momentum when on slime blocks";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Bounce> defaults() {
+        return new Builder<>(Bounce::new, 7)
+            .maxLevel(5)
+            .loreName("Bounce")
+            .probability(0)
+            .enchantable(new Tool[]{BOOTS})
+            .conflicting(new Class[]{})
+            .description("Preserves momentum when on slime blocks")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

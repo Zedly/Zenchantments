@@ -31,17 +31,18 @@ public class Pierce extends CustomEnchantment {
 	// Map of players who use pierce and what mode they are currently using
 	public static final Map<Player, Integer> pierceModes = new HashMap<>();
 
-	public Pierce() {
-        super(42);
-        maxLevel = 1;
-        loreName = "Pierce";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE};
-        conflicting = new Class[]{Anthropomorphism.class, Switch.class, Shred.class};
-        description = "Lets the player mine in several modes which can be changed through shift clicking";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Pierce> defaults() {
+        return new Builder<>(Pierce::new, 42)
+            .maxLevel(1)
+            .loreName("Pierce")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE})
+            .conflicting(new Class[]{Anthropomorphism.class, Switch.class, Shred.class})
+            .description("Lets the player mine in several modes which can be changed through shift clicking")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

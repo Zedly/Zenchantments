@@ -34,19 +34,20 @@ public class Anthropomorphism extends CustomEnchantment {
 	// Determines if falling entities from Anthropomorphism should fall up or down
 	public static boolean fallBool = false;
 
-	public Anthropomorphism() {
-	    super(1);
-	    maxLevel = 1;
-	    loreName = "Anthropomorphism";
-	    probability = 0;
-	    enchantable = new Tool[]{PICKAXE};
-	    conflicting = new Class[]{Pierce.class, Switch.class};
-	    description =
-                "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
-	    cooldown = 0;
-	    power = 1.0;
-	    handUse = Hand.BOTH;
-    }
+	@Override
+	public Builder<Anthropomorphism> defaults() {
+		return new Builder<>(Anthropomorphism::new, 1)
+			.maxLevel(1)
+			.loreName("Anthropomorphism")
+			.probability(0)
+			.enchantable(new Tool[]{PICKAXE})
+			.conflicting(new Class[]{Pierce.class, Switch.class})
+			.description(
+				"Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.BOTH);
+	}
 
 	@EffectTask(Frequency.MEDIUM)
 	// Removes Anthropomorphism blocks when they are dead

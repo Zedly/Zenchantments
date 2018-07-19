@@ -13,17 +13,18 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class Haste extends CustomEnchantment {
 
-    public Haste() {
-        super(27);
-        maxLevel = 4;
-        loreName = "Haste";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE, AXE, SHOVEL};
-        conflicting = new Class[]{};
-        description = "Gives the player a mining boost";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Haste> defaults() {
+        return new Builder<>(Haste::new, 27)
+            .maxLevel(4)
+            .loreName("Haste")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE, AXE, SHOVEL})
+            .conflicting(new Class[]{})
+            .description("Gives the player a mining boost")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

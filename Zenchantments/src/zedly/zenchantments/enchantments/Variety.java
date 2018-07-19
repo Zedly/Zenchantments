@@ -22,17 +22,18 @@ public class Variety extends CustomEnchantment {
                                          new ItemStack(LEAVES_2, 1, (short) 0),
                                          new ItemStack(LEAVES_2, 1, (short) 1)};
 
-    public Variety() {
-        super(65);
-        maxLevel = 1;
-        loreName = "Variety";
-        probability = 0;
-        enchantable = new Tool[]{AXE};
-        conflicting = new Class[]{Fire.class};
-        description = "Drops random types of wood or leaves";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Variety> defaults() {
+        return new Builder<>(Variety::new, 65)
+            .maxLevel(1)
+            .loreName("Variety")
+            .probability(0)
+            .enchantable(new Tool[]{AXE})
+            .conflicting(new Class[]{Fire.class})
+            .description("Drops random types of wood or leaves")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

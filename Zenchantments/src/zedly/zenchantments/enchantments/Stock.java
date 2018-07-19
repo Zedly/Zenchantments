@@ -14,17 +14,18 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class Stock extends CustomEnchantment {
 
-    public Stock() {
-        super(59);
-        maxLevel = 1;
-        loreName = "Stock";
-        probability = 0;
-        enchantable = new Tool[]{CHESTPLATE};
-        conflicting = new Class[]{};
-        description = "Refills the player's item in hand when they run out";
-        cooldown = -1;
-        power = -1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Stock> defaults() {
+        return new Builder<>(Stock::new, 59)
+            .maxLevel(1)
+            .loreName("Stock")
+            .probability(0)
+            .enchantable(new Tool[]{CHESTPLATE})
+            .conflicting(new Class[]{})
+            .description("Refills the player's item in hand when they run out")
+            .cooldown(-1)
+            .power(-1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

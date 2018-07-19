@@ -10,18 +10,18 @@ import zedly.zenchantments.enums.Tool;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Speed extends CustomEnchantment {
-
-    public Speed() {
-        super(55);
-        maxLevel = 4;
-        loreName = "Speed";
-        probability = 0;
-        enchantable = new Tool[]{BOOTS};
-        conflicting = new Class[]{Meador.class, Weight.class};
-        description = "Gives the player a speed boost";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Speed> defaults() {
+        return new Builder<>(Speed::new, 55)
+            .maxLevel(4)
+            .loreName("Speed")
+            .probability(0)
+            .enchantable(new Tool[]{BOOTS})
+            .conflicting(new Class[]{Meador.class, Weight.class})
+            .description("Gives the player a speed boost")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

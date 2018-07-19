@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Missile extends CustomEnchantment {
 
-    public Missile() {
-        super(71);
-        maxLevel = 1;
-        loreName = "Missile";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{};
-        description = "Shoots a missile from the bow";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Missile> defaults() {
+        return new Builder<>(Missile::new, 71)
+            .maxLevel(1)
+            .loreName("Missile")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{})
+            .description("Shoots a missile from the bow")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

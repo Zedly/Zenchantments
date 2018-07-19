@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Conversion extends CustomEnchantment {
 
-    public Conversion() {
-        super(10);
-        maxLevel = 4;
-        loreName = "Conversion";
-        probability = 0;
-        enchantable = new Tool[]{SWORD};
-        conflicting = new Class[]{};
-        description = "Converts XP to health when right clicking and sneaking";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Conversion> defaults() {
+        return new Builder<>(Conversion::new, 10)
+            .maxLevel(4)
+            .loreName("Conversion")
+            .probability(0)
+            .enchantable(new Tool[]{SWORD})
+            .conflicting(new Class[]{})
+            .description("Converts XP to health when right clicking and sneaking")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

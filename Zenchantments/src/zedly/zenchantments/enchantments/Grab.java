@@ -23,17 +23,18 @@ public class Grab extends CustomEnchantment {
     // Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
     public static final Map<Block, Location> grabLocs     = new HashMap<>();
 
-    public Grab() {
-        super(23);
-        maxLevel = 1;
-        loreName = "Grab";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE, SHOVEL, AXE};
-        conflicting = new Class[]{};
-        description = "Teleports mined items and XP directly to the player";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Grab> defaults() {
+        return new Builder<>(Grab::new, 23)
+            .maxLevel(1)
+            .loreName("Grab")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE, SHOVEL, AXE})
+            .conflicting(new Class[]{})
+            .description("Teleports mined items and XP directly to the player")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

@@ -16,17 +16,18 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Weight extends CustomEnchantment {
 
-    public Weight() {
-        super(67);
-        maxLevel = 4;
-        loreName = "Weight";
-        probability = 0;
-        enchantable = new Tool[]{BOOTS};
-        conflicting = new Class[]{Meador.class, Speed.class};
-        description = "Slows the player down but makes them stronger and more resistant to knockback";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Weight> defaults() {
+        return new Builder<>(Weight::new, 67)
+            .maxLevel(4)
+            .loreName("Weight")
+            .probability(0)
+            .enchantable(new Tool[]{BOOTS})
+            .conflicting(new Class[]{Meador.class, Speed.class})
+            .description("Slows the player down but makes them stronger and more resistant to knockback")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

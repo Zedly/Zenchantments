@@ -17,17 +17,18 @@ import static zedly.zenchantments.enums.Tool.SHEAR;
 
 public class Mow extends CustomEnchantment {
 
-    public Mow() {
-        super(37);
-        maxLevel = 3;
-        loreName = "Mow";
-        probability = 0;
-        enchantable = new Tool[]{SHEAR};
-        conflicting = new Class[]{};
-        description = "Shears all nearby sheep";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Mow> defaults() {
+        return new Builder<>(Mow::new, 37)
+            .maxLevel(3)
+            .loreName("Mow")
+            .probability(0)
+            .enchantable(new Tool[]{SHEAR})
+            .conflicting(new Class[]{})
+            .description("Shears all nearby sheep")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     private boolean shear(PlayerEvent evt, int level, boolean usedHand) {

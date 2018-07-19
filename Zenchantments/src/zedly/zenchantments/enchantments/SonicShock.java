@@ -12,17 +12,18 @@ import static zedly.zenchantments.enums.Tool.WINGS;
 
 public class SonicShock extends CustomEnchantment {
 
-    public SonicShock() {
-        super(56);
-        maxLevel = 3;
-        loreName = "Sonic Shock";
-        probability = 0;
-        enchantable = new Tool[]{WINGS};
-        conflicting = new Class[]{};
-        description = "Damages mobs when flying past at high speed";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<SonicShock> defaults() {
+        return new Builder<>(SonicShock::new, 56)
+            .maxLevel(3)
+            .loreName("Sonic Shock")
+            .probability(0)
+            .enchantable(new Tool[]{WINGS})
+            .conflicting(new Class[]{})
+            .description("Damages mobs when flying past at high speed")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

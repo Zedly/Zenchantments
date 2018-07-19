@@ -14,17 +14,18 @@ import static zedly.zenchantments.enums.Tool.AXE;
 
 public class Arborist extends CustomEnchantment {
 
-    public Arborist() {
-        super(2);
-        maxLevel = 3;
-        loreName = "Arborist";
-        probability = 0;
-        enchantable = new Tool[]{AXE};
-        conflicting = new Class[]{};
-        description = "Drops more apples, sticks, and saplings when used on leaves and wood";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Arborist> defaults() {
+        return new Builder<>(Arborist::new, 2)
+            .maxLevel(3)
+            .loreName("Arborist")
+            .probability(0)
+            .enchantable(new Tool[]{AXE})
+            .conflicting(new Class[]{})
+            .description("Drops more apples, sticks, and saplings when used on leaves and wood")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

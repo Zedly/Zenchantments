@@ -17,17 +17,18 @@ import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Bind extends CustomEnchantment {
 
-    public Bind() {
-        super(4);
-        maxLevel = 1;
-        loreName = "Bind";
-        probability = 0;
-        enchantable = new Tool[]{ALL};
-        conflicting = new Class[]{};
-        description = "Keeps items with this enchantment in your inventory after death";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Bind> defaults() {
+        return new Builder<>(Bind::new, 4)
+            .maxLevel(1)
+            .loreName("Bind")
+            .probability(0)
+            .enchantable(new Tool[]{ALL})
+            .conflicting(new Class[]{})
+            .description("Keeps items with this enchantment in your inventory after death")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

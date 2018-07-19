@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Fuse extends CustomEnchantment {
 
-    public Fuse() {
-        super(18);
-        maxLevel = 1;
-        loreName = "Fuse";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{};
-        description = "Instantly ignites anything explosive";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Fuse> defaults() {
+        return new Builder<>(Fuse::new, 18)
+            .maxLevel(1)
+            .loreName("Fuse")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{})
+            .description("Instantly ignites anything explosive")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

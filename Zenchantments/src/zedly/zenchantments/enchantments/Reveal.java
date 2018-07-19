@@ -24,17 +24,18 @@ public class Reveal extends CustomEnchantment {
 	// Blocks made to glow by the Reveal enchantment
 	public static final Map<Block, Integer> glowingBlocks = new HashMap<>();
 
-	public Reveal() {
-        super(68);
-        maxLevel = 4;
-        loreName = "Reveal";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE};
-        conflicting = new Class[]{Switch.class, Pierce.class, Spectral.class};
-        description = "Makes nearby ores glow white through the stone.";
-        cooldown = 100;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Reveal> defaults() {
+        return new Builder<>(Reveal::new, 68)
+            .maxLevel(4)
+            .loreName("Reveal")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE})
+            .conflicting(new Class[]{Switch.class, Pierce.class, Spectral.class})
+            .description("Makes nearby ores glow white through the stone.")
+            .cooldown(100)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

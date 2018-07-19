@@ -23,17 +23,18 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Burst extends CustomEnchantment {
 
-    public Burst() {
-        super(8);
-        maxLevel = 3;
-        loreName = "Burst";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{Spread.class};
-        description = "Rapidly fires arrows in series";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Burst> defaults() {
+        return new Builder<>(Burst::new, 8)
+            .maxLevel(3)
+            .loreName("Burst")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{Spread.class})
+            .description("Rapidly fires arrows in series")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

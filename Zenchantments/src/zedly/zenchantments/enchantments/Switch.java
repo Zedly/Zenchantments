@@ -19,18 +19,19 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Switch extends CustomEnchantment {
 
-    public Switch() {
-        super(60);
-        maxLevel = 1;
-        loreName = "Switch";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE};
-        conflicting = new Class[]{Shred.class, Anthropomorphism.class, Fire.class, Extraction.class, Pierce.class,
-                                  Reveal.class};
-        description = "Replaces the clicked block with the leftmost block in your hotbar when sneaking";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Switch> defaults() {
+        return new Builder<>(Switch::new, 60)
+            .maxLevel(1)
+            .loreName("Switch")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE})
+            .conflicting(new Class[]{Shred.class, Anthropomorphism.class, Fire.class, Extraction.class, Pierce.class,
+                Reveal.class})
+            .description("Replaces the clicked block with the leftmost block in your hotbar when sneaking")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

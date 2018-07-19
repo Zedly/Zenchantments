@@ -24,17 +24,18 @@ public class MysteryFish extends CustomEnchantment {
 	// Guardians from the Mystery Fish enchantment and the player they should move towards
 	public static final Map<Entity, Player> guardianMove = new HashMap<>();
 
-	public MysteryFish() {
-	    super(38);
-	    maxLevel = 3;
-	    loreName = "Mystery Fish";
-	    probability = 0;
-	    enchantable = new Tool[]{ROD};
-	    conflicting = new Class[]{};
-	    description = "Catches water mobs like Squid and Guardians";
-	    cooldown = 0;
-	    power = 1.0;
-	    handUse = Hand.RIGHT;
+	@Override
+	public Builder<MysteryFish> defaults() {
+		return new Builder<>(MysteryFish::new, 38)
+			.maxLevel(3)
+			.loreName("Mystery Fish")
+			.probability(0)
+			.enchantable(new Tool[]{ROD})
+			.conflicting(new Class[]{})
+			.description("Catches water mobs like Squid and Guardians")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.RIGHT);
     }
 
     @Override

@@ -22,17 +22,18 @@ public class Germination extends CustomEnchantment {
 
     private static final ItemStack BONE_MEAL = new ItemStack(Material.INK_SACK, 1, (short) 15);
 
-    public Germination() {
-        super(19);
-        maxLevel = 3;
-        loreName = "Germination";
-        probability = 0;
-        enchantable = new Tool[]{HOE};
-        conflicting = new Class[]{};
-        description = "Uses bonemeal from the player's inventory to grow nearby plants";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Germination> defaults() {
+        return new Builder<>(Germination::new, 19)
+            .maxLevel(3)
+            .loreName("Germination")
+            .probability(0)
+            .enchantable(new Tool[]{HOE})
+            .conflicting(new Class[]{})
+            .description("Uses bonemeal from the player's inventory to grow nearby plants")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

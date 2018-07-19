@@ -18,17 +18,18 @@ public class Potion extends CustomEnchantment {
 
     PotionEffectType[] potions;
 
-    public Potion() {
-        super(44);
-        maxLevel = 3;
-        loreName = "Potion";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{};
-        description = "Gives the shooter random positive potion effects when attacking";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Potion> defaults() {
+        return new Builder<>(Potion::new, 44)
+            .maxLevel(3)
+            .loreName("Potion")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{})
+            .description("Gives the shooter random positive potion effects when attacking")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

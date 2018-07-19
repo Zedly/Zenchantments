@@ -13,17 +13,18 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Meador extends CustomEnchantment {
 
-    public Meador() {
-        super(36);
-        maxLevel = 1;
-        loreName = "Meador";
-        probability = 0;
-        enchantable = new Tool[]{BOOTS};
-        conflicting = new Class[]{Weight.class, Speed.class, Jump.class};
-        description = "Gives the player both a speed and jump boost";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Meador> defaults() {
+        return new Builder<>(Meador::new, 36)
+            .maxLevel(1)
+            .loreName("Meador")
+            .probability(0)
+            .enchantable(new Tool[]{BOOTS})
+            .conflicting(new Class[]{Weight.class, Speed.class, Jump.class})
+            .description("Gives the player both a speed and jump boost")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

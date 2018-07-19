@@ -19,17 +19,18 @@ public class Decapitation extends CustomEnchantment {
     private static final int BASE_PLAYER_DROP_CHANCE = 150;
     private static final int BASE_MOB_DROP_CHANCE    = 150;
 
-    public Decapitation() {
-        super(11);
-        maxLevel = 4;
-        loreName = "Decapitation";
-        probability = 0;
-        enchantable = new Tool[]{SWORD};
-        conflicting = new Class[]{};
-        description = "Increases the chance for dropping the enemies head on death";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Decapitation> defaults() {
+        return new Builder<>(Decapitation::new, 11)
+            .maxLevel(4)
+            .loreName("Decapitation")
+            .probability(0)
+            .enchantable(new Tool[]{SWORD})
+            .conflicting(new Class[]{})
+            .description("Increases the chance for dropping the enemies head on death")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

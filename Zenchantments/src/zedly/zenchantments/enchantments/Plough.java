@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Plough extends CustomEnchantment {
 
-    public Plough() {
-        super(43);
-        maxLevel = 3;
-        loreName = "Plough";
-        probability = 0;
-        enchantable = new Tool[]{HOE};
-        conflicting = new Class[]{};
-        description = "Tills all soil within a radius";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Plough> defaults() {
+        return new Builder<>(Plough::new, 43)
+            .maxLevel(3)
+            .loreName("Plough")
+            .probability(0)
+            .enchantable(new Tool[]{HOE})
+            .conflicting(new Class[]{})
+            .description("Tills all soil within a radius")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

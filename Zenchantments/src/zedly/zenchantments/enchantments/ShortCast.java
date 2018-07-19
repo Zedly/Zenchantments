@@ -10,17 +10,18 @@ import static zedly.zenchantments.enums.Tool.ROD;
 
 public class ShortCast extends CustomEnchantment {
 
-    public ShortCast() {
-        super(51);
-        maxLevel = 2;
-        loreName = "Short Cast";
-        probability = 0;
-        enchantable = new Tool[]{ROD};
-        conflicting = new Class[]{LongCast.class};
-        description = "Launches fishing hooks closer in when casting";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<ShortCast> defaults() {
+        return new Builder<>(ShortCast::new, 51)
+            .maxLevel(2)
+            .loreName("Short Cast")
+            .probability(0)
+            .enchantable(new Tool[]{ROD})
+            .conflicting(new Class[]{LongCast.class})
+            .description("Launches fishing hooks closer in when casting")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

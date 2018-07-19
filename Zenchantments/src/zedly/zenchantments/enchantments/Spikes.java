@@ -11,17 +11,18 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Spikes extends CustomEnchantment {
 
-    public Spikes() {
-        super(56);
-        maxLevel = 3;
-        loreName = "Spikes";
-        probability = 0;
-        enchantable = new Tool[]{BOOTS};
-        conflicting = new Class[]{};
-        description = "Damages entities the player jumps onto";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Spikes> defaults() {
+        return new Builder<>(Spikes::new, 56)
+            .maxLevel(3)
+            .loreName("Spikes")
+            .probability(0)
+            .enchantable(new Tool[]{BOOTS})
+            .conflicting(new Class[]{})
+            .description("Damages entities the player jumps onto")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

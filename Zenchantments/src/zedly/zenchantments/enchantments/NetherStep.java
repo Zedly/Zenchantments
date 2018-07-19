@@ -21,17 +21,18 @@ public class NetherStep extends CustomEnchantment {
 	// Blocks spawned from the NatherStep enchantment
 	public static final Map<Location, Long> netherstepLocs = new HashMap<>();
 
-	public NetherStep() {
-	    super(39);
-	    maxLevel = 3;
-	    loreName = "Nether Step";
-	    probability = 0;
-	    enchantable = new Tool[]{BOOTS};
-	    conflicting = new Class[]{FrozenStep.class};
-	    description = "Allows the player to slowly but safely walk on lava";
-	    cooldown = 0;
-	    power = 1.0;
-	    handUse = Hand.NONE;
+	@Override
+	public Builder<NetherStep> defaults() {
+		return new Builder<>(NetherStep::new, 39)
+			.maxLevel(3)
+			.loreName("Nether Step")
+			.probability(0)
+			.enchantable(new Tool[]{BOOTS})
+			.conflicting(new Class[]{FrozenStep.class})
+			.description("Allows the player to slowly but safely walk on lava")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.NONE);
     }
 
     @Override

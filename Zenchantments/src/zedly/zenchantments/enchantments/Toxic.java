@@ -29,17 +29,18 @@ public class Toxic extends CustomEnchantment {
 	// Players that have been affected by the Toxic enchantment who cannot currently eat
 	public static final Map<Player, Integer> hungerPlayers = new HashMap<>();
 
-	public Toxic() {
-	    super(62);
-	    maxLevel = 4;
-	    loreName = "Toxic";
-	    probability = 0;
-	    enchantable = new Tool[]{BOW, SWORD};
-	    conflicting = new Class[]{};
-	    description = "Sickens the target, making them nauseous and unable to eat";
-	    cooldown = 0;
-	    power = 1.0;
-	    handUse = Hand.BOTH;
+	@Override
+	public Builder<Toxic> defaults() {
+		return new Builder<>(Toxic::new, 62)
+			.maxLevel(4)
+			.loreName("Toxic")
+			.probability(0)
+			.enchantable(new Tool[]{BOW, SWORD})
+			.conflicting(new Class[]{})
+			.description("Sickens the target, making them nauseous and unable to eat")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.BOTH);
     }
 
     @Override

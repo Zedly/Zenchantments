@@ -27,17 +27,18 @@ public class Stream extends CustomEnchantment {
             Particle.REDSTONE,
             Particle.HEART,};
 
-    public Stream() {
-        super(420);
-        maxLevel = 1;
-        loreName = "Stream";
-        probability = 0;
-        enchantable = new Tool[]{WINGS};
-        conflicting = new Class[]{};
-        description = "Creates a trail of particles when in flight";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Stream> defaults() {
+        return new Builder<>(Stream::new, 420)
+            .maxLevel(1)
+            .loreName("Stream")
+            .probability(0)
+            .enchantable(new Tool[]{WINGS})
+            .conflicting(new Class[]{})
+            .description("Creates a trail of particles when in flight")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

@@ -20,17 +20,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Reaper extends CustomEnchantment {
 
-    public Reaper() {
-        super(49);
-        maxLevel = 4;
-        loreName = "Reaper";
-        probability = 0;
-        enchantable = new Tool[]{BOW, SWORD};
-        conflicting = new Class[]{};
-        description = "Gives the target temporary wither effect and blindness";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Reaper> defaults() {
+        return new Builder<>(Reaper::new, 49)
+            .maxLevel(4)
+            .loreName("Reaper")
+            .probability(0)
+            .enchantable(new Tool[]{BOW, SWORD})
+            .conflicting(new Class[]{})
+            .description("Gives the target temporary wither effect and blindness")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

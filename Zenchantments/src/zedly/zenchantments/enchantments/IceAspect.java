@@ -13,17 +13,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class IceAspect extends CustomEnchantment {
 
-    public IceAspect() {
-        super(29);
-        maxLevel = 2;
-        loreName = "Ice Aspect";
-        probability = 0;
-        enchantable = new Tool[]{SWORD};
-        conflicting = new Class[]{};
-        description = "Temporarily freezes the target";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<IceAspect> defaults() {
+        return new Builder<>(IceAspect::new, 29)
+            .maxLevel(2)
+            .loreName("Ice Aspect")
+            .probability(0)
+            .enchantable(new Tool[]{SWORD})
+            .conflicting(new Class[]{})
+            .description("Temporarily freezes the target")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

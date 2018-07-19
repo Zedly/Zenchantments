@@ -30,17 +30,18 @@ public class BlazesCurse extends CustomEnchantment {
     private static final float   submergeDamage = 1.5f;
     private static final float   rainDamage     = .5f;
 
-    public BlazesCurse() {
-        super(5);
-        maxLevel = 1;
-        loreName = "Blaze's Curse";
-        probability = 0;
-        enchantable = new Tool[]{CHESTPLATE};
-        conflicting = new Class[]{};
-        description = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<BlazesCurse> defaults() {
+        return new Builder<>(BlazesCurse::new, 5)
+            .maxLevel(1)
+            .loreName("Blaze's Curse")
+            .probability(0)
+            .enchantable(new Tool[]{CHESTPLATE})
+            .conflicting(new Class[]{})
+            .description("Causes the player to be unharmed in lava and fire, but damages them in water and rain")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

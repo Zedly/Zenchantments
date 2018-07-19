@@ -18,17 +18,18 @@ public class FrozenStep extends CustomEnchantment {
 	// Blocks spawned from the Water Walker enchantment
 	public static final Map<Location, Long> frozenLocs = new HashMap<>();
 
-	public FrozenStep() {
-        super(17);
-        maxLevel = 3;
-        loreName = "Frozen Step";
-        probability = 0;
-        enchantable = new Tool[]{BOOTS};
-        conflicting = new Class[]{NetherStep.class};
-        description = "Allows the player to walk on water and safely emerge from it when sneaking";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<FrozenStep> defaults() {
+        return new Builder<>(FrozenStep::new, 17)
+            .maxLevel(3)
+            .loreName("Frozen Step")
+            .probability(0)
+            .enchantable(new Tool[]{BOOTS})
+            .conflicting(new Class[]{NetherStep.class})
+            .description("Allows the player to walk on water and safely emerge from it when sneaking")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     public boolean onScan(Player player, int level, boolean usedHand) {

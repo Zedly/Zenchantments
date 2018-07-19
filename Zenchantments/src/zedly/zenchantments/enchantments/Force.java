@@ -24,17 +24,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Force extends CustomEnchantment {
 
-    public Force() {
-        super(16);
-        maxLevel = 3;
-        loreName = "Force";
-        probability = 0;
-        enchantable = new Tool[]{SWORD};
-        conflicting = new Class[]{RainbowSlam.class, Gust.class};
-        description = "Pushes and pulls nearby mobs, configurable through shift clicking";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Force> defaults() {
+        return new Builder<>(Force::new, 16)
+            .maxLevel(3)
+            .loreName("Force")
+            .probability(0)
+            .enchantable(new Tool[]{SWORD})
+            .conflicting(new Class[]{RainbowSlam.class, Gust.class})
+            .description("Pushes and pulls nearby mobs, configurable through shift clicking")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

@@ -26,17 +26,18 @@ public class Singularity extends CustomEnchantment {
 	// Locations of black holes from the singularity enchantment and whether or not they are attracting or repelling
 	public static final Map<Location, Boolean> blackholes = new HashMap<>();
 
-	public Singularity() {
-        super(72);
-        maxLevel = 1;
-        loreName = "Singularity";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{};
-        description = "Creates a black hole that attracts nearby entities and then discharges them";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Singularity> defaults() {
+        return new Builder<>(Singularity::new, 72)
+            .maxLevel(1)
+            .loreName("Singularity")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{})
+            .description("Creates a black hole that attracts nearby entities and then discharges them")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

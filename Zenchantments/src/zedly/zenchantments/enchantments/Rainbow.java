@@ -20,17 +20,18 @@ public class Rainbow extends CustomEnchantment {
 
     private static final short[] FLOWER_DATA_VALUES = new short[]{0, 1, 2, 3, 4, 5, 10};
 
-    public Rainbow() {
-        super(47);
-        maxLevel = 1;
-        loreName = "Rainbow";
-        probability = 0;
-        enchantable = new Tool[]{SHEAR};
-        conflicting = new Class[]{};
-        description = "Drops random flowers and wool colors when used";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Rainbow> defaults() {
+        return new Builder<>(Rainbow::new, 47)
+            .maxLevel(1)
+            .loreName("Rainbow")
+            .probability(0)
+            .enchantable(new Tool[]{SHEAR})
+            .conflicting(new Class[]{})
+            .description("Drops random flowers and wool colors when used")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

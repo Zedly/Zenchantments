@@ -21,17 +21,18 @@ public class Persephone extends CustomEnchantment {
     private static final Material[] CROP_BLOCKS =
             {CROPS, POTATO, CARROT, BEETROOT_BLOCK, NETHER_WARTS, SOUL_SAND, SOIL};
 
-    public Persephone() {
-        super(41);
-        maxLevel = 3;
-        loreName = "Persephone";
-        probability = 0;
-        enchantable = new Tool[]{HOE};
-        conflicting = new Class[]{};
-        description = "Plants seeds from the player's inventory around them";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Persephone> defaults() {
+        return new Builder<>(Persephone::new, 41)
+            .maxLevel(3)
+            .loreName("Persephone")
+            .probability(0)
+            .enchantable(new Tool[]{HOE})
+            .conflicting(new Class[]{})
+            .description("Plants seeds from the player's inventory around them")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

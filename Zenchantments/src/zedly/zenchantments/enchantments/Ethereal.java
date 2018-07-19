@@ -14,17 +14,18 @@ import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Ethereal extends CustomEnchantment {
 
-    public Ethereal() {
-        super(70);
-        maxLevel = 1;
-        loreName = "Ethereal";
-        probability = 0;
-        enchantable = new Tool[]{ALL};
-        conflicting = new Class[]{};
-        description = "Prevents tools from breaking";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Ethereal> defaults() {
+        return new Builder<>(Ethereal::new, 70)
+            .maxLevel(1)
+            .loreName("Ethereal")
+            .probability(0)
+            .enchantable(new Tool[]{ALL})
+            .conflicting(new Class[]{})
+            .description("Prevents tools from breaking")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

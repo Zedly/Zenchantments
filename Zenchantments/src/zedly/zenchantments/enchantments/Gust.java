@@ -20,17 +20,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Gust extends CustomEnchantment {
 
-    public Gust() {
-        super(25);
-        maxLevel = 1;
-        loreName = "Gust";
-        probability = 0;
-        enchantable = new Tool[]{SWORD};
-        conflicting = new Class[]{Force.class, RainbowSlam.class};
-        description = "Pushes the user through the air at the cost of their health";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Gust> defaults() {
+        return new Builder<>(Gust::new, 25)
+            .maxLevel(1)
+            .loreName("Gust")
+            .probability(0)
+            .enchantable(new Tool[]{SWORD})
+            .conflicting(new Class[]{Force.class, RainbowSlam.class})
+            .description("Pushes the user through the air at the cost of their health")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

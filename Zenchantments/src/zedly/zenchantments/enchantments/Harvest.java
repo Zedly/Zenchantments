@@ -22,17 +22,18 @@ public class Harvest extends CustomEnchantment {
     private static final Material[] CROP_BLOCKS =
             {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK, NETHER_WARTS};
 
-    public Harvest() {
-        super(26);
-        maxLevel = 3;
-        loreName = "Harvest";
-        probability = 0;
-        enchantable = new Tool[]{HOE};
-        conflicting = new Class[]{};
-        description = "Harvests fully grown crops within a radius when clicked";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Harvest> defaults() {
+        return new Builder<>(Harvest::new, 26)
+            .maxLevel(3)
+            .loreName("Harvest")
+            .probability(0)
+            .enchantable(new Tool[]{HOE})
+            .conflicting(new Class[]{})
+            .description("Harvests fully grown crops within a radius when clicked")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

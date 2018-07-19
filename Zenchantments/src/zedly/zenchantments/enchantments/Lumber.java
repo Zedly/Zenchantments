@@ -30,17 +30,18 @@ public class Lumber extends CustomEnchantment {
             LOG, LOG_2, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2
     };
 
-    public Lumber() {
-        super(34);
-        maxLevel = 1;
-        loreName = "Lumber";
-        probability = 0;
-        enchantable = new Tool[]{AXE};
-        conflicting = new Class[]{};
-        description = "Breaks the entire tree at once";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Lumber> defaults() {
+        return new Builder<>(Lumber::new, 34)
+            .maxLevel(1)
+            .loreName("Lumber")
+            .probability(0)
+            .enchantable(new Tool[]{AXE})
+            .conflicting(new Class[]{})
+            .description("Breaks the entire tree at once")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

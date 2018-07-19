@@ -24,17 +24,18 @@ public class Spectral extends CustomEnchantment {
         }
     }
 
-    public Spectral() {
-        super(54);
-        maxLevel = 1;
-        loreName = "Spectral";
-        probability = 0;
-        enchantable = new Tool[]{SHOVEL};
-        conflicting = new Class[]{};
-        description = "Allows for cycling through a block's types";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Spectral> defaults() {
+        return new Builder<>(Spectral::new, 54)
+            .maxLevel(1)
+            .loreName("Spectral")
+            .probability(0)
+            .enchantable(new Tool[]{SHOVEL})
+            .conflicting(new Class[]{})
+            .description("Allows for cycling through a block's types")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

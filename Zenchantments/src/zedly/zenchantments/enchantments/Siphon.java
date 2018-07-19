@@ -18,17 +18,18 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Siphon extends CustomEnchantment {
 
-    public Siphon() {
-        super(53);
-        maxLevel = 4;
-        loreName = "Siphon";
-        probability = 0;
-        enchantable = new Tool[]{BOW, SWORD};
-        conflicting = new Class[]{};
-        description = "Drains the health of the mob that you attack, giving it to you";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Siphon> defaults() {
+        return new Builder<>(Siphon::new, 53)
+            .maxLevel(4)
+            .loreName("Siphon")
+            .probability(0)
+            .enchantable(new Tool[]{BOW, SWORD})
+            .conflicting(new Class[]{})
+            .description("Drains the health of the mob that you attack, giving it to you")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

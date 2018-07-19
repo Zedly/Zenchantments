@@ -28,17 +28,18 @@ public class Terraformer extends CustomEnchantment {
             BlockFace.WEST,
             BlockFace.DOWN,};
 
-    public Terraformer() {
-        super(61);
-        maxLevel = 1;
-        loreName = "Terraformer";
-        probability = 0;
-        enchantable = new Tool[]{SHOVEL};
-        conflicting = new Class[]{};
-        description = "Places the leftmost blocks in the players inventory within a 7 block radius";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Terraformer> defaults() {
+        return new Builder<>(Terraformer::new, 61)
+            .maxLevel(1)
+            .loreName("Terraformer")
+            .probability(0)
+            .enchantable(new Tool[]{SHOVEL})
+            .conflicting(new Class[]{})
+            .description("Places the leftmost blocks in the players inventory within a 7 block radius")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

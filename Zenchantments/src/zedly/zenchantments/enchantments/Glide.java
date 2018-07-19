@@ -23,17 +23,18 @@ public class Glide extends CustomEnchantment {
 	// The players using glide and their most recent Y coordinate
 	public static final Map<Player, Double> sneakGlide = new HashMap<>();
 
-	public Glide() {
-        super(20);
-        maxLevel = 3;
-        loreName = "Glide";
-        probability = 0;
-        enchantable = new Tool[]{LEGGINGS};
-        conflicting = new Class[]{};
-        description = "Gently brings the player back to the ground when sneaking";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Glide> defaults() {
+        return new Builder<>(Glide::new, 20)
+            .maxLevel(3)
+            .loreName("Glide")
+            .probability(0)
+            .enchantable(new Tool[]{LEGGINGS})
+            .conflicting(new Class[]{})
+            .description("Gently brings the player back to the ground when sneaking")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

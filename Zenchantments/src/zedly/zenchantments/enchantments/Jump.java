@@ -11,17 +11,18 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Jump extends CustomEnchantment {
 
-    public Jump() {
-        super(30);
-        maxLevel = 4;
-        loreName = "Jump";
-        probability = 0;
-        enchantable = new Tool[]{BOOTS};
-        conflicting = new Class[]{};
-        description = "Gives the player a jump boost";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Jump> defaults() {
+        return new Builder<>(Jump::new, 30)
+            .maxLevel(4)
+            .loreName("Jump")
+            .probability(0)
+            .enchantable(new Tool[]{BOOTS})
+            .conflicting(new Class[]{})
+            .description("Gives the player a jump boost")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

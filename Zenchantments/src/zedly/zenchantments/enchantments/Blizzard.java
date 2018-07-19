@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Blizzard extends CustomEnchantment {
 
-    public Blizzard() {
-        super(6);
-        maxLevel = 3;
-        loreName = "Blizzard";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{Firestorm.class};
-        description = "Spawns a blizzard where the arrow strikes freezing nearby entities";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Blizzard> defaults() {
+        return new Builder<>(Blizzard::new, 6)
+            .maxLevel(3)
+            .loreName("Blizzard")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{Firestorm.class})
+            .description("Spawns a blizzard where the arrow strikes freezing nearby entities")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

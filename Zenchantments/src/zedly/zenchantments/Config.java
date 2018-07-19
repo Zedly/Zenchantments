@@ -173,28 +173,28 @@ public class Config {
                     .scan();
                 for (Class<? extends CustomEnchantment> cl : customEnchantments) {
                     try {
-                        CustomEnchantment ench = cl.newInstance();
-                        if (configInfo.containsKey(ench.loreName)) {
-                            LinkedHashMap<String, Object> data = configInfo.get(ench.loreName);
-                            ench.probability = (float) (double) data.get("Probability");
-                            ench.loreName = (String) data.get("Name");
+                        CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();
+                        if (configInfo.containsKey(ench.loreName())) {
+                            LinkedHashMap<String, Object> data = configInfo.get(ench.loreName());
+                            ench.probability((float) (double) data.get("Probability"));
+                            ench.loreName((String) data.get("Name"));
+                            ench.cooldown((int) data.get("Cooldown"));
                             if (data.containsValue("Max Level")) {
-                                ench.maxLevel = (int) data.get("Max Level");
+                                ench.maxLevel((int) data.get("Max Level"));
                             }
-                            ench.cooldown = (int) data.get("Cooldown");
                             if (data.containsValue("Power")) {
-                                ench.power = (double) data.get("Power");
+                                ench.power((double) data.get("Power"));
                             }
                             Set<Tool> materials = new HashSet<>();
                             for (String s : ((String) data.get("Tools")).split(", |\\,")) {
                                 materials.add(Tool.fromString(s));
                             }
-                            materials.toArray(ench.enchantable);
-                            if (ench.probability != -1) {
-                                enchantmentMap.put(ench.loreName.toLowerCase().replace(" ", ""), ench);
+                            ench.enchantable(materials.toArray(new Tool[0]));
+                            if (ench.probability() != -1) {
+                                enchantmentMap.put(ench.loreName().toLowerCase().replace(" ", ""), ench.build());
                             }
                         }
-                    } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
+                    } catch (IllegalAccessException | ClassCastException | InstantiationException ex) {
                         System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
                     }
                 }

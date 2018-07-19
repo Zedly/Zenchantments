@@ -25,17 +25,18 @@ public class Vortex extends CustomEnchantment {
 	// Locations where Vortex has been used on a block and are waiting for the Watcher to handle their teleportation
 	public static final Map<Block, Location> vortexLocs = new HashMap<>();
 
-	public Vortex() {
-        super(66);
-        maxLevel = 1;
-        loreName = "Vortex";
-        probability = 0;
-        enchantable = new Tool[]{BOW, SWORD};
-        conflicting = new Class[]{};
-        description = "Teleports mob loot and XP directly to the player";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Vortex> defaults() {
+        return new Builder<>(Vortex::new, 66)
+            .maxLevel(1)
+            .loreName("Vortex")
+            .probability(0)
+            .enchantable(new Tool[]{BOW, SWORD})
+            .conflicting(new Class[]{})
+            .description("Teleports mob loot and XP directly to the player")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

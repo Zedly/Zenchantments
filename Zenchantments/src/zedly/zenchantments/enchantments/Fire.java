@@ -20,17 +20,18 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class Fire extends CustomEnchantment {
 
-    public Fire() {
-        super(13);
-        maxLevel = 1;
-        loreName = "Fire";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE, AXE, SHOVEL};
-        conflicting = new Class[]{Switch.class, Variety.class};
-        description = "Drops the smelted version of the block broken";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Fire> defaults() {
+        return new Builder<>(Fire::new, 13)
+            .maxLevel(1)
+            .loreName("Fire")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE, AXE, SHOVEL})
+            .conflicting(new Class[]{Switch.class, Variety.class})
+            .description("Drops the smelted version of the block broken")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

@@ -11,17 +11,18 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class Combustion extends CustomEnchantment {
 
-    public Combustion() {
-        super(9);
-        maxLevel = 4;
-        loreName = "Combustion";
-        probability = 0;
-        enchantable = new Tool[]{CHESTPLATE};
-        conflicting = new Class[]{};
-        description = "Lights attacking entities on fire when player is attacked";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Combustion> defaults() {
+        return new Builder<>(Combustion::new, 9)
+            .maxLevel(4)
+            .loreName("Combustion")
+            .probability(0)
+            .enchantable(new Tool[]{CHESTPLATE})
+            .conflicting(new Class[]{})
+            .description("Lights attacking entities on fire when player is attacked")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

@@ -24,17 +24,18 @@ public class RainbowSlam extends CustomEnchantment {
 	// Entities affected by Rainbow Slam, protected against fall damage in order to deal damage as the attacker
 	public static final Set<Entity> rainbowSlamNoFallEntities = new HashSet<>();
 
-	public RainbowSlam() {
-        super(48);
-        maxLevel = 4;
-        loreName = "Rainbow Slam";
-        probability = 0;
-        enchantable = new Tool[]{SWORD};
-        conflicting = new Class[]{Force.class, Gust.class};
-        description = "Attacks enemy mobs with a powerful swirling slam";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+	@Override
+	public Builder<RainbowSlam> defaults() {
+		return new Builder<>(RainbowSlam::new, 48)
+			.maxLevel(4)
+			.loreName("Rainbow Slam")
+			.probability(0)
+			.enchantable(new Tool[]{SWORD})
+			.conflicting(new Class[]{Force.class, Gust.class})
+			.description("Attacks enemy mobs with a powerful swirling slam")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.RIGHT);
     }
 
     @Override

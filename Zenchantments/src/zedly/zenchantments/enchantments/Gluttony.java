@@ -23,17 +23,18 @@ public class Gluttony extends CustomEnchantment {
                                                                  APPLE, CARROT_ITEM, COOKIE,
                                                                  MELON, BEETROOT};
 
-    public Gluttony() {
-        super(21);
-        maxLevel = 1;
-        loreName = "Gluttony";
-        probability = 0;
-        enchantable = new Tool[]{HELMET};
-        conflicting = new Class[]{};
-        description = "Automatically eats for the player";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Gluttony> defaults() {
+        return new Builder<>(Gluttony::new, 21)
+            .maxLevel(1)
+            .loreName("Gluttony")
+            .probability(0)
+            .enchantable(new Tool[]{HELMET})
+            .conflicting(new Class[]{})
+            .description("Automatically eats for the player")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

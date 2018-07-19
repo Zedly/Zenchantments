@@ -21,17 +21,18 @@ public class Tracer extends CustomEnchantment {
 	// Map of tracer arrows to their expected accuracy
 	public static final Map<Arrow, Integer> tracer = new HashMap<>();
 
-	public Tracer() {
-	    super(63);
-	    maxLevel = 4;
-	    loreName = "Tracer";
-	    probability = 0;
-	    enchantable = new Tool[]{BOW};
-	    conflicting = new Class[]{};
-	    description = "Guides the arrow to targets and then attacks";
-	    cooldown = 0;
-	    power = 1.0;
-	    handUse = Hand.RIGHT;
+	@Override
+	public Builder<Tracer> defaults() {
+		return new Builder<>(Tracer::new, 63)
+			.maxLevel(4)
+			.loreName("Tracer")
+			.probability(0)
+			.enchantable(new Tool[]{BOW})
+			.conflicting(new Class[]{})
+			.description("Guides the arrow to targets and then attacks")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.RIGHT);
     }
 
     @Override

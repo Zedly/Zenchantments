@@ -11,17 +11,18 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Saturation extends CustomEnchantment {
 
-    public Saturation() {
-        super(50);
-        maxLevel = 3;
-        loreName = "Saturation";
-        probability = 0;
-        enchantable = new Tool[]{LEGGINGS};
-        conflicting = new Class[]{};
-        description = "Uses less of the player's hunger";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<Saturation> defaults() {
+        return new Builder<>(Saturation::new, 50)
+            .maxLevel(3)
+            .loreName("Saturation")
+            .probability(0)
+            .enchantable(new Tool[]{LEGGINGS})
+            .conflicting(new Class[]{})
+            .description("Uses less of the player's hunger")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

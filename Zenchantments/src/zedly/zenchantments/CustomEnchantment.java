@@ -19,6 +19,7 @@ import zedly.zenchantments.enums.Tool;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
@@ -35,12 +36,10 @@ public abstract class CustomEnchantment {
     protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
     protected Hand    handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
     private   boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
-    private   int     id;
+    protected int     id;
     protected boolean isCursed;
 
-    public CustomEnchantment(int id) {
-        this.id = id;
-    }
+    public abstract Builder<? extends CustomEnchantment> defaults();
 
     //region Enchanment Events
 
@@ -192,10 +191,17 @@ public abstract class CustomEnchantment {
         return handUse;
     }
 
+    void setHandUse(Hand handUse) {
+        this.handUse = handUse;
+    }
+
     int getId() {
         return id;
     }
 
+    void setId(int id) {
+        this.id = id;
+    }
 
     //endregion
 
@@ -252,5 +258,99 @@ public abstract class CustomEnchantment {
        //ChatColor.COLOR_CHAR
        meta.setLore(lore);
        stk.setItemMeta(meta);
+    }
+
+    protected static final class Builder<T extends CustomEnchantment> {
+        private final T customEnchantment;
+
+        public Builder(Supplier<T> sup, int id) {
+            customEnchantment = sup.get();
+            customEnchantment.setId(id);
+        }
+
+        public Builder<T> maxLevel(int maxLevel) {
+            customEnchantment.setMaxLevel(maxLevel);
+            return this;
+        }
+
+        public int maxLevel() {
+            return customEnchantment.getMaxLevel();
+        }
+
+        public Builder<T> loreName(String loreName) {
+            customEnchantment.setLoreName(loreName);
+            return this;
+        }
+
+        public String loreName() {
+            return customEnchantment.getLoreName();
+        }
+
+        public Builder<T> probability(float probability) {
+            customEnchantment.setProbability(probability);
+            return this;
+        }
+
+        public float probability() {
+            return customEnchantment.getProbability();
+        }
+
+        public Builder<T> enchantable(Tool[] enchantable) {
+            customEnchantment.setEnchantable(enchantable);
+            return this;
+        }
+
+        public Tool[] enchantable() {
+            return customEnchantment.getEnchantable();
+        }
+
+        public Builder<T> conflicting(Class[] conflicting) {
+            customEnchantment.setConflicting(conflicting);
+            return this;
+        }
+
+        public Class[] conflicting() {
+            return customEnchantment.getConflicting();
+        }
+
+        public Builder<T> description(String description) {
+            customEnchantment.setDescription(description);
+            return this;
+        }
+
+        public String description() {
+            return customEnchantment.getDescription();
+        }
+
+        public Builder<T> cooldown(int cooldown) {
+            customEnchantment.setCooldown(cooldown);
+            return this;
+        }
+
+        public int cooldown() {
+            return customEnchantment.getCooldown();
+        }
+
+        public Builder<T> power(double power) {
+            customEnchantment.setPower(power);
+            return this;
+        }
+
+        public double power() {
+            return customEnchantment.getPower();
+        }
+
+        public Builder<T> handUse(Hand handUse) {
+            customEnchantment.setHandUse(handUse);
+            return this;
+        }
+
+        public Hand handUse() {
+            return customEnchantment.getHandUse();
+        }
+
+        public T build() {
+            return customEnchantment;
+        }
     }
 }

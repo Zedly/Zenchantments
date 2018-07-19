@@ -14,17 +14,18 @@ import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class GoldRush extends CustomEnchantment {
 
-    public GoldRush() {
-        super(22);
-        maxLevel = 3;
-        loreName = "Gold Rush";
-        probability = 0;
-        enchantable = new Tool[]{SHOVEL};
-        conflicting = new Class[]{};
-        description = "Randomly drops gold nuggets when mining sand";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<GoldRush> defaults() {
+        return new Builder<>(GoldRush::new, 22)
+            .maxLevel(3)
+            .loreName("Gold Rush")
+            .probability(0)
+            .enchantable(new Tool[]{SHOVEL})
+            .conflicting(new Class[]{})
+            .description("Randomly drops gold nuggets when mining sand")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

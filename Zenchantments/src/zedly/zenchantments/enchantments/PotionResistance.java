@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class PotionResistance extends CustomEnchantment {
 
-    public PotionResistance() {
-        super(45);
-        maxLevel = 4;
-        loreName = "Potion Resistance";
-        probability = 0;
-        enchantable = new Tool[]{HELMET, CHESTPLATE, LEGGINGS, BOOTS};
-        conflicting = new Class[]{};
-        description = "Lessens the effects of all potions on players";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<PotionResistance> defaults() {
+        return new Builder<>(PotionResistance::new, 45)
+            .maxLevel(4)
+            .loreName("Potion Resistance")
+            .probability(0)
+            .enchantable(new Tool[]{HELMET, CHESTPLATE, LEGGINGS, BOOTS})
+            .conflicting(new Class[]{})
+            .description("Lessens the effects of all potions on players")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

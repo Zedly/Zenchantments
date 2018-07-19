@@ -16,17 +16,18 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Extraction extends CustomEnchantment {
 
-    public Extraction() {
-        super(12);
-        maxLevel = 3;
-        loreName = "Extraction";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE};
-        conflicting = new Class[]{Switch.class};
-        description = "Smelts and yields more product from ores";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Extraction> defaults() {
+        return new Builder<>(Extraction::new, 12)
+            .maxLevel(3)
+            .loreName("Extraction")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE})
+            .conflicting(new Class[]{Switch.class})
+            .description("Smelts and yields more product from ores")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

@@ -20,17 +20,18 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class GreenThumb extends CustomEnchantment {
 
-    public GreenThumb() {
-        super(24);
-        maxLevel = 3;
-        loreName = "Green Thumb";
-        probability = 0;
-        enchantable = new Tool[]{LEGGINGS};
-        conflicting = new Class[]{};
-        description = "Grows the foliage around the player";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<GreenThumb> defaults() {
+        return new Builder<>(GreenThumb::new, 24)
+            .maxLevel(3)
+            .loreName("Green Thumb")
+            .probability(0)
+            .enchantable(new Tool[]{LEGGINGS})
+            .conflicting(new Class[]{})
+            .description("Grows the foliage around the player")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

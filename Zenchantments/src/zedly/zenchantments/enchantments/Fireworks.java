@@ -15,17 +15,18 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Fireworks extends CustomEnchantment {
 
-    public Fireworks() {
-        super(15);
-        maxLevel = 4;
-        loreName = "Fireworks";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{};
-        description = "Shoots arrows that burst into fireworks upon impact";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Fireworks> defaults() {
+        return new Builder<>(Fireworks::new, 15)
+            .maxLevel(4)
+            .loreName("Fireworks")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{})
+            .description("Shoots arrows that burst into fireworks upon impact")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override

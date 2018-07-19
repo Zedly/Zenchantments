@@ -11,17 +11,18 @@ import static zedly.zenchantments.enums.Tool.HELMET;
 
 public class NightVision extends CustomEnchantment {
 
-    public NightVision() {
-        super(40);
-        maxLevel = 1;
-        loreName = "Night Vision";
-        probability = 0;
-        enchantable = new Tool[]{HELMET};
-        conflicting = new Class[]{};
-        description = "Lets the player see in the darkness";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.NONE;
+    @Override
+    public Builder<NightVision> defaults() {
+        return new Builder<>(NightVision::new, 40)
+            .maxLevel(1)
+            .loreName("Night Vision")
+            .probability(0)
+            .enchantable(new Tool[]{HELMET})
+            .conflicting(new Class[]{})
+            .description("Lets the player see in the darkness")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.NONE);
     }
 
     @Override

@@ -31,17 +31,18 @@ public class Shred extends CustomEnchantment {
     private static final Material SHOVELABLE_MATERIALS[] =
             new Material[]{GLOWSTONE, GRASS, DIRT, MYCEL, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
 
-    public Shred() {
-        super(52);
-        maxLevel = 5;
-        loreName = "Shred";
-        probability = 0;
-        enchantable = new Tool[]{SHOVEL, PICKAXE};
-        conflicting = new Class[]{Pierce.class, Switch.class};
-        description = "Breaks the blocks within a radius of the original block mined";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.LEFT;
+    @Override
+    public Builder<Shred> defaults() {
+        return new Builder<>(Shred::new, 52)
+            .maxLevel(5)
+            .loreName("Shred")
+            .probability(0)
+            .enchantable(new Tool[]{SHOVEL, PICKAXE})
+            .conflicting(new Class[]{Pierce.class, Switch.class})
+            .description("Breaks the blocks within a radius of the original block mined")
+            .cooldown(0)
+            .power(-1.0)
+            .handUse(Hand.LEFT);
     }
 
     @Override

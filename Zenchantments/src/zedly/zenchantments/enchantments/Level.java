@@ -18,17 +18,18 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class Level extends CustomEnchantment {
 
-    public Level() {
-        super(32);
-        maxLevel = 3;
-        loreName = "Level";
-        probability = 0;
-        enchantable = new Tool[]{PICKAXE, SWORD, BOW};
-        conflicting = new Class[]{};
-        description = "Drops more XP when killing mobs or mining ores";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.BOTH;
+    @Override
+    public Builder<Level> defaults() {
+        return new Builder<>(Level::new, 32)
+            .maxLevel(3)
+            .loreName("Level")
+            .probability(0)
+            .enchantable(new Tool[]{PICKAXE, SWORD, BOW})
+            .conflicting(new Class[]{})
+            .description("Drops more XP when killing mobs or mining ores")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.BOTH);
     }
 
     @Override

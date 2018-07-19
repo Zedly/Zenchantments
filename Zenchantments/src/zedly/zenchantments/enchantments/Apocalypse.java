@@ -13,17 +13,18 @@ import zedly.zenchantments.enums.Tool;
 import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Apocalypse extends CustomEnchantment {
-    public Apocalypse() {
-        super(69);
-        maxLevel = 1;
-        loreName = "Apocalypse";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{};
-        description = "Unleashes hell";
-        cooldown = 0;
-        power = -1.0;
-        handUse = Hand.RIGHT;
+	@Override
+	public Builder<Apocalypse> defaults() {
+		return new Builder<>(Apocalypse::new, 69)
+			.maxLevel(1)
+			.loreName("Apocalypse")
+			.probability(0)
+			.enchantable(new Tool[]{BOW})
+			.conflicting(new Class[]{})
+			.description("Unleashes hell")
+			.cooldown(0)
+			.power(-1.0)
+			.handUse(Hand.RIGHT);
     }
 
 	@Override

@@ -19,17 +19,18 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Spread extends CustomEnchantment {
 
-    public Spread() {
-        super(57);
-        maxLevel = 5;
-        loreName = "Spread";
-        probability = 0;
-        enchantable = new Tool[]{BOW};
-        conflicting = new Class[]{Burst.class};
-        description = "Fires an array of arrows simultaneously";
-        cooldown = 0;
-        power = 1.0;
-        handUse = Hand.RIGHT;
+    @Override
+    public Builder<Spread> defaults() {
+        return new Builder<>(Spread::new, 57)
+            .maxLevel(5)
+            .loreName("Spread")
+            .probability(0)
+            .enchantable(new Tool[]{BOW})
+            .conflicting(new Class[]{Burst.class})
+            .description("Fires an array of arrows simultaneously")
+            .cooldown(0)
+            .power(1.0)
+            .handUse(Hand.RIGHT);
     }
 
     @Override
