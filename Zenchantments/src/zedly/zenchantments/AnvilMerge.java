@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.enchantments.Unrepairable;
@@ -66,7 +68,11 @@ public class AnvilMerge implements Listener {
             outLore.add(ChatColor.GRAY + enchantEntry.getKey().loreName + " " + Utilities.getRomanString(enchantEntry.getValue()));
         }
         // TODO: Preserve passive lore
-
+        // TODO: remove unbreaking...
+        if (newOutMeta.getEnchants().get(Enchantment.DURABILITY) == 0) {
+            newOutMeta.removeEnchant(Enchantment.DURABILITY);
+        }
+        newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
         return config.descriptionLore() ? config.addDescriptions(newOutItem, null) : newOutItem;

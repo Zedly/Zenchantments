@@ -122,7 +122,8 @@ public class Zenchantments extends JavaPlugin {
         for (Config c : Config.CONFIGS) {
             Map<String, CustomEnchantment> ench = c.getEnchants();
             if (ench.containsKey(name.toLowerCase())) {
-                CommandProcessor.addEnchantments(c.getWorld(), null, ench.get(name.toLowerCase()), stack, level + "", false);
+            	//TODO
+                //ench.addEnchantment(stack, level);
                 return true;
             }
         }
@@ -135,7 +136,8 @@ public class Zenchantments extends JavaPlugin {
         for (Config c : Config.CONFIGS) {
             Map<String, CustomEnchantment> ench = c.getEnchants();
             if (ench.containsKey(name.toLowerCase())) {
-                CommandProcessor.addEnchantments(c.getWorld(), null, ench.get(name.toLowerCase()), stack, "0", true);
+            	// TODO
+                //ench.removeEnchantment(stack);
                 return true;
             }
         }

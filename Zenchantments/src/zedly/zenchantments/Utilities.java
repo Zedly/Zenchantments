@@ -1,5 +1,6 @@
 package zedly.zenchantments;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -29,7 +30,7 @@ public class Utilities {
     }
 
     // Returns an ArrayList of ItemStacks of the player's held item and armor
-    public static List<ItemStack> getArmorandMainHandItems(Player player, boolean mainHand) {
+    public static List<ItemStack> getArmorAndMainHandItems(Player player, boolean mainHand) {
         List<ItemStack> stk = new ArrayList<>(Arrays.asList(player.getInventory().getArmorContents()));
         stk.add(mainHand ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand());
         stk.removeIf((ItemStack is) -> is == null || is.getType() == Material.AIR);
@@ -320,20 +321,7 @@ public class Utilities {
         return direction;
     }
 
-    // Adds an arrow entity into the arrow storage variable calls its launch method
-    public static void putArrow(Arrow e, EnchantedArrow a, Player p) {
-        Set<EnchantedArrow> ars;
-        if (EnchantedArrow.advancedProjectiles.containsKey(e)) {
-            ars = EnchantedArrow.advancedProjectiles.get(e);
-        } else {
-            ars = new HashSet<>();
-        }
-        ars.add(a);
-        EnchantedArrow.advancedProjectiles.put(e, ars);
-        a.onLaunch(p, null);
-    }
-
-    // Returns true if a player can use a certain enchantment at a certain time (permissions and cooldowns),
+	// Returns true if a player can use a certain enchantment at a certain time (permissions and cooldowns),
     //      otherwise false
     public static boolean canUse(Player player, int enchantmentID) {
         if (!player.hasPermission("zenchantments.enchant.use")) {
@@ -360,4 +348,68 @@ public class Utilities {
         }
         ent.addPotionEffect(new PotionEffect(type, length, intensity));
     }
+
+	// Encodes a given string to be invisible to players surrounded by the escape sequence "\< \>"
+	public static String toInvisibleString(String str) {
+		str = "\\<" + str + "\\>";
+		StringBuilder builder = new StringBuilder();
+		for (char c : str.toCharArray()) {
+			builder.append(ChatColor.COLOR_CHAR);
+			builder.append(c);
+		}
+		return builder.toString();
+	}
+
+	// Returns a map of strings to booleans, where the boolean represents visibility
+	public static Map<String, Boolean> fromInvisibleString(String str) {
+    	Map<String, Boolean> strs = new LinkedHashMap<>();
+
+    	// TODO: DO
+		int state = 0; // 0 = close, 1 = waiting for next to open, 2 = open, 3 = waiting for next to close
+		StringBuilder builder = new StringBuilder();
+		for (char c : str.toCharArray()) {
+
+				switch (state) {
+					case 0:
+						if (c == '\\') {
+							state = 1;
+						} else {
+							builder.append(c);
+						}
+						break;
+					case 1:
+						if (c == '<') {
+							state = 2;
+						} else {
+							builder.append('\\');
+							builder.append(c);
+							state = 0;
+						}
+						break;
+					case 2:
+						if (c != ChatColor.COLOR_CHAR) {
+							builder.append(c);
+						} else if (c == '\\'){
+							state = 3;
+						} else {
+							builder.append('\\');
+							builder.append(c);
+						}
+						break;
+					case 3:
+						if (c == '>') {
+							state = 0;
+							strs.put(builder.toString(), false);
+							builder = new StringBuilder();
+						} else {
+							builder.append('\\');
+							builder.append(c);
+							state = 2;
+						}
+						break;
+
+			}
+		}
+		return strs;
+	}
 }

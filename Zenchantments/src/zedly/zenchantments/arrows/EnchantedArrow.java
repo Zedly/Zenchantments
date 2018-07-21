@@ -60,7 +60,20 @@ public class EnchantedArrow {
         this(arrow, 0);
     }
 
-    // Called when the arrow has finished any functionality
+	// Adds an arrow entity into the arrow storage variable calls its launch method
+	public static void putArrow(Arrow e, EnchantedArrow a, Player p) {
+	    Set<EnchantedArrow> ars;
+	    if (advancedProjectiles.containsKey(e)) {
+	        ars = advancedProjectiles.get(e);
+	    } else {
+	        ars = new HashSet<>();
+	    }
+	    ars.add(a);
+	    advancedProjectiles.put(e, ars);
+	    a.onLaunch(p, null);
+	}
+
+	// Called when the arrow has finished any functionality
     protected void die() {
         onDie();
         arrow.remove();

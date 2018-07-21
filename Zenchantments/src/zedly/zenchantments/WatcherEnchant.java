@@ -75,7 +75,7 @@ public class WatcherEnchant implements Listener {
         if (evt.getClickedBlock() == null || !ArrayUtils.contains(Storage.INTERACTABLE_BLOCKS, evt.getClickedBlock().getType())) {
             Player player = evt.getPlayer();
             boolean isMainHand = Utilities.isMainHand(evt.getHand());
-            for (ItemStack usedStack : Utilities.getArmorandMainHandItems(player, isMainHand)) {
+            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
                 CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                     return ench.onBlockInteract(evt, level, isMainHand);
                 });
@@ -126,7 +126,7 @@ public class WatcherEnchant implements Listener {
             Player player = (Player) evt.getDamager();
             boolean usedHand = Utilities.isMainHand(HAND);
             if (evt.getEntity() instanceof LivingEntity) {
-                for (ItemStack usedStack : Utilities.getArmorandMainHandItems(player, usedHand)) {
+                for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, usedHand)) {
                     CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                         return ench.onEntityHit(evt, level, usedHand);
                     });
@@ -135,7 +135,7 @@ public class WatcherEnchant implements Listener {
         }
         if (evt.getEntity() instanceof Player) {
             Player player = (Player) evt.getEntity();
-            for (ItemStack usedStack : Utilities.getArmorandMainHandItems(player, true)) { // Only check main hand for some reason
+            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) { // Only check main hand for some reason
                 CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                     return ench.onBeingHit(evt, level, true);
                 });
@@ -147,7 +147,7 @@ public class WatcherEnchant implements Listener {
     public void onEntityDamage(EntityDamageEvent evt) {
         if (evt.getEntity() instanceof Player) {
             Player player = (Player) evt.getEntity();
-            for (ItemStack usedStack : Utilities.getArmorandMainHandItems(player, false)) {
+            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, false)) {
                 CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                     return ench.onEntityDamage(evt, level, false);
                 });
@@ -171,7 +171,7 @@ public class WatcherEnchant implements Listener {
     public void onHungerChange(FoodLevelChangeEvent evt) {
         if (!evt.isCancelled() && evt.getEntity() instanceof Player) {
             Player player = (Player) evt.getEntity();
-            for (ItemStack usedStack : Utilities.getArmorandMainHandItems(player, true)) {
+            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
                 CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                     return ench.onHungerChange(evt, level, true);
                 });
@@ -215,7 +215,7 @@ public class WatcherEnchant implements Listener {
             if (entity instanceof Player) {
                 Player player = (Player) entity;
                 AtomicBoolean apply = new AtomicBoolean(true);
-                for (ItemStack usedStack : Utilities.getArmorandMainHandItems(player, true)) {
+                for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
                     CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                         // Only apply one enchantment, which in practice is Potion Resistance.
                         // This will always skip execution of the Lambda and return false after a Lambda returned true once

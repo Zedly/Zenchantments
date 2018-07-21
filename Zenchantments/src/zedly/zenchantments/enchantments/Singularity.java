@@ -8,8 +8,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
 import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.admin.SingularityArrow;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
@@ -43,7 +43,7 @@ public class Singularity extends CustomEnchantment {
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
         SingularityArrow arrow = new SingularityArrow((Arrow) evt.getProjectile(), level);
-        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 

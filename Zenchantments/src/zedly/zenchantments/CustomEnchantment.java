@@ -3,6 +3,7 @@ package zedly.zenchantments;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
@@ -10,7 +11,9 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enums.Hand;
@@ -20,6 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
+
+import static org.bukkit.Material.BOOK;
+import static org.bukkit.Material.ENCHANTED_BOOK;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
@@ -248,16 +254,53 @@ public abstract class CustomEnchantment {
     }
 
     public void addEnchantment(ItemStack stk, int level) {
-       ItemMeta meta = stk.getItemMeta();
-       List<String> lore = new LinkedList<>();
-       if (meta.hasLore()) {
-           lore.addAll(meta.getLore());
-       }
-       String levelStr = Utilities.getRomanString(level);
-       lore.add((isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr));
-       //ChatColor.COLOR_CHAR
-       meta.setLore(lore);
-       stk.setItemMeta(meta);
+
+        ItemMeta meta = stk.getItemMeta();
+        List<String> lore = new LinkedList<>();
+        if (meta.hasLore()) {
+            lore.addAll(meta.getLore());
+        }
+
+	    // If its a book add an enchantment to it for the glow
+	    if (stk.getType() == BOOK) {
+		    stk.setType(ENCHANTED_BOOK);
+		    EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) stk.getItemMeta();
+		    //bookMeta.addEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 1, true);
+		    //bookMeta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 0, true);
+		    bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		    stk.setItemMeta(meta);
+	    }
+
+	    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+	    meta.addEnchant(Enchantment.DURABILITY, 0, true);
+        String levelStr = Utilities.getRomanString(level);
+        lore.add(Utilities.toInvisibleString("ze." + getId() + "\\e") + (isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr));
+        //ChatColor.COLOR_CHAR
+        meta.setLore(lore);
+        stk.setItemMeta(meta);
+    }
+
+    public static void setGlow(ItemStack stk) {
+
+    }
+
+    public void removeEnchantment(ItemStack stk) {
+    	if (!stk.hasItemMeta() || !stk.getItemMeta().hasLore()) {
+    		return;
+	    }
+
+	    ItemMeta meta = stk.getItemMeta();
+	    List<String> newLore = new LinkedList<>();
+
+
+
+	    for (String str : meta.getLore()) {
+	    	if (!ChatColor.stripColor(str).startsWith(this.getLoreName())) {
+	    		newLore.add(str);
+		    }
+	    }
+	    meta.setLore(newLore);
+	    stk.setItemMeta(meta);
     }
 
     protected static final class Builder<T extends CustomEnchantment> {

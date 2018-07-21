@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,15 +21,21 @@ import static org.bukkit.Material.*;
 public class CommandProcessor {
 
     // Adds or removes the given enchantment of the given level to the item stack
-    static ItemStack addEnchantments(World world, Player player, CustomEnchantment enchantment, ItemStack stack,
-	    String levelStr, boolean isHeld) {
-        Config config = Config.get(world);
+    static ItemStack addEnchantments(Config config, Player player, CustomEnchantment enchantment, ItemStack stack, String levelStr, boolean isHeld) {
+    	if (config == null) {
+    		// Error
+    		return stack;
+	    }
+
+	    // Check if the player is holding an item
         if (stack.getType() == AIR) {
             if (player != null) {
                 player.sendMessage(Storage.logo + "You need to be holding an item!");
             }
             return stack;
         }
+
+        // Check if the item can be enchanted
         if (!enchantment.validMaterial(stack) && stack.getType() != BOOK && stack.getType() != ENCHANTED_BOOK) {
             if (player != null) {
                 player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName
@@ -36,18 +43,16 @@ public class CommandProcessor {
             }
             return stack;
         }
+
+        // Get the level
         int level;
         try {
             level = Math.min(Integer.parseInt(levelStr), enchantment.maxLevel);
         } catch (NumberFormatException e) {
             level = 1;
         }
-        if (stack.getType() == BOOK) {
-            stack.setType(ENCHANTED_BOOK);
-            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();
-            meta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 1, true);
-            stack.setItemMeta(meta);
-        }
+
+
 
         ItemMeta meta = stack.getItemMeta();
         List<String> lore = meta.getLore();
@@ -60,6 +65,7 @@ public class CommandProcessor {
                 }
             }
         }
+
         meta.setLore(lore);
         stack.setItemMeta(meta);
 
@@ -165,7 +171,7 @@ public class CommandProcessor {
 		        msgBldr.append(" the enchantments ");
 	        }
             for (CustomEnchantment e : enchantments.keySet()) {
-                addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), e, stk,
+                addEnchantments(Config.get(player.getPlayer().getWorld()), player.getPlayer(), e, stk,
                         enchantments.get(e) + "", false);
 	            msgBldr.append(e.loreName);
 	            msgBldr.append(", ");
@@ -308,9 +314,17 @@ public class CommandProcessor {
         if (contains) {
             CustomEnchantment ench = config.getEnchants().get(enchantName);
             if (args.length >= 2) {
-                player.getPlayer().getInventory().setItemInMainHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, args[1], true));
+                player.getPlayer().getInventory().setItemInMainHand(addEnchantments(
+                	Config.get(
+                		player.getPlayer().getWorld()),
+	                player.getPlayer(),
+	                ench,
+	                stack,
+	                args[1],
+	                true));
             } else {
-                player.getPlayer().getInventory().setItemInMainHand(addEnchantments(player.getPlayer().getWorld(), player.getPlayer(), ench, stack, "1", true));
+                player.getPlayer().getInventory().setItemInMainHand(addEnchantments(
+                	Config.get(player.getPlayer().getWorld()), player.getPlayer(), ench, stack, "1", true));
             }
         } else {
             player.sendMessage(Storage.logo + "That enchantment does not exist!");

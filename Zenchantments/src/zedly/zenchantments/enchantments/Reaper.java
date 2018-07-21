@@ -3,7 +3,6 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -37,7 +36,7 @@ public class Reaper extends CustomEnchantment {
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
         ReaperArrow arrow = new ReaperArrow((Arrow) evt.getProjectile(), level, power);
-        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 

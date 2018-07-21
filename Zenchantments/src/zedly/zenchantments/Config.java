@@ -227,6 +227,8 @@ public class Config {
         return getEnchants(stk, false);
     }
 
+
+
     public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks) {
         ItemStack stack;
         Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
@@ -236,6 +238,7 @@ public class Config {
                 if (stack.getItemMeta().hasLore()) {
                     List<String> lore = stack.getItemMeta().getLore();
                     for (String rawEnchant : lore) {
+                        Bukkit.broadcastMessage(Utilities.fromInvisibleString(rawEnchant));
                         int index1 = rawEnchant.lastIndexOf(" ");
                         Integer level = 1;
                         if (index1 != -1) {

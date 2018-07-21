@@ -10,6 +10,7 @@ import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.ToxicArrow;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
@@ -46,7 +47,7 @@ public class Toxic extends CustomEnchantment {
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
 	    ToxicArrow arrow = new ToxicArrow((Arrow) evt.getProjectile(), level, power);
-	    Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+	    EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 

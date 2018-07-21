@@ -3,7 +3,6 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
@@ -49,7 +48,7 @@ public class Stationary extends CustomEnchantment {
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
         StationaryArrow arrow = new StationaryArrow((Arrow) evt.getProjectile());
-        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 

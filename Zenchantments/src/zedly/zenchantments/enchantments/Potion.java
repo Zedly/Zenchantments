@@ -2,12 +2,10 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.enchanted.PotionArrow;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -35,7 +33,7 @@ public class Potion extends CustomEnchantment {
     @Override
     public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
         PotionArrow arrow = new PotionArrow((Arrow) evt.getProjectile(), level, power);
-        Utilities.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
         return true;
     }
 }
