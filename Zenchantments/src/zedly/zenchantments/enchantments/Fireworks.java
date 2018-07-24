@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Fireworks extends CustomEnchantment {
 
+    public static final int ID = 15;
+
     @Override
     public Builder<Fireworks> defaults() {
-        return new Builder<>(Fireworks::new, 15)
+        return new Builder<>(Fireworks::new, ID)
             .maxLevel(4)
             .loreName("Fireworks")
             .probability(0)

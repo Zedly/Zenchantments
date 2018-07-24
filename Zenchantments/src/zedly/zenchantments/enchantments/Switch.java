@@ -19,9 +19,11 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Switch extends CustomEnchantment {
 
+    public static final int ID = 60;
+
     @Override
     public Builder<Switch> defaults() {
-        return new Builder<>(Switch::new, 60)
+        return new Builder<>(Switch::new, ID)
             .maxLevel(1)
             .loreName("Switch")
             .probability(0)

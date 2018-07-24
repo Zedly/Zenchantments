@@ -17,10 +17,11 @@ public class FrozenStep extends CustomEnchantment {
 
 	// Blocks spawned from the Water Walker enchantment
 	public static final Map<Location, Long> frozenLocs = new HashMap<>();
+    public static final int ID = 17;
 
     @Override
     public Builder<FrozenStep> defaults() {
-        return new Builder<>(FrozenStep::new, 17)
+        return new Builder<>(FrozenStep::new, ID)
             .maxLevel(3)
             .loreName("Frozen Step")
             .probability(0)

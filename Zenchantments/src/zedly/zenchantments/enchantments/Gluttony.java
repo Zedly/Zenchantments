@@ -13,19 +13,20 @@ import static zedly.zenchantments.enums.Tool.HELMET;
 
 public class Gluttony extends CustomEnchantment {
 
-    private static final int[]      FOOD_LEVELS = {10, 8, 8, 8, 6, 6, 6, 6, 6, 6, 5, 5, 4, 3, 2, 2, 1};
+    private static final int[] FOOD_LEVELS = {10, 8, 8, 8, 6, 6, 6, 6, 6, 6, 5, 5, 4, 3, 2, 2, 1};
     private static final double[]   SATURATIONS =
             {12.0, 12.8, 4.8, 12.8, 6.0, 7.2, 7.2, 9.6, 7.2, 6.0, 9.6, 6.0, 2.4, 3.6, 0.4, 1.2, 1.2};
-    private static final Material[] FOOD_ITEMS  = new Material[]{RABBIT_STEW, COOKED_BEEF, PUMPKIN_PIE,
+    private static final Material[] FOOD_ITEMS = new Material[]{RABBIT_STEW, COOKED_BEEF, PUMPKIN_PIE,
                                                                  GRILLED_PORK, BAKED_POTATO, BEETROOT_SOUP,
                                                                  COOKED_CHICKEN, COOKED_MUTTON,
                                                                  MUSHROOM_SOUP, COOKED_FISH, COOKED_FISH, BREAD,
                                                                  APPLE, CARROT_ITEM, COOKIE,
                                                                  MELON, BEETROOT};
+    public static final  int        ID         = 21;
 
     @Override
     public Builder<Gluttony> defaults() {
-        return new Builder<>(Gluttony::new, 21)
+        return new Builder<>(Gluttony::new, ID)
             .maxLevel(1)
             .loreName("Gluttony")
             .probability(0)

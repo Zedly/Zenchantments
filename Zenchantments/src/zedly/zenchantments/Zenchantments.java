@@ -16,6 +16,7 @@ import zedly.zenchantments.enums.Frequency;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import static org.bukkit.Material.STATIONARY_LAVA;
@@ -38,10 +39,10 @@ public class Zenchantments extends JavaPlugin {
 	// Sets player fly and walk speed to default after certain enchantments are removed
 	private static void speedPlayers(boolean checkAll) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			Config world = Config.get(player.getWorld());
+			Config config = Config.get(player.getWorld());
 			boolean check = false;
 			for (ItemStack stk : player.getInventory().getArmorContents()) {
-				Map<CustomEnchantment, Integer> map = world.getEnchants(stk);
+				Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(stk, player.getWorld());
 				Class[] enchs = new Class[]{Weight.class, Speed.class, Meador.class};
 				for (CustomEnchantment ench : map.keySet()) {
 					if (ArrayUtils.contains(enchs, ench.getClass())) {
@@ -81,8 +82,8 @@ public class Zenchantments extends JavaPlugin {
     // Returns true if the given item stack has a custom enchantment
     public boolean hasEnchantment(ItemStack stack) {
         boolean has = false;
-        for (Config c : Config.CONFIGS) {
-            if (!c.getEnchants(stack).isEmpty()) {
+        for (Config c : Config.CONFIGS.values()) {
+            if (!CustomEnchantment.getEnchants(stack, c.getWorld()).isEmpty()) {
                 has = true;
             }
         }
@@ -92,8 +93,8 @@ public class Zenchantments extends JavaPlugin {
     // Returns enchantment names mapped to their level from the given item stack
     public Map<String, Integer> getEnchantments(ItemStack stack) {
         Map<String, Integer> enchantments = new TreeMap<>();
-        for (Config c : Config.CONFIGS) {
-            Map<CustomEnchantment, Integer> ench = c.getEnchants(stack);
+        for (Config c : Config.CONFIGS.values()) {
+            Map<CustomEnchantment, Integer> ench = CustomEnchantment.getEnchants(stack, c.getWorld());
             for (CustomEnchantment e : ench.keySet()) {
                 enchantments.put(e.loreName, ench.get(e));
             }
@@ -104,10 +105,11 @@ public class Zenchantments extends JavaPlugin {
     // Returns true if the enchantment (given by the string) can be applied to the given item stack
     public boolean isCompatible(String enchantmentName, ItemStack stack) {
         boolean is = false;
-        for (Config c : Config.CONFIGS) {
-            Map<String, CustomEnchantment> ench = c.getEnchants();
-            if (ench.containsKey(enchantmentName.toLowerCase())) {
-                is = ench.get(enchantmentName.toLowerCase()).validMaterial(stack);
+        for (Config c : Config.CONFIGS.values()) {
+            Set<CustomEnchantment> ench = c.getEnchants();
+	        CustomEnchantment e;
+            if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
+                is = e.validMaterial(stack);
                 if (is) {
                     return true;
                 }
@@ -118,12 +120,12 @@ public class Zenchantments extends JavaPlugin {
 
     // Adds the enchantments (given by the string) of level 'level' to the given item stack, returning true if the
     //      action was successful
-    public boolean addEnchantment(ItemStack stack, String name, int level) {
-        for (Config c : Config.CONFIGS) {
-            Map<String, CustomEnchantment> ench = c.getEnchants();
-            if (ench.containsKey(name.toLowerCase())) {
-            	//TODO
-                //ench.addEnchantment(stack, level);
+    public boolean addEnchantment(ItemStack stk, String enchantmentName, int lvl) {
+        for (Config c : Config.CONFIGS.values()) {
+	        Set<CustomEnchantment> ench = c.getEnchants();
+	        CustomEnchantment e;
+	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
+            	e.addEnchantment(stk, lvl);
                 return true;
             }
         }
@@ -132,12 +134,12 @@ public class Zenchantments extends JavaPlugin {
 
     // Removes the enchantment (given by the string) from the given item stack, returning true if the action was
     //      successful
-    public boolean removeEnchantment(ItemStack stack, String name) {
-        for (Config c : Config.CONFIGS) {
-            Map<String, CustomEnchantment> ench = c.getEnchants();
-            if (ench.containsKey(name.toLowerCase())) {
-            	// TODO
-                //ench.removeEnchantment(stack);
+    public boolean removeEnchantment(ItemStack stk, String enchantmentName) {
+        for (Config c : Config.CONFIGS.values()) {
+	        Set<CustomEnchantment> ench = c.getEnchants();
+	        CustomEnchantment e;
+	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
+            	e.removeEnchantment(stk);
                 return true;
             }
         }
@@ -156,7 +158,7 @@ public class Zenchantments extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);
 		getServer().getPluginManager().registerEvents(new Watcher(), this);
 		for (Frequency f : Frequency.values()) {
-			getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
+			//getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
 		}
 	}
 }

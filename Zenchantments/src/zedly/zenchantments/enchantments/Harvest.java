@@ -21,10 +21,11 @@ public class Harvest extends CustomEnchantment {
 
     private static final Material[] CROP_BLOCKS =
             {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK, NETHER_WARTS};
+    public static final  int        ID          = 26;
 
     @Override
     public Builder<Harvest> defaults() {
-        return new Builder<>(Harvest::new, 26)
+        return new Builder<>(Harvest::new, ID)
             .maxLevel(3)
             .loreName("Harvest")
             .probability(0)

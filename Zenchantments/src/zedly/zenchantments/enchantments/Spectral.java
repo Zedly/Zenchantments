@@ -16,6 +16,8 @@ import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class Spectral extends CustomEnchantment {
 
+    public static final int ID = 54;
+
     private static int increase(int old, int add) {
         if(old < add) {
             return ++old;
@@ -26,7 +28,7 @@ public class Spectral extends CustomEnchantment {
 
     @Override
     public Builder<Spectral> defaults() {
-        return new Builder<>(Spectral::new, 54)
+        return new Builder<>(Spectral::new, ID)
             .maxLevel(1)
             .loreName("Spectral")
             .probability(0)

@@ -13,7 +13,8 @@ import static zedly.zenchantments.enums.Tool.AXE;
 
 public class Variety extends CustomEnchantment {
 
-    ItemStack[] logs   = new ItemStack[]{new ItemStack(LOG, 1, (short) 0), new ItemStack(LOG, 1, (short) 1),
+    public static final int ID = 65;
+    ItemStack[] logs = new ItemStack[]{new ItemStack(LOG, 1, (short) 0), new ItemStack(LOG, 1, (short) 1),
                                          new ItemStack(LOG, 1, (short) 2), new ItemStack(LOG, 1, (short) 3),
                                          new ItemStack(LOG_2, 1, (short) 0),
                                          new ItemStack(LOG_2, 1, (short) 1)};
@@ -24,7 +25,7 @@ public class Variety extends CustomEnchantment {
 
     @Override
     public Builder<Variety> defaults() {
-        return new Builder<>(Variety::new, 65)
+        return new Builder<>(Variety::new, ID)
             .maxLevel(1)
             .loreName("Variety")
             .probability(0)

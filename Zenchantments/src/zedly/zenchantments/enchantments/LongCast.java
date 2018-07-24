@@ -10,9 +10,11 @@ import static zedly.zenchantments.enums.Tool.ROD;
 
 public class LongCast extends CustomEnchantment {
 
+    public static final int ID = 33;
+
     @Override
     public Builder<LongCast> defaults() {
-        return new Builder<>(LongCast::new, 33)
+        return new Builder<>(LongCast::new, ID)
             .maxLevel(2)
             .loreName("Long Cast")
             .probability(0)

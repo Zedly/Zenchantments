@@ -11,9 +11,11 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Spikes extends CustomEnchantment {
 
+    public static final int ID = 56;
+
     @Override
     public Builder<Spikes> defaults() {
-        return new Builder<>(Spikes::new, 56)
+        return new Builder<>(Spikes::new, ID)
             .maxLevel(3)
             .loreName("Spikes")
             .probability(0)

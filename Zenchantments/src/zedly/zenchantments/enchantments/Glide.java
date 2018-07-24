@@ -22,10 +22,11 @@ public class Glide extends CustomEnchantment {
 
 	// The players using glide and their most recent Y coordinate
 	public static final Map<Player, Double> sneakGlide = new HashMap<>();
+    public static final int ID = 20;
 
     @Override
     public Builder<Glide> defaults() {
-        return new Builder<>(Glide::new, 20)
+        return new Builder<>(Glide::new, ID)
             .maxLevel(3)
             .loreName("Glide")
             .probability(0)
@@ -73,7 +74,7 @@ public class Glide extends CustomEnchantment {
             ItemStack[] s = player.getInventory().getArmorContents();
             for(int i = 0; i < 4; i++) {
                 if(s[i] != null) {
-                    Map<CustomEnchantment, Integer> map = Config.get(player.getWorld()).getEnchants(s[i]);
+                    Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(s[i], player.getWorld());
                     if(map.containsKey(this)) {
                         Utilities.addUnbreaking(player, s[i], 1);
                     }

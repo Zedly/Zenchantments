@@ -19,9 +19,11 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Reaper extends CustomEnchantment {
 
+    public static final int ID = 49;
+
     @Override
     public Builder<Reaper> defaults() {
-        return new Builder<>(Reaper::new, 49)
+        return new Builder<>(Reaper::new, ID)
             .maxLevel(4)
             .loreName("Reaper")
             .probability(0)

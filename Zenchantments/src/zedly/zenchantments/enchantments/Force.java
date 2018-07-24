@@ -24,9 +24,11 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Force extends CustomEnchantment {
 
+    public static final int ID = 16;
+
     @Override
     public Builder<Force> defaults() {
-        return new Builder<>(Force::new, 16)
+        return new Builder<>(Force::new, ID)
             .maxLevel(3)
             .loreName("Force")
             .probability(0)

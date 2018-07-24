@@ -14,9 +14,11 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class Stock extends CustomEnchantment {
 
+    public static final int ID = 59;
+
     @Override
     public Builder<Stock> defaults() {
-        return new Builder<>(Stock::new, 59)
+        return new Builder<>(Stock::new, ID)
             .maxLevel(1)
             .loreName("Stock")
             .probability(0)

@@ -38,8 +38,8 @@ public class AnvilMerge implements Listener {
             return null;
         }
 
-        Map<CustomEnchantment, Integer> leftEnchantments = config.getEnchants(leftItem, true);
-        Map<CustomEnchantment, Integer> rightEnchantments = config.getEnchants(rightItem, true);
+        Map<CustomEnchantment, Integer> leftEnchantments = CustomEnchantment.getEnchants(leftItem, true, config.getWorld());
+        Map<CustomEnchantment, Integer> rightEnchantments = CustomEnchantment.getEnchants(rightItem, true, config.getWorld());
 
         for (CustomEnchantment e : leftEnchantments.keySet()) {
             if (e.getClass().equals(Unrepairable.class)) {
@@ -54,8 +54,7 @@ public class AnvilMerge implements Listener {
 
         EnchantmentPool pool = new EnchantmentPool(oldOutItem, config.getMaxEnchants());
         pool.addAll(leftEnchantments);
-        List<Entry<CustomEnchantment, Integer>> rightEnchantmentList = new ArrayList<>();
-        rightEnchantmentList.addAll(rightEnchantments.entrySet());
+        List<Entry<CustomEnchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());
         Collections.shuffle(rightEnchantmentList);
         pool.addAll(rightEnchantmentList);
         HashMap<CustomEnchantment, Integer> outEnchantments = pool.getEnchantmentMap();
@@ -75,16 +74,18 @@ public class AnvilMerge implements Listener {
         newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
-        return config.descriptionLore() ? config.addDescriptions(newOutItem, null) : newOutItem;
+        return config.descriptionLore() ?
+            CustomEnchantment.addDescriptions(newOutItem, null, config.getWorld()) : newOutItem;
     }
 
+    // TODO: Remove
     @EventHandler(priority = MONITOR)
     public void onClicks(final PrepareAnvilEvent evt) {
         if (evt.getViewers().size() < 1) {
             return;
         }
         final Config config = Config.get(evt.getViewers().get(0).getWorld());
-        final AnvilInventory anvilInv = (AnvilInventory) evt.getInventory();
+        final AnvilInventory anvilInv = evt.getInventory();
         Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
             ItemStack leftItem = anvilInv.getItem(0);
             ItemStack rightItem = anvilInv.getItem(1);
@@ -96,6 +97,7 @@ public class AnvilMerge implements Listener {
         }, 0);
     }
 
+    // TODO: Remove
     //@EventHandler(priority = MONITOR) // Disabled because unnecessary now?
     public void onClicks(final InventoryClickEvent evt) {
         final Config config = Config.get(evt.getWhoClicked().getWorld());

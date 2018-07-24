@@ -14,9 +14,11 @@ import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class GoldRush extends CustomEnchantment {
 
+    public static final int ID = 22;
+
     @Override
     public Builder<GoldRush> defaults() {
-        return new Builder<>(GoldRush::new, 22)
+        return new Builder<>(GoldRush::new, ID)
             .maxLevel(3)
             .loreName("Gold Rush")
             .probability(0)

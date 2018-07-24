@@ -17,9 +17,11 @@ import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Bind extends CustomEnchantment {
 
+    public static final int ID = 4;
+
     @Override
     public Builder<Bind> defaults() {
-        return new Builder<>(Bind::new, 4)
+        return new Builder<>(Bind::new, ID)
             .maxLevel(1)
             .loreName("Bind")
             .probability(0)
@@ -41,7 +43,7 @@ public class Bind extends CustomEnchantment {
         final ItemStack[] contents = player.getInventory().getContents().clone();
         final List<ItemStack> removed = new ArrayList<>();
         for(int i = 0; i < contents.length; i++) {
-            if(!config.getEnchants(contents[i]).containsKey(this)) {
+            if(!CustomEnchantment.getEnchants(contents[i], config.getWorld()).containsKey(this)) {
                 contents[i] = null;
             } else {
                 removed.add(contents[i]);

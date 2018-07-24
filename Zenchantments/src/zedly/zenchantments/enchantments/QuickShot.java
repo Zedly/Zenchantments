@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class QuickShot extends CustomEnchantment {
 
+    public static final int ID = 46;
+
     @Override
     public Builder<QuickShot> defaults() {
-        return new Builder<>(QuickShot::new, 46)
+        return new Builder<>(QuickShot::new, ID)
             .maxLevel(1)
             .loreName("Quick Shot")
             .probability(0)

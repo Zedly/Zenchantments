@@ -11,9 +11,11 @@ import static zedly.zenchantments.enums.Tool.HELMET;
 
 public class NightVision extends CustomEnchantment {
 
+    public static final int ID = 40;
+
     @Override
     public Builder<NightVision> defaults() {
-        return new Builder<>(NightVision::new, 40)
+        return new Builder<>(NightVision::new, ID)
             .maxLevel(1)
             .loreName("Night Vision")
             .probability(0)

@@ -11,9 +11,11 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Magnetism extends CustomEnchantment {
 
+    public static final int ID = 35;
+
     @Override
     public Builder<Magnetism> defaults() {
-        return new Builder<>(Magnetism::new, 35)
+        return new Builder<>(Magnetism::new, ID)
             .maxLevel(3)
             .loreName("Magnetism")
             .probability(0)

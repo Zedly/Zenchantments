@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class IceAspect extends CustomEnchantment {
 
+    public static final int ID = 29;
+
     @Override
     public Builder<IceAspect> defaults() {
-        return new Builder<>(IceAspect::new, 29)
+        return new Builder<>(IceAspect::new, ID)
             .maxLevel(2)
             .loreName("Ice Aspect")
             .probability(0)

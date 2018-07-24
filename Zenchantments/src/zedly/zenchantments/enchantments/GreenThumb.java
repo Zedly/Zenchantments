@@ -20,9 +20,11 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class GreenThumb extends CustomEnchantment {
 
+    public static final int ID = 24;
+
     @Override
     public Builder<GreenThumb> defaults() {
-        return new Builder<>(GreenThumb::new, 24)
+        return new Builder<>(GreenThumb::new, ID)
             .maxLevel(3)
             .loreName("Green Thumb")
             .probability(0)
@@ -83,7 +85,7 @@ public class GreenThumb extends CustomEnchantment {
                                 for(int i = 0; i < 4; i++) {
                                     if(s[i] != null) {
                                         Map<CustomEnchantment, Integer> map =
-                                                Config.get(player.getWorld()).getEnchants(s[i]);
+                                                CustomEnchantment.getEnchants(s[i], player.getWorld());
                                         if(map.containsKey(this)) {
                                             Utilities.addUnbreaking(player, s[i], 1);
                                         }

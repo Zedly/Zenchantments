@@ -23,10 +23,11 @@ public class RainbowSlam extends CustomEnchantment {
 
 	// Entities affected by Rainbow Slam, protected against fall damage in order to deal damage as the attacker
 	public static final Set<Entity> rainbowSlamNoFallEntities = new HashSet<>();
+	public static final int ID = 48;
 
 	@Override
 	public Builder<RainbowSlam> defaults() {
-		return new Builder<>(RainbowSlam::new, 48)
+		return new Builder<>(RainbowSlam::new, ID)
 			.maxLevel(4)
 			.loreName("Rainbow Slam")
 			.probability(0)

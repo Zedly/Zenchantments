@@ -24,10 +24,11 @@ public class Vortex extends CustomEnchantment {
 
 	// Locations where Vortex has been used on a block and are waiting for the Watcher to handle their teleportation
 	public static final Map<Block, Location> vortexLocs = new HashMap<>();
+    public static final int ID = 66;
 
     @Override
     public Builder<Vortex> defaults() {
-        return new Builder<>(Vortex::new, 66)
+        return new Builder<>(Vortex::new, ID)
             .maxLevel(1)
             .loreName("Vortex")
             .probability(0)

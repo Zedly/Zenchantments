@@ -16,9 +16,11 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Extraction extends CustomEnchantment {
 
+    public static final int ID = 12;
+
     @Override
     public Builder<Extraction> defaults() {
-        return new Builder<>(Extraction::new, 12)
+        return new Builder<>(Extraction::new, ID)
             .maxLevel(3)
             .loreName("Extraction")
             .probability(0)

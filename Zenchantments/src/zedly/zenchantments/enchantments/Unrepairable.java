@@ -7,9 +7,12 @@ import zedly.zenchantments.enums.Tool;
 import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Unrepairable extends CustomEnchantment {
+
+    public static final int ID = 73;
+
     @Override
     public Builder<Unrepairable> defaults() {
-        return new Builder<>(Unrepairable::new, 73)
+        return new Builder<>(Unrepairable::new, ID)
             .maxLevel(1)
             .loreName("Unrepairable")
             .probability(0)

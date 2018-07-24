@@ -15,9 +15,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Missile extends CustomEnchantment {
 
+    public static final int ID = 71;
+
     @Override
     public Builder<Missile> defaults() {
-        return new Builder<>(Missile::new, 71)
+        return new Builder<>(Missile::new, ID)
             .maxLevel(1)
             .loreName("Missile")
             .probability(0)

@@ -27,10 +27,11 @@ public class Terraformer extends CustomEnchantment {
             BlockFace.EAST,
             BlockFace.WEST,
             BlockFace.DOWN,};
+    public static final  int         ID           = 61;
 
     @Override
     public Builder<Terraformer> defaults() {
-        return new Builder<>(Terraformer::new, 61)
+        return new Builder<>(Terraformer::new, ID)
             .maxLevel(1)
             .loreName("Terraformer")
             .probability(0)

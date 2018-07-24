@@ -18,10 +18,11 @@ public class Decapitation extends CustomEnchantment {
 
     private static final int BASE_PLAYER_DROP_CHANCE = 150;
     private static final int BASE_MOB_DROP_CHANCE    = 150;
+    public static final int ID = 11;
 
     @Override
     public Builder<Decapitation> defaults() {
-        return new Builder<>(Decapitation::new, 11)
+        return new Builder<>(Decapitation::new, ID)
             .maxLevel(4)
             .loreName("Decapitation")
             .probability(0)

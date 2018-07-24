@@ -16,9 +16,11 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class Level extends CustomEnchantment {
 
+    public static final int ID = 32;
+
     @Override
     public Builder<Level> defaults() {
-        return new Builder<>(Level::new, 32)
+        return new Builder<>(Level::new, ID)
             .maxLevel(3)
             .loreName("Level")
             .probability(0)

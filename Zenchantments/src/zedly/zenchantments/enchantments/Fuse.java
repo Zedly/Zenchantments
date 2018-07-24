@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Fuse extends CustomEnchantment {
 
+    public static final int ID = 18;
+
     @Override
     public Builder<Fuse> defaults() {
-        return new Builder<>(Fuse::new, 18)
+        return new Builder<>(Fuse::new, ID)
             .maxLevel(1)
             .loreName("Fuse")
             .probability(0)

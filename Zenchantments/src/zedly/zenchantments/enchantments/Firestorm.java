@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Firestorm extends CustomEnchantment {
 
+    public static final int ID = 14;
+
     @Override
     public Builder<Firestorm> defaults() {
-        return new Builder<>(Firestorm::new, 14)
+        return new Builder<>(Firestorm::new, ID)
             .maxLevel(3)
             .loreName("Firestorm")
             .probability(0)

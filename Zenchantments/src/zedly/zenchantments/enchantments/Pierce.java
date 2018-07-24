@@ -30,10 +30,11 @@ public class Pierce extends CustomEnchantment {
 
 	// Map of players who use pierce and what mode they are currently using
 	public static final Map<Player, Integer> pierceModes = new HashMap<>();
+    public static final int ID = 42;
 
     @Override
     public Builder<Pierce> defaults() {
-        return new Builder<>(Pierce::new, 42)
+        return new Builder<>(Pierce::new, ID)
             .maxLevel(1)
             .loreName("Pierce")
             .probability(0)

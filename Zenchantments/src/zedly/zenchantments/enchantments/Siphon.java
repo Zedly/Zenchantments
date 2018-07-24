@@ -16,9 +16,11 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Siphon extends CustomEnchantment {
 
+    public static final int ID = 53;
+
     @Override
     public Builder<Siphon> defaults() {
-        return new Builder<>(Siphon::new, 53)
+        return new Builder<>(Siphon::new, ID)
             .maxLevel(4)
             .loreName("Siphon")
             .probability(0)

@@ -12,9 +12,12 @@ import zedly.zenchantments.enums.Tool;
 import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Apocalypse extends CustomEnchantment {
+
+	public static final int ID = 69;
+
 	@Override
 	public Builder<Apocalypse> defaults() {
-		return new Builder<>(Apocalypse::new, 69)
+		return new Builder<>(Apocalypse::new, ID)
 			.maxLevel(1)
 			.loreName("Apocalypse")
 			.probability(0)

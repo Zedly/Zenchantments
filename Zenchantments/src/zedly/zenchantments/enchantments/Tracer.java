@@ -20,10 +20,11 @@ public class Tracer extends CustomEnchantment {
 
 	// Map of tracer arrows to their expected accuracy
 	public static final Map<Arrow, Integer> tracer = new HashMap<>();
+	public static final int ID = 63;
 
 	@Override
 	public Builder<Tracer> defaults() {
-		return new Builder<>(Tracer::new, 63)
+		return new Builder<>(Tracer::new, ID)
 			.maxLevel(4)
 			.loreName("Tracer")
 			.probability(0)

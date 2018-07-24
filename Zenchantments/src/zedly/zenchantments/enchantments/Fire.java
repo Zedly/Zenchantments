@@ -20,9 +20,11 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class Fire extends CustomEnchantment {
 
+    public static final int ID = 13;
+
     @Override
     public Builder<Fire> defaults() {
-        return new Builder<>(Fire::new, 13)
+        return new Builder<>(Fire::new, ID)
             .maxLevel(1)
             .loreName("Fire")
             .probability(0)

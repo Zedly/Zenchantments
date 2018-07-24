@@ -15,9 +15,11 @@ import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Plough extends CustomEnchantment {
 
+    public static final int ID = 43;
+
     @Override
     public Builder<Plough> defaults() {
-        return new Builder<>(Plough::new, 43)
+        return new Builder<>(Plough::new, ID)
             .maxLevel(3)
             .loreName("Plough")
             .probability(0)

@@ -23,10 +23,11 @@ public class Reveal extends CustomEnchantment {
 
 	// Blocks made to glow by the Reveal enchantment
 	public static final Map<Block, Integer> glowingBlocks = new HashMap<>();
+    public static final int ID = 68;
 
     @Override
     public Builder<Reveal> defaults() {
-        return new Builder<>(Reveal::new, 68)
+        return new Builder<>(Reveal::new, ID)
             .maxLevel(4)
             .loreName("Reveal")
             .probability(0)

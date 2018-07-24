@@ -11,9 +11,11 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Saturation extends CustomEnchantment {
 
+    public static final int ID = 50;
+
     @Override
     public Builder<Saturation> defaults() {
-        return new Builder<>(Saturation::new, 50)
+        return new Builder<>(Saturation::new, ID)
             .maxLevel(3)
             .loreName("Saturation")
             .probability(0)
@@ -22,6 +24,7 @@ public class Saturation extends CustomEnchantment {
             .description("Uses less of the player's hunger")
             .cooldown(0)
             .power(1.0)
+
             .handUse(Hand.NONE);
     }
 

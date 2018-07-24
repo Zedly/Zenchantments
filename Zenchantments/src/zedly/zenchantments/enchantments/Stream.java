@@ -26,10 +26,11 @@ public class Stream extends CustomEnchantment {
             Particle.VILLAGER_HAPPY,
             Particle.REDSTONE,
             Particle.HEART,};
+    public static final  int        ID         = 420;
 
     @Override
     public Builder<Stream> defaults() {
-        return new Builder<>(Stream::new, 420)
+        return new Builder<>(Stream::new, ID)
             .maxLevel(1)
             .loreName("Stream")
             .probability(0)

@@ -201,7 +201,7 @@ public class WatcherEnchant implements Listener {
             Tool off = Tool.fromItemStack(player.getInventory().getItemInOffHand());
             boolean usedHand = Utilities.isMainHand(main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
             ItemStack usedStack = Utilities.usedStack(player, usedHand);
-            LinkedHashMap<CustomEnchantment, Integer> map = Config.get(player.getWorld()).getEnchants(evt.getBow());
+            LinkedHashMap<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(evt.getBow(), player.getWorld());
             CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
                 return ench.onEntityShootBow(evt, level, true);
             });
@@ -270,8 +270,8 @@ public class WatcherEnchant implements Listener {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.hasMetadata("ze.haste")) {
 				boolean has = false;
-				for (CustomEnchantment e : Config.get(player.getWorld()).getEnchants(
-						player.getInventory().getItemInMainHand()).keySet()) {
+				for (CustomEnchantment e : CustomEnchantment.getEnchants(
+						player.getInventory().getItemInMainHand(), player.getWorld()).keySet()) {
 					if (e.getClass().equals(Haste.class)) {
 						has = true;
 					}
@@ -288,9 +288,9 @@ public class WatcherEnchant implements Listener {
 			for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
 					player.getInventory().getArmorContents(), player.getInventory().getContents())) {
 				if (config.descriptionLore()) {
-					config.addDescriptions(stk, null);
+					CustomEnchantment.addDescriptions(stk, null, player.getWorld());
 				} else {
-					config.removeDescriptions(stk, null);
+					CustomEnchantment.removeDescriptions(stk, null, player.getWorld());
 				}
 			}
 

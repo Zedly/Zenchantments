@@ -19,10 +19,11 @@ import static zedly.zenchantments.enums.Tool.SHEAR;
 public class Rainbow extends CustomEnchantment {
 
     private static final short[] FLOWER_DATA_VALUES = new short[]{0, 1, 2, 3, 4, 5, 10};
+    public static final int ID = 47;
 
     @Override
     public Builder<Rainbow> defaults() {
-        return new Builder<>(Rainbow::new, 47)
+        return new Builder<>(Rainbow::new, ID)
             .maxLevel(1)
             .loreName("Rainbow")
             .probability(0)

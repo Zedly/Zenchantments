@@ -16,9 +16,11 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Weight extends CustomEnchantment {
 
+    public static final int ID = 67;
+
     @Override
     public Builder<Weight> defaults() {
-        return new Builder<>(Weight::new, 67)
+        return new Builder<>(Weight::new, ID)
             .maxLevel(4)
             .loreName("Weight")
             .probability(0)

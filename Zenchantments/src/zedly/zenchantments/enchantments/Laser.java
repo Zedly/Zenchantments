@@ -29,10 +29,11 @@ public class Laser extends CustomEnchantment {
 
 	// Time at which a later enchantment was fired; this is used to prevent double firing when clicking an entity
 	public static final Map<Player, Long> laserTimes = new HashMap<>();
+	public static final int ID = 31;
 
 	@Override
 	public Builder<Laser> defaults() {
-		return new Builder<>(Laser::new, 31)
+		return new Builder<>(Laser::new, ID)
 			.maxLevel(3)
 			.loreName("Laser")
 			.probability(0)

@@ -20,9 +20,11 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Gust extends CustomEnchantment {
 
+    public static final int ID = 25;
+
     @Override
     public Builder<Gust> defaults() {
-        return new Builder<>(Gust::new, 25)
+        return new Builder<>(Gust::new, ID)
             .maxLevel(1)
             .loreName("Gust")
             .probability(0)

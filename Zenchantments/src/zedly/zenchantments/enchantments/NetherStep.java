@@ -20,10 +20,11 @@ public class NetherStep extends CustomEnchantment {
 
 	// Blocks spawned from the NatherStep enchantment
 	public static final Map<Location, Long> netherstepLocs = new HashMap<>();
+	public static final int ID = 39;
 
 	@Override
 	public Builder<NetherStep> defaults() {
-		return new Builder<>(NetherStep::new, 39)
+		return new Builder<>(NetherStep::new, ID)
 			.maxLevel(3)
 			.loreName("Nether Step")
 			.probability(0)

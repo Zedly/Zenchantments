@@ -11,9 +11,11 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class Combustion extends CustomEnchantment {
 
+    public static final int ID = 9;
+
     @Override
     public Builder<Combustion> defaults() {
-        return new Builder<>(Combustion::new, 9)
+        return new Builder<>(Combustion::new, ID)
             .maxLevel(4)
             .loreName("Combustion")
             .probability(0)

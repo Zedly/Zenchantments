@@ -29,10 +29,11 @@ public class Lumber extends CustomEnchantment {
     private static final Material[] TRUNK_BLOCKS = {
             LOG, LOG_2, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2
     };
+    public static final  int        ID           = 34;
 
     @Override
     public Builder<Lumber> defaults() {
-        return new Builder<>(Lumber::new, 34)
+        return new Builder<>(Lumber::new, ID)
             .maxLevel(1)
             .loreName("Lumber")
             .probability(0)

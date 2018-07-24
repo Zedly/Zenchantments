@@ -31,12 +31,13 @@ public class Anthropomorphism extends CustomEnchantment {
 	// The falling blocks from the Anthropomorphism enchantment that are idle, staying within the relative region
 	public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
 	private static final Material[]                MAT          = new Material[]{STONE, GRAVEL, DIRT, GRASS};
+	public static final int ID = 1;
 	// Determines if falling entities from Anthropomorphism should fall up or down
 	public static boolean fallBool = false;
 
 	@Override
 	public Builder<Anthropomorphism> defaults() {
-		return new Builder<>(Anthropomorphism::new, 1)
+		return new Builder<>(Anthropomorphism::new, ID)
 			.maxLevel(1)
 			.loreName("Anthropomorphism")
 			.probability(0)

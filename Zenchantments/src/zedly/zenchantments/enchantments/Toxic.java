@@ -29,10 +29,11 @@ public class Toxic extends CustomEnchantment {
 
 	// Players that have been affected by the Toxic enchantment who cannot currently eat
 	public static final Map<Player, Integer> hungerPlayers = new HashMap<>();
+	public static final int ID = 62;
 
 	@Override
 	public Builder<Toxic> defaults() {
-		return new Builder<>(Toxic::new, 62)
+		return new Builder<>(Toxic::new, ID)
 			.maxLevel(4)
 			.loreName("Toxic")
 			.probability(0)

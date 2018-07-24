@@ -10,9 +10,12 @@ import zedly.zenchantments.enums.Tool;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Speed extends CustomEnchantment {
+
+    public static final int ID = 55;
+
     @Override
     public Builder<Speed> defaults() {
-        return new Builder<>(Speed::new, 55)
+        return new Builder<>(Speed::new, ID)
             .maxLevel(4)
             .loreName("Speed")
             .probability(0)

@@ -351,7 +351,7 @@ public class Utilities {
 
 	// Encodes a given string to be invisible to players surrounded by the escape sequence "\< \>"
 	public static String toInvisibleString(String str) {
-		str = "\\<" + str + "\\>";
+		str = "\\<" + str + "\\>" + ChatColor.COLOR_CHAR + 'F';
 		StringBuilder builder = new StringBuilder();
 		for (char c : str.toCharArray()) {
 			builder.append(ChatColor.COLOR_CHAR);
@@ -364,51 +364,93 @@ public class Utilities {
 	public static Map<String, Boolean> fromInvisibleString(String str) {
     	Map<String, Boolean> strs = new LinkedHashMap<>();
 
-    	// TODO: DO
 		int state = 0; // 0 = close, 1 = waiting for next to open, 2 = open, 3 = waiting for next to close
 		StringBuilder builder = new StringBuilder();
 		for (char c : str.toCharArray()) {
-
 				switch (state) {
-					case 0:
-						if (c == '\\') {
+					case 0: // Visible, waiting for '§'
+						if (c == ChatColor.COLOR_CHAR) {
 							state = 1;
 						} else {
 							builder.append(c);
 						}
 						break;
-					case 1:
-						if (c == '<') {
+					case 1: // Got a '§', waiting for '\'
+						if (c == '\\') {
 							state = 2;
+						} else if (c == ChatColor.COLOR_CHAR) {
+							builder.append(ChatColor.COLOR_CHAR);
 						} else {
-							builder.append('\\');
+							builder.append(ChatColor.COLOR_CHAR);
 							builder.append(c);
 							state = 0;
 						}
 						break;
-					case 2:
-						if (c != ChatColor.COLOR_CHAR) {
-							builder.append(c);
-						} else if (c == '\\'){
+					case 2: // Got a '\', waiting for '§'
+						if (c == ChatColor.COLOR_CHAR) {
 							state = 3;
 						} else {
+							builder.append(ChatColor.COLOR_CHAR);
 							builder.append('\\');
 							builder.append(c);
+							state = 0;
 						}
 						break;
-					case 3:
+					case 3: // Got a '§', waiting for '<'
+						if (c == '<') {
+							state = 4;
+							if (builder.length() != 0) {
+								strs.put(builder.toString(), true);
+								builder = new StringBuilder();
+							}
+						} else if (c == ChatColor.COLOR_CHAR) {
+							builder.append(ChatColor.COLOR_CHAR);
+							builder.append('\\');
+							state = 1;
+						} else {
+							builder.append(ChatColor.COLOR_CHAR);
+							builder.append('\\');
+							builder.append(ChatColor.COLOR_CHAR);
+							builder.append(c);
+							state = 0;
+						}
+						break;
+					case 4: // Invisible, ignore '§'
+						state = 5;
+						break;
+					case 5: // Invisible, waiting for '\'
+						if (c == '\\') {
+							state = 6;
+						} else {
+							builder.append(c);
+							state = 4;
+						}
+						break;
+					case 6: // Got '\', waiting for '§'
+						if (c == ChatColor.COLOR_CHAR) {
+							state = 7;
+						} else {
+							builder.append('\\');
+							state = 5;
+						}
+						break;
+					case 7: // Got '§', waiting for '>'
 						if (c == '>') {
 							state = 0;
-							strs.put(builder.toString(), false);
-							builder = new StringBuilder();
+							if (builder.length() != 0) {
+								strs.put(builder.toString(), false);
+								builder = new StringBuilder();
+							}
 						} else {
 							builder.append('\\');
 							builder.append(c);
-							state = 2;
+							state = 4;
 						}
 						break;
-
 			}
+		}
+		if (builder.length() != 0) {
+			strs.put(builder.toString(), true);
 		}
 		return strs;
 	}

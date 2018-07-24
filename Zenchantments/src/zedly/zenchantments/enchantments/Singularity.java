@@ -25,10 +25,11 @@ public class Singularity extends CustomEnchantment {
 
 	// Locations of black holes from the singularity enchantment and whether or not they are attracting or repelling
 	public static final Map<Location, Boolean> blackholes = new HashMap<>();
+    public static final int ID = 72;
 
     @Override
     public Builder<Singularity> defaults() {
-        return new Builder<>(Singularity::new, 72)
+        return new Builder<>(Singularity::new, ID)
             .maxLevel(1)
             .loreName("Singularity")
             .probability(0)

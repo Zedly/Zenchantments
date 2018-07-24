@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Meador extends CustomEnchantment {
 
+    public static final int ID = 36;
+
     @Override
     public Builder<Meador> defaults() {
-        return new Builder<>(Meador::new, 36)
+        return new Builder<>(Meador::new, ID)
             .maxLevel(1)
             .loreName("Meador")
             .probability(0)

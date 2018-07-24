@@ -20,10 +20,11 @@ public class Persephone extends CustomEnchantment {
 
     private static final Material[] CROP_BLOCKS =
             {CROPS, POTATO, CARROT, BEETROOT_BLOCK, NETHER_WARTS, SOUL_SAND, SOIL};
+    public static final  int        ID          = 41;
 
     @Override
     public Builder<Persephone> defaults() {
-        return new Builder<>(Persephone::new, 41)
+        return new Builder<>(Persephone::new, ID)
             .maxLevel(3)
             .loreName("Persephone")
             .probability(0)

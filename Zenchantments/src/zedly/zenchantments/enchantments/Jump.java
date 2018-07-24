@@ -11,9 +11,11 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Jump extends CustomEnchantment {
 
+    public static final int ID = 30;
+
     @Override
     public Builder<Jump> defaults() {
-        return new Builder<>(Jump::new, 30)
+        return new Builder<>(Jump::new, ID)
             .maxLevel(4)
             .loreName("Jump")
             .probability(0)

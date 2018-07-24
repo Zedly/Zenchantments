@@ -14,9 +14,11 @@ import static zedly.zenchantments.enums.Tool.AXE;
 
 public class Arborist extends CustomEnchantment {
 
+    public static final int ID = 2;
+
     @Override
     public Builder<Arborist> defaults() {
-        return new Builder<>(Arborist::new, 2)
+        return new Builder<>(Arborist::new, ID)
             .maxLevel(3)
             .loreName("Arborist")
             .probability(0)

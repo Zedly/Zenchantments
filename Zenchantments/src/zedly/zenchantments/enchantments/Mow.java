@@ -17,9 +17,11 @@ import static zedly.zenchantments.enums.Tool.SHEAR;
 
 public class Mow extends CustomEnchantment {
 
+    public static final int ID = 37;
+
     @Override
     public Builder<Mow> defaults() {
-        return new Builder<>(Mow::new, 37)
+        return new Builder<>(Mow::new, ID)
             .maxLevel(3)
             .loreName("Mow")
             .probability(0)

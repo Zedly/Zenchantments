@@ -14,11 +14,12 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Potion extends CustomEnchantment {
 
+    public static final int ID = 44;
     PotionEffectType[] potions;
 
     @Override
     public Builder<Potion> defaults() {
-        return new Builder<>(Potion::new, 44)
+        return new Builder<>(Potion::new, ID)
             .maxLevel(3)
             .loreName("Potion")
             .probability(0)

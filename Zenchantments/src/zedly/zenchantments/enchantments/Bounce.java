@@ -10,9 +10,11 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Bounce extends CustomEnchantment {
 
+    public static final int ID = 7;
+
     @Override
     public Builder<Bounce> defaults() {
-        return new Builder<>(Bounce::new, 7)
+        return new Builder<>(Bounce::new, ID)
             .maxLevel(5)
             .loreName("Bounce")
             .probability(0)

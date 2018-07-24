@@ -15,9 +15,11 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class PotionResistance extends CustomEnchantment {
 
+    public static final int ID = 45;
+
     @Override
     public Builder<PotionResistance> defaults() {
-        return new Builder<>(PotionResistance::new, 45)
+        return new Builder<>(PotionResistance::new, ID)
             .maxLevel(4)
             .loreName("Potion Resistance")
             .probability(0)
@@ -35,7 +37,7 @@ public class PotionResistance extends CustomEnchantment {
             if(ent instanceof Player) {
                 int effect = 0;
                 for(ItemStack stk : ((Player) ent).getInventory().getArmorContents()) {
-                    Map<CustomEnchantment, Integer> map = Config.get(ent.getWorld()).getEnchants(stk);
+                    Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(stk, ent.getWorld());
                     for(CustomEnchantment e : map.keySet()) {
                         if(e.equals(this)) {
                             effect += map.get(e);

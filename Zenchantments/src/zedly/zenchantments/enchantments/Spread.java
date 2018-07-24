@@ -20,9 +20,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Spread extends CustomEnchantment {
 
+    public static final int ID = 57;
+
     @Override
     public Builder<Spread> defaults() {
-        return new Builder<>(Spread::new, 57)
+        return new Builder<>(Spread::new, ID)
             .maxLevel(5)
             .loreName("Spread")
             .probability(0)

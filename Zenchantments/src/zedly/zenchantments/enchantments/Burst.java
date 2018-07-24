@@ -24,9 +24,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Burst extends CustomEnchantment {
 
+    public static final int ID = 8;
+
     @Override
     public Builder<Burst> defaults() {
-        return new Builder<>(Burst::new, 8)
+        return new Builder<>(Burst::new, ID)
             .maxLevel(3)
             .loreName("Burst")
             .probability(0)

@@ -44,7 +44,7 @@ public class Watcher implements Listener {
             ItemStack stk = evt.getItem();
             if (stk != null) {
                 Laser ench = null;
-                for (CustomEnchantment e : config.getEnchants().values()) {
+                for (CustomEnchantment e : config.getEnchants()) {
                     if (e.getClass().equals(Laser.class)) {
                         ench = (Laser) e;
                     }
@@ -52,9 +52,10 @@ public class Watcher implements Listener {
                 if (ench == null) {
                     return;
                 }
-                if (config.getEnchants(stk).containsKey(ench) && !stk.getType().equals(ENCHANTED_BOOK)) {
+                if (CustomEnchantment.getEnchants(stk, config.getWorld()).containsKey(ench)
+                    && !stk.getType().equals(ENCHANTED_BOOK)) {
                     evt.setCancelled(true);
-                    int level = config.getEnchants(stk).get(ench);
+                    int level = CustomEnchantment.getEnchants(stk, config.getWorld()).get(ench);
                     int range = 6 + (int) Math.round(level * ench.power * 3);
                     Block blk = evt.getBlock().getRelative(((Dispenser) evt.getBlock().getState().getData()).getFacing(), range);
                     Location play = Utilities.getCenter(evt.getBlock());
@@ -186,7 +187,7 @@ public class Watcher implements Listener {
         for (int l = 1; l <= config.getMaxEnchants(); l++) {
             float totalChance = 0;
             Set<CustomEnchantment> enchs = new HashSet<>();
-            for (CustomEnchantment ench : config.getEnchants().values()) {
+            for (CustomEnchantment ench : config.getEnchants()) {
                 boolean b = true;
                 for (CustomEnchantment e : enchAdd) {
                     if (ArrayUtils.contains(ench.conflicting, e.getClass()) || enchAdd.contains(ench) || e.probability <= 0) {
@@ -211,7 +212,7 @@ public class Watcher implements Listener {
             }
         }
         if (config.descriptionLore()) {
-            config.addDescriptions(evt.getItem(), null);
+            CustomEnchantment.addDescriptions(evt.getItem(), null, config.getWorld());
         }
         List<String> finalLore = stk.getItemMeta().getLore();
 
@@ -233,7 +234,7 @@ public class Watcher implements Listener {
                 if (evt.getCurrentItem().hasItemMeta()) {
                     if (evt.getCurrentItem().getItemMeta().hasLore()) {
                         Player player = (Player) evt.getWhoClicked();
-                        for (CustomEnchantment e : Config.get(evt.getWhoClicked().getWorld()).getEnchants(evt.getCurrentItem()).keySet()) {
+                        for (CustomEnchantment e : CustomEnchantment.getEnchants(evt.getCurrentItem(), player.getWorld()).keySet()) {
                             if (e.getClass().equals(Jump.class) || e.getClass().equals(Meador.class)) {
                                 player.removePotionEffect(PotionEffectType.JUMP);
                             }

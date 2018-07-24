@@ -12,9 +12,11 @@ import static zedly.zenchantments.enums.Tool.WINGS;
 
 public class SonicShock extends CustomEnchantment {
 
+    public static final int ID = 56;
+
     @Override
     public Builder<SonicShock> defaults() {
-        return new Builder<>(SonicShock::new, 56)
+        return new Builder<>(SonicShock::new, ID)
             .maxLevel(3)
             .loreName("Sonic Shock")
             .probability(0)

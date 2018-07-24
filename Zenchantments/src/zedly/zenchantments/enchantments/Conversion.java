@@ -15,9 +15,11 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Conversion extends CustomEnchantment {
 
+    public static final int ID = 10;
+
     @Override
     public Builder<Conversion> defaults() {
-        return new Builder<>(Conversion::new, 10)
+        return new Builder<>(Conversion::new, ID)
             .maxLevel(4)
             .loreName("Conversion")
             .probability(0)

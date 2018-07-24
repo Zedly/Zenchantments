@@ -22,10 +22,11 @@ public class Grab extends CustomEnchantment {
 	public static final Set<Block>           fireDropLocs = new HashSet<>();
     // Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
     public static final Map<Block, Location> grabLocs     = new HashMap<>();
+    public static final int ID = 23;
 
     @Override
     public Builder<Grab> defaults() {
-        return new Builder<>(Grab::new, 23)
+        return new Builder<>(Grab::new, ID)
             .maxLevel(1)
             .loreName("Grab")
             .probability(0)

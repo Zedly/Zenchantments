@@ -17,9 +17,11 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Stationary extends CustomEnchantment {
 
+    public static final int ID = 58;
+
     @Override
     public Builder<Stationary> defaults() {
-        return new Builder<>(Stationary::new, 58)
+        return new Builder<>(Stationary::new, ID)
             .maxLevel(1)
             .loreName("Stationary")
             .probability(0)

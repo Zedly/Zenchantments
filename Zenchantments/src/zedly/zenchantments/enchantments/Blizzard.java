@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Blizzard extends CustomEnchantment {
 
+    public static final int ID = 6;
+
     @Override
     public Builder<Blizzard> defaults() {
-        return new Builder<>(Blizzard::new, 6)
+        return new Builder<>(Blizzard::new, ID)
             .maxLevel(3)
             .loreName("Blizzard")
             .probability(0)

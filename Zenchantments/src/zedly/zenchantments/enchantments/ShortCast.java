@@ -10,9 +10,11 @@ import static zedly.zenchantments.enums.Tool.ROD;
 
 public class ShortCast extends CustomEnchantment {
 
+    public static final int ID = 51;
+
     @Override
     public Builder<ShortCast> defaults() {
-        return new Builder<>(ShortCast::new, 51)
+        return new Builder<>(ShortCast::new, ID)
             .maxLevel(2)
             .loreName("Short Cast")
             .probability(0)

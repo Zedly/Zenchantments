@@ -14,9 +14,11 @@ import static zedly.zenchantments.enums.Tool.ALL;
 
 public class Ethereal extends CustomEnchantment {
 
+    public static final int ID = 70;
+
     @Override
     public Builder<Ethereal> defaults() {
-        return new Builder<>(Ethereal::new, 70)
+        return new Builder<>(Ethereal::new, ID)
             .maxLevel(1)
             .loreName("Ethereal")
             .probability(0)
@@ -48,7 +50,7 @@ public class Ethereal extends CustomEnchantment {
     public boolean onScan(Player player, int level, boolean usedHand) {
         for(ItemStack s : player.getInventory().getArmorContents()) {
             if(s != null) {
-                Map<CustomEnchantment, Integer> map = Config.get(player.getWorld()).getEnchants(s);
+                Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(s, player.getWorld());
                 if(map.containsKey(zedly.zenchantments.enchantments.Ethereal.this)) {
                     s.setDurability((short) 0);
                 }

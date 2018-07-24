@@ -13,9 +13,11 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class Haste extends CustomEnchantment {
 
+    public static final int ID = 27;
+
     @Override
     public Builder<Haste> defaults() {
-        return new Builder<>(Haste::new, 27)
+        return new Builder<>(Haste::new, ID)
             .maxLevel(4)
             .loreName("Haste")
             .probability(0)

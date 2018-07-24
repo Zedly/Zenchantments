@@ -30,10 +30,11 @@ public class Shred extends CustomEnchantment {
 
     private static final Material SHOVELABLE_MATERIALS[] =
             new Material[]{GLOWSTONE, GRASS, DIRT, MYCEL, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
+    public static final  int      ID                     = 52;
 
     @Override
     public Builder<Shred> defaults() {
-        return new Builder<>(Shred::new, 52)
+        return new Builder<>(Shred::new, ID)
             .maxLevel(5)
             .loreName("Shred")
             .probability(0)

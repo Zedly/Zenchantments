@@ -18,7 +18,7 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class BlazesCurse extends CustomEnchantment {
 
-    private static final Biome[] noRainBiomes   = new Biome[]{DESERT, FROZEN_OCEAN, FROZEN_RIVER, ICE_FLATS,
+    private static final Biome[] noRainBiomes = new Biome[]{DESERT, FROZEN_OCEAN, FROZEN_RIVER, ICE_FLATS,
                                                               ICE_MOUNTAINS, DESERT_HILLS, COLD_BEACH, TAIGA_COLD,
                                                               TAIGA_COLD_HILLS,
                                                               SAVANNA, SAVANNA_ROCK, MESA, MESA_ROCK,
@@ -29,10 +29,11 @@ public class BlazesCurse extends CustomEnchantment {
                                                               MUTATED_MESA_CLEAR_ROCK};
     private static final float   submergeDamage = 1.5f;
     private static final float   rainDamage     = .5f;
+    public static final int ID = 5;
 
     @Override
     public Builder<BlazesCurse> defaults() {
-        return new Builder<>(BlazesCurse::new, 5)
+        return new Builder<>(BlazesCurse::new, ID)
             .maxLevel(1)
             .loreName("Blaze's Curse")
             .probability(0)

@@ -21,10 +21,11 @@ import static zedly.zenchantments.enums.Tool.HOE;
 public class Germination extends CustomEnchantment {
 
     private static final ItemStack BONE_MEAL = new ItemStack(Material.INK_SACK, 1, (short) 15);
+    public static final int ID = 19;
 
     @Override
     public Builder<Germination> defaults() {
-        return new Builder<>(Germination::new, 19)
+        return new Builder<>(Germination::new, ID)
             .maxLevel(3)
             .loreName("Germination")
             .probability(0)

@@ -23,10 +23,11 @@ public class MysteryFish extends CustomEnchantment {
 
 	// Guardians from the Mystery Fish enchantment and the player they should move towards
 	public static final Map<Entity, Player> guardianMove = new HashMap<>();
+	public static final int ID = 38;
 
 	@Override
 	public Builder<MysteryFish> defaults() {
-		return new Builder<>(MysteryFish::new, 38)
+		return new Builder<>(MysteryFish::new, ID)
 			.maxLevel(3)
 			.loreName("Mystery Fish")
 			.probability(0)
