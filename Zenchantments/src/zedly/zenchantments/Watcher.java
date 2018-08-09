@@ -174,8 +174,9 @@ public class Watcher implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event){
     	if (event.getMessage().startsWith("/enchant ")) {
+    	    boolean customEnch  = !CustomEnchantment.getEnchants(event.getPlayer().getInventory().getItemInMainHand(), event.getPlayer().getWorld()).isEmpty();
 		    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			    CustomEnchantment.setGlow(event.getPlayer().getInventory().getItemInMainHand(), false);
+			    CustomEnchantment.setGlow(event.getPlayer().getInventory().getItemInMainHand(), customEnch);
 		    }, 0);
 	    }
     }

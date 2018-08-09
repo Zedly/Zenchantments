@@ -432,7 +432,7 @@ public abstract class CustomEnchantment {
 
 		boolean containsNormal = false;
 		boolean containsHidden = false;
-
+		int duraLevel = 0;
 		Map<Enchantment, Integer> enchs;
 
 		if (stk.getType() == ENCHANTED_BOOK) {
@@ -443,20 +443,23 @@ public abstract class CustomEnchantment {
 		}
 
 		for (Map.Entry<Enchantment, Integer> set : enchs.entrySet()){
-			if (!(set.getKey().equals(Enchantment.DURABILITY) && set.getValue() == 0)) {
-				Bukkit.broadcastMessage(set.toString());
+			if (!(set.getKey().equals(Enchantment.DURABILITY) && (duraLevel = set.getValue()) == 0)) {
 				containsNormal = true;
 			} else {
 				containsHidden = true;
 			}
 		}
 
-		if ((containsNormal && containsHidden) || (!customEnch && containsHidden)) {
+		if ((containsNormal) || (!customEnch && containsHidden)) {
 			if (stk.getType() == ENCHANTED_BOOK) {
-				bookMeta.removeStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY);
+				if (duraLevel == 0) {
+					bookMeta.removeStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY);
+				}
 				bookMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
 			} else {
-				itemMeta.removeEnchant(Enchantment.DURABILITY);
+				if (duraLevel == 0) {
+					itemMeta.removeEnchant(Enchantment.DURABILITY);
+				}
 				itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
 			}
 		} else if (!containsNormal && customEnch) {

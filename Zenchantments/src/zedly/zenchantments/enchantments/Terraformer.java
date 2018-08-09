@@ -52,14 +52,12 @@ public class Terraformer extends CustomEnchantment {
 
                 Material mat = AIR;
                 byte bt = 0;
-                int c = -1;
 
                 for(int i = 0; i < 9; i++) {
                     if(evt.getPlayer().getInventory().getItem(i) != null) {
                         if(evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
                            ArrayUtils.contains(CompatibilityAdapter.getTerraformerMaterials(), evt.getPlayer().getInventory().getItem(i).getType())) {
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
-                            c = i;
                             bt = evt.getPlayer().getInventory().getItem(i).getData().getData();
                             break;
                         }

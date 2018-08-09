@@ -1,11 +1,13 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.enchanted.StationaryArrow;
@@ -36,7 +38,7 @@ public class Stationary extends CustomEnchantment {
     @Override
     public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
         if(!(evt.getEntity() instanceof LivingEntity) ||
-           !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+           ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
             LivingEntity ent = (LivingEntity) evt.getEntity();
             if(evt.getDamage() < ent.getHealth()) {
                 evt.setCancelled(true);

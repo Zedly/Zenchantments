@@ -34,7 +34,7 @@ public class Transformation extends CustomEnchantment {
     @Override
     public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
         if(!(evt.getEntity() instanceof LivingEntity) ||
-           !ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+           ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
             if(Storage.rnd.nextInt(100) > (100 - (level * power * 5))) {
                 int position = ArrayUtils.indexOf(Storage.TRANSFORMATION_ENTITY_TYPES, evt.getEntity().getType());
                 if(position != -1) {
