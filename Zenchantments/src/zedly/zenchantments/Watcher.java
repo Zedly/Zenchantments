@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -170,6 +171,15 @@ public class Watcher implements Listener {
         }
     }
 
+    @EventHandler
+    public void onCommand(PlayerCommandPreprocessEvent event){
+    	if (event.getMessage().startsWith("/enchant ")) {
+		    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+			    CustomEnchantment.setGlow(event.getPlayer().getInventory().getItemInMainHand(), false);
+		    }, 0);
+	    }
+    }
+
     // Randomly adds CustomEnchantments to an item based off the overall probability, enchantments' relative 
     //      probability, and the level at which the item is being enchanted if the player has permission
     @EventHandler
@@ -205,7 +215,7 @@ public class Watcher implements Listener {
                 running += ench.probability;
                 if (running > decision) {
                     int level = Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost());
-                    ench.addEnchantment(stk, level);
+                    ench.setEnchantment(stk, level, evt.getEnchanter().getWorld());
                     enchAdd.add(ench);
                     break;
                 }

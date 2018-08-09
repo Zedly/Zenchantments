@@ -205,11 +205,14 @@ public class Config {
                             ench.loreName((String) data.get("Name"));
                             ench.cooldown((int) data.get("Cooldown"));
                             if (data.containsValue("Max Level")) {
+	                            Bukkit.broadcastMessage("1");
                                 ench.maxLevel((int) data.get("Max Level"));
                             }
                             if (data.containsValue("Power")) {
+	                            Bukkit.broadcastMessage("2");
                                 ench.power((double) data.get("Power"));
                             }
+
                             Set<Tool> materials = new HashSet<>();
                             for (String s : ((String) data.get("Tools")).split(", |\\,")) {
                                 materials.add(Tool.fromString(s));

@@ -8,12 +8,6 @@ import zedly.zenchantments.arrows.EnchantedArrow;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
 
-/**
- * Description
- *
- * @author rfrowe
- */
-
 public class BlizzardArrow extends EnchantedArrow {
 
     public BlizzardArrow(Arrow entity, int level, double power) {

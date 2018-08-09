@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -42,6 +43,7 @@ public class Decapitation extends CustomEnchantment {
             return false;
         }
         if(id == 3) {
+            Bukkit.broadcastMessage(""+power);
             if(Storage.rnd.nextInt((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * power))) == 0) {
                 ItemStack stk = new ItemStack(Material.SKULL_ITEM, 1, id);
                 SkullMeta meta = (SkullMeta) stk.getItemMeta();

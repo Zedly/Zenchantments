@@ -65,13 +65,11 @@ public class CommandProcessor {
         meta.setLore(lore);
         stack.setItemMeta(meta);
 
+        enchantment.setEnchantment(stack, level, config.getWorld());
         if (level != 0) {
-            enchantment.addEnchantment(stack, level);
-            if (isHeld) {
-                if (player != null) {
-                    player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName
-                            + ChatColor.AQUA + " has been added.");
-                }
+            if (isHeld && player != null) {
+	            player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA + enchantment.loreName
+		            + ChatColor.AQUA + " has been added.");
             }
         } else {
             if (!isHeld) {
@@ -104,7 +102,8 @@ public class CommandProcessor {
             return true;
         }
         if (args.length >= 4) {
-            Scanner s = new Scanner(Arrays.toString(args).replace("[", "").replace("]", "").replace(",", ""));
+            Scanner s = new Scanner(Arrays.toString(args).replace("[", "").replace("]",
+	            "").replace(",", ""));
             s.next();
             String playerName = s.next();
             Player toAdd = null;
@@ -358,7 +357,7 @@ public class CommandProcessor {
                         return enable(player, config, args);
                     case "help":
                     default:
-                        return helpEnchantment(player, label) ? true : enchant(player, config, args, label, stack);
+                        return helpEnchantment(player, label) || enchant(player, config, args, label, stack);
                 }
         }
         return true;

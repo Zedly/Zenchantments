@@ -9,7 +9,7 @@ import zedly.zenchantments.annotations.EffectTask;
  * @author rfrowe
  */
 public enum Frequency {
-	HIGH(1), MEDIUM(5);
+	HIGH(1), MEDIUM_HIGH(5), /*MEDIUM_LOW(10),*/ LOW(20);
 
 	public final int period;
 

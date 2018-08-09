@@ -6,11 +6,6 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class FirestormArrow extends EnchantedArrow {
 
     public FirestormArrow(Arrow entity, int level, double power) {

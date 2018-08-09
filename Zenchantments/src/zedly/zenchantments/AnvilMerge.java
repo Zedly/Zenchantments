@@ -42,12 +42,12 @@ public class AnvilMerge implements Listener {
         Map<CustomEnchantment, Integer> rightEnchantments = CustomEnchantment.getEnchants(rightItem, true, config.getWorld());
 
         for (CustomEnchantment e : leftEnchantments.keySet()) {
-            if (e.getClass().equals(Unrepairable.class)) {
+            if (e.getId() == Unrepairable.ID) {
                 return new ItemStack(Material.AIR);
             }
         }
         for (CustomEnchantment e : rightEnchantments.keySet()) {
-            if (e.getClass().equals(Unrepairable.class)) {
+            if (e.getId() == Unrepairable.ID) {
                 return new ItemStack(Material.AIR);
             }
         }

@@ -50,7 +50,7 @@ public class Anthropomorphism extends CustomEnchantment {
 			.handUse(Hand.BOTH);
 	}
 
-	@EffectTask(Frequency.MEDIUM)
+	@EffectTask(Frequency.MEDIUM_HIGH)
 	// Removes Anthropomorphism blocks when they are dead
 	public static void anthropomorphism2() {
 		Iterator it = idleBlocks.keySet().iterator();

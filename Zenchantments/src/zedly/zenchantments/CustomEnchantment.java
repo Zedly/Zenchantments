@@ -279,7 +279,7 @@ public abstract class CustomEnchantment {
 					List<String> lore = new ArrayList<>();
 					CustomEnchantment current = null;
 					for (String s : meta.getLore()) {
-						AbstractMap.SimpleEntry<CustomEnchantment, Integer> ench = getEnchant(s, world);
+						Map.Entry<CustomEnchantment, Integer> ench = getEnchant(s, world);
 						if (ench == null) {
 							continue;
 						}
@@ -327,8 +327,10 @@ public abstract class CustomEnchantment {
 				if (stack.getItemMeta().hasLore()) {
 					List<String> lore = stack.getItemMeta().getLore();
 					for (String raw : lore) {
-						AbstractMap.SimpleEntry<CustomEnchantment, Integer> ench = getEnchant(raw, world);
-						map.put(ench.getKey(), ench.getValue());
+						Map.Entry<CustomEnchantment, Integer> ench = getEnchant(raw, world);
+						if (ench != null) {
+							map.put(ench.getKey(), ench.getValue());
+						}
 					}
 				}
 			}
@@ -351,7 +353,7 @@ public abstract class CustomEnchantment {
 	}
 
 	// Returns the custom enchantment from the lore name
-	private static AbstractMap.SimpleEntry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
+	private static Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
 		Map<String, Boolean> unescaped = Utilities.fromInvisibleString(raw);
 		for (Map.Entry<String, Boolean> entry : unescaped.entrySet()) {
 			if (!entry.getValue()) {
@@ -369,16 +371,6 @@ public abstract class CustomEnchantment {
 		}
 		return null;
 	}
-
-    // Returns the custom enchantment from the enchantment ID
-    public static CustomEnchantment enchantFromnID(int id, World world) {
-        for (CustomEnchantment ench : Config.get(world).getEnchants()) {
-            if (ench.getId() == id) {
-                return ench;
-            }
-        }
-        return null;
-    }
 
 	/**
 	 * Determines if the material provided is enchantable with this enchantment.
@@ -406,55 +398,81 @@ public abstract class CustomEnchantment {
 		return validMaterial(m.getType());
 	}
 
-	public void addEnchantment(ItemStack stk, int level) {
+	public void setEnchantment(ItemStack stk, int level, World world) {
 
 		ItemMeta meta = stk.getItemMeta();
 		List<String> lore = new LinkedList<>();
+		boolean customEnch = false;
 		if (meta.hasLore()) {
-			lore.addAll(meta.getLore());
-		}
-
-		// If its a book add an enchantment to it for the glow
-		if (stk.getType() == BOOK) {
-			stk.setType(ENCHANTED_BOOK);
-			EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) stk.getItemMeta();
-			//bookMeta.addEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 1, true);
-			//bookMeta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 0, true);
-			bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-			stk.setItemMeta(meta);
-		}
-
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		meta.addEnchant(Enchantment.DURABILITY, 0, true);
-		String levelStr = Utilities.getRomanString(level);
-		lore.add(Utilities.toInvisibleString("ze.ench." + getId() + '.' + level) +
-			(isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr));
-		meta.setLore(lore);
-		stk.setItemMeta(meta);
-	}
-
-	public void removeEnchantment(ItemStack stk) {
-		if (!stk.hasItemMeta() || !stk.getItemMeta().hasLore()) {
-			return;
-		}
-
-		ItemMeta meta = stk.getItemMeta();
-		List<String> newLore = new LinkedList<>();
-
-
-
-		for (String str : meta.getLore()) {
-			if (!ChatColor.stripColor(str).startsWith(this.getLoreName())) {
-				newLore.add(str);
+			for (String loreStr : meta.getLore()) {
+				Map.Entry<CustomEnchantment, Integer> ench = getEnchant(loreStr, world);
+				if (ench == null || ench.getKey() != this) {
+					customEnch = ench != null;
+					lore.add(loreStr);
+				}
 			}
 		}
-		meta.setLore(newLore);
+
+		if (level > 0 && level <= maxLevel){
+			String levelStr = Utilities.getRomanString(level);
+			lore.add(Utilities.toInvisibleString("ze.ench." + getId() + '.' + level) +
+				(isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr));
+			customEnch = true;
+		}
+		meta.setLore(lore);
 		stk.setItemMeta(meta);
+		setGlow(stk, customEnch);
 	}
 
-    public static void setGlow(ItemStack stk) {
+	public static void setGlow(ItemStack stk, boolean customEnch) {
+		ItemMeta itemMeta = stk.getItemMeta();
+		EnchantmentStorageMeta bookMeta = null;
 
-    }
+		boolean isBook = stk.getType() == BOOK || stk.getType() == ENCHANTED_BOOK;
+
+		boolean containsNormal = false;
+		boolean containsHidden = false;
+
+		Map<Enchantment, Integer> enchs;
+
+		if (stk.getType() == ENCHANTED_BOOK) {
+			bookMeta = (EnchantmentStorageMeta) stk.getItemMeta();
+			enchs = bookMeta.getStoredEnchants();
+		} else {
+			enchs = itemMeta.getEnchants();
+		}
+
+		for (Map.Entry<Enchantment, Integer> set : enchs.entrySet()){
+			if (!(set.getKey().equals(Enchantment.DURABILITY) && set.getValue() == 0)) {
+				Bukkit.broadcastMessage(set.toString());
+				containsNormal = true;
+			} else {
+				containsHidden = true;
+			}
+		}
+
+		if ((containsNormal && containsHidden) || (!customEnch && containsHidden)) {
+			if (stk.getType() == ENCHANTED_BOOK) {
+				bookMeta.removeStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY);
+				bookMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+			} else {
+				itemMeta.removeEnchant(Enchantment.DURABILITY);
+				itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+			}
+		} else if (!containsNormal && customEnch) {
+			if (stk.getType() == BOOK) {
+				stk.setType(ENCHANTED_BOOK);
+				bookMeta = (EnchantmentStorageMeta) stk.getItemMeta();
+				bookMeta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 0, true);
+				bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			} else {
+				itemMeta.addEnchant(Enchantment.DURABILITY, 0, true);
+				itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			}
+		}
+
+		stk.setItemMeta(isBook ? bookMeta : itemMeta);
+	}
 
     protected static final class Builder<T extends CustomEnchantment> {
         private final T customEnchantment;

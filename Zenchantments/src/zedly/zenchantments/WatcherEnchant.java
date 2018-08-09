@@ -263,7 +263,7 @@ public class WatcherEnchant implements Listener {
         }
     }
 
-	@EffectTask(Frequency.MEDIUM)
+	@EffectTask(Frequency.MEDIUM_HIGH)
 	// TODO: rename
 	// Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
 	public static void scanPlayers2() {

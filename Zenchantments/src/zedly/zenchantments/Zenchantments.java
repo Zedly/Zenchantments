@@ -4,6 +4,7 @@ package zedly.zenchantments;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -31,7 +32,7 @@ public class Zenchantments extends JavaPlugin {
         Config.loadConfigs();
     }
 
-	@EffectTask(Frequency.MEDIUM)
+	@EffectTask(Frequency.MEDIUM_HIGH)
 	public static void speedPlayers() {
 		speedPlayers(false);
 	}
@@ -120,12 +121,12 @@ public class Zenchantments extends JavaPlugin {
 
     // Adds the enchantments (given by the string) of level 'level' to the given item stack, returning true if the
     //      action was successful
-    public boolean addEnchantment(ItemStack stk, String enchantmentName, int lvl) {
+    public boolean addEnchantment(ItemStack stk, String enchantmentName, int lvl, World world) {
         for (Config c : Config.CONFIGS.values()) {
 	        Set<CustomEnchantment> ench = c.getEnchants();
 	        CustomEnchantment e;
 	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
-            	e.addEnchantment(stk, lvl);
+            	e.setEnchantment(stk, lvl, world);
                 return true;
             }
         }
@@ -134,12 +135,12 @@ public class Zenchantments extends JavaPlugin {
 
     // Removes the enchantment (given by the string) from the given item stack, returning true if the action was
     //      successful
-    public boolean removeEnchantment(ItemStack stk, String enchantmentName) {
+    public boolean removeEnchantment(ItemStack stk, String enchantmentName, World world) {
         for (Config c : Config.CONFIGS.values()) {
 	        Set<CustomEnchantment> ench = c.getEnchants();
 	        CustomEnchantment e;
 	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
-            	e.removeEnchantment(stk);
+            	e.setEnchantment(stk, 0, world);
                 return true;
             }
         }
@@ -158,7 +159,7 @@ public class Zenchantments extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);
 		getServer().getPluginManager().registerEvents(new Watcher(), this);
 		for (Frequency f : Frequency.values()) {
-			//getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
+			getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
 		}
 	}
 }

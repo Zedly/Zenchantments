@@ -11,11 +11,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class FireworkArrow extends EnchantedArrow {
 
     public FireworkArrow(Arrow entity, int level) {

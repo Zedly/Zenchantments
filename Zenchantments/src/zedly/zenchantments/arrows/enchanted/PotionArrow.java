@@ -9,12 +9,6 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 import static org.bukkit.potion.PotionEffectType.*;
-
-/**
- * Description
- *
- * @author rfrowe
- */
 public class PotionArrow extends EnchantedArrow {
 
     private final PotionEffectType[] POTIONS = new PotionEffectType[]{ABSORPTION,

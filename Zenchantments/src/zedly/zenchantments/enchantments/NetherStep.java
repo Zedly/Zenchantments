@@ -64,7 +64,7 @@ public class NetherStep extends CustomEnchantment {
         return true;
     }
 
-	@EffectTask(Frequency.MEDIUM)
+	@EffectTask(Frequency.MEDIUM_HIGH)
 	// Removes the blocks from NetherStep and FrozenStep after a peroid of time
 	public static void updateBlocks() {
 		Iterator it = FrozenStep.frozenLocs.keySet().iterator();

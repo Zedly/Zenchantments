@@ -17,11 +17,6 @@ import zedly.zenchantments.arrows.EnchantedArrow;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.TNT;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class FuseArrow extends EnchantedArrow {
 
     public FuseArrow(Arrow entity) {

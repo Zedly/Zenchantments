@@ -190,7 +190,7 @@ public class EnchantedArrow {
 
     //endregion
 
-    @EffectTask(Frequency.MEDIUM)
+    @EffectTask(Frequency.MEDIUM_HIGH)
     public static void scanAndReap() {
         synchronized (advancedProjectiles) {
             for (Arrow a : advancedProjectiles.keySet()) {

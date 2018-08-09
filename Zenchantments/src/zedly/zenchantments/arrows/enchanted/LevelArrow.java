@@ -4,11 +4,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.event.entity.EntityDeathEvent;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class LevelArrow extends EnchantedArrow {
 
     public LevelArrow(Arrow entity, int level, double power) {
