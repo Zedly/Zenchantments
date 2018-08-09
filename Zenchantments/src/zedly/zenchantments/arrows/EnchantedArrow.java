@@ -13,8 +13,6 @@ import java.util.*;
 /**
  * Proxy for {@link Arrow} which allows subclasses to define custom
  * behavior triggered on certain events.
- * 
- * @author rfrowe
  */
 public class EnchantedArrow {
 	// Entities an enchanted arrow has damaged or killed

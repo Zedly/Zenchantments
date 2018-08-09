@@ -14,11 +14,6 @@ import static org.bukkit.entity.EntityType.BLAZE;
 import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
-/**
- * Description
- *
- * @author rfrowe
- */ // Enchantment Admin Arrows
 public class ApocalypseArrow extends EnchantedArrow {
 
     public ApocalypseArrow(Arrow entity) {

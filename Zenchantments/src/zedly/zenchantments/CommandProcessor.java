@@ -301,7 +301,7 @@ public class CommandProcessor {
         boolean contains = false;
         String enchantName = "";
         for (CustomEnchantment ench : config.getEnchants()) {
-            if (label.toLowerCase().replace("_", "").equals(ench.getLoreName().toLowerCase().replace("_", ""))) {
+            if (label.toLowerCase().replace("_", "").equals(ench.getLoreName().toLowerCase().replace(" ", ""))) {
                 contains = true;
                 enchantName = ench.getLoreName();
             }

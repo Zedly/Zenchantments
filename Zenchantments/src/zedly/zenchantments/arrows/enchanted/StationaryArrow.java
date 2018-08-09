@@ -5,11 +5,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class StationaryArrow extends EnchantedArrow {
 
     public StationaryArrow(Arrow entity) {

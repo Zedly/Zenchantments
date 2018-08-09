@@ -6,11 +6,6 @@ import zedly.zenchantments.arrows.EnchantedArrow;
 
 import java.util.List;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class QuickArrow extends EnchantedArrow {
 
 	public QuickArrow(Arrow entity) {
@@ -19,6 +14,9 @@ public class QuickArrow extends EnchantedArrow {
 
 	public void onLaunch(LivingEntity player, List<String> lore) {
 		arrow.setVelocity(arrow.getVelocity().normalize().multiply(3.5f));
-		die();
 	}
+
+	public void onImpact() {
+	}
+
 }

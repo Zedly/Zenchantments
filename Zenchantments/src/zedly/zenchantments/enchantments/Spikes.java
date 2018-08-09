@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -30,12 +31,12 @@ public class Spikes extends CustomEnchantment {
     @Override
     public boolean onFastScan(Player player, int level, boolean usedHand) {
         if(player.getVelocity().getY() < -0.45) {
-            for(Entity e : player.getNearbyEntities(0, 2, 0)) {
+            for(Entity e : player.getNearbyEntities(1, 2, 1)) {
                 double fall = Math.min(player.getFallDistance(), 20.0);
                 if(e instanceof LivingEntity) {
                     ADAPTER.attackEntity((LivingEntity) e, player, power * level * fall * 0.25);
                 }
-            }
+           }
         }
         return true;
     }

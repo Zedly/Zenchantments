@@ -10,11 +10,6 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.enchantments.Singularity;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class SingularityArrow extends EnchantedArrow {
 
 	public SingularityArrow(Arrow entity, int level) {

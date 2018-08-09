@@ -8,11 +8,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class SiphonArrow extends EnchantedArrow {
 
     public SiphonArrow(Arrow entity, int level, double power) {

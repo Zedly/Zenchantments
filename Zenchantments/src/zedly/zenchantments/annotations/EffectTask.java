@@ -8,8 +8,6 @@ import java.lang.annotation.*;
 /**
  * Method annotation used by {@link TaskRunner} to control frequency of execution of scheduled
  * events. Annotations must only be on static methods.
- *
- * @author rfrowe
  */
 
 @Documented

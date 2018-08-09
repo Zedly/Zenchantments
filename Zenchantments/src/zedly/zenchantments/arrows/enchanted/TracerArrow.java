@@ -5,11 +5,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.enchantments.Tracer;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class TracerArrow extends EnchantedArrow {
 
     public TracerArrow(Arrow entity, int level, double power) {

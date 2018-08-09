@@ -11,11 +11,6 @@ import zedly.zenchantments.arrows.EnchantedArrow;
 
 import static org.bukkit.potion.PotionEffectType.BLINDNESS;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class ReaperArrow extends EnchantedArrow {
 
     public ReaperArrow(Arrow entity, int level, double power) {

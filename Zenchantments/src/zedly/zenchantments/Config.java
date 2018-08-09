@@ -204,12 +204,11 @@ public class Config {
                             ench.probability((float) (double) data.get("Probability"));
                             ench.loreName((String) data.get("Name"));
                             ench.cooldown((int) data.get("Cooldown"));
-                            if (data.containsValue("Max Level")) {
-	                            Bukkit.broadcastMessage("1");
+
+                            if (data.get("Max Level") != null) {
                                 ench.maxLevel((int) data.get("Max Level"));
                             }
-                            if (data.containsValue("Power")) {
-	                            Bukkit.broadcastMessage("2");
+                            if (data.get("Power") != null) {
                                 ench.power((double) data.get("Power"));
                             }
 

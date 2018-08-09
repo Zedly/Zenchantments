@@ -13,11 +13,6 @@ import zedly.zenchantments.enchantments.Toxic;
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class ToxicArrow extends EnchantedArrow {
 
     public ToxicArrow(Arrow entity, int level, double power) {

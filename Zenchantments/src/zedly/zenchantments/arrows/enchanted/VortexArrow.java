@@ -7,11 +7,6 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.enchantments.Vortex;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class VortexArrow extends EnchantedArrow {
 
     public VortexArrow(Arrow entity) {

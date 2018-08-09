@@ -13,11 +13,6 @@ import java.util.List;
 
 import static org.bukkit.Material.AIR;
 
-/**
- * Description
- *
- * @author rfrowe
- */
 public class MissileArrow extends EnchantedArrow {
 
 	public MissileArrow(Arrow entity) {

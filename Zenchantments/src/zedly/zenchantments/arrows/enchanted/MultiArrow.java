@@ -7,8 +7,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-
- // Arrows In-Development
 public class MultiArrow extends EnchantedArrow {
 
     public MultiArrow(Arrow entity) {
@@ -30,7 +28,6 @@ public class MultiArrow extends EnchantedArrow {
         p.setFireTicks(arrow.getFireTicks());
         p.getLocation().setDirection(arrow.getLocation().getDirection());
         p.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
-        die();
         this.arrow.remove();
     }
 }

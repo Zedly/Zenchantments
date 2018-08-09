@@ -113,18 +113,16 @@ public class Fire extends CustomEnchantment {
 
                 evt.getBlock().getWorld()
                    .dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
-
-                Block affectedBlock = evt.getBlock();
+                Block affectedBlock = location.getBlock();
                 Grab.fireDropLocs.add(affectedBlock);
+
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                     Grab.fireDropLocs.remove(affectedBlock);
                 }, 5);
-
-                return true;
             }
+            return true;
         }
         if(mat != AIR) {
-
             evt.getBlock().getWorld()
                .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
             Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
