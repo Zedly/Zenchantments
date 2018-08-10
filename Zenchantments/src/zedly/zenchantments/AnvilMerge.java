@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.enchantments.Unrepairable;
 
@@ -38,8 +39,22 @@ public class AnvilMerge implements Listener {
             return null;
         }
 
-        Map<CustomEnchantment, Integer> leftEnchantments = CustomEnchantment.getEnchants(leftItem, true, config.getWorld());
+        List<String> normalLeftLore = new ArrayList<>();
+        Map<CustomEnchantment, Integer> leftEnchantments = CustomEnchantment.getEnchants(leftItem, true, config.getWorld(), normalLeftLore);
         Map<CustomEnchantment, Integer> rightEnchantments = CustomEnchantment.getEnchants(rightItem, true, config.getWorld());
+
+        boolean isBookL = leftItem.getType() == Material.ENCHANTED_BOOK;
+	    boolean isBookR = rightItem.getType() == Material.ENCHANTED_BOOK;
+
+	    Map<Enchantment, Integer> lEnch = isBookL ?
+		    ((EnchantmentStorageMeta) leftItem.getItemMeta()).getStoredEnchants()
+		    : leftItem.getEnchantments();
+	    Map<Enchantment, Integer> rEnch = isBookR ?
+		    ((EnchantmentStorageMeta) rightItem.getItemMeta()).getStoredEnchants()
+		    : rightItem.getEnchantments();
+
+		int leftUnbLvl = lEnch.getOrDefault(Enchantment.DURABILITY, -1);
+	    int rightUnbLvl = rEnch.getOrDefault(Enchantment.DURABILITY, -1);
 
         for (CustomEnchantment e : leftEnchantments.keySet()) {
             if (e.getId() == Unrepairable.ID) {
@@ -60,25 +75,32 @@ public class AnvilMerge implements Listener {
         HashMap<CustomEnchantment, Integer> outEnchantments = pool.getEnchantmentMap();
 
         ItemStack newOutItem = new ItemStack(oldOutItem);
-        ItemMeta newOutMeta = newOutItem.getItemMeta();
-        List<String> outLore = new ArrayList<>();
+        ItemMeta meta = oldOutItem.getItemMeta();
+        meta.setLore(new ArrayList<>());
+	    newOutItem.setItemMeta(meta);
 
         for (Entry<CustomEnchantment, Integer> enchantEntry : outEnchantments.entrySet()) {
-            outLore.add(ChatColor.GRAY + enchantEntry.getKey().loreName + " " + Utilities.getRomanString(enchantEntry.getValue()));
+            enchantEntry.getKey().setEnchantment(newOutItem, enchantEntry.getValue(), config.getWorld());
         }
-        // TODO: Preserve passive lore
-        // TODO: remove unbreaking...
-        if (newOutMeta.getEnchants().get(Enchantment.DURABILITY) == 0) {
-            newOutMeta.removeEnchant(Enchantment.DURABILITY);
-        }
-        newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        ItemMeta newOutMeta = newOutItem.getItemMeta();
+        List<String> outLore = newOutMeta.getLore();
+        outLore.addAll(normalLeftLore);
+
+	    if (leftUnbLvl * rightUnbLvl == 0 && leftUnbLvl < 1 && rightUnbLvl < 1) {
+	    	newOutMeta.removeEnchant(Enchantment.DURABILITY);
+		    newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+	    }
+
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
+
+		CustomEnchantment.setGlow(newOutItem, !outEnchantments.isEmpty());
+
         return config.descriptionLore() ?
             CustomEnchantment.addDescriptions(newOutItem, null, config.getWorld()) : newOutItem;
     }
 
-    // TODO: Remove
     @EventHandler(priority = MONITOR)
     public void onClicks(final PrepareAnvilEvent evt) {
         if (evt.getViewers().size() < 1) {
@@ -95,26 +117,6 @@ public class AnvilMerge implements Listener {
                 anvilInv.setItem(2, stack);
             }
         }, 0);
-    }
-
-    // TODO: Remove
-    //@EventHandler(priority = MONITOR) // Disabled because unnecessary now?
-    public void onClicks(final InventoryClickEvent evt) {
-        final Config config = Config.get(evt.getWhoClicked().getWorld());
-        if (evt.getInventory().getType() == InventoryType.ANVIL) {
-            final AnvilInventory anvilInv = (AnvilInventory) evt.getInventory();
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                if (!evt.isCancelled()) {
-                    ItemStack leftItem = anvilInv.getItem(0);
-                    ItemStack rightItem = anvilInv.getItem(1);
-                    ItemStack outItem = anvilInv.getItem(2);
-                    ItemStack stack = doMerge(leftItem, rightItem, outItem, config);
-                    evt.getView().setItem(2, stack);
-                    ((Player) evt.getWhoClicked()).updateInventory();
-                }
-            }, 0);
-
-        }
     }
 
     private class EnchantmentPool {

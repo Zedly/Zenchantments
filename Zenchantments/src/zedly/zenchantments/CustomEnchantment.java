@@ -314,11 +314,23 @@ public abstract class CustomEnchantment {
 	}
 
 	// Returns a mapping of custom enchantments and their level on a given tool
-	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world) {
-		return getEnchants(stk, false, world);
+	public static LinkedHashMap<CustomEnchantment, Integer> getEnchantsAndLore(ItemStack stk, World world,
+			List<String> outExtraLore) {
+		return getEnchants(stk, false, world, outExtraLore);
 	}
 
+	// Returns a mapping of custom enchantments and their level on a given tool
 	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks, World world) {
+		return getEnchants(stk, acceptBooks, world, null);
+	}
+
+	// Returns a mapping of custom enchantments and their level on a given tool
+	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world) {
+		return getEnchants(stk, false, world, null);
+	}
+
+	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks, World world,
+			List<String> outExtraLore) {
 		ItemStack stack;
 		Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
 		if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
@@ -330,6 +342,10 @@ public abstract class CustomEnchantment {
 						Map.Entry<CustomEnchantment, Integer> ench = getEnchant(raw, world);
 						if (ench != null) {
 							map.put(ench.getKey(), ench.getValue());
+						} else {
+							if (outExtraLore != null) {
+								outExtraLore.add(raw);
+							}
 						}
 					}
 				}
