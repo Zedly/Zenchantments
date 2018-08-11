@@ -228,6 +228,9 @@ public abstract class CustomEnchantment {
         });
     }
 
+
+
+
 	// Adds lore descriptions to a given item stack, but will remove a certain lore if the enchant is to be removed
 	public static ItemStack addDescriptions(ItemStack stk, CustomEnchantment delete, World world) {
 		if (true) {
@@ -314,7 +317,7 @@ public abstract class CustomEnchantment {
 	}
 
 	// Returns a mapping of custom enchantments and their level on a given tool
-	public static LinkedHashMap<CustomEnchantment, Integer> getEnchantsAndLore(ItemStack stk, World world,
+	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
 			List<String> outExtraLore) {
 		return getEnchants(stk, false, world, outExtraLore);
 	}
@@ -414,27 +417,61 @@ public abstract class CustomEnchantment {
 		return validMaterial(m.getType());
 	}
 
-	public void setEnchantment(ItemStack stk, int level, World world) {
+	public String getShown(int level, World world) {
+		String levelStr = Utilities.getRomanString(level);
+		return Utilities.toInvisibleString("ze.ench." + getId() + '.' + level) +
+			(isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr);
+	}
 
+	public List<String> getDescription(World world) {
+		List<String> desc = new LinkedList<>();
+		// Fix to be multiline
+		String str = (Config.get(world).descriptionLore() ?
+			Utilities.toInvisibleString("ze.desc." + getId())  +
+				"    " + Config.get(world).getDescriptionColor() + ChatColor.ITALIC + description
+			: null);
+
+		return desc;
+	}
+
+	public static boolean isDescription(String str) {
+		Map<String, Boolean> unescaped = Utilities.fromInvisibleString(str);
+		for (Map.Entry<String, Boolean> entry : unescaped.entrySet()) {
+			if (!entry.getValue()) {
+				String[] vals = entry.getKey().split("\\.");
+				if (vals.length == 3 && vals[0].equals("ze") && vals[1].equals("desc")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void setEnchantment(ItemStack stk, int level, World world) {
+		// Need to update to allow for arbitrary calling so descriptions are removed or added
 		ItemMeta meta = stk.getItemMeta();
 		List<String> lore = new LinkedList<>();
+		List<String> normalLore = new LinkedList<>();
 		boolean customEnch = false;
 		if (meta.hasLore()) {
 			for (String loreStr : meta.getLore()) {
 				Map.Entry<CustomEnchantment, Integer> ench = getEnchant(loreStr, world);
-				if (ench == null || ench.getKey() != this) {
-					customEnch = ench != null;
-					lore.add(loreStr);
+				if (ench == null && !isDescription(loreStr)) {
+					normalLore.add(loreStr);
+				} else if (ench != null && ench.getKey() != this) {
+					customEnch = true;
+					lore.add(ench.getKey().getShown(ench.getValue(), world));
+					lore.addAll(ench.getKey().getDescription(world));
 				}
 			}
 		}
 
 		if (level > 0 && level <= maxLevel){
-			String levelStr = Utilities.getRomanString(level);
-			lore.add(Utilities.toInvisibleString("ze.ench." + getId() + '.' + level) +
-				(isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr));
+			lore.add(this.getShown(level, world));
+			lore.addAll(this.getDescription(world));
 			customEnch = true;
 		}
+		lore.addAll(normalLore);
 		meta.setLore(lore);
 		stk.setItemMeta(meta);
 		setGlow(stk, customEnch);
