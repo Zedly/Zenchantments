@@ -97,8 +97,7 @@ public class AnvilMerge implements Listener {
 
 		CustomEnchantment.setGlow(newOutItem, !outEnchantments.isEmpty());
 
-        return config.descriptionLore() ?
-            CustomEnchantment.addDescriptions(newOutItem, null, config.getWorld()) : newOutItem;
+        return newOutItem;
     }
 
     @EventHandler(priority = MONITOR)

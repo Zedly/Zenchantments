@@ -263,6 +263,26 @@ public class WatcherEnchant implements Listener {
         }
     }
 
+    @EffectTask(Frequency.SLOW)
+    public static void updateDescrptions() {
+	    for (Player player : Bukkit.getOnlinePlayers()) {
+		    for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
+			    player.getInventory().getArmorContents(), player.getInventory().getContents())) {
+			    CustomEnchantment.setEnchantment(stk, null, 0, player.getWorld());
+		    }
+	    }
+    }
+
+	@EffectTask(Frequency.SLOW)
+	public static void updateToNewFormat() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
+				player.getInventory().getArmorContents(), player.getInventory().getContents())) {
+				CustomEnchantment.updateToNewFormat(stk, player.getWorld());
+			}
+		}
+	}
+
 	@EffectTask(Frequency.MEDIUM_HIGH)
 	// TODO: rename
 	// Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
@@ -281,19 +301,6 @@ public class WatcherEnchant implements Listener {
 					player.removeMetadata("ze.haste", Storage.zenchantments);
 				}
 			}
-
-
-			// Dude this runs four times every second!? xD
-			Config config = Config.get(player.getWorld());
-			for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
-					player.getInventory().getArmorContents(), player.getInventory().getContents())) {
-				if (config.descriptionLore()) {
-					CustomEnchantment.addDescriptions(stk, null, player.getWorld());
-				} else {
-					CustomEnchantment.removeDescriptions(stk, null, player.getWorld());
-				}
-			}
-
 
 			EnchantPlayer.matchPlayer(player).tick();
 			for (ItemStack stk : player.getInventory().getArmorContents()) {

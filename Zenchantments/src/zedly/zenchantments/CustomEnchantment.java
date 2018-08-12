@@ -228,87 +228,65 @@ public abstract class CustomEnchantment {
         });
     }
 
-
-
-
-	// Adds lore descriptions to a given item stack, but will remove a certain lore if the enchant is to be removed
-	public static ItemStack addDescriptions(ItemStack stk, CustomEnchantment delete, World world) {
-		if (true) {
-			return stk;
-		}
-		stk = removeDescriptions(stk, delete, world);
+	// Updates lore enchantments and descriptions to new format. This will be removed eventually
+	public static ItemStack updateToNewFormat(ItemStack stk, World world) {
 		if (stk != null) {
 			if (stk.hasItemMeta()) {
 				if (stk.getItemMeta().hasLore()) {
+					boolean hasEnch = false;
 					ItemMeta meta = stk.getItemMeta();
 					List<String> lore = new ArrayList<>();
-					for (String s : meta.getLore()) {
-						lore.add(s);
-						CustomEnchantment e = CustomEnchantment.getEnchant(s, world).getKey();
-						if (e != null) {
-							String str = e.description;
-							int start = 0;
-							int counter = 0;
-							for (int i = 0; i < str.toCharArray().length; i++) {
-								if (counter > 30) {
-									if (str.toCharArray()[i - 1] == ' ') {
-										//lore.add(getDescriptionColor() + str.substring(start, i));
-										counter = 0;
-										start = i;
-									}
+					CustomEnchantment lastEnch = null;
+
+					List<String> tempLore = new LinkedList<>();
+					for (String str : meta.getLore()) {
+
+						CustomEnchantment ench = null;
+						int level = 0;
+						if (str.startsWith(ChatColor.GRAY + "")) {
+							String stripString = ChatColor.stripColor(str);
+
+							int splitIndex = stripString.lastIndexOf(" ");
+							if (splitIndex != -1) {
+								if (stripString.length() > 2) {
+									level = Utilities.getNumber(stripString.substring(splitIndex + 1));
+									String enchant = stripString.substring(0, splitIndex);//ERROR
+									ench = Config.get(world).enchantFromString(enchant);
 								}
-								counter++;
 							}
-							//lore.add(getDescriptionColor() + str.substring(start));
 						}
-					}
-					meta.setLore(lore);
-					stk.setItemMeta(meta);
-				}
-			}
-		}
-		return stk;
-	}
 
-	// Removes the lore description from a given item
-	public static ItemStack removeDescriptions(ItemStack stk, CustomEnchantment delete, World world) {
-		if (true) {
-			return stk;
-		}
-		if (stk != null) {
-			if (stk.hasItemMeta()) {
-				if (stk.getItemMeta().hasLore()) {
-					ItemMeta meta = stk.getItemMeta();
-					List<String> lore = new ArrayList<>();
-					CustomEnchantment current = null;
-					for (String s : meta.getLore()) {
-						Map.Entry<CustomEnchantment, Integer> ench = getEnchant(s, world);
-						if (ench == null) {
+						if (ench != null) {
+							lastEnch = ench;
+							hasEnch = true;
+							lore.add(ench.getShown(level, world));
+							lore.addAll(tempLore);
+							tempLore.clear();
 							continue;
 						}
-						CustomEnchantment e = ench.getKey();
-						if (e != null) {
-							current = e;
-						}
-						if (current == null) {
-							if (delete != null) {
-								if (!delete.description.contains(ChatColor.stripColor(s))) {
-									lore.add(s);
-								}
-							} else {
-								lore.add(s);
+
+						if (lastEnch != null) {
+							tempLore.add(str);
+
+							StringBuilder bldr = new StringBuilder();
+							for (String ls : tempLore) {
+								bldr.append(ChatColor.stripColor(ls));
 							}
-						} else if (delete != null) {
-							if (!delete.description.contains(ChatColor.stripColor(s))
-								&& !current.description.contains(ChatColor.stripColor(s))) {
-								lore.add(s);
+							if (lastEnch.description.equals(bldr.toString())) {
+								lastEnch = null;
+								tempLore.clear();
 							}
-						} else if (!current.description.contains(ChatColor.stripColor(s))) {
-							lore.add(s);
+						} else {
+							lore.add(str);
 						}
 					}
+					lore.addAll(tempLore);
+
 					meta.setLore(lore);
 					stk.setItemMeta(meta);
+					if (hasEnch) {
+						setGlow(stk, true);
+					}
 					return stk;
 				}
 			}
@@ -337,10 +315,9 @@ public abstract class CustomEnchantment {
 		ItemStack stack;
 		Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
 		if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
-			stack = removeDescriptions(stk.clone(), null, world);
-			if (stack.hasItemMeta()) {
-				if (stack.getItemMeta().hasLore()) {
-					List<String> lore = stack.getItemMeta().getLore();
+			if (stk.hasItemMeta()) {
+				if (stk.getItemMeta().hasLore()) {
+					List<String> lore = stk.getItemMeta().getLore();
 					for (String raw : lore) {
 						Map.Entry<CustomEnchantment, Integer> ench = getEnchant(raw, world);
 						if (ench != null) {
@@ -425,12 +402,30 @@ public abstract class CustomEnchantment {
 
 	public List<String> getDescription(World world) {
 		List<String> desc = new LinkedList<>();
-		// Fix to be multiline
-		String str = (Config.get(world).descriptionLore() ?
-			Utilities.toInvisibleString("ze.desc." + getId())  +
-				"    " + Config.get(world).getDescriptionColor() + ChatColor.ITALIC + description
-			: null);
+		if (Config.get(world).descriptionLore()) {
+			String strStart = Utilities.toInvisibleString("ze.desc." + getId())
+				+ Config.get(world).getDescriptionColor() + "" + ChatColor.ITALIC + " ";
+			StringBuilder bldr = new StringBuilder();
 
+			int i = 0;
+			for (char c : description.toCharArray()) {
+				if (i < 30) {
+					i++;
+					bldr.append(c);
+				} else {
+					if (c == ' ') {
+						desc.add(strStart + bldr.toString());
+						bldr = new StringBuilder(" ");
+						i = 1;
+					} else {
+						bldr.append(c);
+					}
+				}
+			}
+			if (i != 0) {
+				desc.add(strStart + bldr.toString());
+			}
+		}
 		return desc;
 	}
 
@@ -448,27 +443,34 @@ public abstract class CustomEnchantment {
 	}
 
 	public void setEnchantment(ItemStack stk, int level, World world) {
+		setEnchantment(stk, this, level, world);
+	}
+
+	public static void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world) {
 		// Need to update to allow for arbitrary calling so descriptions are removed or added
+		if (stk == null){
+			return;
+		}
 		ItemMeta meta = stk.getItemMeta();
 		List<String> lore = new LinkedList<>();
 		List<String> normalLore = new LinkedList<>();
 		boolean customEnch = false;
 		if (meta.hasLore()) {
 			for (String loreStr : meta.getLore()) {
-				Map.Entry<CustomEnchantment, Integer> ench = getEnchant(loreStr, world);
-				if (ench == null && !isDescription(loreStr)) {
+				Map.Entry<CustomEnchantment, Integer> enchEntry = getEnchant(loreStr, world);
+				if (enchEntry == null && !isDescription(loreStr)) {
 					normalLore.add(loreStr);
-				} else if (ench != null && ench.getKey() != this) {
+				} else if (enchEntry != null && enchEntry.getKey() != ench) {
 					customEnch = true;
-					lore.add(ench.getKey().getShown(ench.getValue(), world));
-					lore.addAll(ench.getKey().getDescription(world));
+					lore.add(enchEntry.getKey().getShown(enchEntry.getValue(), world));
+					lore.addAll(enchEntry.getKey().getDescription(world));
 				}
 			}
 		}
 
-		if (level > 0 && level <= maxLevel){
-			lore.add(this.getShown(level, world));
-			lore.addAll(this.getDescription(world));
+		if (ench != null && level > 0 && level <= ench.maxLevel){
+			lore.add(ench.getShown(level, world));
+			lore.addAll(ench.getDescription(world));
 			customEnch = true;
 		}
 		lore.addAll(normalLore);
@@ -493,6 +495,7 @@ public abstract class CustomEnchantment {
 			enchs = bookMeta.getStoredEnchants();
 		} else {
 			enchs = itemMeta.getEnchants();
+
 		}
 
 		for (Map.Entry<Enchantment, Integer> set : enchs.entrySet()){
@@ -503,7 +506,7 @@ public abstract class CustomEnchantment {
 			}
 		}
 
-		if ((containsNormal) || (!customEnch && containsHidden)) {
+		if (containsNormal || (!customEnch && containsHidden)) {
 			if (stk.getType() == ENCHANTED_BOOK) {
 				if (duraLevel == 0) {
 					bookMeta.removeStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY);
@@ -529,6 +532,8 @@ public abstract class CustomEnchantment {
 
 		stk.setItemMeta(isBook ? bookMeta : itemMeta);
 	}
+
+
 
     protected static final class Builder<T extends CustomEnchantment> {
         private final T customEnchantment;

@@ -81,7 +81,7 @@ public class CommandProcessor {
             }
         }
 
-        return config.descriptionLore() ? CustomEnchantment.addDescriptions(stack, enchantment, config.getWorld()) : stack;
+        return stack;
     }
 
     // Reloads the Zenchantments plugin

@@ -194,7 +194,7 @@ public class Watcher implements Listener {
         Config config = Config.get(evt.getEnchantBlock().getWorld());
         Set<CustomEnchantment> enchAdd = new HashSet<>();
         ItemStack stk = evt.getItem();
-
+        boolean custEnch = false;
         for (int l = 1; l <= config.getMaxEnchants(); l++) {
             float totalChance = 0;
             Set<CustomEnchantment> enchs = new HashSet<>();
@@ -215,6 +215,7 @@ public class Watcher implements Listener {
             for (CustomEnchantment ench : enchs) {
                 running += ench.probability;
                 if (running > decision) {
+                    custEnch = true;
                     int level = Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost());
                     ench.setEnchantment(stk, level, evt.getEnchanter().getWorld());
                     enchAdd.add(ench);
@@ -222,19 +223,11 @@ public class Watcher implements Listener {
                 }
             }
         }
-        if (config.descriptionLore()) {
-            CustomEnchantment.addDescriptions(evt.getItem(), null, config.getWorld());
-        }
-        List<String> finalLore = stk.getItemMeta().getLore();
-
-        /*Inventory inv = evt.getInventory();
+        final boolean cE = custEnch;
         Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            ItemStack book = inv.getItem(0);
-            ItemMeta bookMeta = book.getItemMeta();
-            bookMeta.setLore(finalLore);
-            book.setItemMeta(bookMeta);
-            inv.setItem(0, book);
-        }, 0);*/
+            CustomEnchantment.setGlow(stk, cE);
+        }, 0);
+
     }
 
     // Removes certain potion effects given by enchantments when the enchanted items are removed

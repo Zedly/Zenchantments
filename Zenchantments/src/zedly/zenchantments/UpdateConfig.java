@@ -1,5 +1,6 @@
 package zedly.zenchantments;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.*;
@@ -26,12 +27,12 @@ public class UpdateConfig {
     }
 
     // Removes power and max level if they are not needed by an enchantment and adds any enchantments not in the config
-    public static void oneFourOne(YamlConfiguration config) {
+    private static void oneFourOne(YamlConfiguration config) {
         List<Map<String, LinkedHashMap<String, Object>>> list;
         if (config.get("enchantments") != null) {
             list = (List<Map<String, LinkedHashMap<String, Object>>>) config.get("enchantments");
         } else {
-            list = new ArrayList<Map<String, LinkedHashMap<String, Object>>>();
+            list = new ArrayList<>();
         }
         Map<String, CustomEnchantment> createdEnchants = new HashMap<>();
         for (Class cl : CustomEnchantment.class.getClasses()) {
@@ -43,9 +44,8 @@ public class UpdateConfig {
         }
         Set<String> names = new HashSet<>();
         for (Map<String, LinkedHashMap<String, Object>> tmp : list) {
-            for (String enchantmentName : tmp.keySet()) {
-                names.add(enchantmentName);
-            }
+            names.addAll(tmp.keySet());
+
         }
         for (String s : createdEnchants.keySet()) {
             if (!names.contains(s)) {
@@ -77,12 +77,17 @@ public class UpdateConfig {
                 }
             }
         }
-        //Sort Enchants
+        // Sort Enchants
         config.set("enchantments", list);
+
+        // New config items
+        //config.set("enchant_color", ChatColor.GRAY);
+        //config.set("curse_color", ChatColor.RED);
+
     }
 
     // Adds cooldown, power, and changes probability to a double. This also adds the Haste enchantment
-    public static void oneFourZero(YamlConfiguration config) {
+    private static void oneFourZero(YamlConfiguration config) {
         List<Map<String, LinkedHashMap<String, Object>>> list = (List<Map<String, LinkedHashMap<String, Object>>>) config.get("enchantments");
         for (Map<String, LinkedHashMap<String, Object>> tmp : list) {
             for (String map : tmp.keySet()) {
