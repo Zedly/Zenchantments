@@ -27,9 +27,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
-import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.entity.EntityType.*;
+import static org.bukkit.Material.*;
 import org.bukkit.entity.Guardian;
 import org.bukkit.event.block.BlockGrowEvent;
 
@@ -41,10 +41,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class CompatibilityAdapter {
 
+
+
     private static final CompatibilityAdapter INSTANCE = new CompatibilityAdapter();
     private static final Random RND = new Random();
 
-    private static final Material[] UNBREAKABLE_BLOCKS = {AIR, BEDROCK, WATER, STATIONARY_WATER,
+    private static final Material[] UNBREAKABLE_BLOCKS = {Material.AIR, BEDROCK, WATER, STATIONARY_WATER,
         LAVA, STATIONARY_LAVA, PISTON_EXTENSION, PISTON_MOVING_PIECE, PORTAL, ENDER_PORTAL,
         ENDER_PORTAL_FRAME, DRAGON_EGG};
 

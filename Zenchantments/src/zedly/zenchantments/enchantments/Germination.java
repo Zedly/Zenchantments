@@ -14,13 +14,13 @@ import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.GameMode.CREATIVE;
-import static org.bukkit.Material.INK_SACK;
+import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Germination extends CustomEnchantment {
 
-    private static final ItemStack BONE_MEAL = new ItemStack(Material.INK_SACK, 1, (short) 15);
+    private static final ItemStack BONE_MEAL = new ItemStack(INK_SACK, 1, (short) 15);
     public static final int ID = 19;
 
     @Override

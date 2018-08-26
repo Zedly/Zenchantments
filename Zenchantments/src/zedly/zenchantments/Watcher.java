@@ -21,14 +21,14 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.enchantments.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
@@ -191,42 +191,63 @@ public class Watcher implements Listener {
         if (evt.getItem().getType() == FISHING_ROD && evt.getExpLevelCost() <= 4) {
             return;
         }
+
         Config config = Config.get(evt.getEnchantBlock().getWorld());
-        Set<CustomEnchantment> enchAdd = new HashSet<>();
+
+        Map<CustomEnchantment, Integer> addedEnchants = new HashMap<>();
         ItemStack stk = evt.getItem();
-        boolean custEnch = false;
+
         for (int l = 1; l <= config.getMaxEnchants(); l++) {
+
+
             float totalChance = 0;
-            Set<CustomEnchantment> enchs = new HashSet<>();
-            for (CustomEnchantment ench : config.getEnchants()) {
+            List<CustomEnchantment> mainPool = new ArrayList<>(config.getEnchants());
+            Collections.shuffle(mainPool);
+            Set<CustomEnchantment> validPool = new HashSet<>();
+
+            for (CustomEnchantment ench : mainPool) {
                 boolean b = true;
-                for (CustomEnchantment e : enchAdd) {
-                    if (ArrayUtils.contains(ench.conflicting, e.getClass()) || enchAdd.contains(ench) || e.probability <= 0) {
+                for (CustomEnchantment e : addedEnchants.keySet()) {
+                    if (ArrayUtils.contains(ench.conflicting, e.getClass()) || addedEnchants.containsKey(ench) || e.probability <= 0) {
                         b = false;
+                        break;
                     }
                 }
-                if (b && (ench.validMaterial(evt.getItem().getType()) || evt.getItem().getType().equals(BOOK))) {
-                    enchs.add(ench);
+                if (b && (evt.getItem().getType().equals(BOOK) || ench.validMaterial(evt.getItem().getType()))) {
+	                validPool.add(ench);
                     totalChance += ench.probability;
                 }
             }
             double decision = (Storage.rnd.nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), l);
             float running = 0;
-            for (CustomEnchantment ench : enchs) {
+            for (CustomEnchantment ench : validPool) {
                 running += ench.probability;
                 if (running > decision) {
-                    custEnch = true;
                     int level = Utilities.getEnchantLevel(ench.maxLevel, evt.getExpLevelCost());
-                    ench.setEnchantment(stk, level, evt.getEnchanter().getWorld());
-                    enchAdd.add(ench);
+                    addedEnchants.put(ench, level);
                     break;
                 }
             }
         }
-        final boolean cE = custEnch;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            CustomEnchantment.setGlow(stk, cE);
-        }, 0);
+        for (Map.Entry<CustomEnchantment, Integer> pair : addedEnchants.entrySet()) {
+        	pair.getKey().setEnchantment(stk, pair.getValue(), config.getWorld());
+        }
+
+	    if (evt.getItem().getType().equals(ENCHANTED_BOOK)) {
+		    List<String> finalLore = stk.getItemMeta().getLore();
+		    Inventory inv = evt.getInventory();
+		    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+			    ItemStack book = inv.getItem(0);
+			    ItemMeta bookMeta = book.getItemMeta();
+			    bookMeta.setLore(finalLore);
+			    book.setItemMeta(bookMeta);
+			    inv.setItem(0, book);
+		    }, 0);
+	    }
+
+	    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+		    CustomEnchantment.setGlow(stk, !addedEnchants.isEmpty());
+	    }, 0);
 
     }
 

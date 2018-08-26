@@ -117,9 +117,9 @@ public class CommandProcessor {
                         + ChatColor.AQUA + " is not online or does not exist.");
                 return true;
             }
-            Material mat;
+            Material mat = null;
             if (s.hasNextInt()) {
-                mat = Material.getMaterial(s.nextInt());
+                // TODO: ID MAPPINGS, mat = Material.getMaterial(s.nextInt());
             } else {
                 mat = Material.matchMaterial(s.next());
             }
@@ -137,13 +137,14 @@ public class CommandProcessor {
                 }
                 boolean contains = false;
                 for (String str : config.getEnchantNames()) {
-                    if (name.toLowerCase().replace("_", "").equals(ChatColor.stripColor(str))) {
+                    if (name.toLowerCase().replace("_", " ").equals(ChatColor.stripColor(str.toLowerCase()))) {
                         contains = true;
                         name = str;
                     }
                 }
                 if (contains) {
                     CustomEnchantment ench = config.enchantFromString(name);
+
                     if (ench.validMaterial(mat) || mat == Material.BOOK || mat == Material.ENCHANTED_BOOK) {
                         enchantments.put(ench, level);
                     } else {

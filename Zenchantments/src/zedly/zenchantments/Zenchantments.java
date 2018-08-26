@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import static org.bukkit.Material.STATIONARY_LAVA;
-import static org.bukkit.Material.STATIONARY_WATER;
+import static org.bukkit.Material.*;
+
 
 public class Zenchantments extends JavaPlugin {
 
@@ -121,12 +121,12 @@ public class Zenchantments extends JavaPlugin {
 
     // Adds the enchantments (given by the string) of level 'level' to the given item stack, returning true if the
     //      action was successful
-    public boolean addEnchantment(ItemStack stk, String enchantmentName, int lvl, World world) {
+    public boolean addEnchantment(ItemStack stk, String enchantmentName, int lvl) {
         for (Config c : Config.CONFIGS.values()) {
 	        Set<CustomEnchantment> ench = c.getEnchants();
 	        CustomEnchantment e;
 	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
-            	e.setEnchantment(stk, lvl, world);
+            	e.setEnchantment(stk, lvl, c.getWorld());
                 return true;
             }
         }
@@ -135,12 +135,12 @@ public class Zenchantments extends JavaPlugin {
 
     // Removes the enchantment (given by the string) from the given item stack, returning true if the action was
     //      successful
-    public boolean removeEnchantment(ItemStack stk, String enchantmentName, World world) {
+    public boolean removeEnchantment(ItemStack stk, String enchantmentName) {
         for (Config c : Config.CONFIGS.values()) {
 	        Set<CustomEnchantment> ench = c.getEnchants();
 	        CustomEnchantment e;
 	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
-            	e.setEnchantment(stk, 0, world);
+            	e.setEnchantment(stk, 0, c.getWorld());
                 return true;
             }
         }

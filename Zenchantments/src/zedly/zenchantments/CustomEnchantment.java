@@ -473,6 +473,7 @@ public abstract class CustomEnchantment {
 			lore.addAll(ench.getDescription(world));
 			customEnch = true;
 		}
+
 		lore.addAll(normalLore);
 		meta.setLore(lore);
 		stk.setItemMeta(meta);
@@ -505,7 +506,6 @@ public abstract class CustomEnchantment {
 				containsHidden = true;
 			}
 		}
-
 		if (containsNormal || (!customEnch && containsHidden)) {
 			if (stk.getType() == ENCHANTED_BOOK) {
 				if (duraLevel == 0) {
@@ -518,7 +518,7 @@ public abstract class CustomEnchantment {
 				}
 				itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
 			}
-		} else if (!containsNormal && customEnch) {
+		} else if (customEnch) {
 			if (stk.getType() == BOOK) {
 				stk.setType(ENCHANTED_BOOK);
 				bookMeta = (EnchantmentStorageMeta) stk.getItemMeta();

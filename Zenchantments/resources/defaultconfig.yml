@@ -433,7 +433,7 @@ enchantments:
       Name: Stock
       Max Level: 1
       Cooldown: 0
-      Power: 1.0ma
+      Power: 1.0
   - Stream:
       Probability: 1.0
       Tools: Elytra
@@ -551,3 +551,13 @@ description_lore : false
 
 #  Determines the color of enchantment descriptions shown in lore
 description_color: a
+
+#  Determines if enchantment glow is added by default even without vanilla enchantments.
+#  (Set to false if you have issues with the HIDE_ENCHANTMENTS flag resetting)
+enchantment_glow: false
+
+#  Determines the color for enchantment lore
+enchant_color: 7
+
+#  Determines the color for curse lore
+curse_color: c

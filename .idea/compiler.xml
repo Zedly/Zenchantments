@@ -23,6 +23,7 @@
       <module name="NMS_1_10_R1" target="1.8" />
       <module name="NMS_1_11_R1" target="1.8" />
       <module name="NMS_1_12_R1" target="1.8" />
+      <module name="NMS_1_13_R1" target="1.8" />
       <module name="Zenchantments" target="1.8" />
       <module name="Zenchantments-parent" target="1.5" />
     </bytecodeTargetLevel>

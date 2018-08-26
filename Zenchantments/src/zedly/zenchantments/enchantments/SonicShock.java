@@ -12,7 +12,7 @@ import static zedly.zenchantments.enums.Tool.WINGS;
 
 public class SonicShock extends CustomEnchantment {
 
-    public static final int ID = 56;
+    public static final int ID = 75;
 
     @Override
     public Builder<SonicShock> defaults() {

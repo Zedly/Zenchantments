@@ -1,6 +1,7 @@
 package zedly.zenchantments;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.CharacterType;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,11 +34,15 @@ public class Config {
     private final boolean descriptionLore;                     // Determines if description lore appears on tools
     private final ChatColor descriptionColor;                  // The color of the description lore
     private final World world;                                 // The World associated with the config
+	private final boolean enchantGlow;
+	private final ChatColor enchantmentColor;
+	private final ChatColor curseColor;
 
     // Constructs a new config object
     public Config(Set<CustomEnchantment> worldEnchants, double enchantRarity,
             int maxEnchants, int shredDrops, boolean explosionBlockBreak,
-            boolean descriptionLore, ChatColor descriptionColor, World world) {
+            boolean descriptionLore, ChatColor descriptionColor, ChatColor enchantmentColor,
+	        ChatColor curseColor, boolean enchantGlow, World world) {
         this.worldEnchants = worldEnchants;
         this.enchantRarity = enchantRarity;
         this.maxEnchants = maxEnchants;
@@ -61,6 +66,10 @@ public class Config {
 	    for (CustomEnchantment ench : this.worldEnchants) {
 		    enchNames.add(ench.getLoreName());
 	    }
+
+	    this.enchantGlow = enchantGlow;
+	    this.enchantmentColor = enchantmentColor;
+	    this.curseColor = curseColor;
 
         allEnchants.addAll(worldEnchants);
     }
@@ -99,6 +108,15 @@ public class Config {
     public ChatColor getDescriptionColor() {
         return descriptionColor;
     }
+
+    // Returns whether enchant glow is enabled for custom enchantments
+    public boolean enchantGlow() { return enchantGlow; }
+
+    // Returns the color for enchantment lore
+    public ChatColor getEnchantmentColor() { return enchantmentColor; }
+
+    // Returns the color for curse lore
+    public ChatColor getCurseColor() { return curseColor; }
 
     // Returns the world associated with the config
     public World getWorld() {
@@ -167,8 +185,15 @@ public class Config {
                 int maxEnchants = (int) yamlConfig.get("max_enchants");
                 boolean explosionBlockBreak = (boolean) yamlConfig.get("explosion_block_break");
                 boolean descriptionLore = (boolean) yamlConfig.get("description_lore");
-                ChatColor color = ChatColor.getByChar("" + yamlConfig.get("description_color"));
-                ChatColor descriptionColor = (color != null) ? color : ChatColor.GREEN;
+                boolean enchantGlow = (boolean) yamlConfig.get("enchantment_glow");
+                ChatColor descriptionColor = ChatColor.getByChar("" + yamlConfig.get("description_color"));
+	            ChatColor enchantColor = ChatColor.getByChar("" + yamlConfig.get("enchantment_color"));
+	            ChatColor curseColor = ChatColor.getByChar("" + yamlConfig.get("curse_color"));
+
+	            descriptionColor = (descriptionColor != null) ? descriptionColor : ChatColor.GREEN;
+	            enchantColor = enchantColor != null ? enchantColor : ChatColor.GRAY;
+	            curseColor = curseColor != null ? curseColor : ChatColor.RED;
+
                 switch ((String) yamlConfig.get("shred_drops")) {
                     case "all":
                         shredDrops = 0;
@@ -211,7 +236,6 @@ public class Config {
                             if (data.get("Power") != null) {
                                 ench.power((double) data.get("Power"));
                             }
-
                             Set<Tool> materials = new HashSet<>();
                             for (String s : ((String) data.get("Tools")).split(", |\\,")) {
                                 materials.add(Tool.fromString(s));
@@ -225,8 +249,8 @@ public class Config {
                         System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
                     }
                 }
-                Config config = new Config(enchantments, enchantRarity, maxEnchants, shredDrops,
-                        explosionBlockBreak, descriptionLore, descriptionColor, world);
+                Config config = new Config(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
+	                descriptionLore, descriptionColor, enchantColor, curseColor, enchantGlow, world);
                 Config.CONFIGS.put(world, config);
             } catch (IOException | InvalidConfigurationException ex) {
 	            System.err.println("Error parsing config for world " + world.getName() + ", skipping");
