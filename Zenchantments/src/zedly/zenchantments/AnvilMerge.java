@@ -95,7 +95,7 @@ public class AnvilMerge implements Listener {
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
 
-		CustomEnchantment.setGlow(newOutItem, !outEnchantments.isEmpty());
+		CustomEnchantment.setGlow(newOutItem, !outEnchantments.isEmpty(), config.getWorld());
 
         return newOutItem;
     }

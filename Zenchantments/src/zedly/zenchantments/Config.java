@@ -1,7 +1,6 @@
 package zedly.zenchantments;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import jdk.nashorn.internal.runtime.regexp.joni.encoding.CharacterType;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -172,7 +171,7 @@ public class Config {
                         version = new int[]{0, 0, 0};
                     }
                 } catch (Exception ex) {
-                    version = new int[]{0, 0, 0};
+                    version = new int[]{1, 5, 0};
                 }
                 UpdateConfig.update(yamlConfig, version);
 

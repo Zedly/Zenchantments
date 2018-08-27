@@ -15,19 +15,30 @@ public class UpdateConfig {
                 oneFourZero(config);
                 break;
             case 4:
-                switch (version[2]) {
-                    case 0:
-                    case 1:
-                        oneFourOne(config);
+            case 5:
+                switch(version[2]) {
+                    case 2:
                         break;
+                    default:
+                        oneFiveTwo(config);
                 }
                 break;
         }
         config.set("ZenchantmentsConfigVersion", Storage.version);
     }
 
+
+    private static void oneFiveTwo(YamlConfiguration config) {
+        config.set("enchantment_glow", false);
+        config.set("enchant_color", ChatColor.GRAY);
+        config.set("curse_color", ChatColor.RED);
+
+        genericUpdate(config);
+
+    }
+
     // Removes power and max level if they are not needed by an enchantment and adds any enchantments not in the config
-    private static void oneFourOne(YamlConfiguration config) {
+    private static void genericUpdate(YamlConfiguration config) {
         List<Map<String, LinkedHashMap<String, Object>>> list;
         if (config.get("enchantments") != null) {
             list = (List<Map<String, LinkedHashMap<String, Object>>>) config.get("enchantments");
@@ -79,11 +90,6 @@ public class UpdateConfig {
         }
         // Sort Enchants
         config.set("enchantments", list);
-
-        // New config items
-        //config.set("enchant_color", ChatColor.GRAY);
-        //config.set("curse_color", ChatColor.RED);
-
     }
 
     // Adds cooldown, power, and changes probability to a double. This also adds the Haste enchantment
@@ -113,7 +119,7 @@ public class UpdateConfig {
         list2.add(m);
         config.set("enchantments", list2);
 
-        oneFourOne(config);
+        genericUpdate(config);
     }
 
 }

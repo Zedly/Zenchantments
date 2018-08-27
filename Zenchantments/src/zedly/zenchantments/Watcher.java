@@ -176,7 +176,7 @@ public class Watcher implements Listener {
     	if (event.getMessage().startsWith("/enchant ")) {
     	    boolean customEnch  = !CustomEnchantment.getEnchants(event.getPlayer().getInventory().getItemInMainHand(), event.getPlayer().getWorld()).isEmpty();
 		    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			    CustomEnchantment.setGlow(event.getPlayer().getInventory().getItemInMainHand(), customEnch);
+			    CustomEnchantment.setGlow(event.getPlayer().getInventory().getItemInMainHand(), customEnch, event.getPlayer().getWorld());
 		    }, 0);
 	    }
     }
@@ -246,7 +246,7 @@ public class Watcher implements Listener {
 	    }
 
 	    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-		    CustomEnchantment.setGlow(stk, !addedEnchants.isEmpty());
+		    CustomEnchantment.setGlow(stk, !addedEnchants.isEmpty(), config.getWorld());
 	    }, 0);
 
     }

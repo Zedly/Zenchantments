@@ -285,7 +285,7 @@ public abstract class CustomEnchantment {
 					meta.setLore(lore);
 					stk.setItemMeta(meta);
 					if (hasEnch) {
-						setGlow(stk, true);
+						setGlow(stk, true, world);
 					}
 					return stk;
 				}
@@ -477,10 +477,13 @@ public abstract class CustomEnchantment {
 		lore.addAll(normalLore);
 		meta.setLore(lore);
 		stk.setItemMeta(meta);
-		setGlow(stk, customEnch);
+		setGlow(stk, customEnch, world);
 	}
 
-	public static void setGlow(ItemStack stk, boolean customEnch) {
+	public static void setGlow(ItemStack stk, boolean customEnch, World world) {
+		if (!Config.get(world).enchantGlow()) {
+			return;
+		}
 		ItemMeta itemMeta = stk.getItemMeta();
 		EnchantmentStorageMeta bookMeta = null;
 
