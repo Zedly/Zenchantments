@@ -287,6 +287,7 @@ public class WatcherEnchant implements Listener {
 	// TODO: rename
 	// Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
 	public static void scanPlayers2() {
+
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.hasMetadata("ze.haste")) {
 				boolean has = false;

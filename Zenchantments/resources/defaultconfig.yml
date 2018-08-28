@@ -1,4 +1,4 @@
-ZenchantmentsConfigVersion: 1.5.0
+ZenchantmentsConfigVersion: 1.5.2
   
 # Probability: (Decimal) (0 = no probability, -1 = disabled)
 #    Chance of obtaining the enchantment when enchanting
@@ -557,7 +557,7 @@ description_color: a
 enchantment_glow: false
 
 #  Determines the color for enchantment lore
-enchant_color: 7
+enchantment_color: 7
 
 #  Determines the color for curse lore
 curse_color: c

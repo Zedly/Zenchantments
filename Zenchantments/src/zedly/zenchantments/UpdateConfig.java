@@ -1,5 +1,6 @@
 package zedly.zenchantments;
 
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -30,8 +31,8 @@ public class UpdateConfig {
 
     private static void oneFiveTwo(YamlConfiguration config) {
         config.set("enchantment_glow", false);
-        config.set("enchant_color", ChatColor.GRAY);
-        config.set("curse_color", ChatColor.RED);
+        config.set("enchantment_color", 7);
+        config.set("curse_color", 'c');
 
         genericUpdate(config);
 
@@ -39,30 +40,42 @@ public class UpdateConfig {
 
     // Removes power and max level if they are not needed by an enchantment and adds any enchantments not in the config
     private static void genericUpdate(YamlConfiguration config) {
-        List<Map<String, LinkedHashMap<String, Object>>> list;
+    	// Get the existing config data from the file
+        List<Map<String, LinkedHashMap<String, Object>>> configData;
         if (config.get("enchantments") != null) {
-            list = (List<Map<String, LinkedHashMap<String, Object>>>) config.get("enchantments");
+            configData = (List<Map<String, LinkedHashMap<String, Object>>>) config.get("enchantments");
         } else {
-            list = new ArrayList<>();
+            configData = new ArrayList<>();
         }
-        Map<String, CustomEnchantment> createdEnchants = new HashMap<>();
-        for (Class cl : CustomEnchantment.class.getClasses()) {
-            try {
-                CustomEnchantment e = (CustomEnchantment) cl.newInstance();
-                createdEnchants.put(e.loreName, e);
-            } catch (InstantiationException | IllegalAccessException e) {
-            }
-        }
-        Set<String> names = new HashSet<>();
-        for (Map<String, LinkedHashMap<String, Object>> tmp : list) {
-            names.addAll(tmp.keySet());
 
+
+        Map<String, CustomEnchantment> enchantments = new HashMap<>();
+        List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+        new FastClasspathScanner(CustomEnchantment.class.getPackage().getName())
+            .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
+            .scan();
+
+	    for (Class<? extends CustomEnchantment> cl : customEnchantments) {
+		    try {
+			    CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();
+			    enchantments.put(ench.loreName(), ench.build());
+		    } catch (IllegalAccessException | ClassCastException | InstantiationException ex) {
+			    System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
+		    }
+
+	    }
+
+        Set<String> names = new HashSet<>();
+        for (Map<String, LinkedHashMap<String, Object>> tmp : configData) {
+            names.addAll(tmp.keySet());
         }
-        for (String s : createdEnchants.keySet()) {
+
+        for (String s : enchantments.keySet()) {
             if (!names.contains(s)) {
                 Map<String, LinkedHashMap<String, Object>> ench = new HashMap<>();
                 LinkedHashMap<String, Object> values = new LinkedHashMap<>();
-                CustomEnchantment e = createdEnchants.get(s);
+                CustomEnchantment e = enchantments.get(s);
+
                 values.put("Probability", 0.0);
                 String tools = e.enchantable[0].getID();
                 for (int i = 1; i < e.enchantable.length; i++) {
@@ -74,22 +87,21 @@ public class UpdateConfig {
                 values.put("Cooldown", e.cooldown);
                 values.put("Power", e.power);
                 ench.put(e.loreName, values);
-                list.add(ench);
+                configData.add(ench);
             }
         }
-
-        for (Map<String, LinkedHashMap<String, Object>> tmp : list) {
+        for (Map<String, LinkedHashMap<String, Object>> tmp : configData) {
             for (String enchantmentName : tmp.keySet()) {
-                if (createdEnchants.get(enchantmentName).power < 0.0) {
+                if (enchantments.get(enchantmentName).power < 0.0) {
                     tmp.get(enchantmentName).remove("Power");
                 }
-                if (createdEnchants.get(enchantmentName).maxLevel < 2) {
+                if (enchantments.get(enchantmentName).maxLevel < 2) {
                     tmp.get(enchantmentName).remove("Max Level");
                 }
             }
         }
         // Sort Enchants
-        config.set("enchantments", list);
+        config.set("enchantments", configData);
     }
 
     // Adds cooldown, power, and changes probability to a double. This also adds the Haste enchantment

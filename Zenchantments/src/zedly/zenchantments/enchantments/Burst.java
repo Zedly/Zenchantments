@@ -44,10 +44,12 @@ public class Burst extends CustomEnchantment {
     public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
         final Player player = evt.getPlayer();
         final ItemStack hand = Utilities.usedStack(player, usedHand);
+        boolean result = false;
         if(evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
             for(int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
                 if(hand.containsEnchantment(Enchantment.ARROW_INFINITE) ||
                    Utilities.removeItemCheck(player, Material.ARROW, (short) 0, 1)) {
+                	result = true;
                     Utilities.setHand(player, hand, usedHand);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                         Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(),
@@ -66,12 +68,12 @@ public class Burst extends CustomEnchantment {
                             EnchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
                             Utilities.damageTool(player, 1, usedHand);
                         }
+
                     }, i * 2);
                 }
-                return true;
             }
         }
-        return false;
+        return result;
     }
 
 }

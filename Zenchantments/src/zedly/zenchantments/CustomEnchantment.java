@@ -397,7 +397,8 @@ public abstract class CustomEnchantment {
 	public String getShown(int level, World world) {
 		String levelStr = Utilities.getRomanString(level);
 		return Utilities.toInvisibleString("ze.ench." + getId() + '.' + level) +
-			(isCursed ? ChatColor.RED : ChatColor.GRAY) + loreName + " " + (maxLevel == 1 ? "" : levelStr);
+			(isCursed ? Config.get(world).getCurseColor() : Config.get(world).getEnchantmentColor()) + loreName + " "
+			+ (maxLevel == 1 ? "" : levelStr);
 	}
 
 	public List<String> getDescription(World world) {
