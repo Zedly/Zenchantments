@@ -249,8 +249,13 @@ public abstract class CustomEnchantment {
 							int splitIndex = stripString.lastIndexOf(" ");
 							if (splitIndex != -1) {
 								if (stripString.length() > 2) {
+									String enchant;
 									level = Utilities.getNumber(stripString.substring(splitIndex + 1));
-									String enchant = stripString.substring(0, splitIndex);//ERROR
+									try {
+										enchant = stripString.substring(0, splitIndex);
+									} catch (Exception e){
+										enchant = "";
+									}
 									ench = Config.get(world).enchantFromString(enchant);
 								}
 							}
@@ -448,7 +453,6 @@ public abstract class CustomEnchantment {
 	}
 
 	public static void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world) {
-		// Need to update to allow for arbitrary calling so descriptions are removed or added
 		if (stk == null){
 			return;
 		}

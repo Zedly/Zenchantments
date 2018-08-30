@@ -287,7 +287,6 @@ public class WatcherEnchant implements Listener {
 	// TODO: rename
 	// Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
 	public static void scanPlayers2() {
-
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.hasMetadata("ze.haste")) {
 				boolean has = false;
@@ -324,7 +323,10 @@ public class WatcherEnchant implements Listener {
 	// Fast Scan of Player's Armor and their hand to register enchantments
 	public static void scanPlayers() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			EnchantPlayer.matchPlayer(player).tick();
+			EnchantPlayer enchPlayer = EnchantPlayer.matchPlayer(player);
+			if (enchPlayer != null) {
+				enchPlayer.tick();
+			}
 			for (ItemStack stk : player.getInventory().getArmorContents()) {
 				CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
 					return ench.onFastScan(player, level, true);

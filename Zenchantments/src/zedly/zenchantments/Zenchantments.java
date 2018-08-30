@@ -109,7 +109,7 @@ public class Zenchantments extends JavaPlugin {
         for (Config c : Config.CONFIGS.values()) {
             Set<CustomEnchantment> ench = c.getEnchants();
 	        CustomEnchantment e;
-            if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
+            if ((e = c.enchantFromString(enchantmentName)) != null) {
                 is = e.validMaterial(stack);
                 if (is) {
                     return true;
@@ -125,7 +125,7 @@ public class Zenchantments extends JavaPlugin {
         for (Config c : Config.CONFIGS.values()) {
 	        Set<CustomEnchantment> ench = c.getEnchants();
 	        CustomEnchantment e;
-	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
+	        if ((e = c.enchantFromString(enchantmentName)) != null) {
             	e.setEnchantment(stk, lvl, c.getWorld());
                 return true;
             }
@@ -139,7 +139,7 @@ public class Zenchantments extends JavaPlugin {
         for (Config c : Config.CONFIGS.values()) {
 	        Set<CustomEnchantment> ench = c.getEnchants();
 	        CustomEnchantment e;
-	        if ((e = c.enchantFromString(enchantmentName.toLowerCase())) != null) {
+	        if ((e = c.enchantFromString(enchantmentName)) != null) {
             	e.setEnchantment(stk, 0, c.getWorld());
                 return true;
             }
@@ -153,7 +153,7 @@ public class Zenchantments extends JavaPlugin {
 		Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription()
 		                        .getVersion();
 		loadConfigs();
-
+		getCommand("ench").setTabCompleter(new CommandProcessor.TabCompletion());
 		getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
 		getServer().getPluginManager().registerEvents(new WatcherArrow(), this);
 		getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);

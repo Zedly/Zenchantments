@@ -25,7 +25,6 @@ public class Config {
     private final Set<CustomEnchantment> worldEnchants;     // Set of active Custom Enchantments
 	private final Map<String, CustomEnchantment> nameToEnch;
 	private final Map<Integer, CustomEnchantment> idToEnch;
-	private final Set<String> enchNames;
     private final double enchantRarity;                        // Overall rarity of obtaining enchantments
     private final int maxEnchants;                             // Max number of Custom Enchantments on a tool
     private final int shredDrops;                              // The setting (all, block, none) for shred drops
@@ -53,17 +52,12 @@ public class Config {
 
         this.nameToEnch = new HashMap<>();
         for (CustomEnchantment ench : this.worldEnchants) {
-	        nameToEnch.put(ench.getLoreName(), ench);
+	        nameToEnch.put(ChatColor.stripColor(ench.getLoreName().toLowerCase().replace(" ", "")), ench);
         }
 
 	    this.idToEnch = new HashMap<>();
 	    for (CustomEnchantment ench : this.worldEnchants) {
 		    idToEnch.put(ench.getId(), ench);
-	    }
-
-	    this.enchNames = new HashSet<>();
-	    for (CustomEnchantment ench : this.worldEnchants) {
-		    enchNames.add(ench.getLoreName());
 	    }
 
 	    this.enchantGlow = enchantGlow;
@@ -122,16 +116,16 @@ public class Config {
         return world;
     }
 
-    public CustomEnchantment enchantFromString(String str) {
-    	return nameToEnch.get(str);
+    public CustomEnchantment enchantFromString(String enchName) {
+    	return nameToEnch.get(ChatColor.stripColor(enchName.toLowerCase()));
+    }
+
+    public List<String> getEnchantNames() {
+        return new ArrayList<>(nameToEnch.keySet());
     }
 
     public CustomEnchantment enchantFromID(int id) {
     	return idToEnch.get(id);
-    }
-
-    public Set<String> getEnchantNames() {
-    	return enchNames;
     }
 
     // Loads, parses, and auto updates the config file, creating a new config for each map 

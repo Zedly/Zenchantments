@@ -60,7 +60,8 @@ public class TaskRunner implements Runnable {
 			try {
 				m.invoke(null);
 			} catch (IllegalAccessException | InvocationTargetException e) {
-				this.logger.log(Level.SEVERE, "Could not invoke event '" + m.getName() + "'", e);
+				this.logger.log(Level.SEVERE, "Could not invoke event '" + m.getName() + "' due to \n" + e.getCause(), e);
+				e.printStackTrace();
 			}
 		}
 	}
