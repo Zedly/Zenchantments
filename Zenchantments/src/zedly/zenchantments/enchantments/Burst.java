@@ -55,6 +55,9 @@ public class Burst extends CustomEnchantment {
                         Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(),
                                                                    player.getLocation().getDirection(), 1, 0);
                         arrow.setShooter(player);
+                        if(hand.containsEnchantment(Enchantment.ARROW_FIRE)) {
+                            arrow.setFireTicks(Integer.MAX_VALUE);
+                        }
                         arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
                         EntityShootBowEvent shootEvent = new EntityShootBowEvent(player, hand, arrow, 1f);
                         ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);

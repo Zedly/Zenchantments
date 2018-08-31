@@ -10,6 +10,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import zedly.zenchantments.enums.Tool;
 
 import java.util.*;
 
@@ -22,51 +23,78 @@ public class CommandProcessor {
 	public static class TabCompletion implements TabCompleter {
 		@Override
 		public List<String> onTabComplete (CommandSender sender, Command commandlabel, String alias, String[] args) {
-			if (!(sender instanceof Player)) {
+			if (args.length == 0 || !(sender instanceof Player)) {
 				return null;
-			}
-			if (args.length == 0) {
-				return null; // command list
 			}
 
 			EnchantPlayer player = EnchantPlayer.matchPlayer((Player) sender);
 			Config config = Config.get(player.getPlayer().getWorld());
 			ItemStack stack = player.getPlayer().getInventory().getItemInMainHand();
 			String label = args[0].toLowerCase();
+			List<String> results  = new LinkedList<>();
 			switch (commandlabel.getName().toLowerCase()) {
 				case "ench":
 					switch (label) {
 						case "reload":
-							return null; // N/A
-						case "give":
-							return null; // TODO: Cycle through players, item types, enchant names
 						case "list":
-							return null; // N/A
-						case "info":
-							case "disable":
-							case "enable":
-							{
-								// COLOR of enabled/disabled
-								List<String> enchants = config.getEnchantNames();
-								if (args.length > 1) {
-									enchants.removeIf(e -> !e.startsWith(args[1]));
-								}
-								return enchants;
-							}
 						case "help":
-							return null; // N/A
-						default:
-							List<String> enchants = config.getEnchantNames();
-							if (args.length > 0) {
-								enchants.removeIf(e-> !e.startsWith(args[0]));
+							break;
+						case "give":
+							if (args.length == 1) {
+							} else if (args.length == 2) {
+								for (Player plyr : Bukkit.getOnlinePlayers()) {
+									if (plyr.getPlayerListName().toLowerCase().startsWith(args[1].toLowerCase())) {
+										results.add(plyr.getPlayerListName());
+									}
+								}
+							} else if (args.length == 3) {
+								for (Material mat : Tool.ALL.getMaterials()) {
+									if (mat.toString().toLowerCase().startsWith(args[2].toLowerCase())) {
+										results.add(mat.toString());
+									}
+								}
+							} else if (config.enchantFromString(args[args.length - 2]) != null) {
+								CustomEnchantment ench = config.enchantFromString(args[args.length - 2]);
+								for (int i = 1; i <= ench.getMaxLevel(); i++) {
+									results.add(i + "");
+								}
+							} else {
+								for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
+									if (ench.getKey().startsWith(args[args.length - 1]) && (stack.getType() == BOOK
+										|| stack.getType() == ENCHANTED_BOOK
+										|| ench.getValue().validMaterial(Material.matchMaterial(args[2])))){
+										results.add(ench.getKey());
+									}
+								}
 							}
-							// cycle through enchantment levels
-							return enchants;
+							break;
+						case "disable":
+						case "enable":
+							results.add("all");
+						case "info":
+							results = config.getEnchantNames();
+							if (args.length > 1) {
+								results.removeIf(e -> !e.startsWith(args[1]));
+							}
+							break;
+						default:
+							if (args.length == 1) {
+								for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
+									if (ench.getKey().startsWith(args[0]) && (stack.getType() == BOOK ||
+									stack.getType() == ENCHANTED_BOOK || ench.getValue().validMaterial(stack.getType())
+									|| stack.getType() == AIR)){
+										results.add(ench.getKey());
+									}
+								}
+							} else if (args.length == 2) {
+								CustomEnchantment ench = config.enchantFromString(args[0]);
+								for (int i = 1; i <= ench.getMaxLevel(); i++) {
+									results.add(i + "");
+								}
+							}
 					}
 			}
-
-
-			return null;
+			return results;
 		}
 	}
 

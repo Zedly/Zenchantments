@@ -124,6 +124,10 @@ public class Config {
         return new ArrayList<>(nameToEnch.keySet());
     }
 
+    public Set<Map.Entry<String, CustomEnchantment>> getSimpleMappings() {
+        return nameToEnch.entrySet();
+    }
+
     public CustomEnchantment enchantFromID(int id) {
     	return idToEnch.get(id);
     }
