@@ -33,7 +33,7 @@ public class Arborist extends CustomEnchantment {
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
         Block blk = evt.getBlock();
-        if(blk.getType() == LOG || blk.getType() == LOG_2 || blk.getType() == LEAVES_2 || blk.getType() == LEAVES) {
+        if(blk.getType() == Material.LOG || blk.getType() == LOG_2 || blk.getType() == LEAVES_2 || blk.getType() == LEAVES) {
             short s = (short) blk.getData();
             if(s >= 8) {
                 s -= 8;
@@ -41,7 +41,7 @@ public class Arborist extends CustomEnchantment {
             ItemStack stk;
             if(blk.getType() == LOG_2 || blk.getType() == LEAVES_2) {
                 stk = new ItemStack(SAPLING, 1, (short) (s + 4));
-            } else {
+            } else {b
                 stk = new ItemStack(SAPLING, 1, s);
             }
             if(Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {

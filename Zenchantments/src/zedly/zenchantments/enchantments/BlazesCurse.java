@@ -70,7 +70,7 @@ public class BlazesCurse extends CustomEnchantment {
     @Override
     public boolean onScan(Player player, int level, boolean usedHand) {
         Material mat = player.getLocation().getBlock().getType();
-        if(mat == STATIONARY_WATER || mat == WATER) {
+        if(mat == WATER) {
             ADAPTER.damagePlayer(player, submergeDamage, EntityDamageEvent.DamageCause.DROWNING);
             return true;
         }
@@ -79,7 +79,7 @@ public class BlazesCurse extends CustomEnchantment {
             ADAPTER.damagePlayer(player, rainDamage, EntityDamageEvent.DamageCause.MELTING);
             return true;
         }
-        if(player.getWorld().hasStorm() == true
+        if(player.getWorld().hasStorm()
            && !ArrayUtils.contains(noRainBiomes, player.getLocation().getBlock().getBiome())
            && player.getLocation().getY() >= player.getWorld().getHighestBlockYAt(player.getLocation())) {
             ADAPTER.damagePlayer(player, rainDamage, EntityDamageEvent.DamageCause.CUSTOM);

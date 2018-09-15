@@ -28,7 +28,7 @@ public class SingularityArrow extends EnchantedArrow {
 		for (int i = 1; i <= 61; i++) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
 				Utilities.display(l, Particle.SMOKE_LARGE, 50, .001f, .75f, .75f, .75f);
-				l.getWorld().playSound(l, Sound.ENTITY_ENDERDRAGON_GROWL, 10f, .1f);
+				l.getWorld().playSound(l, Sound.ENTITY_ENDER_DRAGON_GROWL, 10f, .1f);
 			}, i);
 		}
 		die();

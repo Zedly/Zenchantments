@@ -35,7 +35,7 @@ public class FrozenStep extends CustomEnchantment {
     }
 
     public boolean onScan(Player player, int level, boolean usedHand) {
-        if(player.isSneaking() && player.getLocation().getBlock().getType() == STATIONARY_WATER &&
+        if(player.isSneaking() && player.getLocation().getBlock().getType() == WATER &&
            !player.isFlying()) {
             player.setVelocity(player.getVelocity().setY(.4));
         }
@@ -48,7 +48,7 @@ public class FrozenStep extends CustomEnchantment {
                 if(possiblePlatformLoc.distanceSquared(block.getLocation()) < radius * radius - 2) {
                     if(frozenLocs.containsKey(possiblePlatformLoc)) {
                         frozenLocs.put(possiblePlatformLoc, System.nanoTime());
-                    } else if(possiblePlatformBlock.getType() == STATIONARY_WATER
+                    } else if(possiblePlatformBlock.getType() == WATER
                               && possiblePlatformBlock.getData() == 0
                               && possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
                         if(ADAPTER.formBlock(possiblePlatformBlock, PACKED_ICE, (byte) 0, player)) {

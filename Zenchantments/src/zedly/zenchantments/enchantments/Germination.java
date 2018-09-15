@@ -20,7 +20,7 @@ import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Germination extends CustomEnchantment {
 
-    private static final ItemStack BONE_MEAL = new ItemStack(INK_SACK, 1, (short) 15);
+    private static final ItemStack BONE_MEAL = new ItemStack(Material.BONE_MEAL);
     public static final int ID = 19;
 
     @Override
@@ -65,7 +65,7 @@ public class Germination extends CustomEnchantment {
                             Utilities.damageTool(player, 1, usedHand);
                         }
                         if(!player.getGameMode().equals(CREATIVE)) {
-                            Utilities.removeItem(player, INK_SACK, (short) 15, 1);
+                            Utilities.removeItem(player, BONE_MEAL);
                         }
                     }
                 }

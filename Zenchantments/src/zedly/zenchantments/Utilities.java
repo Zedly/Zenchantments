@@ -112,7 +112,7 @@ public class Utilities {
         removeItem(player, mat, (short) 0, amount);
     }
 
-    // Removes a certain number of an item stack of the given description from the players inventory
+    // Removes an item stack of the given description from the players inventory
     public static void removeItem(Player player, ItemStack is) {
         removeItem(player, is.getType(), is.getDurability(), is.getAmount());
     }

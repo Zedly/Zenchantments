@@ -4,7 +4,7 @@
     <root id="archive" name="Zenchantments.jar">
       <element id="module-output" name="Zenchantments" />
       <element id="module-output" name="compatibility-adapter" />
-      <element id="module-output" name="NMS_1_12_R1" />
+      <element id="module-output" name="NMS_1_13_R1" />
       <element id="module-output" name="NMS_1_11_R1" />
       <element id="module-output" name="NMS_1_10_R1" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/3.1.9/fast-classpath-scanner-3.1.9.jar" path-in-jar="/" />

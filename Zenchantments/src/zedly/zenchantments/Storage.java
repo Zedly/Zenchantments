@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.compatibility.NMS_1_13_R1;
 
 import java.util.*;
 
@@ -51,7 +52,7 @@ public class Storage {
         System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
         switch (nmsVersionString) {
             case "v1_12_R1":
-                COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_12_R1.getInstance();
+                COMPATIBILITY_ADAPTER = NMS_1_13_R1.getInstance();
                 break;
             case "v1_11_R1":
                 COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_11_R1.getInstance();

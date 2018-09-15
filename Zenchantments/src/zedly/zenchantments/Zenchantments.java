@@ -65,10 +65,10 @@ public class Zenchantments extends JavaPlugin {
 	    speedPlayers(true);
         getServer().getScheduler().cancelTasks(this);
         for (Location l : FrozenStep.frozenLocs.keySet()) {
-            l.getBlock().setType(STATIONARY_WATER);
+            l.getBlock().setType(WATER);
         }
         for (Location l : NetherStep.netherstepLocs.keySet()) {
-            l.getBlock().setType(STATIONARY_LAVA);
+            l.getBlock().setType(LAVA);
         }
         for (Entity e : Anthropomorphism.idleBlocks.keySet()) {
             e.remove();

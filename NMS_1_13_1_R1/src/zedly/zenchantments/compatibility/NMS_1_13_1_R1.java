@@ -8,30 +8,26 @@ package zedly.zenchantments.compatibility;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
-import net.minecraft.server.v1_10_R1.BlockPosition;
-import net.minecraft.server.v1_10_R1.DataWatcher;
-import net.minecraft.server.v1_10_R1.EntityMushroomCow;
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.EntitySheep;
-import net.minecraft.server.v1_10_R1.EnumHand;
-import net.minecraft.server.v1_10_R1.PacketDataSerializer;
-import net.minecraft.server.v1_10_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_10_R1.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_12_R1.BlockPosition;
+import net.minecraft.server.v1_12_R1.DataWatcher;
+import net.minecraft.server.v1_12_R1.EntityMushroomCow;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.EntitySheep;
+import net.minecraft.server.v1_12_R1.EnumHand;
+import net.minecraft.server.v1_12_R1.PacketDataSerializer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntityLiving;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftSheep;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftSheep;
 
 import org.bukkit.Material;
-import static org.bukkit.Material.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Player;
-
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Location;
+import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
 import static org.bukkit.entity.EntityType.*;
 
@@ -39,16 +35,22 @@ import static org.bukkit.entity.EntityType.*;
  *
  * @author Dennis
  */
-public class NMS_1_10_R1 extends CompatibilityAdapter {
+public class NMS_1_13_R1 extends CompatibilityAdapter {
 
-    private static final NMS_1_10_R1 INSTANCE = new NMS_1_10_R1();
+    private static final NMS_1_13_R1 INSTANCE = new NMS_1_13_R1();
 
     private static final Material[] UNBREAKABLE_BLOCKS = {AIR, BEDROCK, WATER, STATIONARY_WATER,
         LAVA, STATIONARY_LAVA, PISTON_EXTENSION, PISTON_MOVING_PIECE, PORTAL, ENDER_PORTAL,
         ENDER_PORTAL_FRAME, DRAGON_EGG, BARRIER, END_GATEWAY, STRUCTURE_BLOCK};
 
     private static final Material[] STORAGE_BLOCKS = {DISPENSER, MOB_SPAWNER, CHEST, FURNACE,
-        BURNING_FURNACE, JUKEBOX, ENDER_CHEST, COMMAND, BEACON, TRAPPED_CHEST, HOPPER, DROPPER};
+        BURNING_FURNACE, JUKEBOX, ENDER_CHEST, COMMAND, BEACON, TRAPPED_CHEST, HOPPER, DROPPER,
+        OBSERVER,
+        PURPLE_SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX,
+        LIME_SHULKER_BOX, GREEN_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, BLUE_SHULKER_BOX,
+        BLACK_SHULKER_BOX, GRAY_SHULKER_BOX, WHITE_SHULKER_BOX, BROWN_SHULKER_BOX,
+        CYAN_SHULKER_BOX, MAGENTA_SHULKER_BOX, PINK_SHULKER_BOX, SILVER_SHULKER_BOX
+    };
 
     private static final Material[] INTERACTABLE_BLOCKS = {
         DISPENSER, NOTE_BLOCK, BED_BLOCK, CHEST, WORKBENCH, FURNACE, BURNING_FURNACE,
@@ -56,18 +58,27 @@ public class NMS_1_10_R1 extends CompatibilityAdapter {
         FENCE_GATE, ENCHANTMENT_TABLE, BREWING_STAND, ENDER_CHEST, COMMAND, BEACON, WOOD_BUTTON,
         ANVIL, TRAPPED_CHEST, REDSTONE_COMPARATOR_OFF, REDSTONE_COMPARATOR_ON, DAYLIGHT_DETECTOR,
         HOPPER, DROPPER, SPRUCE_FENCE_GATE, BIRCH_FENCE_GATE, JUNGLE_FENCE_GATE, DARK_OAK_FENCE_GATE,
-        ACACIA_FENCE_GATE, SPRUCE_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, DARK_OAK_DOOR, STRUCTURE_BLOCK};
+        ACACIA_FENCE_GATE, SPRUCE_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, DARK_OAK_DOOR, OBSERVER,
+        PURPLE_SHULKER_BOX, STRUCTURE_BLOCK};
 
-    private static final Material[] ORES = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
+    private static final Material ORES[] = new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE,
         IRON_ORE, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GLOWING_REDSTONE_ORE};
 
-    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, SKELETON, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
+    private static final Material[] TERRAFORMER_MATERIALS = {STONE, GRASS, DIRT, COBBLESTONE, WOOD, SAND, GRAVEL,
+        GOLD_ORE, IRON_ORE, COAL_ORE, LOG, LEAVES, LAPIS_ORE, SANDSTONE,
+        DOUBLE_STEP, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK,
+        CLAY, NETHERRACK, SOUL_SAND, SMOOTH_BRICK, HUGE_MUSHROOM_1, HUGE_MUSHROOM_2,
+        MYCEL, NETHER_BRICK, ENDER_STONE, WOOD_DOUBLE_STEP, EMERALD_ORE, QUARTZ_ORE,
+        QUARTZ_BLOCK, STAINED_CLAY, LEAVES_2, LOG_2, SLIME_BLOCK, PRISMARINE, HARD_CLAY,
+        PACKED_ICE, RED_SANDSTONE, DOUBLE_STONE_SLAB2, CONCRETE, CONCRETE_POWDER, PURPLE_GLAZED_TERRACOTTA,
+    RED_GLAZED_TERRACOTTA, ORANGE_GLAZED_TERRACOTTA, YELLOW_GLAZED_TERRACOTTA, LIME_GLAZED_TERRACOTTA,
+    GREEN_GLAZED_TERRACOTTA, LIGHT_BLUE_SHULKER_BOX, BLUE_GLAZED_TERRACOTTA, BLACK_GLAZED_TERRACOTTA,
+    GRAY_GLAZED_TERRACOTTA, WHITE_GLAZED_TERRACOTTA, BROWN_GLAZED_TERRACOTTA, CYAN_GLAZED_TERRACOTTA,
+    MAGENTA_GLAZED_TERRACOTTA, PINK_GLAZED_TERRACOTTA, SILVER_GLAZED_TERRACOTTA};
 
-    
-    private NMS_1_10_R1() {
-    }
+    private static final EntityType[] TRANSFORMATION_ENTITY_TYPES = new EntityType[]{BAT, VEX, STRAY, SKELETON, HUSK, ZOMBIE, SILVERFISH, ENDERMITE, ZOMBIE, PIG_ZOMBIE, VILLAGER, WITCH, COW, MUSHROOM_COW, SLIME, MAGMA_CUBE, WITHER_SKULL, SKELETON, OCELOT, WOLF};
 
-    public static NMS_1_10_R1 getInstance() {
+    public static NMS_1_13_R1 getInstance() {
         return INSTANCE;
     }
 
@@ -103,11 +114,18 @@ public class NMS_1_10_R1 extends CompatibilityAdapter {
         return ORES;
     }
 
+    public static Material[] getTerraformerMaterials() {
+        return TERRAFORMER_MATERIALS;
+    }
+
     @Override
     public EntityType[] getTransformationEntityTypes() {
         return TRANSFORMATION_ENTITY_TYPES;
     }
-    
+
+    private NMS_1_13_R1() {
+    }
+
     @Override
     public boolean breakBlockNMS(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
@@ -119,14 +137,10 @@ public class NMS_1_10_R1 extends CompatibilityAdapter {
     public boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
         if (target instanceof CraftSheep) {
             EntitySheep entitySheep = ((CraftSheep) target).getHandle();
-            ItemStack is = player.getInventory().getItemInMainHand();
-            net.minecraft.server.v1_10_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(is);
-            return entitySheep.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND, nmsIs);
+            return entitySheep.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
         } else if (target instanceof CraftMushroomCow) {
             EntityMushroomCow entityMushroomCow = ((CraftMushroomCow) target).getHandle();
-            ItemStack is = player.getInventory().getItemInMainHand();
-            net.minecraft.server.v1_10_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(is);
-            return entityMushroomCow.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND, nmsIs);
+            return entityMushroomCow.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
         }
         return false;
     }
@@ -149,7 +163,17 @@ public class NMS_1_10_R1 extends CompatibilityAdapter {
         ep.playerConnection.networkManager.sendPacket(ppoed);
         return true;
     }
-    
+
+    @Override
+    public Entity spawnGuardian(Location loc, boolean elderGuardian) {
+        return loc.getWorld().spawnEntity(loc, elderGuardian ? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
+    }
+
+    @Override
+    public boolean isZombie(Entity e) {
+        return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER;
+    }
+
     @Override
     public boolean isBlockSafeToBreak(Block b) {
         Material mat = b.getType();
@@ -229,5 +253,5 @@ public class NMS_1_10_R1 extends CompatibilityAdapter {
             pds.writeByte(0x60); // Set Glowing and Invisible bits
             pds.writeByte(0xFF); // Index -1 indicates end of Metadata
         }
-    }    
+    }
 }
