@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-import static org.bukkit.Material.GLOWING_REDSTONE_ORE;
-import static org.bukkit.Material.REDSTONE_ORE;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
@@ -136,11 +133,7 @@ public class Pierce extends CustomEnchantment {
             List<Block> used = new ArrayList<>();
             if(ArrayUtils.contains(Storage.ORES, evt.getBlock().getType())) {
                 Material mat[];
-                if(evt.getBlock().getType() != REDSTONE_ORE && evt.getBlock().getType() != GLOWING_REDSTONE_ORE) {
-                    mat = new Material[]{evt.getBlock().getType()};
-                } else {
-                    mat = new Material[]{REDSTONE_ORE, GLOWING_REDSTONE_ORE};
-                }
+                mat = new Material[]{evt.getBlock().getType()};
                 oreBFS(evt.getBlock(), used, total, mat, 0);
             } else {
                 return false;

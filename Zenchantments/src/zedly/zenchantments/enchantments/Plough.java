@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
@@ -44,9 +45,9 @@ public class Plough extends CustomEnchantment {
                         if(block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
                             if(((block.getRelative(x, y, z).getType() == DIRT
                                  || block.getRelative(x, y, z).getType() == GRASS
-                                 || block.getRelative(x, y, z).getType() == MYCEL))
+                                 || block.getRelative(x, y, z).getType() == MYCELIUM))
                                && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), SOIL, 0);
+                                ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), FARMLAND, 0);
                                 if(Storage.rnd.nextBoolean()) {
                                     Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                                 }

@@ -102,11 +102,6 @@ public class MockBlockState implements BlockState {
         block.getState().setType(mtrl);
     }
 
-    @Deprecated
-    @Override
-    public boolean setTypeId(int i) {
-        return block.getState().setTypeId(i);
-    }
 
     @Override
     public boolean update() {

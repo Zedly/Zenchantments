@@ -23,13 +23,12 @@ public class Shred extends CustomEnchantment {
 
     private static final Material[] ALLOWED_MATERIALS =
             new Material[]{STONE, COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE,
-                           NETHERRACK, LAPIS_ORE, GLOWSTONE, QUARTZ_ORE, EMERALD_ORE, GRASS, SOUL_SAND,
-                           GLOWING_REDSTONE_ORE,
-                           DIRT, MYCEL, SAND, GRAVEL, SOUL_SAND, CLAY, HARD_CLAY, STAINED_CLAY, SANDSTONE,
+                           NETHERRACK, LAPIS_ORE, GLOWSTONE, NETHER_QUARTZ_ORE, EMERALD_ORE, GRASS, SOUL_SAND,
+                           DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY, HARD_CLAY, STAINED_CLAY, SANDSTONE,
                            RED_SANDSTONE, ICE, PACKED_ICE};
 
     private static final Material SHOVELABLE_MATERIALS[] =
-            new Material[]{GLOWSTONE, GRASS, DIRT, MYCEL, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
+            new Material[]{GLOWSTONE, GRASS, DIRT, MYCELIUM, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
     public static final  int      ID                     = 52;
 
     @Override
@@ -78,7 +77,7 @@ public class Shred extends CustomEnchantment {
                     return;
                 }
                 if(config.getShredDrops() == 1) {
-                    if(relativeBlock.getType().equals(QUARTZ_ORE)) {
+                    if(relativeBlock.getType().equals(NETHER_QUARTZ_ORE)) {
                         relativeBlock.setType(NETHERRACK);
                     } else if(ArrayUtils.contains(Storage.ORES, relativeBlock.getType())) {
                         relativeBlock.setType(STONE);

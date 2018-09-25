@@ -51,14 +51,8 @@ public class Storage {
         String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
         System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
         switch (nmsVersionString) {
-            case "v1_12_R1":
-                COMPATIBILITY_ADAPTER = NMS_1_13_R1.getInstance();
-                break;
-            case "v1_11_R1":
-                COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_11_R1.getInstance();
-                break;
-            case "v1_10_R1":
-                COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.NMS_1_10_R1.getInstance();
+            case "v1_13_R1":
+                COMPATIBILITY_ADAPTER = NMS_1_13_1_R1.getInstance();
                 break;
             default:
                 System.out.println("No compatible adapter available, falling back to Bukkit. Not everything will work!");

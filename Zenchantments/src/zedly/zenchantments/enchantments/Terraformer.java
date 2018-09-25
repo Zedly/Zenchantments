@@ -63,7 +63,7 @@ public class Terraformer extends CustomEnchantment {
                         }
                     }
                 }
-                if(mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
+                if(mat == Material.MUSHROOM_STEM || mat == Material.BROWN_MUSHROOM_BLOCK || mat == Material.RED_MUSHROOM_BLOCK) {
                     bt = 14;
                 }
 

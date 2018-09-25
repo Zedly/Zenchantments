@@ -74,7 +74,7 @@ public class Switch extends CustomEnchantment {
 
             Material mat = switchItem.getType();
             byte blockData;
-            if(mat == HUGE_MUSHROOM_1 || mat == HUGE_MUSHROOM_2) {
+            if(mat == Material.MUSHROOM_STEM || mat == Material.BROWN_MUSHROOM_BLOCK || mat == Material.RED_MUSHROOM_BLOCK) {
                 blockData = 14;
             } else {
                 blockData = switchItem.getData().getData();
