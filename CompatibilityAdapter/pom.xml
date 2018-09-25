@@ -5,14 +5,15 @@
         <groupId>zedly</groupId>
         <artifactId>Zenchantments-parent</artifactId>
         <version>1.6.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>compatibility-adapter</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.13.1-R0.1-SNAPSHOT</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.13-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
