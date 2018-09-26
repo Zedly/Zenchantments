@@ -1,29 +1,24 @@
 package zedly.zenchantments.compatibility;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class EnumStorage<T> {
+	private static Random rnd = new Random();
+	private        Set<T> enums;
+	private        T[]    enumArray;
 
-	private Set<T> enums;
-
+	@SafeVarargs
 	public EnumStorage(T[] t, EnumStorage<T>... enums) {
-		this.enums = new HashSet<T>(Arrays.asList(t));
-		for (int i = 0; i < enums.length; ++i) {
-			this.enums.addAll(enums[i].enums);
+		this(t);
+		for (EnumStorage<T> anEnum : enums) {
+			this.enums.addAll(anEnum.enums);
 		}
+		enumArray = (T[]) this.enums.toArray();
 	}
 
 	public EnumStorage(T[] t) {
-		this.enums = new HashSet<T>(Arrays.asList(t));
-	}
-
-	public EnumStorage(EnumStorage<T>... enums) {
-		for (int i = 0; i < enums.length; ++i) {
-			this.enums.addAll(enums[i].enums);
-		}
+		this.enums = new HashSet<>(Arrays.asList(t));
+		enumArray = (T[]) this.enums.toArray();
 	}
 
 	public boolean contains(T t) {
@@ -38,4 +33,7 @@ public class EnumStorage<T> {
 		return Collections.unmodifiableSet(enums);
 	}
 
+	public T getRandom() {
+		return enumArray[rnd.nextInt(enumArray.length)];
+	};
 }

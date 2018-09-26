@@ -14,6 +14,8 @@ import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
+import static zedly.zenchantments.compatibility.CompatibilityAdapter.LARGE_FLOWERS;
+import static zedly.zenchantments.compatibility.CompatibilityAdapter.SMALL_FLOWERS;
 import static zedly.zenchantments.enums.Tool.SHEAR;
 
 public class Rainbow extends CustomEnchantment {
@@ -37,29 +39,22 @@ public class Rainbow extends CustomEnchantment {
 
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-        short blockData;
         Material dropMaterial;
-        if(evt.getBlock().getType() == RED_ROSE || evt.getBlock().getType() == YELLOW_FLOWER) {
-            short sh = (short) Storage.rnd.nextInt(9);
-            dropMaterial = (sh == 7) ? YELLOW_FLOWER : RED_ROSE;
-            blockData = (sh == 7) ? 0 : (short) Storage.rnd.nextInt(9);
-        } else if(evt.getBlock().getType() == DOUBLE_PLANT
-                  && (ArrayUtils.contains(FLOWER_DATA_VALUES, evt.getBlock().getData()))) {
-            dropMaterial = DOUBLE_PLANT;
-            blockData = (short) Storage.rnd.nextInt(6);
-            blockData = FLOWER_DATA_VALUES[blockData];
+        if(SMALL_FLOWERS.contains(evt.getBlock().getType())) {
+            dropMaterial
+            // Random one
+        } else if(LARGE_FLOWERS.contains(evt.getBlock().getType())) {
+            // Random one
         } else {
             return false;
         }
         evt.setCancelled(true);
-        if(evt.getBlock().getRelative(DOWN).getType() == DOUBLE_PLANT) {
-
+        if(LARGE_FLOWERS.contains(evt.getBlock().getRelative(DOWN).getType())) {
             evt.getBlock().getRelative(DOWN).setType(AIR);
         }
         evt.getBlock().setType(AIR);
         Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-        evt.getPlayer().getWorld()
-           .dropItem(Utilities.getCenter(evt.getBlock()), new ItemStack(dropMaterial, 1, blockData));
+        evt.getPlayer().getWorld().dropItem(Utilities.getCenter(evt.getBlock()), new ItemStack(dropMaterial, 1));
         return true;
     }
 

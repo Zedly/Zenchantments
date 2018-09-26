@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.*;
+import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -16,16 +17,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.bukkit.Material.*;
+import static zedly.zenchantments.compatibility.CompatibilityAdapter.AIRS;
+import static zedly.zenchantments.compatibility.CompatibilityAdapter.ORES;
+import static zedly.zenchantments.compatibility.CompatibilityAdapter.TERRACOTTAS;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class Shred extends CustomEnchantment {
 
-    private static final Material[] ALLOWED_MATERIALS =
-            new Material[]{STONE, COAL_ORE, REDSTONE_ORE, DIAMOND_ORE, GOLD_ORE, IRON_ORE,
-                           NETHERRACK, LAPIS_ORE, GLOWSTONE, NETHER_QUARTZ_ORE, EMERALD_ORE, GRASS, SOUL_SAND,
-                           DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY, HARD_CLAY, STAINED_CLAY, SANDSTONE,
-                           RED_SANDSTONE, ICE, PACKED_ICE};
+
+    private static final EnumStorage<Material> ALLOWED_MATERIALS = new EnumStorage<>(new Material[]{STONE, NETHERRACK,
+        GLOWSTONE, GRASS, SOUL_SAND, DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY, SANDSTONE, RED_SANDSTONE, ICE,
+        PACKED_ICE}, ORES, TERRACOTTAS);
+
 
     private static final Material SHOVELABLE_MATERIALS[] =
             new Material[]{GLOWSTONE, GRASS, DIRT, MYCELIUM, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
@@ -47,7 +51,7 @@ public class Shred extends CustomEnchantment {
 
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-        if(evt.getBlock().getType() != AIR && !ArrayUtils.contains(ALLOWED_MATERIALS, evt.getBlock().getType())) {
+        if(!ALLOWED_MATERIALS.contains(evt.getBlock().getType())) {
             return false;
         }
         ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
@@ -61,9 +65,9 @@ public class Shred extends CustomEnchantment {
     public void blocks(Block centerBlock, final Block relativeBlock, int[] coords, int time, double size,
                        Set<Block> used,
                        final Player player, final Config config, final Material itemType, boolean usedHand) {
-        if(relativeBlock.getType() != AIR && !used.contains(relativeBlock)) {
+        if(AIRS.contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
             final Material originalType = relativeBlock.getType();
-            if(!ArrayUtils.contains(ALLOWED_MATERIALS, relativeBlock.getType())
+            if(!ALLOWED_MATERIALS.contains(relativeBlock.getType())
                || (Tool.SHOVEL.contains(itemType)
                    && !ArrayUtils.contains(SHOVELABLE_MATERIALS, relativeBlock.getType()))) {
                 return;

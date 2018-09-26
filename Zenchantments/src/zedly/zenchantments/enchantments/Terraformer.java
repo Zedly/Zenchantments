@@ -56,7 +56,7 @@ public class Terraformer extends CustomEnchantment {
                 for(int i = 0; i < 9; i++) {
                     if(evt.getPlayer().getInventory().getItem(i) != null) {
                         if(evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
-                           ArrayUtils.contains(CompatibilityAdapter.getTerraformerMaterials(), evt.getPlayer().getInventory().getItem(i).getType())) {
+                           ArrayUtils.contains(CompatibilityAdapter.getTerraformerMaterials().getEnums().toArray(), evt.getPlayer().getInventory().getItem(i).getType())) {
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
                             bt = evt.getPlayer().getInventory().getItem(i).getData().getData();
                             break;

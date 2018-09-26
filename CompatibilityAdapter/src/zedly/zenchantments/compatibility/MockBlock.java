@@ -16,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -41,6 +42,10 @@ public class MockBlock implements Block {
         return newData;
     }
 
+    @Override public BlockData getBlockData() {
+        return realBlock.getBlockData();
+    }
+
     @Override
     public Block getRelative(int i, int i1, int i2) {
         return realBlock.getRelative(i, i1, i2);
@@ -59,11 +64,6 @@ public class MockBlock implements Block {
     @Override
     public Material getType() {
         return newType;
-    }
-
-    @Override
-    public int getTypeId() {
-        return newType.getId();
     }
 
     @Override
@@ -117,13 +117,12 @@ public class MockBlock implements Block {
     }
 
     @Override
-    public void setData(byte b) {
-        realBlock.setData(b);
+    public void setBlockData(BlockData data) {
+        realBlock.setBlockData(data);
     }
 
-    @Override
-    public void setData(byte b, boolean bln) {
-        realBlock.setData(b, bln);
+    @Override public void setBlockData(BlockData data, boolean applyPhysics) {
+        realBlock.setBlockData(data, applyPhysics);
     }
 
     @Override
@@ -134,21 +133,6 @@ public class MockBlock implements Block {
     @Override
     public void setType(Material mtrl, boolean bln) {
         realBlock.setType(mtrl, bln);
-    }
-
-    @Override
-    public boolean setTypeId(int i) {
-        return realBlock.setTypeId(i);
-    }
-
-    @Override
-    public boolean setTypeId(int i, boolean bln) {
-        return realBlock.setTypeId(i, bln);
-    }
-
-    @Override
-    public boolean setTypeIdAndData(int i, byte b, boolean bln) {
-        return realBlock.setTypeIdAndData(i, b, bln);
     }
 
     @Override

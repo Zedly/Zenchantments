@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -45,11 +46,6 @@ public class MockBlockState implements BlockState {
     @Override
     public Material getType() {
         return newType;
-    }
-
-    @Override
-    public int getTypeId() {
-        return newType.getId();
     }
 
     @Override
@@ -102,6 +98,13 @@ public class MockBlockState implements BlockState {
         block.getState().setType(mtrl);
     }
 
+    @Override public BlockData getBlockData() {
+        return block.getState().getBlockData();
+    }
+
+    @Override public void setBlockData(BlockData data) {
+        block.getState().setBlockData(data);
+    }
 
     @Override
     public boolean update() {
