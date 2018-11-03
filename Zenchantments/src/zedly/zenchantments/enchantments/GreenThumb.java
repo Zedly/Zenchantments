@@ -3,6 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -57,14 +58,14 @@ public class GreenThumb extends CustomEnchantment {
                                     byte data = 0;
                                     Material mat;
                                     switch(centerBlock.getBiome()) {
-                                        case MUSHROOM_ISLAND:
-                                        case MUSHROOM_ISLAND_SHORE:
-                                            mat = MYCEL;
+                                        case MUSHROOM_FIELD_SHORE:
+                                        case MUSHROOM_FIELDS:
+                                            mat = Material.MYCELIUM;
                                             break;
-                                        case REDWOOD_TAIGA:
-                                        case REDWOOD_TAIGA_HILLS:
-                                        case TAIGA_COLD:
-                                        case TAIGA_COLD_HILLS:
+                                        case GIANT_SPRUCE_TAIGA:
+                                        case GIANT_TREE_TAIGA:
+                                        case GIANT_SPRUCE_TAIGA_HILLS:
+                                        case GIANT_TREE_TAIGA_HILLS:
                                             data = (byte) 2;
                                         default:
                                             mat = GRASS;

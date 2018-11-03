@@ -39,6 +39,7 @@ public class Variety extends CustomEnchantment {
 
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
+
         if(evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
             evt.getBlock().setType(AIR);
             evt.getBlock().getWorld()

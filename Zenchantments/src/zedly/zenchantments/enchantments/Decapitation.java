@@ -35,16 +35,21 @@ public class Decapitation extends CustomEnchantment {
             .handUse(Hand.LEFT);
     }
 
+    private static EntityType[] entities = new EntityType[]{PLAYER, SKELETON, WITHER_SKULL, ZOMBIE, CREEPER};
+    private static Material[] skulls = new Material[]{Material.PLAYER_HEAD, Material.SKELETON_SKULL, Material.WITHER_SKELETON_SKULL,
+        Material.ZOMBIE_HEAD, Material.CREEPER_HEAD};
+
     @Override
     public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
-        EntityType[] t = new EntityType[]{SKELETON, WITHER_SKULL, ZOMBIE, PLAYER, CREEPER};
-        short id = (short) ArrayUtils.indexOf(t, evt.getEntityType());
+
+        short id = (short) ArrayUtils.indexOf(entities, evt.getEntityType());
         if(id == -1) {
             return false;
         }
-        if(id == 3) {
+        ItemStack stk = new ItemStack(skulls[id], 1);
+        if(id == 0) {
             if(Storage.rnd.nextInt(Math.max((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * power)), 1)) == 0) {
-                ItemStack stk = new ItemStack(Material.SKULL_ITEM, 1, id);
+
                 SkullMeta meta = (SkullMeta) stk.getItemMeta();
                 meta.setOwner(evt.getEntity().getName());
                 stk.setItemMeta(meta);
@@ -52,7 +57,6 @@ public class Decapitation extends CustomEnchantment {
                 return true;
             }
         } else if(Storage.rnd.nextInt(Math.max((int) Math.round(BASE_MOB_DROP_CHANCE / (level * power)), 1)) == 0) {
-            ItemStack stk = new ItemStack(Material.SKULL_ITEM, 1, id);
             evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(), stk);
             return true;
         }

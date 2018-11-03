@@ -17,10 +17,10 @@ public class Gluttony extends CustomEnchantment {
     private static final double[]   SATURATIONS =
             {12.0, 12.8, 4.8, 12.8, 6.0, 7.2, 7.2, 9.6, 7.2, 6.0, 9.6, 6.0, 2.4, 3.6, 0.4, 1.2, 1.2};
     private static final Material[] FOOD_ITEMS = new Material[]{RABBIT_STEW, COOKED_BEEF, PUMPKIN_PIE,
-                                                                 GRILLED_PORK, BAKED_POTATO, BEETROOT_SOUP,
+                                                                 PORKCHOP, BAKED_POTATO, BEETROOT_SOUP,
                                                                  COOKED_CHICKEN, COOKED_MUTTON,
-                                                                 MUSHROOM_SOUP, COOKED_FISH, COOKED_FISH, BREAD,
-                                                                 APPLE, CARROT_ITEM, COOKIE,
+                                                                 MUSHROOM_STEW, COOKED_FISH, COOKED_FISH, BREAD,
+                                                                 APPLE, CARROT, COOKIE,
                                                                  MELON, BEETROOT};
     public static final  int        ID         = 21;
 
@@ -50,7 +50,7 @@ public class Gluttony extends CustomEnchantment {
                 Utilities.removeItem(player, FOOD_ITEMS[i], (short) check, 1);
                 player.setFoodLevel(player.getFoodLevel() + FOOD_LEVELS[i]);
                 player.setSaturation((float) (player.getSaturation() + SATURATIONS[i]));
-                if(FOOD_ITEMS[i] == RABBIT_STEW || FOOD_ITEMS[i] == MUSHROOM_SOUP || FOOD_ITEMS[i] == BEETROOT_SOUP) {
+                if(FOOD_ITEMS[i] == RABBIT_STEW || FOOD_ITEMS[i] == MUSHROOM_STEW || FOOD_ITEMS[i] == BEETROOT_SOUP) {
                     player.getInventory().addItem(new ItemStack(BOWL));
                 }
             }

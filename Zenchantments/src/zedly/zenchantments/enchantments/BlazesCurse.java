@@ -18,15 +18,11 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class BlazesCurse extends CustomEnchantment {
 
-    private static final Biome[] noRainBiomes = new Biome[]{DESERT, FROZEN_OCEAN, FROZEN_RIVER, ICE_FLATS,
-                                                              ICE_MOUNTAINS, DESERT_HILLS, COLD_BEACH, TAIGA_COLD,
-                                                              TAIGA_COLD_HILLS,
-                                                              SAVANNA, SAVANNA_ROCK, MESA, MESA_ROCK,
-                                                              MESA_CLEAR_ROCK, MUTATED_DESERT,
-                                                              MUTATED_ICE_FLATS, MUTATED_TAIGA_COLD,
-                                                              MUTATED_SAVANNA, MUTATED_SAVANNA_ROCK,
-                                                              MUTATED_MESA, MUTATED_MESA_ROCK,
-                                                              MUTATED_MESA_CLEAR_ROCK};
+    private static final Biome[] noRainBiomes = new Biome[]{Biome.DESERT, Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
+    Biome.SNOWY_TUNDRA, Biome.SNOWY_MOUNTAINS, Biome.DESERT_HILLS, Biome.SNOWY_BEACH, Biome.SNOWY_TAIGA, Biome.SNOWY_TAIGA_HILLS,
+    Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.BADLANDS, Biome.WOODED_BADLANDS_PLATEAU, Biome.BADLANDS_PLATEAU,
+    Biome.DESERT_LAKES, Biome.ICE_SPIKES, Biome.SNOWY_TAIGA_MOUNTAINS, Biome.SHATTERED_SAVANNA, Biome.SHATTERED_SAVANNA_PLATEAU,
+    Biome.ERODED_BADLANDS, Biome.MODIFIED_WOODED_BADLANDS_PLATEAU, Biome.MODIFIED_BADLANDS_PLATEAU};
     private static final float   submergeDamage = 1.5f;
     private static final float   rainDamage     = .5f;
     public static final int ID = 5;

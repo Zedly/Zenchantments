@@ -33,6 +33,19 @@ public class EnumStorage<T> {
 		return Collections.unmodifiableSet(enums);
 	}
 
+	public int indexOf(T t) {
+		for (int i = 0; i < enumArray.length; i++) {
+			if (enumArray[i] == t) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public T get(int i) {
+		return i >= 0 && i < enumArray.length ?  enumArray[i] : null;
+	}
+
 	public T getRandom() {
 		return enumArray[rnd.nextInt(enumArray.length)];
 	};

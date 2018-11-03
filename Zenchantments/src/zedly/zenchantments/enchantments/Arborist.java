@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -33,18 +34,14 @@ public class Arborist extends CustomEnchantment {
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
         Block blk = evt.getBlock();
-        if(blk.getType() == Material.LOG || blk.getType() == LOG_2 || blk.getType() == LEAVES_2 || blk.getType() == LEAVES) {
-            short s = (short) blk.getData();
-            if(s >= 8) {
-                s -= 8;
-            }
-            ItemStack stk;
-            if(blk.getType() == LOG_2 || blk.getType() == LEAVES_2) {
-                stk = new ItemStack(SAPLING, 1, (short) (s + 4));
-            } else {b
-                stk = new ItemStack(SAPLING, 1, s);
-            }
-            if(Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
+        Material mat = blk.getType();
+        if(Storage.COMPATIBILITY_ADAPTER.LEAVESS.contains(mat) || Storage.COMPATIBILITY_ADAPTER.LOGS.contains(mat)) {
+            // Crudely get the index in the array of materials
+            int index = Storage.COMPATIBILITY_ADAPTER.LOGS.indexOf(mat);
+            index = Math.max(index, Storage.COMPATIBILITY_ADAPTER.LEAVESS.indexOf(mat));
+            ItemStack stk = new ItemStack(Storage.COMPATIBILITY_ADAPTER.SAPLINGS.get(index), 1);
+
+            if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
                 if(Storage.rnd.nextInt(3) % 3 == 0) {
                     evt.getBlock().getWorld()
                        .dropItemNaturally(Utilities.getCenter(evt.getBlock()), stk);
