@@ -72,7 +72,7 @@ public class WatcherEnchant implements Listener {
 
     @EventHandler(ignoreCancelled = false)
     public void onBlockInteract(PlayerInteractEvent evt) {
-        if (evt.getClickedBlock() == null || !ArrayUtils.contains(Storage.INTERACTABLE_BLOCKS, evt.getClickedBlock().getType())) {
+        if (evt.getClickedBlock() == null || !Storage.INTERACTABLE_BLOCKS.contains(evt.getClickedBlock().getType())) {
             Player player = evt.getPlayer();
             boolean isMainHand = Utilities.isMainHand(evt.getHand());
             for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {

@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
@@ -14,14 +15,6 @@ import static zedly.zenchantments.enums.Tool.AXE;
 public class Variety extends CustomEnchantment {
 
     public static final int ID = 65;
-    ItemStack[] logs = new ItemStack[]{new ItemStack(LOG, 1, (short) 0), new ItemStack(LOG, 1, (short) 1),
-                                         new ItemStack(LOG, 1, (short) 2), new ItemStack(LOG, 1, (short) 3),
-                                         new ItemStack(LOG_2, 1, (short) 0),
-                                         new ItemStack(LOG_2, 1, (short) 1)};
-    ItemStack[] leaves = new ItemStack[]{new ItemStack(LEAVES, 1, (short) 0), new ItemStack(LEAVES, 1, (short) 1),
-                                         new ItemStack(LEAVES, 1, (short) 2), new ItemStack(LEAVES, 1, (short) 3),
-                                         new ItemStack(LEAVES_2, 1, (short) 0),
-                                         new ItemStack(LEAVES_2, 1, (short) 1)};
 
     @Override
     public Builder<Variety> defaults() {
@@ -39,16 +32,16 @@ public class Variety extends CustomEnchantment {
 
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-
-        if(evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
+        Material mat = evt.getBlock().getType();
+        if(Storage.COMPATIBILITY_ADAPTER.LOGS.contains(mat)) {
             evt.getBlock().setType(AIR);
             evt.getBlock().getWorld()
-               .dropItemNaturally(Utilities.getCenter(evt.getBlock()), logs[Storage.rnd.nextInt(6)]);
+               .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(Storage.COMPATIBILITY_ADAPTER.LOGS.getRandom()));
             Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-        } else if(evt.getBlock().getType() == LEAVES || evt.getBlock().getType() == LEAVES_2) {
+        } else if(Storage.COMPATIBILITY_ADAPTER.LEAVESS.contains(mat)) {
             evt.getBlock().setType(AIR);
             evt.getBlock().getWorld()
-               .dropItemNaturally(Utilities.getCenter(evt.getBlock()), leaves[Storage.rnd.nextInt(6)]);
+               .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(Storage.COMPATIBILITY_ADAPTER.LEAVESS.getRandom()));
             Utilities.damageTool(evt.getPlayer(), 1, usedHand);
         }
         return true;

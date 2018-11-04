@@ -51,7 +51,7 @@ public class Fire extends CustomEnchantment {
                 } else if(s == 2 || s == 4 || s == 6) {
                     return false;
                 } else {
-                    mat = SMOOTH_BRICK;
+                    mat = STONE_BRICKS;
                 }
             } else if(evt.getBlock().getType() == IRON_ORE) {
                 mat = IRON_INGOT;
@@ -62,12 +62,12 @@ public class Fire extends CustomEnchantment {
             } else if(evt.getBlock().getType() == SPONGE && s == 1) {
                 mat = SPONGE;
             } else if(evt.getBlock().getType() == MOSSY_COBBLESTONE) {
-                mat = SMOOTH_BRICK;
+                mat = STONE_BRICKS;
                 itemInfo = 1;
             } else if(evt.getBlock().getType() == NETHERRACK) {
-                mat = NETHER_BRICK_ITEM;
-            } else if(evt.getBlock().getType() == SMOOTH_BRICK && evt.getBlock().getData() == 0) {
-                mat = SMOOTH_BRICK;
+                mat = NETHER_BRICK;
+            } else if(evt.getBlock().getType() == STONE_BRICKS && evt.getBlock().getData() == 0) {
+                mat = STONE_BRICKS;
                 itemInfo = 2;
             }
         }
@@ -79,14 +79,14 @@ public class Fire extends CustomEnchantment {
         }
         if(evt.getBlock().getType() == SAND) {
             mat = GLASS;
-        } else if(evt.getBlock().getType() == LOG || evt.getBlock().getType() == LOG_2) {
+        } else if(Storage.COMPATIBILITY_ADAPTER.LOGS.contains(evt.getBlock().getType())) {
             mat = COAL;
             itemInfo = 1;
         } else if(evt.getBlock().getType() == CLAY) {
             Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
             for(int x = 0; x < 4; x++) {
                 evt.getBlock().getWorld()
-                   .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(CLAY_BRICK));
+                   .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(BRICK));
             }
 
             Block affectedBlock = evt.getBlock();
@@ -112,7 +112,7 @@ public class Fire extends CustomEnchantment {
                 Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
                 evt.getBlock().getWorld()
-                   .dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SACK, 1, (short) 2));
+                   .dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SAC, 1, (short) 2));
                 Block affectedBlock = location.getBlock();
                 Grab.fireDropLocs.add(affectedBlock);
 

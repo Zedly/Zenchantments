@@ -2,9 +2,12 @@ package zedly.zenchantments.enchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.CropState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
@@ -19,8 +22,6 @@ import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Harvest extends CustomEnchantment {
 
-    private static final Material[] CROP_BLOCKS =
-            {CROPS, POTATO, CARROT, MELON_BLOCK, PUMPKIN, COCOA, BEETROOT_BLOCK, NETHER_WARTS};
     public static final  int        ID          = 26;
 
     @Override
@@ -43,28 +44,26 @@ public class Harvest extends CustomEnchantment {
             Location loc = evt.getClickedBlock().getLocation();
             int radiusXZ = (int) Math.round(power * level + 2);
             int radiusY = 1;
-            Player player = evt.getPlayer();
-            if(ArrayUtils.contains(CROP_BLOCKS, evt.getClickedBlock().getType())) {
-                for(int x = -(radiusXZ); x <= radiusXZ; x++) {
-                    for(int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
-                        for(int z = -(radiusXZ); z <= radiusXZ; z++) {
-                            Block block = (Block) loc.getBlock();
-                            if(block.getRelative(x, y, z).getLocation().distanceSquared(loc) <
-                               radiusXZ * radiusXZ) {
-                                if((block.getRelative(x, y + 1, z).getType() == MELON_BLOCK ||
-                                    block.getRelative(x, y + 1, z).getType() == PUMPKIN)
-                                   || ((block.getRelative(x, y + 1, z).getType() == NETHER_WARTS ||
-                                        block.getRelative(x, y + 1, z).getType() == BEETROOT_BLOCK) &&
-                                       block.getRelative(x, y + 1, z).getData() == 3)
-                                   || ((block.getRelative(x, y + 1, z).getType() == CROPS ||
-                                        block.getRelative(x, y + 1, z).getType() == POTATO
-                                        || (block.getRelative(x, y + 1, z).getType() == CARROT)) &&
-                                       block.getRelative(x, y + 1, z).getData() == 7)) {
+            if (Storage.COMPATIBILITY_ADAPTER.GROWN_CROPS.contains(evt.getClickedBlock().getType()) ||
+	            Storage.COMPATIBILITY_ADAPTER.GROWN_MELON.contains(evt.getClickedBlock().getType())) {
+                for (int x = -radiusXZ; x <= radiusXZ; x++) {
+                    for (int y = -radiusY - 1; y <= radiusY - 1; y++) {
+                        for (int z = -radiusXZ; z <= radiusXZ; z++) {
+                            Block block = loc.getBlock();
+
+                            if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
+	                            BlockData cropState = block.getBlockData();
+	                            boolean harvestReady = !(cropState instanceof Ageable);
+	                            if (!harvestReady) {
+		                            Ageable ag = (Ageable) cropState;
+		                            harvestReady = ag.getAge() == ag.getMaximumAge();
+	                            }
+
+                                if (harvestReady) {
                                     final Block blk = block.getRelative(x, y + 1, z);
-                                    if(ADAPTER.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
-                                        Utilities.damageTool(player, 1, usedHand);
-                                        Grab.grabLocs
-                                                .put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
+                                    if (ADAPTER.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
+                                        Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+                                        Grab.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
                                         Bukkit.getServer().getScheduler()
                                               .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                                   Grab.grabLocs.remove(blk);

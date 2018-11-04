@@ -19,7 +19,7 @@ public class Gluttony extends CustomEnchantment {
     private static final Material[] FOOD_ITEMS = new Material[]{RABBIT_STEW, COOKED_BEEF, PUMPKIN_PIE,
                                                                  PORKCHOP, BAKED_POTATO, BEETROOT_SOUP,
                                                                  COOKED_CHICKEN, COOKED_MUTTON,
-                                                                 MUSHROOM_STEW, COOKED_FISH, COOKED_FISH, BREAD,
+                                                                 MUSHROOM_STEW, COOKED_SALMON, COOKED_COD, BREAD,
                                                                  APPLE, CARROT, COOKIE,
                                                                  MELON, BEETROOT};
     public static final  int        ID         = 21;
@@ -41,16 +41,13 @@ public class Gluttony extends CustomEnchantment {
     @Override
     public boolean onScan(Player player, int level, boolean usedHand) {
         int check = 0;
-        for(int i = 0; i < FOOD_ITEMS.length; i++) {
-            if(FOOD_ITEMS[i] == COOKED_FISH) {
-                check = (check + 1) % 2;
-            }
-            if(player.getInventory().containsAtLeast(new ItemStack(FOOD_ITEMS[i], 1, (short) check), 1)
+        for (int i = 0; i < FOOD_ITEMS.length; i++) {
+            if (player.getInventory().containsAtLeast(new ItemStack(FOOD_ITEMS[i]), 1)
                && player.getFoodLevel() <= 20 - FOOD_LEVELS[i]) {
                 Utilities.removeItem(player, FOOD_ITEMS[i], (short) check, 1);
                 player.setFoodLevel(player.getFoodLevel() + FOOD_LEVELS[i]);
                 player.setSaturation((float) (player.getSaturation() + SATURATIONS[i]));
-                if(FOOD_ITEMS[i] == RABBIT_STEW || FOOD_ITEMS[i] == MUSHROOM_STEW || FOOD_ITEMS[i] == BEETROOT_SOUP) {
+                if (FOOD_ITEMS[i] == RABBIT_STEW || FOOD_ITEMS[i] == MUSHROOM_STEW || FOOD_ITEMS[i] == BEETROOT_SOUP) {
                     player.getInventory().addItem(new ItemStack(BOWL));
                 }
             }

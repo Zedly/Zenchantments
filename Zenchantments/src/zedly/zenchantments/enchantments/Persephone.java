@@ -19,7 +19,7 @@ import static zedly.zenchantments.enums.Tool.HOE;
 public class Persephone extends CustomEnchantment {
 
     private static final Material[] CROP_BLOCKS =
-            {CROPS, POTATO, CARROT, BEETROOT_BLOCK, NETHER_WARTS, SOUL_SAND, SOIL};
+            {WHEAT, POTATO, CARROT, BEETROOT, NETHER_WART, SOUL_SAND, FARMLAND};
     public static final  int        ID          = 41;
 
     @Override
@@ -43,43 +43,41 @@ public class Persephone extends CustomEnchantment {
             Location loc = evt.getClickedBlock().getLocation();
             int radiusXZ = (int) Math.round(power * level + 2);
 
-            if(ArrayUtils.contains(CROP_BLOCKS, evt.getClickedBlock().getType())) {
-                Block block = (Block) loc.getBlock();
-                for(int x = -(radiusXZ); x <= radiusXZ; x++) {
-                    for(int y = -2; y <= 0; y++) {
-                        for(int z = -(radiusXZ); z <= radiusXZ; z++) {
+            if (ArrayUtils.contains(CROP_BLOCKS, evt.getClickedBlock().getType())) {
+                Block block = loc.getBlock();
+                for (int x = -radiusXZ; x <= radiusXZ; x++) {
+                    for (int y = -2; y <= 0; y++) {
+                        for (int z = -radiusXZ; z <= radiusXZ; z++) {
 
-                            if(block.getRelative(x, y, z).getLocation().distanceSquared(loc) <
+                            if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) <
                                radiusXZ * radiusXZ) {
-                                if(block.getRelative(x, y, z).getType() == SOIL
+                                if (block.getRelative(x, y, z).getType() == FARMLAND
                                    && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                    if(evt.getPlayer().getInventory().contains(CARROT_ITEM)) {
-                                        if(ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROT, 0)) {
-                                            Utilities.removeItem(player, CARROT_ITEM, (short) 0, 1);
+                                    if (evt.getPlayer().getInventory().contains(CARROT)) {
+                                        if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS, null)) {
+                                            Utilities.removeItem(player, CARROT, 1);
                                         }
                                     }
-                                    if(evt.getPlayer().getInventory().contains(POTATO_ITEM)) {
-                                        if(ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, POTATO, 0)) {
-                                            Utilities.removeItem(player, POTATO_ITEM, (short) 0, 1);
+                                    if (evt.getPlayer().getInventory().contains(POTATO)) {
+                                        if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, POTATOES, null)) {
+                                            Utilities.removeItem(player, POTATO, 1);
                                         }
                                     }
-                                    if(evt.getPlayer().getInventory().contains(SEEDS)) {
-                                        if(ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CROPS, 0)) {
-                                            Utilities.removeItem(player, SEEDS, (short) 0, 1);
+                                    if (evt.getPlayer().getInventory().contains(WHEAT_SEEDS)) {
+                                        if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, null)) {
+                                            Utilities.removeItem(player, WHEAT_SEEDS, 1);
                                         }
                                     }
-                                    if(evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
-                                        if(ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player,
-                                                              Material.BEETROOT_BLOCK, 0)) {
-                                            Utilities.removeItem(player, BEETROOT_SEEDS, (short) 0, 1);
+                                    if (evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
+                                        if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOT, null)) {
+                                            Utilities.removeItem(player, BEETROOT_SEEDS,1);
                                         }
                                     }
-                                } else if(block.getRelative(x, y, z).getType() == SOUL_SAND
+                                } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
                                           && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                    if(evt.getPlayer().getInventory().contains(NETHER_STALK)) {
-                                        if(ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WARTS,
-                                                              0)) {
-                                            Utilities.removeItem(player, NETHER_STALK, (short) 0, 1);
+                                    if (evt.getPlayer().getInventory().contains(NETHER_WART)) {
+                                        if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART, null)) {
+                                            Utilities.removeItem(player, NETHER_WART, (short) 0, 1);
                                         }
                                     }
                                 } else {

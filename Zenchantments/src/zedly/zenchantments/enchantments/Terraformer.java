@@ -67,11 +67,11 @@ public class Terraformer extends CustomEnchantment {
                     bt = 14;
                 }
 
-                for(Block b : blocks) {
-                    if(b.getType().equals(AIR)) {
-                        if(Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
-                            Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, bt);
-                            if(Storage.rnd.nextInt(10) == 5) {
+                for (Block b : blocks) {
+                    if (b.getType().equals(AIR)) {
+                        if (Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
+                            Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, null); // TODO bt
+                            if (Storage.rnd.nextInt(10) == 5) {
                                 Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                             }
                         }

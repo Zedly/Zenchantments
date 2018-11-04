@@ -454,4 +454,25 @@ public class Utilities {
 		}
 		return strs;
 	}
+
+	public static void selfRemovingArea(Material fill, Material check, int radius, Block center, Player player, Map<Location, Long> placed) {
+		for(int x = -(radius); x <= radius; x++) {
+			for(int z = -(radius); z <= radius; z++) {
+				Block possiblePlatformBlock = center.getRelative(x, -1, z);
+				Location possiblePlatformLoc = possiblePlatformBlock.getLocation();
+				if(possiblePlatformLoc.distanceSquared(center.getLocation()) < radius * radius - 2) {
+					if(placed.containsKey(possiblePlatformLoc)) {
+						placed.put(possiblePlatformLoc, System.nanoTime());
+					} else if(possiblePlatformBlock.getType() == check
+						&& possiblePlatformBlock.getData() == 0
+						&& possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
+						if(Storage.COMPATIBILITY_ADAPTER.formBlock(possiblePlatformBlock, fill, (byte) 0, player)) {
+							placed.put(possiblePlatformLoc, System.nanoTime());
+						}
+					}
+				}
+			}
+		}
+	}
+
 }

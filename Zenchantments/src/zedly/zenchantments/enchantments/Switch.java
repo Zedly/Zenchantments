@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,13 +51,13 @@ public class Switch extends CustomEnchantment {
                 if(switchItem != null
                    && switchItem.getType() != AIR
                    && switchItem.getType().isSolid()
-                   && !ArrayUtils.contains(Storage.UNBREAKABLE_BLOCKS, switchItem.getType())
-                   && !ArrayUtils.contains(Storage.INTERACTABLE_BLOCKS, switchItem.getType())) {
+                   && !Storage.COMPATIBILITY_ADAPTER.UNBREAKABLE_BLOCKS.contains(switchItem.getType())
+                   && !Storage.COMPATIBILITY_ADAPTER.INTERACTABLE_BLOCKS.contains(switchItem.getType())) {
                     c = i;
                     break;
                 }
             }
-            if(c == -1 || switchItem == null) { // No suitable block in inventory
+            if(c == -1) { // No suitable block in inventory
                 return false;
             }
 
@@ -85,7 +84,7 @@ public class Switch extends CustomEnchantment {
             }, 3);
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                ADAPTER.placeBlock(clickedBlock, player, mat, blockData);
+                ADAPTER.placeBlock(clickedBlock, player, mat, null); // TODO blockData
             }, 1);
             Utilities.removeItem(evt.getPlayer(), mat, (short) blockData, 1);
             evt.getPlayer().updateInventory();

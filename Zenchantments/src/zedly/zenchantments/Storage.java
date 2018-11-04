@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.compatibility.NMS_1_13_R1;
 
 import java.util.*;
@@ -36,13 +37,13 @@ public class Storage {
         BlockFace.WEST
     };
     
-    public static final Material[] UNBREAKABLE_BLOCKS;
+    public static final EnumStorage<Material> UNBREAKABLE_BLOCKS;
 
-    public static final Material[] STORAGE_BLOCKS;
+    public static final EnumStorage<Material> STORAGE_BLOCKS;
 
-    public static final Material[] INTERACTABLE_BLOCKS;
+    public static final EnumStorage<Material> INTERACTABLE_BLOCKS;
 
-    public static final Material[] ORES;
+    public static final EnumStorage<Material> ORES;
 
     public static final EntityType[] TRANSFORMATION_ENTITY_TYPES;
     

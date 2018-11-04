@@ -51,7 +51,10 @@ public class Spectral extends CustomEnchantment {
             return false;
         }
         int data = evt.getClickedBlock().getData();
-        switch(evt.getClickedBlock().getType()) {
+
+        Material newMat = original;
+        /*
+        switch(original) {
             case WOOL:
             case STAINED_GLASS:
             case STAINED_GLASS_PANE:
@@ -68,7 +71,7 @@ public class Spectral extends CustomEnchantment {
             case RED_SANDSTONE:
                 if(data < 2) {
                     data++;
-                } else {/**/
+                } else {
                     data = 0;
                     evt.getClickedBlock().setType(SANDSTONE);
                 }
@@ -292,7 +295,7 @@ public class Spectral extends CustomEnchantment {
             evt.getClickedBlock().setData((byte) data);
             Utilities.damageTool(evt.getPlayer(), 1, usedHand);
             return true;
-        }
+        }*/
         return false;
     }
 

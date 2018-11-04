@@ -3,11 +3,9 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Config;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
@@ -40,7 +38,7 @@ public class GreenThumb extends CustomEnchantment {
     @Override
     public boolean onScan(Player player, int level, boolean usedHand) {
         Location loc = player.getLocation().clone();
-        Block centerBlock = (Block) loc.getBlock();
+        Block centerBlock = loc.getBlock();
         int radius = (int) Math.round(power * level + 2);
         for(int x = -(radius); x <= radius; x++) {
             for(int y = -(radius) - 1; y <= radius - 1; y++) {
@@ -53,24 +51,23 @@ public class GreenThumb extends CustomEnchantment {
                         boolean applied = false;
                         switch(relativeBlock.getType()) {
                             case DIRT:
-                                if(relativeBlock.getData() != 2 && relativeBlock.getData() != 1
-                                   && relativeBlock.getRelative(0, 1, 0).getType() == AIR) {
-                                    byte data = 0;
+                                if (relativeBlock.getRelative(0, 1, 0).getType() == AIR) {
                                     Material mat;
                                     switch(centerBlock.getBiome()) {
                                         case MUSHROOM_FIELD_SHORE:
                                         case MUSHROOM_FIELDS:
-                                            mat = Material.MYCELIUM;
+                                            mat = MYCELIUM;
                                             break;
                                         case GIANT_SPRUCE_TAIGA:
                                         case GIANT_TREE_TAIGA:
                                         case GIANT_SPRUCE_TAIGA_HILLS:
                                         case GIANT_TREE_TAIGA_HILLS:
-                                            data = (byte) 2;
+                                            mat = PODZOL;
+                                            break;
                                         default:
                                             mat = GRASS;
                                     }
-                                    applied = ADAPTER.placeBlock(relativeBlock, player, mat, data);
+                                    applied = ADAPTER.placeBlock(relativeBlock, player, mat, null);
                                 }
                                 break;
                             default:
@@ -83,14 +80,14 @@ public class GreenThumb extends CustomEnchantment {
                             int chc = Storage.rnd.nextInt(50);
                             if(chc > 42 && level != 10) {
                                 ItemStack[] s = player.getInventory().getArmorContents();
-                                for(int i = 0; i < 4; i++) {
-                                    if(s[i] != null) {
+                                for (int i = 0; i < 4; i++) {
+                                    if (s[i] != null) {
                                         Map<CustomEnchantment, Integer> map =
                                                 CustomEnchantment.getEnchants(s[i], player.getWorld());
-                                        if(map.containsKey(this)) {
+                                        if (map.containsKey(this)) {
                                             Utilities.addUnbreaking(player, s[i], 1);
                                         }
-                                        if(s[i].getDurability() > s[i].getType().getMaxDurability()) {
+                                        if (s[i].getDurability() > s[i].getType().getMaxDurability()) {
                                             s[i] = null;
                                         }
                                     }

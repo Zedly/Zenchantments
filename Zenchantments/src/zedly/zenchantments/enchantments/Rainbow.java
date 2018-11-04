@@ -40,11 +40,10 @@ public class Rainbow extends CustomEnchantment {
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
         Material dropMaterial;
-        if(SMALL_FLOWERS.contains(evt.getBlock().getType())) {
-            dropMaterial
-            // Random one
+        if (SMALL_FLOWERS.contains(evt.getBlock().getType())) {
+            dropMaterial = Storage.COMPATIBILITY_ADAPTER.SMALL_FLOWERS.getRandom();
         } else if(LARGE_FLOWERS.contains(evt.getBlock().getType())) {
-            // Random one
+            dropMaterial = Storage.COMPATIBILITY_ADAPTER.LARGE_FLOWERS.getRandom();
         } else {
             return false;
         }
@@ -62,13 +61,12 @@ public class Rainbow extends CustomEnchantment {
     public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
         Sheep sheep = (Sheep) evt.getEntity();
         if(!sheep.isSheared()) {
-            int color = Storage.rnd.nextInt(16);
-            int number = Storage.rnd.nextInt(3) + 1;
+            int count = Storage.rnd.nextInt(3) + 1;
             Utilities.damageTool(evt.getPlayer(), 1, usedHand);
             evt.setCancelled(true);
             sheep.setSheared(true);
             evt.getEntity().getWorld().dropItemNaturally(Utilities.getCenter(evt.getEntity().getLocation()),
-                                                         new ItemStack(WOOL, number, (short) color));
+                                                         new ItemStack(Storage.COMPATIBILITY_ADAPTER.WOOL.getRandom(), count));
         }
         return true;
     }
