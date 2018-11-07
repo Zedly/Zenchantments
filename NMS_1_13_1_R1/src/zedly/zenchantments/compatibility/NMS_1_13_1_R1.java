@@ -8,28 +8,27 @@ package zedly.zenchantments.compatibility;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
-import net.minecraft.server.v1_12_R1.BlockPosition;
-import net.minecraft.server.v1_12_R1.DataWatcher;
-import net.minecraft.server.v1_12_R1.EntityMushroomCow;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.EntitySheep;
-import net.minecraft.server.v1_12_R1.EnumHand;
-import net.minecraft.server.v1_12_R1.PacketDataSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntityLiving;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftSheep;
+
+import net.minecraft.server.v1_13_R1.BlockPosition;
+import net.minecraft.server.v1_13_R1.DataWatcher;
+import net.minecraft.server.v1_13_R1.EntityMushroomCow;
+import net.minecraft.server.v1_13_R1.EntityPlayer;
+import net.minecraft.server.v1_13_R1.EntitySheep;
+import net.minecraft.server.v1_13_R1.EnumHand;
+import net.minecraft.server.v1_13_R1.PacketDataSerializer;
+import net.minecraft.server.v1_13_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_13_R1.PacketPlayOutSpawnEntityLiving;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftSheep;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.Location;
-import static org.bukkit.Material.*;
 import org.bukkit.entity.EntityType;
-import static org.bukkit.entity.EntityType.*;
 
 /**
  *

@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -283,26 +284,25 @@ public class CompatibilityAdapter {
      * @param blockPlaced the block to be changed
      * @param player the player whose identity to use
      * @param mat the material to set the block to, if allowed
-     * @param blockData the block data to set for the block, if allowed
+     * @param data the block data to set for the block, if allowed
      * @return true if the block placement has been successful
      */
     public boolean placeBlock(Block blockPlaced, Player player, Material mat, BlockData data) {
         Block blockAgainst = blockPlaced.getRelative((blockPlaced.getY() == 0) ? BlockFace.UP : BlockFace.DOWN);
-        ItemStack itemHeld = new ItemStack(mat, 1, (short) 0, (byte) blockData);
-        BlockPlaceEvent placeEvent = new BlockPlaceEvent(new MockBlock(blockPlaced, mat, data), blockPlaced.getState(), blockAgainst, itemHeld, player, true, EquipmentSlot.HAND);
+        ItemStack itemHeld = new ItemStack(mat);
+        BlockPlaceEvent placeEvent = new BlockPlaceEvent(blockPlaced, blockPlaced.getState(), blockAgainst, itemHeld, player, true, EquipmentSlot.HAND);
 
         Bukkit.getPluginManager().callEvent(placeEvent);
         if (!placeEvent.isCancelled()) {
             blockPlaced.setType(mat);
-
-            blockPlaced.setBlockData((byte) blockData);
+            blockPlaced.setBlockData(data);
             return true;
         }
         return false;
     }
 
     public boolean placeBlock(Block blockPlaced, Player player, ItemStack is) {
-        return placeBlock(blockPlaced, player, is.getType(), is.getData().getData());
+        return placeBlock(blockPlaced, player, is.getType(), (BlockData) is.getData());
     }
 
     public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
@@ -387,12 +387,12 @@ public class CompatibilityAdapter {
         return false;
     }
 
-    public boolean formBlock(Block block, Material mat, byte data, Player player) {
+    public boolean formBlock(Block block, Material mat, Player player, BlockData data) {
         EntityBlockFormEvent evt = new EntityBlockFormEvent(player, block, new MockBlockState(block, mat, (byte) 0));
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
             block.setType(mat);
-            //block.setData(data);
+            block.setBlockData(data);
             return true;
         }
         return false;
@@ -409,11 +409,7 @@ public class CompatibilityAdapter {
     }
 
     public Entity spawnGuardian(Location loc, boolean elderGuardian) {
-        Guardian g = (Guardian) loc.getWorld().spawnEntity(loc, EntityType.GUARDIAN);
-        if (elderGuardian) {
-            g.setElder(true);
-        }
-        return g;
+        return loc.getWorld().spawnEntity(loc, elderGuardian ? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
     }
 
     public boolean isZombie(Entity e) {
@@ -431,33 +427,29 @@ public class CompatibilityAdapter {
 
     public boolean grow(Block cropBlock, Player player) {
         Material mat = cropBlock.getType();
-        byte dataValue = cropBlock.getData();
+        BlockData data = cropBlock.getBlockData();
+        int age = 0;
         switch (mat) {
-            case COCOA:
-                if (dataValue / 4 < 2) {
-                    dataValue = (byte) Math.min(8 + (dataValue % 4), dataValue + 4);
-                    break;
-                }
-                return false;
             case PUMPKIN_STEM:
             case MELON_STEM:
             case CARROT:
-            case CROPS:
+            case WHEAT:
             case POTATO:
-                if (dataValue < 7) {
-                    dataValue = (byte) Math.min(7, dataValue + 3);
-                    break;
+            case COCOA:
+            case NETHER_WART:
+            case BEETROOTS:
+                BlockData cropState = cropBlock.getBlockData();
+                if (cropState instanceof Ageable) {
+                    Ageable ag = (Ageable) cropState;
+                    if (ag.getAge() >= ag.getMaximumAge()) {
+                        return false;
+                    }
+                    ag.setAge(ag.getAge() + 1);
+                    age = ag.getAge();
+                    data = ag;
                 }
-                return false;
-            case NETHER_WARTS:
-            case BEETROOT_BLOCK:
-                if (dataValue < 3) {
-                    dataValue = (byte) Math.min(3, dataValue + 1);
-                    break;
-                }
-                return false;
             case CACTUS:
-            case SUGAR_CANE_BLOCK:
+            case SUGAR_CANE:
                 int height = 1;
                 if (cropBlock.getRelative(BlockFace.DOWN).getType() == mat) { // Only grow if argument is the base block
                     return false;
@@ -470,20 +462,22 @@ public class CompatibilityAdapter {
                 if (cropBlock.getType() != Material.AIR) { // Only grow if argument is the base block
                     return false;
                 }
+
+
                 break;
             default:
                 return false;
         }
 
         if (player != null) {
-            return placeBlock(cropBlock, player, mat, dataValue);
+            return placeBlock(cropBlock, player, mat, data);
         }
 
-        BlockGrowEvent evt = new BlockGrowEvent(cropBlock, new MockBlockState(cropBlock, mat, dataValue));
+        BlockGrowEvent evt = new BlockGrowEvent(cropBlock, new MockBlockState(cropBlock, mat, (byte) age));
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
             cropBlock.setType(mat);
-            cropBlock.setData(dataValue);
+            cropBlock.setBlockData(data);
             return true;
         }
         return false;
