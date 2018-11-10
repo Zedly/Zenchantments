@@ -53,17 +53,17 @@ public class Terraformer extends CustomEnchantment {
                 Material mat = AIR;
                 byte bt = 0;
 
-                for(int i = 0; i < 9; i++) {
-                    if(evt.getPlayer().getInventory().getItem(i) != null) {
-                        if(evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
-                           ArrayUtils.contains(CompatibilityAdapter.getTerraformerMaterials().getEnums().toArray(), evt.getPlayer().getInventory().getItem(i).getType())) {
+                for (int i = 0; i < 9; i++) {
+                    if (evt.getPlayer().getInventory().getItem(i) != null) {
+                        if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
+                            Storage.COMPATIBILITY_ADAPTER.TERRAFORMER_MATERIALS.contains(evt.getPlayer().getInventory().getItem(i).getType())){
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
                             bt = evt.getPlayer().getInventory().getItem(i).getData().getData();
                             break;
                         }
                     }
                 }
-                if(mat == Material.MUSHROOM_STEM || mat == Material.BROWN_MUSHROOM_BLOCK || mat == Material.RED_MUSHROOM_BLOCK) {
+                if (mat == Material.MUSHROOM_STEM || mat == Material.BROWN_MUSHROOM_BLOCK || mat == Material.RED_MUSHROOM_BLOCK) {
                     bt = 14;
                 }
 

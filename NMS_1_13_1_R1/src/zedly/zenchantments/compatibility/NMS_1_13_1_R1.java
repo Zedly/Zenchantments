@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package zedly.zenchantments.compatibility;
 
 import java.io.IOException;
@@ -10,18 +5,19 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 import org.apache.commons.lang.ArrayUtils;
 
-import net.minecraft.server.v1_13_R1.BlockPosition;
-import net.minecraft.server.v1_13_R1.DataWatcher;
-import net.minecraft.server.v1_13_R1.EntityMushroomCow;
-import net.minecraft.server.v1_13_R1.EntityPlayer;
-import net.minecraft.server.v1_13_R1.EntitySheep;
-import net.minecraft.server.v1_13_R1.EnumHand;
-import net.minecraft.server.v1_13_R1.PacketDataSerializer;
-import net.minecraft.server.v1_13_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_13_R1.PacketPlayOutSpawnEntityLiving;
-import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_13_R1.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_13_R1.entity.CraftSheep;
+
+import net.minecraft.server.v1_13_R2.BlockPosition;
+import net.minecraft.server.v1_13_R2.DataWatcher;
+import net.minecraft.server.v1_13_R2.EntityMushroomCow;
+import net.minecraft.server.v1_13_R2.EntityPlayer;
+import net.minecraft.server.v1_13_R2.EntitySheep;
+import net.minecraft.server.v1_13_R2.EnumHand;
+import net.minecraft.server.v1_13_R2.PacketDataSerializer;
+import net.minecraft.server.v1_13_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_13_R2.PacketPlayOutSpawnEntityLiving;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftSheep;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,19 +26,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-/**
- *
- * @author Dennis
- */
-public class NMS_1_13_R1 extends CompatibilityAdapter {
+public class NMS_1_13_1_R1 extends CompatibilityAdapter {
 
-    private static final NMS_1_13_R1 INSTANCE = new NMS_1_13_R1();
-    public static NMS_1_13_R1 getInstance() {
+    private static final NMS_1_13_1_R1 INSTANCE = new NMS_1_13_1_R1();
+    public static NMS_1_13_1_R1 getInstance() {
         return INSTANCE;
     }
 
 
-    private NMS_1_13_R1() {
+    private NMS_1_13_1_R1() {
     }
 
     @Override
@@ -98,9 +90,9 @@ public class NMS_1_13_R1 extends CompatibilityAdapter {
         Material mat = b.getType();
         return mat.isSolid()
                 && !b.isLiquid()
-                && !ArrayUtils.contains(INTERACTABLE_BLOCKS, mat)
-                && !ArrayUtils.contains(UNBREAKABLE_BLOCKS, mat)
-                && !ArrayUtils.contains(STORAGE_BLOCKS, mat);
+                && !INTERACTABLE_BLOCKS.contains(mat)
+                && !UNBREAKABLE_BLOCKS.contains(mat)
+                && !STORAGE_BLOCKS.contains(mat);
     }
 
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(Block blockToHighlight, int entityId) {

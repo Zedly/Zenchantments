@@ -17,9 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.compatibility.CompatibilityAdapter.AIRS;
-import static zedly.zenchantments.compatibility.CompatibilityAdapter.ORES;
-import static zedly.zenchantments.compatibility.CompatibilityAdapter.TERRACOTTAS;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 import static zedly.zenchantments.enums.Tool.SHOVEL;
 
@@ -28,7 +25,7 @@ public class Shred extends CustomEnchantment {
 
     private static final EnumStorage<Material> ALLOWED_MATERIALS = new EnumStorage<>(new Material[]{STONE, NETHERRACK,
         GLOWSTONE, GRASS, SOUL_SAND, DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY, SANDSTONE, RED_SANDSTONE, ICE,
-        PACKED_ICE}, ORES, TERRACOTTAS);
+        PACKED_ICE}, Storage.COMPATIBILITY_ADAPTER.ORES, Storage.COMPATIBILITY_ADAPTER.TERRACOTTAS);
 
 
     private static final Material SHOVELABLE_MATERIALS[] =
@@ -65,7 +62,7 @@ public class Shred extends CustomEnchantment {
     public void blocks(Block centerBlock, final Block relativeBlock, int[] coords, int time, double size,
                        Set<Block> used,
                        final Player player, final Config config, final Material itemType, boolean usedHand) {
-        if(AIRS.contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
+        if(Storage.COMPATIBILITY_ADAPTER.AIRS.contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
             final Material originalType = relativeBlock.getType();
             if(!ALLOWED_MATERIALS.contains(relativeBlock.getType())
                || (Tool.SHOVEL.contains(itemType)
@@ -83,7 +80,7 @@ public class Shred extends CustomEnchantment {
                 if(config.getShredDrops() == 1) {
                     if(relativeBlock.getType().equals(NETHER_QUARTZ_ORE)) {
                         relativeBlock.setType(NETHERRACK);
-                    } else if(ArrayUtils.contains(Storage.ORES, relativeBlock.getType())) {
+                    } else if(Storage.ORES.contains(relativeBlock.getType())) {
                         relativeBlock.setType(STONE);
                     }
                     WatcherEnchant.instance().onBlockShred(relativeEvent);

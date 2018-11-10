@@ -1,7 +1,6 @@
 package zedly.zenchantments;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.*;
@@ -51,6 +50,7 @@ public class UpdateConfig {
 
         Map<String, CustomEnchantment> enchantments = new HashMap<>();
         List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+
         new FastClasspathScanner(CustomEnchantment.class.getPackage().getName())
             .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
             .scan();

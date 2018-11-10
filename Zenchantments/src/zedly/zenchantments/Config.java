@@ -215,9 +215,11 @@ public class Config {
                 }
 
                 List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+
                 new FastClasspathScanner(CustomEnchantment.class.getPackage().getName())
                     .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
                     .scan();
+
                 for (Class<? extends CustomEnchantment> cl : customEnchantments) {
                     try {
                         CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();

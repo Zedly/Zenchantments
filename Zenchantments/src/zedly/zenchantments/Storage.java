@@ -7,7 +7,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.compatibility.EnumStorage;
-import zedly.zenchantments.compatibility.NMS_1_13_R1;
+import zedly.zenchantments.compatibility.NMS_1_13_1_R1;
 
 import java.util.*;
 

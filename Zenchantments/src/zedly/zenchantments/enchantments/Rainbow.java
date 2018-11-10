@@ -14,8 +14,6 @@ import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
-import static zedly.zenchantments.compatibility.CompatibilityAdapter.LARGE_FLOWERS;
-import static zedly.zenchantments.compatibility.CompatibilityAdapter.SMALL_FLOWERS;
 import static zedly.zenchantments.enums.Tool.SHEAR;
 
 public class Rainbow extends CustomEnchantment {
@@ -40,15 +38,15 @@ public class Rainbow extends CustomEnchantment {
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
         Material dropMaterial;
-        if (SMALL_FLOWERS.contains(evt.getBlock().getType())) {
+        if (Storage.COMPATIBILITY_ADAPTER.SMALL_FLOWERS.contains(evt.getBlock().getType())) {
             dropMaterial = Storage.COMPATIBILITY_ADAPTER.SMALL_FLOWERS.getRandom();
-        } else if(LARGE_FLOWERS.contains(evt.getBlock().getType())) {
+        } else if(Storage.COMPATIBILITY_ADAPTER.LARGE_FLOWERS.contains(evt.getBlock().getType())) {
             dropMaterial = Storage.COMPATIBILITY_ADAPTER.LARGE_FLOWERS.getRandom();
         } else {
             return false;
         }
         evt.setCancelled(true);
-        if(LARGE_FLOWERS.contains(evt.getBlock().getRelative(DOWN).getType())) {
+        if(Storage.COMPATIBILITY_ADAPTER.LARGE_FLOWERS.contains(evt.getBlock().getRelative(DOWN).getType())) {
             evt.getBlock().getRelative(DOWN).setType(AIR);
         }
         evt.getBlock().setType(AIR);

@@ -1,5 +1,6 @@
 name: Zenchantments
 main: zedly.zenchantments.Zenchantments
+api-version: 1.13
 version: ${project.version}
 commands:
   ench:
