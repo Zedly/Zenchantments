@@ -49,13 +49,13 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-            <version>4.4.12</version>
+            <groupId>io.github.lukehutch</groupId>
+            <artifactId>fast-classpath-scanner</artifactId>
+            <version>3.1.10</version>
             <scope>compile</scope>
         </dependency>
      </dependencies>
-    
+
     <build>
         <defaultGoal>clean package</defaultGoal>
         <directory>../target</directory> <!-- Build it one level up, because it is the one we care about -->

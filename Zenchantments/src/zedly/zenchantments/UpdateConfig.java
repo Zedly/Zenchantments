@@ -1,5 +1,6 @@
 package zedly.zenchantments;
 
+
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -54,6 +55,7 @@ public class UpdateConfig {
         new FastClasspathScanner(CustomEnchantment.class.getPackage().getName())
             .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
             .scan();
+
 
 	    for (Class<? extends CustomEnchantment> cl : customEnchantments) {
 		    try {

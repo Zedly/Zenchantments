@@ -49,6 +49,7 @@ public class TaskRunner implements Runnable {
 				}).scan();
 	}
 
+
 	/**
 	 * Runs all methods on subclasses of CustomEnchantment that are annotated with {@link EffectTask}
 	 * and have the same event frequency as this EventRunner.
