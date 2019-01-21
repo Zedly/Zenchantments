@@ -3,9 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Zenchantments_jar</output-path>
     <root id="archive" name="Zenchantments.jar">
       <element id="module-output" name="Zenchantments" />
-      <element id="library" level="project" name="Maven: io.github.lukehutch:fast-classpath-scanner:3.1.10" />
-      <element id="module-output" name="NMS_1_13_1_R1" />
       <element id="module-output" name="compatibility-adapter" />
+      <element id="module-output" name="NMS_1_13_1_R1" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/3.1.10/fast-classpath-scanner-3.1.10.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
