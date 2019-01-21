@@ -1,9 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -38,6 +35,9 @@ public class Fire extends CustomEnchantment {
 
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
+        if(evt.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            return false;
+        }
         ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
         Material mat = AIR;
         short itemInfo = 0;

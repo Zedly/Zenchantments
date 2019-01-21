@@ -37,8 +37,9 @@ public class Arborist extends CustomEnchantment {
         Material mat = blk.getType();
         if(Storage.COMPATIBILITY_ADAPTER.LEAVESS.contains(mat) || Storage.COMPATIBILITY_ADAPTER.LOGS.contains(mat)) {
             // Crudely get the index in the array of materials
-            int index = Storage.COMPATIBILITY_ADAPTER.LOGS.indexOf(mat);
-            index = Math.max(index, Storage.COMPATIBILITY_ADAPTER.LEAVESS.indexOf(mat));
+
+            int index =  Math.max(Storage.COMPATIBILITY_ADAPTER.LEAVESS.indexOf(mat),
+	                                                            Storage.COMPATIBILITY_ADAPTER.LEAVESS.indexOf(mat));
             ItemStack stk = new ItemStack(Storage.COMPATIBILITY_ADAPTER.SAPLINGS.get(index), 1);
 
             if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {

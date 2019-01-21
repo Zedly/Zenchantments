@@ -27,13 +27,13 @@ public class Anthropomorphism extends CustomEnchantment {
 	// The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
 	public static final  Map<FallingBlock, Double> attackBlocks = new HashMap<>();
 	// Players currently using the Anthropomorphism enchantment
-	public static final List<Entity> anthVortex = new ArrayList<>();
+	private static final List<Entity> anthVortex = new ArrayList<>();
 	// The falling blocks from the Anthropomorphism enchantment that are idle, staying within the relative region
 	public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
-	private static final Material[]                MAT          = new Material[]{STONE, GRAVEL, DIRT, GRASS};
+	private static final Material[]                MAT          = new Material[]{STONE, GRAVEL, DIRT, GRASS_BLOCK};
 	public static final int ID = 1;
 	// Determines if falling entities from Anthropomorphism should fall up or down
-	public static boolean fallBool = false;
+	private static boolean fallBool = false;
 
 	@Override
 	public Builder<Anthropomorphism> defaults() {
@@ -88,7 +88,7 @@ public class Anthropomorphism extends CustomEnchantment {
 								Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
 								if (targetEntity.getNoDamageTicks() == 0
 										&& Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
-										.5 * attackBlocks.get(blockEntity))) {
+										2.0 * attackBlocks.get(blockEntity))) {
 									targetEntity.setNoDamageTicks(0);
 									anthroIterator.remove();
 									blockEntity.remove();
@@ -153,7 +153,6 @@ public class Anthropomorphism extends CustomEnchantment {
 				if (counter < 64 && player.getInventory().contains(COBBLESTONE)) {
 					Utilities.removeItem(player, COBBLESTONE, 1);
 					Utilities.damageTool(player, 2, usedHand);
-					player.updateInventory();
 					Location loc = player.getLocation();
 					FallingBlock blockEntity =
 							loc.getWorld().spawnFallingBlock(loc, MAT[Storage.rnd.nextInt(4)], (byte) 0x0);
@@ -174,7 +173,7 @@ public class Anthropomorphism extends CustomEnchantment {
 				if (idleBlocks.get(blk).equals(player)) {
 					attackBlocks.put(blk, power);
 					toRemove.add(blk);
-					Block targetBlock = player.getTargetBlock((Set<Material>) null, 7);
+					Block targetBlock = player.getTargetBlock(null, 7);
 					Bukkit.getLogger().info(targetBlock.toString());
 					blk.setVelocity(targetBlock
 							.getLocation().subtract(player.getLocation()).toVector().multiply(.25));

@@ -40,7 +40,7 @@ public class FrozenStep extends CustomEnchantment {
            !player.isFlying()) {
             player.setVelocity(player.getVelocity().setY(.4));
         }
-        Block block = (Block) player.getLocation().getBlock();
+        Block block = player.getLocation().getBlock();
         int radius = (int) Math.round(power * level + 2);
 
         selfRemovingArea(PACKED_ICE, WATER, radius, block, player, frozenLocs);

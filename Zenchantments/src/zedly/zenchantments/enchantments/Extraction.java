@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.GameMode;
 import org.bukkit.Particle;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -34,6 +35,9 @@ public class Extraction extends CustomEnchantment {
 
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, final int level, boolean usedHand) {
+        if(evt.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            return false;
+        }
         if(evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
             Utilities.damageTool(evt.getPlayer(), 1, usedHand);
             for(int x = 0; x < Storage.rnd.nextInt((int) Math.round(power * level + 1)) + 1; x++) {

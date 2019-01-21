@@ -17,7 +17,7 @@ public class EnumStorage<T> {
 	}
 
 	public EnumStorage(T[] t) {
-		this.enums = new HashSet<>(Arrays.asList(t));
+		this.enums = new LinkedHashSet<>(Arrays.asList(t));
 		enumArray = (T[]) this.enums.toArray();
 	}
 
@@ -35,7 +35,7 @@ public class EnumStorage<T> {
 
 	public int indexOf(T t) {
 		for (int i = 0; i < enumArray.length; i++) {
-			if (enumArray[i] == t) {
+			if (enumArray[i].equals(t)) {
 				return i;
 			}
 		}

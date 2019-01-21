@@ -47,7 +47,7 @@ public class Laser extends CustomEnchantment {
 
     public void shoot(Player player, int level, boolean usedHand) {
         EnchantPlayer.matchPlayer(player).setCooldown(33, 5); // Avoid recursing into Lumber enchant
-        Block blk = player.getTargetBlock((HashSet<Material>) null, 6
+        Block blk = player.getTargetBlock(null, 6
                                                                     + (int) Math.round(level * power * 3));
         Location playLoc = player.getLocation();
         Location target = Utilities.getCenter(blk.getLocation());

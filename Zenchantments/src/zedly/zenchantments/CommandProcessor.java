@@ -88,9 +88,12 @@ public class CommandProcessor {
 								}
 							} else if (args.length == 2) {
 								CustomEnchantment ench = config.enchantFromString(args[0]);
-								for (int i = 1; i <= ench.getMaxLevel(); i++) {
-									results.add(i + "");
+								if (ench != null) {
+									for (int i = 1; i <= ench.getMaxLevel(); i++) {
+										results.add(i + "");
+									}
 								}
+
 							}
 					}
 			}
@@ -374,7 +377,7 @@ public class CommandProcessor {
         EnchantPlayer player = EnchantPlayer.matchPlayer((Player) sender);
         Config config = Config.get(player.getPlayer().getWorld());
         ItemStack stack = player.getPlayer().getInventory().getItemInMainHand();
-        String label = args[0].toLowerCase();
+        String label = args.length == 0 ? "" : args[0].toLowerCase();
         switch (commandlabel.toLowerCase()) {
             case "ench":
                 switch (label) {

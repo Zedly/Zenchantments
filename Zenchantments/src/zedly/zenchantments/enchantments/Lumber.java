@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -51,7 +52,6 @@ public class Lumber extends CustomEnchantment {
         List<Block> searchPerimeter = new ArrayList<>();
         searchBody.add(startBlock);
         searchPerimeter.add(startBlock);
-
         while(!searchPerimeter.isEmpty()) {
             Block searchBlock = searchPerimeter.remove(0);
 
