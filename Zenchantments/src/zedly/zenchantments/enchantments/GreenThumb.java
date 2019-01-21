@@ -65,7 +65,7 @@ public class GreenThumb extends CustomEnchantment {
                                             mat = PODZOL;
                                             break;
                                         default:
-                                            mat = GRASS;
+                                            mat = GRASS_BLOCK;
                                     }
                                     applied = ADAPTER.placeBlock(relativeBlock, player, mat, null);
                                 }

@@ -41,10 +41,10 @@ public class Plough extends CustomEnchantment {
             for(int x = -(radiusXZ); x <= radiusXZ; x++) {
                 for(int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
                     for(int z = -(radiusXZ); z <= radiusXZ; z++) {
-                        Block block = (Block) loc.getBlock();
+                        Block block = loc.getBlock();
                         if(block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
                             if(((block.getRelative(x, y, z).getType() == DIRT
-                                 || block.getRelative(x, y, z).getType() == GRASS
+                                 || block.getRelative(x, y, z).getType() == GRASS_BLOCK
                                  || block.getRelative(x, y, z).getType() == MYCELIUM))
                                && block.getRelative(x, y + 1, z).getType() == AIR) {
                                 ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), Material.FARMLAND, null);

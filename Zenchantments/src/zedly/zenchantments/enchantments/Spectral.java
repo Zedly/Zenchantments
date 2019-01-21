@@ -202,9 +202,9 @@ public class Spectral extends CustomEnchantment {
                 }
                 break;
 	        case GRASS_PATH:
-		        evt.getClickedBlock().setType(GRASS);
+		        evt.getClickedBlock().setType(GRASS_BLOCK);
 		        break;
-            case GRASS:
+            case GRASS_BLOCK:
 	            evt.getClickedBlock().setType(GRASS_PATH);
                 break;
             case DIRT:

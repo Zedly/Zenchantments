@@ -77,7 +77,6 @@ public class Terraformer extends CustomEnchantment {
                         }
                     }
                 }
-                evt.getPlayer().updateInventory();
                 return true;
             }
         }

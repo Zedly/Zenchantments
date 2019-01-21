@@ -464,7 +464,7 @@ public class Utilities {
 					} else if(possiblePlatformBlock.getType() == check
 						&& possiblePlatformBlock.getData() == 0
 						&& possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
-						if (Storage.COMPATIBILITY_ADAPTER.formBlock(possiblePlatformBlock, fill,  player, null)) {
+						if (Storage.COMPATIBILITY_ADAPTER.formBlock(possiblePlatformBlock, fill,  player)) {
 							placed.put(possiblePlatformLoc, System.nanoTime());
 						}
 					}

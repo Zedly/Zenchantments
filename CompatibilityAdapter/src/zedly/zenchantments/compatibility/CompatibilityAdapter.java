@@ -295,7 +295,9 @@ public class CompatibilityAdapter {
         Bukkit.getPluginManager().callEvent(placeEvent);
         if (!placeEvent.isCancelled()) {
             blockPlaced.setType(mat);
-            blockPlaced.setBlockData(data);
+            if (data != null) {
+                blockPlaced.setBlockData(data);
+            }
             return true;
         }
         return false;
@@ -326,6 +328,7 @@ public class CompatibilityAdapter {
             if (!evt.isCancelled()) {
                 if (target instanceof Sheep) {
                     Sheep sheep = (Sheep) target;
+                    Bukkit.broadcastMessage(sheep.getColor().ordinal() + "");
                     sheep.getLocation().getWorld().dropItem(sheep.getLocation(), new ItemStack(WOOL.get(sheep.getColor().ordinal()), RND.nextInt(3) + 1));
                     ((Sheep) target).setSheared(true);
 
@@ -387,12 +390,11 @@ public class CompatibilityAdapter {
         return false;
     }
 
-    public boolean formBlock(Block block, Material mat, Player player, BlockData data) {
+    public boolean formBlock(Block block, Material mat, Player player) {
         EntityBlockFormEvent evt = new EntityBlockFormEvent(player, block, new MockBlockState(block, mat, (byte) 0));
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
             block.setType(mat);
-            block.setBlockData(data);
             return true;
         }
         return false;

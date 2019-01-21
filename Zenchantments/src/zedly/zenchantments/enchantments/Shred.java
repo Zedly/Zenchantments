@@ -24,12 +24,12 @@ public class Shred extends CustomEnchantment {
 
 
     private static final EnumStorage<Material> ALLOWED_MATERIALS = new EnumStorage<>(new Material[]{STONE, NETHERRACK,
-        GLOWSTONE, GRASS, SOUL_SAND, DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY, SANDSTONE, RED_SANDSTONE, ICE,
+        GLOWSTONE, GRASS_BLOCK, SOUL_SAND, DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY, SANDSTONE, RED_SANDSTONE, ICE,
         PACKED_ICE}, Storage.COMPATIBILITY_ADAPTER.ORES, Storage.COMPATIBILITY_ADAPTER.TERRACOTTAS);
 
 
     private static final Material SHOVELABLE_MATERIALS[] =
-            new Material[]{GLOWSTONE, GRASS, DIRT, MYCELIUM, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
+            new Material[]{GLOWSTONE, GRASS_BLOCK, DIRT, MYCELIUM, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
     public static final  int      ID                     = 52;
 
     @Override
@@ -62,7 +62,8 @@ public class Shred extends CustomEnchantment {
     public void blocks(Block centerBlock, final Block relativeBlock, int[] coords, int time, double size,
                        Set<Block> used,
                        final Player player, final Config config, final Material itemType, boolean usedHand) {
-        if(Storage.COMPATIBILITY_ADAPTER.AIRS.contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
+
+        if(!Storage.COMPATIBILITY_ADAPTER.AIRS.contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
             final Material originalType = relativeBlock.getType();
             if(!ALLOWED_MATERIALS.contains(relativeBlock.getType())
                || (Tool.SHOVEL.contains(itemType)
@@ -94,7 +95,7 @@ public class Shred extends CustomEnchantment {
             }
             Sound sound = null;
             switch(originalType) {
-                case GRASS:
+                case GRASS_BLOCK:
                     sound = Sound.BLOCK_GRASS_BREAK;
                     break;
                 case DIRT:
@@ -116,19 +117,19 @@ public class Shred extends CustomEnchantment {
             }
 
             Utilities.damageTool(player, 1, usedHand);
-
             used.add(relativeBlock);
             for(int i = 0; i < 3; i++) {
+
                 if(coords[i] > 0) {
+
                     coords[i] -= 1;
                     Block blk1 = relativeBlock.getRelative(i == 0 ? -1 : 0, i == 1 ? -1 : 0, i == 2 ? -1 : 0);
                     Block blk2 = relativeBlock.getRelative(i == 0 ? 1 : 0, i == 1 ? 1 : 0, i == 2 ? 1 : 0);
-                    if(blk1.getLocation().distanceSquared(centerBlock.getLocation()) <
-                       size + (-1 + 2 * Math.random())) {
+
+                    if(blk1.getLocation().distanceSquared(centerBlock.getLocation()) < size + (-1 + 2 * Math.random())) {
                         blocks(centerBlock, blk1, coords, time + 2, size, used, player, config, itemType, usedHand);
                     }
-                    if(blk2.getLocation().distanceSquared(centerBlock.getLocation()) <
-                       size + (-1 + 2 * Math.random())) {
+                    if(blk2.getLocation().distanceSquared(centerBlock.getLocation()) < size + (-1 + 2 * Math.random())) {
                         blocks(centerBlock, blk2, coords, time + 2, size, used, player, config, itemType, usedHand);
                     }
                     coords[i] += 1;
