@@ -51,25 +51,20 @@ public class Terraformer extends CustomEnchantment {
                 List<Block> blocks = bfs(start);
 
                 Material mat = AIR;
-                byte bt = 0;
 
                 for (int i = 0; i < 9; i++) {
                     if (evt.getPlayer().getInventory().getItem(i) != null) {
                         if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
                             Storage.COMPATIBILITY_ADAPTER.TERRAFORMER_MATERIALS.contains(evt.getPlayer().getInventory().getItem(i).getType())){
                             mat = evt.getPlayer().getInventory().getItem(i).getType();
-                            bt = evt.getPlayer().getInventory().getItem(i).getData().getData();
                             break;
                         }
                     }
                 }
-                if (mat == Material.MUSHROOM_STEM || mat == Material.BROWN_MUSHROOM_BLOCK || mat == Material.RED_MUSHROOM_BLOCK) {
-                    bt = 14;
-                }
 
                 for (Block b : blocks) {
                     if (b.getType().equals(AIR)) {
-                        if (Utilities.removeItemCheck(evt.getPlayer(), mat, bt, 1)) {
+                        if (Utilities.removeItem(evt.getPlayer(), mat, 1)) {
                             Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, null); // TODO bt
                             if (Storage.rnd.nextInt(10) == 5) {
                                 Utilities.damageTool(evt.getPlayer(), 1, usedHand);

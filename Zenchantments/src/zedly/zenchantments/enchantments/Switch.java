@@ -72,12 +72,6 @@ public class Switch extends CustomEnchantment {
             evt.setCancelled(true);
 
             Material mat = switchItem.getType();
-            byte blockData;
-            if(mat == Material.MUSHROOM_STEM || mat == Material.BROWN_MUSHROOM_BLOCK || mat == Material.RED_MUSHROOM_BLOCK) {
-                blockData = 14;
-            } else {
-                blockData = switchItem.getData().getData();
-            }
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                 Grab.grabLocs.remove(clickedBlock);
@@ -86,8 +80,7 @@ public class Switch extends CustomEnchantment {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                 ADAPTER.placeBlock(clickedBlock, player, mat, null); // TODO blockData
             }, 1);
-            Utilities.removeItem(evt.getPlayer(), mat, (short) blockData, 1);
-            evt.getPlayer().updateInventory();
+            Utilities.removeItem(evt.getPlayer(), mat,  1);
             return true;
         }
         return false;

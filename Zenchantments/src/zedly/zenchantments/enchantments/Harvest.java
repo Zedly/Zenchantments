@@ -40,43 +40,48 @@ public class Harvest extends CustomEnchantment {
 
     @Override
     public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if(evt.getAction() == RIGHT_CLICK_BLOCK) {
-            Location loc = evt.getClickedBlock().getLocation();
-            int radiusXZ = (int) Math.round(power * level + 2);
-            int radiusY = 1;
-            if (Storage.COMPATIBILITY_ADAPTER.GROWN_CROPS.contains(evt.getClickedBlock().getType()) ||
-	            Storage.COMPATIBILITY_ADAPTER.GROWN_MELON.contains(evt.getClickedBlock().getType())) {
-                for (int x = -radiusXZ; x <= radiusXZ; x++) {
-                    for (int y = -radiusY - 1; y <= radiusY - 1; y++) {
-                        for (int z = -radiusXZ; z <= radiusXZ; z++) {
-                            Block block = loc.getBlock();
+        if (evt.getAction() != RIGHT_CLICK_BLOCK) {
+            return false;
+        }
+        Location loc = evt.getClickedBlock().getLocation();
+        int radiusXZ = (int) Math.round(power * level + 2);
+        int radiusY = 1;
+        boolean success = false;
 
-                            if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-	                            BlockData cropState = block.getBlockData();
-	                            boolean harvestReady = !(cropState instanceof Ageable);
-	                            if (!harvestReady) {
-		                            Ageable ag = (Ageable) cropState;
-		                            harvestReady = ag.getAge() == ag.getMaximumAge();
-	                            }
+        for (int x = -radiusXZ; x <= radiusXZ; x++) {
+            for (int y = -radiusY - 1; y <= radiusY - 1; y++) {
+                for (int z = -radiusXZ; z <= radiusXZ; z++) {
 
-                                if (harvestReady) {
-                                    final Block blk = block.getRelative(x, y + 1, z);
-                                    if (ADAPTER.breakBlockNMS(block.getRelative(x, y + 1, z), evt.getPlayer())) {
-                                        Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-                                        Grab.grabLocs.put(block.getRelative(x, y + 1, z), evt.getPlayer().getLocation());
-                                        Bukkit.getServer().getScheduler()
-                                              .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                                  Grab.grabLocs.remove(blk);
-                                              }, 3);
-                                    }
-                                }
+                    final Block block = loc.getBlock().getRelative(x, y, z);
+                    if (block.getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
+
+                        if (!Storage.COMPATIBILITY_ADAPTER.GROWN_CROPS.contains(block.getType()) &&
+                            !Storage.COMPATIBILITY_ADAPTER.GROWN_MELON.contains(block.getType())) {
+                            continue;
+                        }
+
+                        BlockData cropState = block.getBlockData();
+                        boolean harvestReady = !(cropState instanceof Ageable);
+                        if (!harvestReady) {
+                            Ageable ag = (Ageable) cropState;
+                            harvestReady = ag.getAge() == ag.getMaximumAge();
+                        }
+
+                        if (harvestReady) {
+                            if (ADAPTER.breakBlockNMS(block, evt.getPlayer())) {
+                                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+                                Grab.grabLocs.put(block, evt.getPlayer().getLocation());
+                                Bukkit.getServer().getScheduler()
+                                      .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                                          Grab.grabLocs.remove(block);
+                                      }, 3);
+                                success = true;
                             }
                         }
                     }
                 }
-                return true;
             }
         }
-        return false;
+        return success;
     }
 }

@@ -44,7 +44,7 @@ public class Gluttony extends CustomEnchantment {
         for (int i = 0; i < FOOD_ITEMS.length; i++) {
             if (player.getInventory().containsAtLeast(new ItemStack(FOOD_ITEMS[i]), 1)
                && player.getFoodLevel() <= 20 - FOOD_LEVELS[i]) {
-                Utilities.removeItem(player, FOOD_ITEMS[i], (short) check, 1);
+                Utilities.removeItem(player, FOOD_ITEMS[i],  1);
                 player.setFoodLevel(player.getFoodLevel() + FOOD_LEVELS[i]);
                 player.setSaturation((float) (player.getSaturation() + SATURATIONS[i]));
                 if (FOOD_ITEMS[i] == RABBIT_STEW || FOOD_ITEMS[i] == MUSHROOM_STEW || FOOD_ITEMS[i] == BEETROOT_SOUP) {

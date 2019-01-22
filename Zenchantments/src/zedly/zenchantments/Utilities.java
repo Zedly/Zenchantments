@@ -84,60 +84,65 @@ public class Utilities {
         }
     }
 
-    // Removes a certain number of an item stack of the given description from the players inventory
-    public static void removeItem(Player player, Material mat, short data, int amount) {
-        if (!player.getGameMode().equals(CREATIVE)) {
-            Inventory inv = player.getInventory();
-            for (int i = 0; i < inv.getSize(); i++) {
-                if (inv.getItem(i) != null && inv.getItem(i).getType() == mat && inv.getItem(i).getDurability() == data) {
-                    if (inv.getItem(i).getAmount() > amount) {
-                        int res = inv.getItem(i).getAmount() - amount;
-                        ItemStack rest = inv.getItem(i);
-                        rest.setAmount(res);
-                        inv.setItem(i, rest);
-                        return;
-                    } else {
-                        amount -= inv.getItem(i).getAmount();
-                        inv.setItem(i, null);
-                    }
-                }
-            }
-        }
-    }
-
-    // Removes a certain number of an item stack of the given description from the players inventory
-    public static void removeItem(Player player, Material mat, int amount) {
-        removeItem(player, mat, (short) 0, amount);
-    }
+	// Removes an item stack of the given description from the players inventory
+	public static boolean removeItem(Player player, Material mat) {
+		return removeItem(player, mat, 1);
+	}
 
     // Removes an item stack of the given description from the players inventory
-    public static void removeItem(Player player, ItemStack is) {
-        removeItem(player, is.getType(), is.getDurability(), is.getAmount());
+    public static boolean removeItem(Player player, ItemStack is) {
+        return removeItem(player, is.getType(), is.getAmount());
     }
 
     // Removes a certain number of an item stack of the given description from the players inventory and returns true
     //      if the item stack was direction their inventory
-    public static boolean removeItemCheck(Player player, Material mat, short data, int amount) {
-        if (player.getGameMode().equals(CREATIVE)) {
-            return true;
-        }
-        Inventory inv = player.getInventory();
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) != null && inv.getItem(i).getType() == mat && inv.getItem(i).getDurability() == data) {
-                if (inv.getItem(i).getAmount() > amount) {
-                    int res = inv.getItem(i).getAmount() - amount;
-                    ItemStack rest = inv.getItem(i);
-                    rest.setAmount(res);
-                    inv.setItem(i, rest);
-                    return true;
-                } else {
-                    inv.setItem(i, null);
-                    return true;
-                }
-            }
-        }
-        return false;
+    public static boolean removeItem(Player player, Material mat, int amount) {
+	    if (player.getGameMode().equals(CREATIVE)) {
+			return true;
+	    }
+	    Inventory inv = player.getInventory();
+
+	    if (!hasItem(player, mat, amount)) {
+	    	return false;
+	    }
+
+	    for (int i = 0; i < inv.getSize(); i++) {
+		    if (inv.getItem(i) != null && inv.getItem(i).getType() == mat) {
+			    if (inv.getItem(i).getAmount() > amount) {
+				    int res = inv.getItem(i).getAmount() - amount;
+				    ItemStack rest = inv.getItem(i);
+				    rest.setAmount(res);
+				    inv.setItem(i, rest);
+				    return true;
+			    } else {
+				    amount -= inv.getItem(i).getAmount();
+				    inv.setItem(i, null);
+			    }
+		    }
+	    }
+	    return true;
     }
+
+	// Removes a certain number of an item stack of the given description from the players inventory and returns true
+	//      if the item stack was direction their inventory
+	public static boolean hasItem(Player player, Material mat, int amount) {
+		if (player.getGameMode().equals(CREATIVE)) {
+			return true;
+		}
+		Inventory inv = player.getInventory();
+
+		for (int i = 0; i < inv.getSize(); i++) {
+			if (inv.getItem(i) != null && inv.getItem(i).getType() == mat) {
+				if (inv.getItem(i).getAmount() >= amount) {
+					amount = 0;
+				} else {
+					amount -= inv.getItem(i).getAmount();
+				}
+			}
+		}
+
+		return amount == 0;
+	}
 
     // Returns a level for the enchant event given the XP level and the enchantments max level
     public static int getEnchantLevel(int maxlevel, int levels) {

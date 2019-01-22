@@ -69,7 +69,7 @@ public class Persephone extends CustomEnchantment {
                                         }
                                     }
                                     if (evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
-                                        if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOT, null)) {
+                                        if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOTS, null)) {
                                             Utilities.removeItem(player, BEETROOT_SEEDS,1);
                                         }
                                     }
@@ -77,7 +77,7 @@ public class Persephone extends CustomEnchantment {
                                           && block.getRelative(x, y + 1, z).getType() == AIR) {
                                     if (evt.getPlayer().getInventory().contains(NETHER_WART)) {
                                         if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART, null)) {
-                                            Utilities.removeItem(player, NETHER_WART, (short) 0, 1);
+                                            Utilities.removeItem(player, NETHER_WART, 1);
                                         }
                                     }
                                 } else {

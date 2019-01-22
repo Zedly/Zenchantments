@@ -54,24 +54,21 @@ public class Germination extends CustomEnchantment {
                 for(int z = -(radiusXZ); z <= radiusXZ; z++) {
 
                     Block relativeBlock = clickedBlock.getRelative(x, y, z);
-
-                    Bukkit.broadcastMessage(player.getInventory().containsAtLeast(new ItemStack(Material.BONE_MEAL), 1)+"");
                     if(relativeBlock.getLocation().distanceSquared(loc) < radiusXZ * radiusXZ
-                       && player.getInventory().containsAtLeast(new ItemStack(BONE_MEAL), 1)
+                       && Utilities.hasItem(player, Material.BONE_MEAL, 1)
                        && ADAPTER.grow(relativeBlock, player)) {
-                        Bukkit.broadcastMessage("hhh");
+
                         applied = true;
                         if(Storage.rnd.nextBoolean()) {
                             ADAPTER.grow(relativeBlock, player);
                         }
-                        Utilities.display(Utilities.getCenter(relativeBlock), Particle.VILLAGER_HAPPY, 30, 1f, .3f,
-                                          .3f, .3f);
+
+                        Utilities.display(Utilities.getCenter(relativeBlock), Particle.VILLAGER_HAPPY, 30, 1f, .3f,.3f, .3f);
+
                         if(Storage.rnd.nextInt(10) <= 3) {
                             Utilities.damageTool(player, 1, usedHand);
                         }
-                        if(!player.getGameMode().equals(CREATIVE)) {
-                            Utilities.removeItem(player, BONE_MEAL);
-                        }
+                        Utilities.removeItem(player, Material.BONE_MEAL, 1);
                     }
                 }
             }

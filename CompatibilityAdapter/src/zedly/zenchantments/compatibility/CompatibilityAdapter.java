@@ -207,8 +207,8 @@ public class CompatibilityAdapter {
         MOSSY_COBBLESTONE, CLAY, BROWN_MUSHROOM, RED_MUSHROOM, MYCELIUM, TORCH, SUGAR_CANE, GRASS_BLOCK},
         TRUNK_BLOCKS, LEAVESS, SMALL_FLOWERS, LARGE_FLOWERS, SAPLINGS, AIRS);
 
-    public final EnumStorage<Material> GROWN_CROPS = new EnumStorage<>(new Material[]{WHEAT, POTATO, CARROT, COCOA, BEETROOTS, NETHER_WART});
-    public final EnumStorage<Material> CROP_YEILDS = new EnumStorage<>(new Material[]{WHEAT, POTATOES, CARROTS, COCOA_BEANS, BEETROOT, NETHER_WART});
+    public final EnumStorage<Material> GROWN_CROPS = new EnumStorage<>(new Material[]{WHEAT, POTATOES, CARROTS, COCOA, BEETROOTS, NETHER_WART});
+    public final EnumStorage<Material> CROP_YEILDS = new EnumStorage<>(new Material[]{WHEAT, POTATO, CARROT, COCOA_BEANS, BEETROOT, NETHER_WART});
     public final EnumStorage<Material> GROWN_MELON = new EnumStorage<>(new Material[]{MELON, PUMPKIN});
     public final EnumStorage<Material> MELON_YEILDS = new EnumStorage<>(new Material[]{MELON_SLICE, PUMPKIN});
 
