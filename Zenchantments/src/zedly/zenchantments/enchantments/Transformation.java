@@ -35,8 +35,9 @@ public class Transformation extends CustomEnchantment {
     public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
         if(!(evt.getEntity() instanceof LivingEntity) ||
            ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
-            if(Storage.rnd.nextInt(100) > (100 - (level * power * 5))) {
-                int position = ArrayUtils.indexOf(Storage.TRANSFORMATION_ENTITY_TYPES, evt.getEntity().getType());
+            if(Storage.rnd.nextInt(100) > (100 - (level * power * 8))) {
+
+                int position = Storage.COMPATIBILITY_ADAPTER.TRANSFORMATION_ENTITY_TYPES.indexOf(evt.getEntity().getType());
                 if(position != -1) {
                     if(evt.getDamage() > ((LivingEntity) evt.getEntity()).getHealth()) {
                         evt.setCancelled(true);
@@ -45,9 +46,8 @@ public class Transformation extends CustomEnchantment {
                     Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f,
                                       .5f, 2, .5f);
                     evt.getEntity().remove();
-                    LivingEntity ent = (LivingEntity) ((Player) evt.getDamager()).getWorld().spawnEntity(
-                            evt.getEntity().getLocation(),
-                            Storage.TRANSFORMATION_ENTITY_TYPES[newPosition]);
+                    LivingEntity ent = (LivingEntity) (evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(),
+                        Storage.COMPATIBILITY_ADAPTER.TRANSFORMATION_ENTITY_TYPES.get(newPosition));
                     ent.setHealth(Math.max(1, ((LivingEntity) evt.getEntity()).getHealth()));
                 }
             }

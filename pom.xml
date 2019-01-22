@@ -12,5 +12,6 @@
         <module>Zenchantments</module>
         <module>CompatibilityAdapter</module>
         <module>NMS_1_13_1_R1</module>
+        <module>NMS_1_13_1_R2</module>
     </modules>
 </project>

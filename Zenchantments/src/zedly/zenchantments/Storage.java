@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.compatibility.NMS_1_13_1_R1;
@@ -44,15 +43,13 @@ public class Storage {
     public static final EnumStorage<Material> INTERACTABLE_BLOCKS;
 
     public static final EnumStorage<Material> ORES;
-
-    public static final EntityType[] TRANSFORMATION_ENTITY_TYPES;
     
     static {
         String versionString = Bukkit.getServer().getClass().getPackage().getName();
         String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
         System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
         switch (nmsVersionString) {
-            case "v1_13_R1":
+            case "v1_13_R2":
                 COMPATIBILITY_ADAPTER = NMS_1_13_1_R1.getInstance();
                 break;
             default:
@@ -60,10 +57,9 @@ public class Storage {
                 COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.CompatibilityAdapter.getInstance();
                 break;
         }
-        UNBREAKABLE_BLOCKS = COMPATIBILITY_ADAPTER.getUnbreakableBlocks();
-        STORAGE_BLOCKS = COMPATIBILITY_ADAPTER.getStorageBlocks();
-        INTERACTABLE_BLOCKS = COMPATIBILITY_ADAPTER.getInteractableBlocks();
-        ORES = COMPATIBILITY_ADAPTER.getOres();
-        TRANSFORMATION_ENTITY_TYPES = COMPATIBILITY_ADAPTER.getTransformationEntityTypes();
+        UNBREAKABLE_BLOCKS = COMPATIBILITY_ADAPTER.UNBREAKABLE_BLOCKS;
+        STORAGE_BLOCKS = COMPATIBILITY_ADAPTER.STORAGE_BLOCKS;
+        INTERACTABLE_BLOCKS = COMPATIBILITY_ADAPTER.INTERACTABLE_BLOCKS;
+        ORES = COMPATIBILITY_ADAPTER.ORES;
     }
 }

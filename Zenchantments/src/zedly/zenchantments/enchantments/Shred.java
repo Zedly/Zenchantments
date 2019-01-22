@@ -23,9 +23,9 @@ import static zedly.zenchantments.enums.Tool.SHOVEL;
 public class Shred extends CustomEnchantment {
 
 
-    private static final EnumStorage<Material> ALLOWED_MATERIALS = new EnumStorage<>(new Material[]{STONE, NETHERRACK,
-        GLOWSTONE, GRASS_BLOCK, SOUL_SAND, DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY, SANDSTONE, RED_SANDSTONE, ICE,
-        PACKED_ICE}, Storage.COMPATIBILITY_ADAPTER.ORES, Storage.COMPATIBILITY_ADAPTER.TERRACOTTAS);
+    private static final EnumStorage<Material> ALLOWED_MATERIALS = new EnumStorage<>(new Material[]{STONE, GRANITE,
+        ANDESITE, DIORITE, NETHERRACK, GLOWSTONE, GRASS_BLOCK, SOUL_SAND, DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND, CLAY,
+        SANDSTONE, RED_SANDSTONE, ICE, PACKED_ICE}, Storage.COMPATIBILITY_ADAPTER.ORES, Storage.COMPATIBILITY_ADAPTER.TERRACOTTAS);
 
 
     private static final Material SHOVELABLE_MATERIALS[] =

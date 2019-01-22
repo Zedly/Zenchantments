@@ -3,8 +3,6 @@ package zedly.zenchantments.compatibility;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
-import org.apache.commons.lang.ArrayUtils;
-
 
 import net.minecraft.server.v1_13_R2.BlockPosition;
 import net.minecraft.server.v1_13_R2.DataWatcher;
@@ -19,12 +17,9 @@ import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftSheep;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 
 public class NMS_1_13_1_R1 extends CompatibilityAdapter {
 
@@ -73,26 +68,6 @@ public class NMS_1_13_1_R1 extends CompatibilityAdapter {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         ep.playerConnection.networkManager.sendPacket(ppoed);
         return true;
-    }
-
-    @Override
-    public Entity spawnGuardian(Location loc, boolean elderGuardian) {
-        return loc.getWorld().spawnEntity(loc, elderGuardian ? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
-    }
-
-    @Override
-    public boolean isZombie(Entity e) {
-        return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER;
-    }
-
-    @Override
-    public boolean isBlockSafeToBreak(Block b) {
-        Material mat = b.getType();
-        return mat.isSolid()
-                && !b.isLiquid()
-                && !INTERACTABLE_BLOCKS.contains(mat)
-                && !UNBREAKABLE_BLOCKS.contains(mat)
-                && !STORAGE_BLOCKS.contains(mat);
     }
 
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(Block blockToHighlight, int entityId) {
