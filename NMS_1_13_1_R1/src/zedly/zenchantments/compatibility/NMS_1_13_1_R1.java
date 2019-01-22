@@ -28,7 +28,6 @@ public class NMS_1_13_1_R1 extends CompatibilityAdapter {
         return INSTANCE;
     }
 
-
     private NMS_1_13_1_R1() {
     }
 
@@ -70,6 +69,8 @@ public class NMS_1_13_1_R1 extends CompatibilityAdapter {
         return true;
     }
 
+
+
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(Block blockToHighlight, int entityId) {
         PacketPlayOutSpawnEntityLiving pposel = new PacketPlayOutSpawnEntityLiving();
         Class clazz = pposel.getClass();
@@ -83,7 +84,7 @@ public class NMS_1_13_1_R1 extends CompatibilityAdapter {
             f.set(pposel, new UUID(0xFF00FF00FF00FF00L, 0xFF00FF00FF00FF00L));
             f = clazz.getDeclaredField("c");
             f.setAccessible(true);
-            f.setInt(pposel, 69);
+            f.setInt(pposel, 59);
             f = clazz.getDeclaredField("d");
             f.setAccessible(true);
             f.setDouble(pposel, blockToHighlight.getX() + 0.5);

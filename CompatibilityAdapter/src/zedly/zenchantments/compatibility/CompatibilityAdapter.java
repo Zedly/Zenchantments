@@ -402,12 +402,13 @@ public class CompatibilityAdapter {
         switch (mat) {
             case PUMPKIN_STEM:
             case MELON_STEM:
-            case CARROT:
+            case CARROTS:
             case WHEAT:
-            case POTATO:
+            case POTATOES:
             case COCOA:
             case NETHER_WART:
             case BEETROOTS:
+
                 BlockData cropState = cropBlock.getBlockData();
                 if (cropState instanceof Ageable) {
                     Ageable ag = (Ageable) cropState;
@@ -418,6 +419,7 @@ public class CompatibilityAdapter {
                     age = ag.getAge();
                     data = ag;
                 }
+                break;
             case CACTUS:
             case SUGAR_CANE:
                 int height = 1;
@@ -429,10 +431,9 @@ public class CompatibilityAdapter {
                         return false;
                     }
                 }
-                if (cropBlock.getType() != Material.AIR) { // Only grow if argument is the base block
+                if (!AIRS.contains(cropBlock.getType())) { // Only grow if argument is the base block
                     return false;
                 }
-
 
                 break;
             default:

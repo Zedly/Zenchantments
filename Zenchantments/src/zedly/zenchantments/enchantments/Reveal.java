@@ -64,8 +64,7 @@ public class Reveal extends CustomEnchantment {
                                 found++;
                                 int entityId = 2000000000 + (blk.hashCode()) % 10000000;
                                 if(glowingBlocks.containsKey(blk)) {
-                                    glowingBlocks.put(blk,
-                                                              glowingBlocks.get(blk) + 1);
+                                    glowingBlocks.put(blk, glowingBlocks.get(blk) + 1);
                                 } else {
                                     glowingBlocks.put(blk, 1);
                                 }
@@ -89,6 +88,7 @@ public class Reveal extends CustomEnchantment {
                     }
                 }
                 Utilities.damageTool(evt.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+
                 return true;
             }
         }

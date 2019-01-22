@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -51,10 +52,14 @@ public class Germination extends CustomEnchantment {
         for(int x = -(radiusXZ); x <= radiusXZ; x++) {
             for(int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
                 for(int z = -(radiusXZ); z <= radiusXZ; z++) {
+
                     Block relativeBlock = clickedBlock.getRelative(x, y, z);
+
+                    Bukkit.broadcastMessage(player.getInventory().containsAtLeast(new ItemStack(Material.BONE_MEAL), 1)+"");
                     if(relativeBlock.getLocation().distanceSquared(loc) < radiusXZ * radiusXZ
-                       && player.getInventory().containsAtLeast(BONE_MEAL, 1)
+                       && player.getInventory().containsAtLeast(new ItemStack(BONE_MEAL), 1)
                        && ADAPTER.grow(relativeBlock, player)) {
+                        Bukkit.broadcastMessage("hhh");
                         applied = true;
                         if(Storage.rnd.nextBoolean()) {
                             ADAPTER.grow(relativeBlock, player);
