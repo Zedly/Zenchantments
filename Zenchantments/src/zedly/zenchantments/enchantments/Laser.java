@@ -1,8 +1,8 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -17,7 +17,6 @@ import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
@@ -60,9 +59,9 @@ public class Laser extends CustomEnchantment {
             tempLoc.setX(c.getX() + (i * ((target.getX() - c.getX()) / (d * 5))));
             tempLoc.setY(c.getY() + (i * ((target.getY() - c.getY()) / (d * 5))));
             tempLoc.setZ(c.getZ() + (i * ((target.getZ() - c.getZ()) / (d * 5))));
-            player.getWorld()
-                  .spawnParticle(Particle.REDSTONE, tempLoc.getX(), tempLoc.getY(), tempLoc.getZ(), 0, 255, 0, 0,
-                                 0);
+
+	        player.getWorld().spawnParticle(Particle.REDSTONE, tempLoc, 1, new Particle.DustOptions(Color.RED, 0.5f));
+
             for(Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getNearbyEntities(tempLoc, .3, .3, .3)) {
                 if(ent instanceof LivingEntity && ent != player) {
                     LivingEntity e = (LivingEntity) ent;

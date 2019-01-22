@@ -1,9 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -98,6 +95,20 @@ public class Stream extends CustomEnchantment {
                 player.setMetadata("ze.stream.mode", new FixedMetadataValue(Storage.zenchantments, 0));
             }
             int b = player.getMetadata("ze.stream.mode").get(0).asInt();
+
+            switch (b) {
+                case 0:
+                case 1:
+                case 2:
+                case 4:
+                    player.getWorld().spawnParticle(trailTypes[b], player.getLocation(), 3);
+                    break;
+                case 3:
+                    player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation(), 1,
+                        new Particle.DustOptions(Color.fromRGB(Storage.rnd.nextInt(256), Storage.rnd.nextInt(256), Storage.rnd.nextInt(256)), 1.0f));
+            }
+
+
             Utilities.display(player.getLocation(), trailTypes[b], 3, 0.1, 0, 0, 0);
             return true;
         }

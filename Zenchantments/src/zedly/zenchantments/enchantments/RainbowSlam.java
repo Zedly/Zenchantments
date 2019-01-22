@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -61,7 +62,9 @@ public class RainbowSlam extends CustomEnchantment {
                     loc.setY(loc.getY() + (t / 100));
                     loc.setX(loc.getX() + Math.sin(Math.toRadians(t)) * t / 330);
                     loc.setZ(loc.getZ() + Math.cos(Math.toRadians(t)) * t / 330);
-                    Utilities.display(loc, Particle.REDSTONE, 1, 10f, 0, 0, 0);
+
+	                ent.getWorld().spawnParticle(Particle.REDSTONE, loc, 1,
+		                new Particle.DustOptions(Color.fromRGB(Storage.rnd.nextInt(256), Storage.rnd.nextInt(256), Storage.rnd.nextInt(256)), 1.0f));
                     loc.setY(loc.getY() + 1.3);
                     ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
                 }
@@ -71,7 +74,7 @@ public class RainbowSlam extends CustomEnchantment {
         rainbowSlamNoFallEntities.add(ent);
         for(int i = 0; i < 3; i++) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                //ent.setNoDamageTicks(20); // Prevent fall damage
+                // ent.setNoDamageTicks(20); // Prevent fall damage
                 ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.3));
                 ent.setFallDistance(0);
                 if(ent.isOnGround() && !applied.get()) {
@@ -79,10 +82,8 @@ public class RainbowSlam extends CustomEnchantment {
                     rainbowSlamNoFallEntities.remove(ent);
                     ADAPTER.attackEntity(ent, evt.getPlayer(), level * power);
                     for(int c = 0; c < 1000; c++) {
-                        Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(),
-                                              Math.cos(Math.toRadians(c))).multiply(.75);
-                        Utilities.display(Utilities.getCenter(l), Particle.BLOCK_DUST, 1, (float) v.length(), 0, 0,
-                                          0);
+                        // Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math.toRadians(c))).multiply(.75);
+	                    ent.getWorld().spawnParticle(Particle.BLOCK_DUST, Utilities.getCenter(l),10 ,evt.getPlayer().getLocation().getBlock().getBlockData());
                     }
                 }
             }, 35 + (i * 5));

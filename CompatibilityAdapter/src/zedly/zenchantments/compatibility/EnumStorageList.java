@@ -2,13 +2,13 @@ package zedly.zenchantments.compatibility;
 
 import java.util.*;
 
-public class EnumStorage<T> {
+public class EnumStorageList<T> extends EnumStorage<T> {
 	private static Random rnd = new Random();
-	protected        Set<T> enums;
+	protected        List<T> enums;
 	protected        T[]    enumArray;
 
 	@SafeVarargs
-	public EnumStorage(T[] t, EnumStorage<T>... enums) {
+	public EnumStorageList(T[] t, EnumStorage<T>... enums) {
 		this(t);
 		for (EnumStorage<T> anEnum : enums) {
 			this.enums.addAll(anEnum.enums);
@@ -16,13 +16,8 @@ public class EnumStorage<T> {
 		enumArray = (T[]) this.enums.toArray();
 	}
 
-	public EnumStorage(T[] t) {
-		this.enums = new LinkedHashSet<>(Arrays.asList(t));
-		enumArray = (T[]) this.enums.toArray();
-	}
-
-	public EnumStorage() {
-		this.enums = new LinkedHashSet<>();
+	public EnumStorageList(T[] t) {
+		this.enums = new ArrayList<>(Arrays.asList(t));
 		enumArray = (T[]) this.enums.toArray();
 	}
 
@@ -30,17 +25,15 @@ public class EnumStorage<T> {
 		return enums.contains(t);
 	}
 
-	public boolean contains(EnumStorage<T> enumStorage) {
+	public boolean contains(EnumStorageList<T> enumStorage) {
 		return Collections.disjoint(enumStorage.enums, enums);
 	}
 
 	public List getEnumList() {
-		return new ArrayList(enums);
+		return Collections.unmodifiableList(enums);
 	}
 
-	public Set getEnumSet() {
-		return Collections.unmodifiableSet(enums);
-	}
+	public Set getEnumSet() { return new HashSet(enums); }
 
 	public int indexOf(T t) {
 		for (int i = 0; i < enumArray.length; i++) {

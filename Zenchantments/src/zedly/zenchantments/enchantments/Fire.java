@@ -35,54 +35,30 @@ public class Fire extends CustomEnchantment {
 
     @Override
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-        if(evt.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+        if (evt.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
             return false;
         }
+
         ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
+        Material original = evt.getBlock().getType();
         Material mat = AIR;
-        short itemInfo = 0;
-        short s = evt.getBlock().getData();
-        if(Tool.PICKAXE.contains(hand)) {
-            if(evt.getBlock().getType() == STONE) {
-                if(s == 1 || s == 3 || s == 5) {
-                    s++;
-                    mat = STONE;
-                    itemInfo = s;
-                } else if(s == 2 || s == 4 || s == 6) {
-                    return false;
-                } else {
-                    mat = STONE_BRICKS;
-                }
-            } else if(evt.getBlock().getType() == IRON_ORE) {
-                mat = IRON_INGOT;
-            } else if(evt.getBlock().getType() == GOLD_ORE) {
-                mat = GOLD_INGOT;
-            } else if(evt.getBlock().getType() == COBBLESTONE) {
-                mat = STONE;
-            } else if(evt.getBlock().getType() == SPONGE && s == 1) {
-                mat = SPONGE;
-            } else if(evt.getBlock().getType() == MOSSY_COBBLESTONE) {
-                mat = STONE_BRICKS;
-                itemInfo = 1;
-            } else if(evt.getBlock().getType() == NETHERRACK) {
-                mat = NETHER_BRICK;
-            } else if(evt.getBlock().getType() == STONE_BRICKS && evt.getBlock().getData() == 0) {
-                mat = STONE_BRICKS;
-                itemInfo = 2;
+        if (Tool.PICKAXE.contains(hand)) {
+            if (Storage.COMPATIBILITY_ADAPTER.FIRE_RAW.contains(original)){
+                mat = Storage.COMPATIBILITY_ADAPTER.FIRE_COOKED.get(Storage.COMPATIBILITY_ADAPTER.FIRE_RAW.indexOf(original));
+            }
+            if (original == GOLD_ORE || original == IRON_ORE) {
+                ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld().spawnEntity(Utilities.getCenter(evt.getBlock()), EXPERIENCE_ORB);
+                o.setExperience(original == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
             }
         }
-        if(evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
-            ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld()
-                                                 .spawnEntity(Utilities.getCenter(evt.getBlock()), EXPERIENCE_ORB);
-            o.setExperience(
-                    evt.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
-        }
-        if(evt.getBlock().getType() == SAND) {
+
+        if (original == WET_SPONGE) {
+            mat = SPONGE;
+        } else if (Storage.COMPATIBILITY_ADAPTER.SANDS.contains(original)){
             mat = GLASS;
-        } else if(Storage.COMPATIBILITY_ADAPTER.LOGS.contains(evt.getBlock().getType())) {
-            mat = COAL;
-            itemInfo = 1;
-        } else if(evt.getBlock().getType() == CLAY) {
+        } else if (Storage.COMPATIBILITY_ADAPTER.LOGS.contains(original) || Storage.COMPATIBILITY_ADAPTER.STRIPPED_WOODS.contains(original)) {
+            mat = CHARCOAL;
+        } else if (original == CLAY) {
             Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
             for(int x = 0; x < 4; x++) {
                 evt.getBlock().getWorld()
@@ -96,7 +72,7 @@ public class Fire extends CustomEnchantment {
             }, 5);
 
             return true;
-        } else if(evt.getBlock().getType() == CACTUS) {
+        } else if(original == CACTUS) {
             Location location = evt.getBlock().getLocation().clone();
             double height = location.getY();
             for(double i = location.getY(); i <= 256; i++) {
@@ -111,8 +87,7 @@ public class Fire extends CustomEnchantment {
                 location.setY(i);
                 Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
-                evt.getBlock().getWorld()
-                   .dropItemNaturally(Utilities.getCenter(location), new ItemStack(INK_SAC, 1, (short) 2));
+                evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location), new ItemStack(CACTUS_GREEN, 1));
                 Block affectedBlock = location.getBlock();
                 Grab.fireDropLocs.add(affectedBlock);
 
@@ -123,8 +98,7 @@ public class Fire extends CustomEnchantment {
             return true;
         }
         if(mat != AIR) {
-            evt.getBlock().getWorld()
-               .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1, itemInfo));
+            evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack((mat), 1));
             Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
             Block affectedBlock = evt.getBlock();
