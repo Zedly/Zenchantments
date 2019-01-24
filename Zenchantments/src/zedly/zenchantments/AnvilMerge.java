@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.enchantments.Unrepairable;
@@ -21,6 +22,8 @@ import zedly.zenchantments.enchantments.Unrepairable;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static org.bukkit.Material.BOOK;
+import static org.bukkit.Material.ENCHANTED_BOOK;
 import static org.bukkit.event.EventPriority.MONITOR;
 
 // This class manages the combination of enchantments in an anvil. It takes into account conflicting enchantments, 
@@ -29,6 +32,7 @@ import static org.bukkit.event.EventPriority.MONITOR;
 public class AnvilMerge implements Listener {
 
 	public ItemStack doMerge(ItemStack leftItem, ItemStack rightItem, ItemStack oldOutItem, Config config) {
+
 		if (leftItem == null || rightItem == null || oldOutItem == null) {
 			return null;
 		}
@@ -48,6 +52,7 @@ public class AnvilMerge implements Listener {
 
 		boolean isBookL = leftItem.getType() == Material.ENCHANTED_BOOK;
 		boolean isBookR = rightItem.getType() == Material.ENCHANTED_BOOK;
+
 
 		Map<Enchantment, Integer> lEnch = isBookL ?
 			((EnchantmentStorageMeta) leftItem.getItemMeta()).getStoredEnchants()
@@ -91,8 +96,13 @@ public class AnvilMerge implements Listener {
 		outLore.addAll(normalLeftLore);
 
 		if (leftUnbLvl * rightUnbLvl == 0 && leftUnbLvl < 1 && rightUnbLvl < 1) {
-			newOutMeta.removeEnchant(Enchantment.DURABILITY);
-			newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+			if (oldOutItem.getType() == ENCHANTED_BOOK) {
+				((EnchantmentStorageMeta)newOutMeta).removeStoredEnchant(Enchantment.DURABILITY);
+				newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+			} else {
+				newOutMeta.removeEnchant(Enchantment.DURABILITY);
+				newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+			}
 		}
 
 		newOutMeta.setLore(outLore);
@@ -104,17 +114,53 @@ public class AnvilMerge implements Listener {
 	}
 
 	@EventHandler(priority = MONITOR)
+	public void onClicks(final InventoryClickEvent evt) {
+		if (evt.getInventory().getType() != InventoryType.ANVIL || !evt.getClick().isLeftClick()) {
+			return;
+		}
+		if (evt.getCurrentItem() != null && evt.getCurrentItem().getType() == ENCHANTED_BOOK) {
+			EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) evt.getCurrentItem().getItemMeta();
+			if (bookMeta.getStoredEnchants().containsKey(org.bukkit.enchantments.Enchantment.DURABILITY)
+				&& bookMeta.getStoredEnchants().get(org.bukkit.enchantments.Enchantment.DURABILITY) == 0) {
+				bookMeta.removeStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY);
+				evt.getCurrentItem().setItemMeta(bookMeta);
+			}
+		}
+
+	}
+
+	@EventHandler(priority = MONITOR)
 	public void onClicks(final PrepareAnvilEvent evt) {
 		if (evt.getViewers().size() < 1) {
 			return;
 		}
+
 		final Config config = Config.get(evt.getViewers().get(0).getWorld());
 		final AnvilInventory anvilInv = evt.getInventory();
+
+		if (anvilInv.getItem(0) != null && anvilInv.getItem(0).getType() == ENCHANTED_BOOK) {
+			EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) anvilInv.getItem(0).getItemMeta();
+			if (!bookMeta.getStoredEnchants().containsKey(org.bukkit.enchantments.Enchantment.DURABILITY)) {
+				bookMeta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 0, true);
+				anvilInv.getItem(0).setItemMeta(bookMeta);
+			}
+		}
+		if (anvilInv.getItem(1) != null && anvilInv.getItem(1).getType() == ENCHANTED_BOOK) {
+			EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) anvilInv.getItem(1).getItemMeta();
+			if (!bookMeta.getStoredEnchants().containsKey(org.bukkit.enchantments.Enchantment.DURABILITY)) {
+				bookMeta.addStoredEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 0, true);
+				anvilInv.getItem(1).setItemMeta(bookMeta);
+			}
+		}
+
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+
 			ItemStack leftItem = anvilInv.getItem(0);
 			ItemStack rightItem = anvilInv.getItem(1);
 			ItemStack outItem = anvilInv.getItem(2);
 			ItemStack stack = doMerge(leftItem, rightItem, outItem, config);
+
 			if (stack != null) {
 				anvilInv.setItem(2, stack);
 			}

@@ -326,7 +326,6 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
 		World world,
 		List<String> outExtraLore) {
-		ItemStack stack;
 		Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
 		if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
 			if (stk.hasItemMeta()) {
