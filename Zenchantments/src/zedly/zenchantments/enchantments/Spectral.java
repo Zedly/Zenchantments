@@ -32,7 +32,6 @@ public class Spectral extends CustomEnchantment {
 
 	@Override
 	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		Bukkit.broadcastMessage("A");
 		if (evt.getClickedBlock() == null) {
 			return false;
 		}

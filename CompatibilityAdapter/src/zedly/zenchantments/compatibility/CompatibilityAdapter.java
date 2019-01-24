@@ -303,7 +303,6 @@ public class CompatibilityAdapter {
             if (!evt.isCancelled()) {
                 if (target instanceof Sheep) {
                     Sheep sheep = (Sheep) target;
-                    Bukkit.broadcastMessage(sheep.getColor().ordinal() + "");
                     sheep.getLocation().getWorld().dropItem(sheep.getLocation(), new ItemStack(WOOL.get(sheep.getColor().ordinal()), RND.nextInt(3) + 1));
                     ((Sheep) target).setSheared(true);
 

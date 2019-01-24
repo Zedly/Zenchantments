@@ -250,7 +250,8 @@ public class CommandProcessor {
 			return true;
 		}
 		player.sendMessage(Storage.logo + "Enchantment Types:");
-		for (CustomEnchantment ench : config.getEnchants()) {
+
+		for (CustomEnchantment ench : new TreeSet<>(config.getEnchants())) {
 			if (ench.validMaterial(stack)) {
 				player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + ench.getLoreName());
 			}

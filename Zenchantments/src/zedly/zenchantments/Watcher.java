@@ -206,7 +206,6 @@ public class Watcher implements Listener {
 
 		Map<CustomEnchantment, Integer> addedEnchants = new HashMap<>();
 		ItemStack stk = evt.getItem();
-
 		for (int l = 1; l <= config.getMaxEnchants(); l++) {
 
 
@@ -216,19 +215,20 @@ public class Watcher implements Listener {
 			Set<CustomEnchantment> validPool = new HashSet<>();
 
 			for (CustomEnchantment ench : mainPool) {
-				boolean b = true;
+				boolean conflicts = false;
 				for (CustomEnchantment e : addedEnchants.keySet()) {
 					if (ArrayUtils.contains(ench.conflicting, e.getClass()) || addedEnchants.containsKey(ench)
 						|| e.probability <= 0) {
-						b = false;
+						conflicts = true;
 						break;
 					}
 				}
-				if (b && (evt.getItem().getType().equals(BOOK) || ench.validMaterial(evt.getItem().getType()))) {
+				if (!conflicts && (evt.getItem().getType().equals(BOOK) || ench.validMaterial(evt.getItem().getType()))) {
 					validPool.add(ench);
 					totalChance += ench.probability;
 				}
 			}
+
 			double decision = (Storage.rnd.nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), l);
 			float running = 0;
 			for (CustomEnchantment ench : validPool) {
@@ -245,6 +245,7 @@ public class Watcher implements Listener {
 		}
 
 		if (evt.getItem().getType().equals(ENCHANTED_BOOK)) {
+
 			List<String> finalLore = stk.getItemMeta().getLore();
 			Inventory inv = evt.getInventory();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {

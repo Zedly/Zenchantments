@@ -27,8 +27,8 @@ public class Zenchantments extends JavaPlugin {
 	public void loadConfigs() {
 		File file = new File("plugins/Zenchantments/");
 		boolean success = file.mkdir();
-		if (!success) {
-			System.err.println("Error: Could not create file for Zenchantments config.");
+		if (success) {
+			System.out.println("Created folder for Zenchantments config.");
 		}
 		Config.loadConfigs();
 	}

@@ -30,7 +30,7 @@ import static org.bukkit.Material.ENCHANTED_BOOK;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
-public abstract class CustomEnchantment {
+public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
 	protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 	protected              int                  id;
 
@@ -44,9 +44,9 @@ public abstract class CustomEnchantment {
 	protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no
 	// effect
 	protected Hand    handUse;
-		// Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
+	// Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
 	private   boolean used;
-		// Indicates that an enchantment has already been applied to an event, avoiding infinite regress
+	// Indicates that an enchantment has already been applied to an event, avoiding infinite regress
 	protected boolean isCursed;
 
 	public abstract Builder<? extends CustomEnchantment> defaults();
@@ -211,6 +211,10 @@ public abstract class CustomEnchantment {
 
 	void setId(int id) {
 		this.id = id;
+	}
+
+	@Override public int compareTo(CustomEnchantment o) {
+		return this.getLoreName().compareTo(o.getLoreName());
 	}
 
 	//endregion
@@ -489,6 +493,12 @@ public abstract class CustomEnchantment {
 		lore.addAll(normalLore);
 		meta.setLore(lore);
 		stk.setItemMeta(meta);
+
+		if (customEnch && stk.getType() == BOOK) {
+			stk.setType(ENCHANTED_BOOK);
+		}
+
+
 		setGlow(stk, customEnch, world);
 	}
 
@@ -511,7 +521,6 @@ public abstract class CustomEnchantment {
 			enchs = bookMeta.getStoredEnchants();
 		} else {
 			enchs = itemMeta.getEnchants();
-
 		}
 
 		for (Map.Entry<Enchantment, Integer> set : enchs.entrySet()) {

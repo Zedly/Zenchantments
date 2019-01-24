@@ -52,7 +52,8 @@ public class Switch extends CustomEnchantment {
 					&& switchItem.getType() != AIR
 					&& switchItem.getType().isSolid()
 					&& !Storage.COMPATIBILITY_ADAPTER.UNBREAKABLE_BLOCKS.contains(switchItem.getType())
-					&& !Storage.COMPATIBILITY_ADAPTER.INTERACTABLE_BLOCKS.contains(switchItem.getType())) {
+					&& !Storage.COMPATIBILITY_ADAPTER.INTERACTABLE_BLOCKS.contains(switchItem.getType())
+					&& !Storage.COMPATIBILITY_ADAPTER.SHULKER_BOXES.contains(switchItem.getType())) {
 					c = i;
 					break;
 				}
