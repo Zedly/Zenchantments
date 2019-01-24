@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,40 +41,40 @@ public class Reveal extends CustomEnchantment {
     @Override
     public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
         Player player = evt.getPlayer();
-        if(evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if(evt.getPlayer().isSneaking()) {
+        if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (evt.getPlayer().isSneaking()) {
                 int radius = (int) Math.max(2, Math.round((2 + level) * power));
                 int found = 0;
-                for(int x = -radius; x <= radius; x++) {
-                    for(int y = -radius; y <= radius; y++) {
-                        for(int z = -radius; z <= radius; z++) {
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        for (int z = -radius; z <= radius; z++) {
                             Block blk = evt.getPlayer().getLocation().getBlock().getRelative(x, y, z);
-                            if(Storage.ORES.contains(blk.getType())) {
+                            if (Storage.ORES.contains(blk.getType())) {
                                 boolean exposed = false;
-                                for(BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
-                                    if(blk.getRelative(face).getType() == Material.AIR) {
+                                for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
+                                    if (blk.getRelative(face).getType() == Material.AIR) {
                                         exposed = true;
                                     }
                                 }
-                                if(exposed) {
+                                if (exposed) {
                                     continue;
                                 }
 
                                 found++;
                                 int entityId = 2000000000 + (blk.hashCode()) % 10000000;
-                                if(glowingBlocks.containsKey(blk)) {
+                                if (glowingBlocks.containsKey(blk)) {
                                     glowingBlocks.put(blk, glowingBlocks.get(blk) + 1);
                                 } else {
                                     glowingBlocks.put(blk, 1);
                                 }
 
-                                if(!ADAPTER.showShulker(blk, entityId, player)) {
+                                if (!ADAPTER.showShulker(blk, entityId, player)) {
                                     return false;
                                 }
                                 Bukkit.getServer().getScheduler()
                                       .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                           ADAPTER.hideShulker(entityId, player);
-                                          if(glowingBlocks.containsKey(blk)
+                                          if (glowingBlocks.containsKey(blk)
                                              && glowingBlocks.get(blk) > 1) {
                                               glowingBlocks.put(blk,
                                                                         glowingBlocks.get(blk) - 1);

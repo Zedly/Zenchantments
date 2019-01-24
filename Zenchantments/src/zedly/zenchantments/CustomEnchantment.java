@@ -31,202 +31,205 @@ import static org.bukkit.Material.ENCHANTED_BOOK;
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
 public abstract class CustomEnchantment {
-    protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
-	protected int     id;
+	protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
+	protected              int                  id;
 
-    protected int     maxLevel;         // Max level the given enchant can naturally obtain
-    protected String  loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
-    protected float   probability;    // Relative probability of obtaining the given enchantment
-    protected Tool[]  enchantable;   // Enums that represent tools that can receive and work with given enchantment
-    protected Class[] conflicting;  // Classes of enchantments that don't work with given enchantment
-    protected String  description;   // Description of what the enchantment does
-    protected int     cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
-    protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no effect
-    protected Hand    handUse;          // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
-    private   boolean used;       // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
-    protected boolean isCursed;
+	protected int     maxLevel;         // Max level the given enchant can naturally obtain
+	protected String  loreName;      // Name the given enchantment will appear as; with &7 (Gray) color
+	protected float   probability;    // Relative probability of obtaining the given enchantment
+	protected Tool[]  enchantable;   // Enums that represent tools that can receive and work with given enchantment
+	protected Class[] conflicting;  // Classes of enchantments that don't work with given enchantment
+	protected String  description;   // Description of what the enchantment does
+	protected int     cooldown;         // Cooldown for given enchantment given in ticks; Default is 0
+	protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no
+	// effect
+	protected Hand    handUse;
+		// Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
+	private   boolean used;
+		// Indicates that an enchantment has already been applied to an event, avoiding infinite regress
+	protected boolean isCursed;
 
-    public abstract Builder<? extends CustomEnchantment> defaults();
+	public abstract Builder<? extends CustomEnchantment> defaults();
 
-    //region Enchanment Events
+	//region Enchanment Events
 
-    public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onEntityInteract(PlayerInteractEntityEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onEntityInteract(PlayerInteractEntityEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onPlayerFish(PlayerFishEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onPlayerFish(PlayerFishEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onHungerChange(FoodLevelChangeEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onHungerChange(FoodLevelChangeEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onPotionSplash(PotionSplashEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onPotionSplash(PotionSplashEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onPlayerDeath(PlayerDeathEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onPlayerDeath(PlayerDeathEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onScan(Player player, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onScan(Player player, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onScanHands(Player player, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onScanHands(Player player, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onCombust(EntityCombustByEntityEvent evt, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onCombust(EntityCombustByEntityEvent evt, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onFastScan(Player player, int level, boolean usedHand) {
-        return false;
-    }
+	public boolean onFastScan(Player player, int level, boolean usedHand) {
+		return false;
+	}
 
-    public boolean onFastScanHands(Player player, int level, boolean usedHand) {
-        return false;
-    }
-    
-    //endregion
+	public boolean onFastScanHands(Player player, int level, boolean usedHand) {
+		return false;
+	}
 
-    //region Getters and Setters
+	//endregion
 
-    int getMaxLevel() {
-        return maxLevel;
-    }
+	//region Getters and Setters
 
-    void setMaxLevel(int maxLevel) {
-        this.maxLevel = maxLevel;
-    }
+	int getMaxLevel() {
+		return maxLevel;
+	}
 
-    String getLoreName() {
-        return loreName;
-    }
+	void setMaxLevel(int maxLevel) {
+		this.maxLevel = maxLevel;
+	}
 
-    void setLoreName(String loreName) {
-        this.loreName = loreName;
-    }
+	String getLoreName() {
+		return loreName;
+	}
 
-    float getProbability() {
-        return probability;
-    }
+	void setLoreName(String loreName) {
+		this.loreName = loreName;
+	}
 
-    void setProbability(float probability) {
-        this.probability = probability;
-    }
+	float getProbability() {
+		return probability;
+	}
 
-    Tool[] getEnchantable() {
-        return enchantable;
-    }
+	void setProbability(float probability) {
+		this.probability = probability;
+	}
 
-    void setEnchantable(Tool[] enchantable) {
-        this.enchantable = enchantable;
-    }
+	Tool[] getEnchantable() {
+		return enchantable;
+	}
 
-    Class[] getConflicting() {
-        return conflicting;
-    }
+	void setEnchantable(Tool[] enchantable) {
+		this.enchantable = enchantable;
+	}
 
-    void setConflicting(Class[] conflicting) {
-        this.conflicting = conflicting;
-    }
+	Class[] getConflicting() {
+		return conflicting;
+	}
 
-    String getDescription() {
-        return description;
-    }
+	void setConflicting(Class[] conflicting) {
+		this.conflicting = conflicting;
+	}
 
-    void setDescription(String description) {
-        this.description = description;
-    }
+	String getDescription() {
+		return description;
+	}
 
-    int getCooldown() {
-        return cooldown;
-    }
+	void setDescription(String description) {
+		this.description = description;
+	}
 
-    void setCooldown(int cooldown) {
-        this.cooldown = cooldown;
-    }
+	int getCooldown() {
+		return cooldown;
+	}
 
-    double getPower() {
-        return power;
-    }
+	void setCooldown(int cooldown) {
+		this.cooldown = cooldown;
+	}
 
-    void setPower(double power) {
-        this.power = power;
-    }
+	double getPower() {
+		return power;
+	}
 
-    Hand getHandUse() {
-        return handUse;
-    }
+	void setPower(double power) {
+		this.power = power;
+	}
 
-    void setHandUse(Hand handUse) {
-        this.handUse = handUse;
-    }
+	Hand getHandUse() {
+		return handUse;
+	}
 
-    int getId() {
-        return id;
-    }
+	void setHandUse(Hand handUse) {
+		this.handUse = handUse;
+	}
 
-    void setId(int id) {
-        this.id = id;
-    }
+	int getId() {
+		return id;
+	}
 
-    //endregion
+	void setId(int id) {
+		this.id = id;
+	}
 
-    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
-        getEnchants(tool, player.getWorld()).forEach((CustomEnchantment ench, Integer level) -> {
-            if (!ench.used && Utilities.canUse(player, ench.id)) {
-	                try {
-		                ench.used = true;
-		                if (action.test(ench, level)) {
-			                EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
-		                }
-	                } catch (Exception ex) {
-		                ex.printStackTrace();
-	                }
-	                ench.used = false;
-                }
-        });
-    }
+	//endregion
+
+	public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
+		getEnchants(tool, player.getWorld()).forEach((CustomEnchantment ench, Integer level) -> {
+			if (!ench.used && Utilities.canUse(player, ench.id)) {
+				try {
+					ench.used = true;
+					if (action.test(ench, level)) {
+						EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				ench.used = false;
+			}
+		});
+	}
 
 	// Updates lore enchantments and descriptions to new format. This will be removed eventually
 	public static ItemStack updateToNewFormat(ItemStack stk, World world) {
@@ -253,7 +256,7 @@ public abstract class CustomEnchantment {
 									level = Utilities.getNumber(stripString.substring(splitIndex + 1));
 									try {
 										enchant = stripString.substring(0, splitIndex);
-									} catch (Exception e){
+									} catch (Exception e) {
 										enchant = "";
 									}
 									ench = Config.get(world).enchantFromString(enchant);
@@ -301,12 +304,13 @@ public abstract class CustomEnchantment {
 
 	// Returns a mapping of custom enchantments and their level on a given tool
 	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
-			List<String> outExtraLore) {
+		List<String> outExtraLore) {
 		return getEnchants(stk, false, world, outExtraLore);
 	}
 
 	// Returns a mapping of custom enchantments and their level on a given tool
-	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks, World world) {
+	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+		World world) {
 		return getEnchants(stk, acceptBooks, world, null);
 	}
 
@@ -315,8 +319,9 @@ public abstract class CustomEnchantment {
 		return getEnchants(stk, false, world, null);
 	}
 
-	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks, World world,
-			List<String> outExtraLore) {
+	public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+		World world,
+		List<String> outExtraLore) {
 		ItemStack stack;
 		Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
 		if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
@@ -377,6 +382,7 @@ public abstract class CustomEnchantment {
 	 * Determines if the material provided is enchantable with this enchantment.
 	 *
 	 * @param m The material to test.
+	 *
 	 * @return true iff the material can be enchanted with this enchantment.
 	 */
 	// Returns true if the given material (tool) is compatible with the enchantment, otherwise false
@@ -393,6 +399,7 @@ public abstract class CustomEnchantment {
 	 * Determines if the stack of material provided is enchantable with this enchantment.
 	 *
 	 * @param m The stack of material to test.
+	 *
 	 * @return true iff the stack of material can be enchanted with this enchantment.
 	 */
 	public boolean validMaterial(ItemStack m) {
@@ -453,7 +460,7 @@ public abstract class CustomEnchantment {
 	}
 
 	public static void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world) {
-		if (stk == null){
+		if (stk == null) {
 			return;
 		}
 		ItemMeta meta = stk.getItemMeta();
@@ -473,7 +480,7 @@ public abstract class CustomEnchantment {
 			}
 		}
 
-		if (ench != null && level > 0 && level <= ench.maxLevel){
+		if (ench != null && level > 0 && level <= ench.maxLevel) {
 			lore.add(ench.getShown(level, world));
 			lore.addAll(ench.getDescription(world));
 			customEnch = true;
@@ -507,7 +514,7 @@ public abstract class CustomEnchantment {
 
 		}
 
-		for (Map.Entry<Enchantment, Integer> set : enchs.entrySet()){
+		for (Map.Entry<Enchantment, Integer> set : enchs.entrySet()) {
 			if (!(set.getKey().equals(Enchantment.DURABILITY) && (duraLevel = set.getValue()) == 0)) {
 				containsNormal = true;
 			} else {
@@ -542,98 +549,97 @@ public abstract class CustomEnchantment {
 	}
 
 
+	protected static final class Builder<T extends CustomEnchantment> {
+		private final T customEnchantment;
 
-    protected static final class Builder<T extends CustomEnchantment> {
-        private final T customEnchantment;
+		public Builder(Supplier<T> sup, int id) {
+			customEnchantment = sup.get();
+			customEnchantment.setId(id);
+		}
 
-        public Builder(Supplier<T> sup, int id) {
-            customEnchantment = sup.get();
-            customEnchantment.setId(id);
-        }
+		public Builder<T> maxLevel(int maxLevel) {
+			customEnchantment.setMaxLevel(maxLevel);
+			return this;
+		}
 
-        public Builder<T> maxLevel(int maxLevel) {
-            customEnchantment.setMaxLevel(maxLevel);
-            return this;
-        }
+		public int maxLevel() {
+			return customEnchantment.getMaxLevel();
+		}
 
-        public int maxLevel() {
-            return customEnchantment.getMaxLevel();
-        }
+		public Builder<T> loreName(String loreName) {
+			customEnchantment.setLoreName(loreName);
+			return this;
+		}
 
-        public Builder<T> loreName(String loreName) {
-            customEnchantment.setLoreName(loreName);
-            return this;
-        }
+		public String loreName() {
+			return customEnchantment.getLoreName();
+		}
 
-        public String loreName() {
-            return customEnchantment.getLoreName();
-        }
+		public Builder<T> probability(float probability) {
+			customEnchantment.setProbability(probability);
+			return this;
+		}
 
-        public Builder<T> probability(float probability) {
-            customEnchantment.setProbability(probability);
-            return this;
-        }
+		public float probability() {
+			return customEnchantment.getProbability();
+		}
 
-        public float probability() {
-            return customEnchantment.getProbability();
-        }
+		public Builder<T> enchantable(Tool[] enchantable) {
+			customEnchantment.setEnchantable(enchantable);
+			return this;
+		}
 
-        public Builder<T> enchantable(Tool[] enchantable) {
-            customEnchantment.setEnchantable(enchantable);
-            return this;
-        }
+		public Tool[] enchantable() {
+			return customEnchantment.getEnchantable();
+		}
 
-        public Tool[] enchantable() {
-            return customEnchantment.getEnchantable();
-        }
+		public Builder<T> conflicting(Class[] conflicting) {
+			customEnchantment.setConflicting(conflicting);
+			return this;
+		}
 
-        public Builder<T> conflicting(Class[] conflicting) {
-            customEnchantment.setConflicting(conflicting);
-            return this;
-        }
+		public Class[] conflicting() {
+			return customEnchantment.getConflicting();
+		}
 
-        public Class[] conflicting() {
-            return customEnchantment.getConflicting();
-        }
+		public Builder<T> description(String description) {
+			customEnchantment.setDescription(description);
+			return this;
+		}
 
-        public Builder<T> description(String description) {
-            customEnchantment.setDescription(description);
-            return this;
-        }
+		public String description() {
+			return customEnchantment.getDescription();
+		}
 
-        public String description() {
-            return customEnchantment.getDescription();
-        }
+		public Builder<T> cooldown(int cooldown) {
+			customEnchantment.setCooldown(cooldown);
+			return this;
+		}
 
-        public Builder<T> cooldown(int cooldown) {
-            customEnchantment.setCooldown(cooldown);
-            return this;
-        }
+		public int cooldown() {
+			return customEnchantment.getCooldown();
+		}
 
-        public int cooldown() {
-            return customEnchantment.getCooldown();
-        }
+		public Builder<T> power(double power) {
+			customEnchantment.setPower(power);
+			return this;
+		}
 
-        public Builder<T> power(double power) {
-            customEnchantment.setPower(power);
-            return this;
-        }
+		public double power() {
+			return customEnchantment.getPower();
+		}
 
-        public double power() {
-            return customEnchantment.getPower();
-        }
+		public Builder<T> handUse(Hand handUse) {
+			customEnchantment.setHandUse(handUse);
+			return this;
+		}
 
-        public Builder<T> handUse(Hand handUse) {
-            customEnchantment.setHandUse(handUse);
-            return this;
-        }
+		public Hand handUse() {
+			return customEnchantment.getHandUse();
+		}
 
-        public Hand handUse() {
-            return customEnchantment.getHandUse();
-        }
-
-        public T build() {
-            return customEnchantment;
-        }
-    }
+		public T build() {
+			return customEnchantment;
+		}
+	}
 }

@@ -16,48 +16,49 @@ import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Plough extends CustomEnchantment {
 
-    public static final int ID = 43;
+	public static final int ID = 43;
 
-    @Override
-    public Builder<Plough> defaults() {
-        return new Builder<>(Plough::new, ID)
-            .maxLevel(3)
-            .loreName("Plough")
-            .probability(0)
-            .enchantable(new Tool[]{HOE})
-            .conflicting(new Class[]{})
-            .description("Tills all soil within a radius")
-            .cooldown(0)
-            .power(1.0)
-            .handUse(Hand.RIGHT);
-    }
+	@Override
+	public Builder<Plough> defaults() {
+		return new Builder<>(Plough::new, ID)
+			.maxLevel(3)
+			.loreName("Plough")
+			.probability(0)
+			.enchantable(new Tool[]{HOE})
+			.conflicting(new Class[]{})
+			.description("Tills all soil within a radius")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.RIGHT);
+	}
 
-    @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if(evt.getAction() == RIGHT_CLICK_BLOCK) {
-            Location loc = evt.getClickedBlock().getLocation();
-            int radiusXZ = (int) Math.round(power * level + 2);
-            int radiusY = 1;
-            for(int x = -(radiusXZ); x <= radiusXZ; x++) {
-                for(int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
-                    for(int z = -(radiusXZ); z <= radiusXZ; z++) {
-                        Block block = loc.getBlock();
-                        if(block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
-                            if(((block.getRelative(x, y, z).getType() == DIRT
-                                 || block.getRelative(x, y, z).getType() == GRASS_BLOCK
-                                 || block.getRelative(x, y, z).getType() == MYCELIUM))
-                               && block.getRelative(x, y + 1, z).getType() == AIR) {
-                                ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), Material.FARMLAND, null);
-                                if(Storage.rnd.nextBoolean()) {
-                                    Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-        return false;
-    }
+	@Override
+	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
+		if (evt.getAction() == RIGHT_CLICK_BLOCK) {
+			Location loc = evt.getClickedBlock().getLocation();
+			int radiusXZ = (int) Math.round(power * level + 2);
+			int radiusY = 1;
+			for (int x = -(radiusXZ); x <= radiusXZ; x++) {
+				for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
+					for (int z = -(radiusXZ); z <= radiusXZ; z++) {
+						Block block = loc.getBlock();
+						if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
+							if (((block.getRelative(x, y, z).getType() == DIRT
+								|| block.getRelative(x, y, z).getType() == GRASS_BLOCK
+								|| block.getRelative(x, y, z).getType() == MYCELIUM))
+								&& block.getRelative(x, y + 1, z).getType() == AIR) {
+								ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), Material.FARMLAND,
+									null);
+								if (Storage.rnd.nextBoolean()) {
+									Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+								}
+							}
+						}
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 }

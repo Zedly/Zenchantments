@@ -27,7 +27,7 @@ public class Apocalypse extends CustomEnchantment {
 			.cooldown(0)
 			.power(-1.0)
 			.handUse(Hand.RIGHT);
-    }
+	}
 
 	@Override
 	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {

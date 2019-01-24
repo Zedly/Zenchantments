@@ -50,7 +50,7 @@ public class MissileArrow extends EnchantedArrow {
 					loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10,
 						config.explosionBlockBreak(), config.explosionBlockBreak());
 				}
-			}, (int) (i / 7));
+			}, i / 7);
 		}
 	}
 }

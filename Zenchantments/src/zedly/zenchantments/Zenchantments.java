@@ -1,10 +1,9 @@
 package zedly.zenchantments;
-//For Bukkit & Spigot 1.12.X
+//For Bukkit & Spigot 1.13.X
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -17,7 +16,6 @@ import zedly.zenchantments.enums.Frequency;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import static org.bukkit.Material.*;
@@ -25,12 +23,15 @@ import static org.bukkit.Material.*;
 
 public class Zenchantments extends JavaPlugin {
 
-    // Creates a directory for the plugin and then loads configs
-    public void loadConfigs() {
-        File file = new File("plugins/Zenchantments/");
-        file.mkdir();
-        Config.loadConfigs();
-    }
+	// Creates a directory for the plugin and then loads configs
+	public void loadConfigs() {
+		File file = new File("plugins/Zenchantments/");
+		boolean success = file.mkdir();
+		if (!success) {
+			System.err.println("Error: Could not create file for Zenchantments config.");
+		}
+		Config.loadConfigs();
+	}
 
 	@EffectTask(Frequency.MEDIUM_HIGH)
 	public static void speedPlayers() {
@@ -40,7 +41,6 @@ public class Zenchantments extends JavaPlugin {
 	// Sets player fly and walk speed to default after certain enchantments are removed
 	private static void speedPlayers(boolean checkAll) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			Config config = Config.get(player.getWorld());
 			boolean check = false;
 			for (ItemStack stk : player.getInventory().getArmorContents()) {
 				Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(stk, player.getWorld());
@@ -60,92 +60,87 @@ public class Zenchantments extends JavaPlugin {
 		}
 	}
 
-    // Sets blocks to their natural states at shutdown
-    public void onDisable() {
-	    speedPlayers(true);
-        getServer().getScheduler().cancelTasks(this);
-        for (Location l : FrozenStep.frozenLocs.keySet()) {
-            l.getBlock().setType(WATER);
-        }
-        for (Location l : NetherStep.netherstepLocs.keySet()) {
-            l.getBlock().setType(LAVA);
-        }
-        for (Entity e : Anthropomorphism.idleBlocks.keySet()) {
-            e.remove();
-        }
-    }
+	// Sets blocks to their natural states at shutdown
+	public void onDisable() {
+		speedPlayers(true);
+		getServer().getScheduler().cancelTasks(this);
+		for (Location l : FrozenStep.frozenLocs.keySet()) {
+			l.getBlock().setType(WATER);
+		}
+		for (Location l : NetherStep.netherstepLocs.keySet()) {
+			l.getBlock().setType(LAVA);
+		}
+		for (Entity e : Anthropomorphism.idleBlocks.keySet()) {
+			e.remove();
+		}
+	}
 
-    // Sends commands over to the CommandProcessor for it to handle
-    public boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
-        return CommandProcessor.onCommand(sender, command, commandlabel, args);
-    }
+	// Sends commands over to the CommandProcessor for it to handle
+	public boolean onCommand(CommandSender sender, Command command, String commandlabel, String[] args) {
+		return CommandProcessor.onCommand(sender, command, commandlabel, args);
+	}
 
-    // Returns true if the given item stack has a custom enchantment
-    public boolean hasEnchantment(ItemStack stack) {
-        boolean has = false;
-        for (Config c : Config.CONFIGS.values()) {
-            if (!CustomEnchantment.getEnchants(stack, c.getWorld()).isEmpty()) {
-                has = true;
-            }
-        }
-        return has;
-    }
+	// Returns true if the given item stack has a custom enchantment
+	public boolean hasEnchantment(ItemStack stack) {
+		boolean has = false;
+		for (Config c : Config.CONFIGS.values()) {
+			if (!CustomEnchantment.getEnchants(stack, c.getWorld()).isEmpty()) {
+				has = true;
+			}
+		}
+		return has;
+	}
 
-    // Returns enchantment names mapped to their level from the given item stack
-    public Map<String, Integer> getEnchantments(ItemStack stack) {
-        Map<String, Integer> enchantments = new TreeMap<>();
-        for (Config c : Config.CONFIGS.values()) {
-            Map<CustomEnchantment, Integer> ench = CustomEnchantment.getEnchants(stack, c.getWorld());
-            for (CustomEnchantment e : ench.keySet()) {
-                enchantments.put(e.loreName, ench.get(e));
-            }
-        }
-        return enchantments;
-    }
+	// Returns enchantment names mapped to their level from the given item stack
+	public Map<String, Integer> getEnchantments(ItemStack stack) {
+		Map<String, Integer> enchantments = new TreeMap<>();
+		for (Config c : Config.CONFIGS.values()) {
+			Map<CustomEnchantment, Integer> ench = CustomEnchantment.getEnchants(stack, c.getWorld());
+			for (CustomEnchantment e : ench.keySet()) {
+				enchantments.put(e.loreName, ench.get(e));
+			}
+		}
+		return enchantments;
+	}
 
-    // Returns true if the enchantment (given by the string) can be applied to the given item stack
-    public boolean isCompatible(String enchantmentName, ItemStack stack) {
-        boolean is = false;
-        for (Config c : Config.CONFIGS.values()) {
-            Set<CustomEnchantment> ench = c.getEnchants();
-	        CustomEnchantment e;
-            if ((e = c.enchantFromString(enchantmentName)) != null) {
-                is = e.validMaterial(stack);
-                if (is) {
-                    return true;
-                }
-            }
-        }
-        return is;
-    }
+	// Returns true if the enchantment (given by the string) can be applied to the given item stack
+	public boolean isCompatible(String enchantmentName, ItemStack stack) {
+		for (Config c : Config.CONFIGS.values()) {
+			CustomEnchantment e;
+			if ((e = c.enchantFromString(enchantmentName)) != null) {
+				if (e.validMaterial(stack)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    // Adds the enchantments (given by the string) of level 'level' to the given item stack, returning true if the
-    //      action was successful
-    public boolean addEnchantment(ItemStack stk, String enchantmentName, int lvl) {
-        for (Config c : Config.CONFIGS.values()) {
-	        Set<CustomEnchantment> ench = c.getEnchants();
-	        CustomEnchantment e;
-	        if ((e = c.enchantFromString(enchantmentName)) != null) {
-            	e.setEnchantment(stk, lvl, c.getWorld());
-                return true;
-            }
-        }
-        return false;
-    }
+	// Adds the enchantments (given by the string) of level 'level' to the given item stack, returning true if the
+	//      action was successful
+	public boolean addEnchantment(ItemStack stk, String enchantmentName, int lvl) {
+		for (Config c : Config.CONFIGS.values()) {
+			CustomEnchantment e;
+			if ((e = c.enchantFromString(enchantmentName)) != null) {
+				e.setEnchantment(stk, lvl, c.getWorld());
+				return true;
+			}
+		}
+		return false;
+	}
 
-    // Removes the enchantment (given by the string) from the given item stack, returning true if the action was
-    //      successful
-    public boolean removeEnchantment(ItemStack stk, String enchantmentName) {
-        for (Config c : Config.CONFIGS.values()) {
-	        Set<CustomEnchantment> ench = c.getEnchants();
-	        CustomEnchantment e;
-	        if ((e = c.enchantFromString(enchantmentName)) != null) {
-            	e.setEnchantment(stk, 0, c.getWorld());
-                return true;
-            }
-        }
-        return false;
-    }
+	// Removes the enchantment (given by the string) from the given item stack, returning true if the action was
+	//      successful
+	public boolean removeEnchantment(ItemStack stk, String enchantmentName) {
+		for (Config c : Config.CONFIGS.values()) {
+			CustomEnchantment e;
+			if ((e = c.enchantFromString(enchantmentName)) != null) {
+				e.setEnchantment(stk, 0, c.getWorld());
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// Loads configs and starts tasks
 	public void onEnable() {

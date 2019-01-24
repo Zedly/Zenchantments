@@ -13,26 +13,26 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class QuickShot extends CustomEnchantment {
 
-    public static final int ID = 46;
+	public static final int ID = 46;
 
-    @Override
-    public Builder<QuickShot> defaults() {
-        return new Builder<>(QuickShot::new, ID)
-            .maxLevel(1)
-            .loreName("Quick Shot")
-            .probability(0)
-            .enchantable(new Tool[]{BOW})
-            .conflicting(new Class[]{})
-            .description("Shoots arrows at full speed, instantly")
-            .cooldown(0)
-            .power(1.0)
-            .handUse(Hand.RIGHT);
-    }
+	@Override
+	public Builder<QuickShot> defaults() {
+		return new Builder<>(QuickShot::new, ID)
+			.maxLevel(1)
+			.loreName("Quick Shot")
+			.probability(0)
+			.enchantable(new Tool[]{BOW})
+			.conflicting(new Class[]{})
+			.description("Shoots arrows at full speed, instantly")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.RIGHT);
+	}
 
-    @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        QuickArrow arrow = new QuickArrow((Arrow) evt.getProjectile());
-        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
-        return true;
-    }
+	@Override
+	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
+		QuickArrow arrow = new QuickArrow((Arrow) evt.getProjectile());
+		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+		return true;
+	}
 }

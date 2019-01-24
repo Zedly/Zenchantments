@@ -1,7 +1,6 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
@@ -22,7 +21,7 @@ public class NetherStep extends CustomEnchantment {
 
 	// Blocks spawned from the NatherStep enchantment
 	public static final Map<Location, Long> netherstepLocs = new HashMap<>();
-	public static final int ID = 39;
+	public static final int                 ID             = 39;
 
 	@Override
 	public Builder<NetherStep> defaults() {
@@ -36,21 +35,21 @@ public class NetherStep extends CustomEnchantment {
 			.cooldown(0)
 			.power(1.0)
 			.handUse(Hand.NONE);
-    }
+	}
 
-    @Override
-    public boolean onScan(Player player, int level, boolean usedHand) {
-        if(player.isSneaking() && player.getLocation().getBlock().getType() == LAVA &&
-           !player.isFlying()) {
-            player.setVelocity(player.getVelocity().setY(.4));
-        }
-        Block block = (Block) player.getLocation().add(0, 0.2, 0).getBlock();
-        int radius = (int) Math.round(power * level + 2);
+	@Override
+	public boolean onScan(Player player, int level, boolean usedHand) {
+		if (player.isSneaking() && player.getLocation().getBlock().getType() == LAVA &&
+			!player.isFlying()) {
+			player.setVelocity(player.getVelocity().setY(.4));
+		}
+		Block block = player.getLocation().add(0, 0.2, 0).getBlock();
+		int radius = (int) Math.round(power * level + 2);
 
-	    selfRemovingArea(SOUL_SAND, LAVA, radius, block, player, netherstepLocs);
+		selfRemovingArea(SOUL_SAND, LAVA, radius, block, player, netherstepLocs);
 
-        return true;
-    }
+		return true;
+	}
 
 	@EffectTask(Frequency.MEDIUM_HIGH)
 	// Removes the blocks from NetherStep and FrozenStep after a peroid of time

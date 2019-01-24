@@ -9,18 +9,18 @@ import zedly.zenchantments.enchantments.Vortex;
 
 public class VortexArrow extends EnchantedArrow {
 
-    public VortexArrow(Arrow entity) {
-        super(entity);
-    }
+	public VortexArrow(Arrow entity) {
+		super(entity);
+	}
 
-    public void onKill(final EntityDeathEvent evt) {
-        Vortex.vortexLocs.put(evt.getEntity().getLocation().getBlock(), evt.getEntity().getKiller().getLocation());
-        int i = evt.getDroppedExp();
-        evt.setDroppedExp(0);
-        evt.getEntity().getKiller().giveExp(i);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            Vortex.vortexLocs.remove(evt.getEntity().getLocation().getBlock());
-        }, 3);
-        die();
-    }
+	public void onKill(final EntityDeathEvent evt) {
+		Vortex.vortexLocs.put(evt.getEntity().getLocation().getBlock(), evt.getEntity().getKiller().getLocation());
+		int i = evt.getDroppedExp();
+		evt.setDroppedExp(0);
+		evt.getEntity().getKiller().giveExp(i);
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+			Vortex.vortexLocs.remove(evt.getEntity().getLocation().getBlock());
+		}, 3);
+		die();
+	}
 }

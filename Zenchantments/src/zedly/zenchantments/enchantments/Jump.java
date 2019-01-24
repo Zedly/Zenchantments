@@ -11,25 +11,25 @@ import static zedly.zenchantments.enums.Tool.BOOTS;
 
 public class Jump extends CustomEnchantment {
 
-    public static final int ID = 30;
+	public static final int ID = 30;
 
-    @Override
-    public Builder<Jump> defaults() {
-        return new Builder<>(Jump::new, ID)
-            .maxLevel(4)
-            .loreName("Jump")
-            .probability(0)
-            .enchantable(new Tool[]{BOOTS})
-            .conflicting(new Class[]{})
-            .description("Gives the player a jump boost")
-            .cooldown(0)
-            .power(1.0)
-            .handUse(Hand.NONE);
-    }
+	@Override
+	public Builder<Jump> defaults() {
+		return new Builder<>(Jump::new, ID)
+			.maxLevel(4)
+			.loreName("Jump")
+			.probability(0)
+			.enchantable(new Tool[]{BOOTS})
+			.conflicting(new Class[]{})
+			.description("Gives the player a jump boost")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.NONE);
+	}
 
-    @Override
-    public boolean onScan(Player player, int level, boolean usedHand) {
-        Utilities.addPotion(player, JUMP, 610, (int) Math.round(level * power));
-        return true;
-    }
+	@Override
+	public boolean onScan(Player player, int level, boolean usedHand) {
+		Utilities.addPotion(player, JUMP, 610, (int) Math.round(level * power));
+		return true;
+	}
 }

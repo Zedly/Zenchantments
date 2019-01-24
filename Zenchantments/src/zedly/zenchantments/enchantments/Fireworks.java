@@ -13,27 +13,27 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Fireworks extends CustomEnchantment {
 
-    public static final int ID = 15;
+	public static final int ID = 15;
 
-    @Override
-    public Builder<Fireworks> defaults() {
-        return new Builder<>(Fireworks::new, ID)
-            .maxLevel(4)
-            .loreName("Fireworks")
-            .probability(0)
-            .enchantable(new Tool[]{BOW})
-            .conflicting(new Class[]{})
-            .description("Shoots arrows that burst into fireworks upon impact")
-            .cooldown(0)
-            .power(-1.0)
-            .handUse(Hand.RIGHT);
-    }
+	@Override
+	public Builder<Fireworks> defaults() {
+		return new Builder<>(Fireworks::new, ID)
+			.maxLevel(4)
+			.loreName("Fireworks")
+			.probability(0)
+			.enchantable(new Tool[]{BOW})
+			.conflicting(new Class[]{})
+			.description("Shoots arrows that burst into fireworks upon impact")
+			.cooldown(0)
+			.power(-1.0)
+			.handUse(Hand.RIGHT);
+	}
 
-    @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        FireworkArrow arrow = new FireworkArrow((Arrow) evt.getProjectile(), level);
-        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
-        return true;
-    }
+	@Override
+	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
+		FireworkArrow arrow = new FireworkArrow((Arrow) evt.getProjectile(), level);
+		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+		return true;
+	}
 
 }

@@ -192,6 +192,10 @@ public class CompatibilityAdapter {
 
     public final EnumStorage<Material> SANDS = new EnumStorage<>(new Material[]{SAND, RED_SAND});
 
+    public final EnumStorage<Material> SANDSTONES = new EnumStorage<>(new Material[]{SANDSTONE, CUT_SANDSTONE,
+        CHISELED_SANDSTONE, SMOOTH_SANDSTONE, RED_SANDSTONE, CUT_RED_SANDSTONE, CHISELED_RED_SANDSTONE,
+        SMOOTH_RED_SANDSTONE});
+
 	public final EnumStorage<Material> TERRAFORMER_MATERIALS = new EnumStorage<>(new Material[]{STONE, GRASS_BLOCK,
 		DIRT, COBBLESTONE, SAND, GRAVEL, SANDSTONE, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK, CLAY,
 		NETHERRACK, SOUL_SAND, STONE_BRICKS, MYCELIUM, NETHER_BRICK, END_STONE, EMERALD_ORE, QUARTZ_BLOCK, SLIME_BLOCK,
@@ -304,7 +308,7 @@ public class CompatibilityAdapter {
                     ((Sheep) target).setSheared(true);
 
                     // TODO: Apply damage to tool
-                } else if (target instanceof  MushroomCow) {
+                } else if (target instanceof MushroomCow) {
                     MushroomCow cow = (MushroomCow) target;
                     // TODO: DO
                 }
@@ -324,7 +328,7 @@ public class CompatibilityAdapter {
         if (breakEvent.isCancelled()) {
             return false;
         }
-        ItemStack stack = new ItemStack(state.getType(), 1, state.getData().getData());
+        ItemStack stack = new ItemStack(state.getType(), 1);
         from.setType(AIR);
         BlockPlaceEvent placeEvent = new BlockPlaceEvent(to, to.getRelative(face.getOppositeFace()).getState(), to.getRelative(face.getOppositeFace()), stack, player, true);
         Bukkit.getPluginManager().callEvent(placeEvent);
@@ -333,7 +337,6 @@ public class CompatibilityAdapter {
             return true;
         }
         to.setType(state.getType());
-        //to.setData(state.getData().getData());
         return true;
     }
 

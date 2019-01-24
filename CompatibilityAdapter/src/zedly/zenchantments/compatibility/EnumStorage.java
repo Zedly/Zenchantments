@@ -26,6 +26,11 @@ public class EnumStorage<T> {
 		enumArray = (T[]) this.enums.toArray();
 	}
 
+	public T getNext(T t) {
+		int index = indexOf(t);
+		return index == -1 ? null : enumArray[(index + 1) % enumArray.length];
+	}
+
 	public boolean contains(T t) {
 		return enums.contains(t);
 	}
@@ -57,5 +62,5 @@ public class EnumStorage<T> {
 
 	public T getRandom() {
 		return enumArray[rnd.nextInt(enumArray.length)];
-	};
+	}
 }
