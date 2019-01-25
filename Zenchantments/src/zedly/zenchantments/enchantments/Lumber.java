@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.CustomEnchantment;
@@ -15,7 +16,7 @@ import static zedly.zenchantments.enums.Tool.AXE;
 
 public class Lumber extends CustomEnchantment {
 
-	private static final int MAX_BLOCKS = 160;
+	private static final int MAX_BLOCKS = 200;
 
 	public static final int ID = 34;
 
@@ -59,7 +60,7 @@ public class Lumber extends CustomEnchantment {
 						for (int z = -1; z <= 1; z++) {
 							Block testBlock = searchBlock.getRelative(x, y, z);
 							if (!searchBody.contains(testBlock)) {
-								if (Storage.COMPATIBILITY_ADAPTER.LUMBER_WHITELIST.contains(searchBlock.getType())) {
+								if (Storage.COMPATIBILITY_ADAPTER.LUMBER_WHITELIST.contains(testBlock.getType())) {
 									searchPerimeter.add(testBlock);
 									searchBody.add(testBlock);
 								} else {
@@ -78,7 +79,7 @@ public class Lumber extends CustomEnchantment {
 						for (int z = -1; z <= 1; z++) {
 							Block testBlock = searchBlock.getRelative(x, y, z);
 							if (!searchBody.contains(testBlock) &&
-								Storage.COMPATIBILITY_ADAPTER.TRUNK_BLOCKS.contains(searchBlock.getType())) {
+								Storage.COMPATIBILITY_ADAPTER.TRUNK_BLOCKS.contains(testBlock.getType())) {
 								searchPerimeter.add(testBlock);
 								searchBody.add(testBlock);
 							} else if (!Storage.COMPATIBILITY_ADAPTER.LUMBER_WHITELIST.contains(testBlock.getType())) {

@@ -50,7 +50,7 @@ public class Weight extends CustomEnchantment {
 				for (int i = 0; i < 4; i++) {
 					if (s[i] != null) {
 						Utilities.addUnbreaking(player, s[i], 1);
-						if (s[i].getDurability() > s[i].getType().getMaxDurability()) {
+						if (Utilities.getDamage(s[i]) > s[i].getType().getMaxDurability()) {
 							s[i] = null;
 						}
 					}

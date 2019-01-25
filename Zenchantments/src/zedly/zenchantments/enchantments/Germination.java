@@ -18,7 +18,6 @@ import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Germination extends CustomEnchantment {
 
-	private static final ItemStack BONE_MEAL = new ItemStack(Material.BONE_MEAL);
 	public static final  int       ID        = 19;
 
 	@Override

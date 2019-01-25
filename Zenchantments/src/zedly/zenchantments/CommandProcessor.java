@@ -38,8 +38,7 @@ public class CommandProcessor {
 						case "help":
 							break;
 						case "give":
-							if (args.length == 1) {
-							} else if (args.length == 2) {
+							if (args.length == 2) {
 								for (Player plyr : Bukkit.getOnlinePlayers()) {
 									if (plyr.getPlayerListName().toLowerCase().startsWith(args[1].toLowerCase())) {
 										results.add(plyr.getPlayerListName());
@@ -56,7 +55,7 @@ public class CommandProcessor {
 								for (int i = 1; i <= ench.getMaxLevel(); i++) {
 									results.add(i + "");
 								}
-							} else {
+							} else if (args.length != 1){
 								for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
 									if (ench.getKey().startsWith(args[args.length - 1]) && (stack.getType() == BOOK
 										|| stack.getType() == ENCHANTED_BOOK

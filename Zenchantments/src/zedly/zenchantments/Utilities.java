@@ -1,9 +1,6 @@
 package zedly.zenchantments;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -11,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -45,15 +44,15 @@ public class Utilities {
 			for (int i = 0; i < damage; i++) {
 				if (Storage.rnd.nextInt(100) <= (100 / (
 					hand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-					hand.setDurability((short) (hand.getDurability() + 1));
+					setDamage(hand, getDamage(hand) + 1);
 				}
 			}
 			if (handUsed) {
 				player.getInventory().setItemInMainHand(
-					hand.getDurability() > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
+					getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
 			} else {
 				player.getInventory().setItemInOffHand(
-					hand.getDurability() > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
+					getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
 			}
 		}
 	}
@@ -72,10 +71,26 @@ public class Utilities {
 			for (int i = 0; i < damage; i++) {
 				if (Storage.rnd.nextInt(100) <= (100 / (
 					is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-					is.setDurability((short) (is.getDurability() + 1));
+					setDamage(is, getDamage(is) + 1);
 				}
 			}
 		}
+	}
+
+	public static void setDamage(ItemStack is, int damage) {
+		if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
+			org.bukkit.inventory.meta.Damageable dm = ((Damageable) is.getItemMeta());
+			dm.setDamage(damage);
+			is.setItemMeta((ItemMeta) dm);
+		}
+	}
+
+	public static int getDamage(ItemStack is) {
+		if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
+			org.bukkit.inventory.meta.Damageable dm = ((Damageable) is.getItemMeta());
+			return dm.getDamage();
+		}
+		return 0;
 	}
 
 	// Returns the item stack direction the player's main or off hand, determinted by 'handUsed'

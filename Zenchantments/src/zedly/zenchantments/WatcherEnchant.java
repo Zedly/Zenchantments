@@ -206,8 +206,6 @@ public class WatcherEnchant implements Listener {
 			boolean usedHand =
 				Utilities.isMainHand(main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
 			ItemStack usedStack = Utilities.usedStack(player, usedHand);
-			LinkedHashMap<CustomEnchantment, Integer> map =
-				CustomEnchantment.getEnchants(evt.getBow(), player.getWorld());
 			CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
 				return ench.onEntityShootBow(evt, level, true);
 			});

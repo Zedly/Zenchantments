@@ -77,7 +77,7 @@ public class Glide extends CustomEnchantment {
 					if (map.containsKey(this)) {
 						Utilities.addUnbreaking(player, s[i], 1);
 					}
-					if (s[i].getDurability() > s[i].getType().getMaxDurability()) {
+					if (Utilities.getDamage(s[i]) > s[i].getType().getMaxDurability()) {
 						s[i] = null;
 					}
 				}

@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 /**
  * A runnable class that will execute all events of the specified frequency.
  *
- * @author rfrowe
  */
 public class TaskRunner implements Runnable {
 	private Set<Method> tasks;

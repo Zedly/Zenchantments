@@ -32,7 +32,7 @@ public class ApocalypseArrow extends EnchantedArrow {
 			for (int i = 0; i <= 45; i++) {
 				final int c = i + 1;
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-					Entity ent = l.getWorld().spawnFallingBlock(l, FIRE, (byte) 0);
+					Entity ent = l.getWorld().spawnFallingBlock(l, Bukkit.createBlockData(FIRE));
 					Vector v = l.toVector();
 					v.setY(Math.abs(Math.sin(c)));
 					if (lsf % 2 == 0) {

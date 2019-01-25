@@ -20,7 +20,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -300,7 +300,7 @@ public class Watcher implements Listener {
 
 	// Prevents arrows with the 'ze.arrow' metadata from being able to be picked up by removing them
 	@EventHandler
-	public void onArrowPickup(PlayerPickupItemEvent evt) {
+	public void onArrowPickup(PlayerPickupArrowEvent evt) {
 		if (evt.getItem().hasMetadata("ze.arrow")) {
 			evt.getItem().remove();
 			evt.setCancelled(true);

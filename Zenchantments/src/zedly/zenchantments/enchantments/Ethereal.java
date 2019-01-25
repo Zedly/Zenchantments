@@ -32,8 +32,8 @@ public class Ethereal extends CustomEnchantment {
 	@Override
 	public boolean onScanHands(Player player, int level, boolean usedHand) {
 		ItemStack stk = Utilities.usedStack(player, usedHand);
-		int dura = stk.getDurability();
-		stk.setDurability((short) 0);
+		int dura = Utilities.getDamage(stk);
+		Utilities.setDamage(stk, 0);
 		if (dura != 0) {
 			if (usedHand) {
 				player.getInventory().setItemInMainHand(stk);
@@ -50,7 +50,7 @@ public class Ethereal extends CustomEnchantment {
 			if (s != null) {
 				Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(s, player.getWorld());
 				if (map.containsKey(zedly.zenchantments.enchantments.Ethereal.this)) {
-					s.setDurability((short) 0);
+					Utilities.setDamage(s, 0);
 				}
 			}
 		}

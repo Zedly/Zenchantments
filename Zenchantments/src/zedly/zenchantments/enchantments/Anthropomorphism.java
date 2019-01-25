@@ -155,7 +155,7 @@ public class Anthropomorphism extends CustomEnchantment {
 					Utilities.damageTool(player, 2, usedHand);
 					Location loc = player.getLocation();
 					FallingBlock blockEntity =
-						loc.getWorld().spawnFallingBlock(loc, MAT[Storage.rnd.nextInt(4)], (byte) 0x0);
+						loc.getWorld().spawnFallingBlock(loc, Bukkit.createBlockData(MAT[Storage.rnd.nextInt(4)]));
 					blockEntity.setDropItem(false);
 					blockEntity.setGravity(false);
 					blockEntity

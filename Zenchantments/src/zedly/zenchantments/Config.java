@@ -137,7 +137,6 @@ public class Config {
         CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
             try {
-                ClassLoader classloader = Thread.currentThread().getContextClassLoader();
                 InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
                 File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
                 if (!file.exists()) {
@@ -148,7 +147,7 @@ public class Config {
                         fos.write(b, 0, b.length);
                         fos.flush();
                     } catch (IOException e) {
-
+                        System.err.println("Error loading config");
                     }
                 }
                 YamlConfiguration yamlConfig = new YamlConfiguration();
