@@ -42,7 +42,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CompatibilityAdapter {
@@ -133,13 +132,13 @@ public class CompatibilityAdapter {
 	public final EnumStorage<Material> FENCE_GATES = new EnumStorage<>(new Material[]{ACACIA_FENCE_GATE,
 		BIRCH_FENCE_GATE, DARK_OAK_FENCE_GATE, JUNGLE_FENCE_GATE, OAK_FENCE_GATE, SPRUCE_FENCE_GATE});
 
-	public final EnumStorage<Material> LEAVESS = new EnumStorage<>(new Material[]{ACACIA_LEAVES, BIRCH_LEAVES,
+	public final EnumStorage<Material> LEAVES_E = new EnumStorage<>(new Material[]{ACACIA_LEAVES, BIRCH_LEAVES,
 		DARK_OAK_LEAVES, JUNGLE_LEAVES, OAK_LEAVES, SPRUCE_LEAVES});
 
 	public final EnumStorage<Material> LOGS = new EnumStorage<>(new Material[]{ACACIA_LOG, BIRCH_LOG,
 		DARK_OAK_LOG, JUNGLE_LOG, OAK_LOG, SPRUCE_LOG});
 
-	public final EnumStorage<Material> PLANKSS = new EnumStorage<>(new Material[]{ACACIA_PLANKS, BIRCH_PLANKS,
+	public final EnumStorage<Material> PLANKS_E = new EnumStorage<>(new Material[]{ACACIA_PLANKS, BIRCH_PLANKS,
 		DARK_OAK_PLANKS, JUNGLE_PLANKS, OAK_PLANKS, SPRUCE_PLANKS});
 
 	public final EnumStorage<Material> WOOD_PRESSURE_PLATES = new EnumStorage<>(new Material[]{ACACIA_PRESSURE_PLATE,
@@ -152,7 +151,7 @@ public class CompatibilityAdapter {
 	public final EnumStorage<Material> WOOD_SLABS = new EnumStorage<>(new Material[]{ACACIA_SLAB, BIRCH_SLAB,
 		DARK_OAK_SLAB, JUNGLE_SLAB, OAK_SLAB, SPRUCE_SLAB});
 
-	public final EnumStorage<Material> WOOD_STAIRSS = new EnumStorage<>(new Material[]{ACACIA_STAIRS, BIRCH_STAIRS,
+	public final EnumStorage<Material> WOOD_STAIRS_E = new EnumStorage<>(new Material[]{ACACIA_STAIRS, BIRCH_STAIRS,
 		DARK_OAK_STAIRS, JUNGLE_STAIRS, OAK_STAIRS, SPRUCE_STAIRS});
 
 	public final EnumStorage<Material> WOOD_TRAPDOORS =
@@ -162,9 +161,13 @@ public class CompatibilityAdapter {
 	public final EnumStorage<Material> WOODS = new EnumStorage<>(new Material[]{ACACIA_WOOD, BIRCH_WOOD,
 		DARK_OAK_WOOD, JUNGLE_WOOD, OAK_WOOD, SPRUCE_WOOD});
 
-	public final EnumStorage<Material> STRIPPED_WOODS =
+	public final EnumStorage<Material> STRIPPED_LOGS =
 		new EnumStorage<>(new Material[]{STRIPPED_ACACIA_LOG, STRIPPED_BIRCH_LOG,
 			STRIPPED_DARK_OAK_LOG, STRIPPED_JUNGLE_LOG, STRIPPED_OAK_LOG, STRIPPED_SPRUCE_LOG});
+
+	public final EnumStorage<Material> STRIPPED_WOODS =
+		new EnumStorage<>(new Material[]{STRIPPED_ACACIA_WOOD, STRIPPED_BIRCH_WOOD,
+			STRIPPED_DARK_OAK_WOOD, STRIPPED_JUNGLE_WOOD, STRIPPED_OAK_WOOD, STRIPPED_SPRUCE_WOOD});
 	//endregion
 
 	//region Plants
@@ -214,17 +217,19 @@ public class CompatibilityAdapter {
 	public final EnumStorage<Material> TERRAFORMER_MATERIALS = new EnumStorage<>(new Material[]{STONE, GRASS_BLOCK,
 		DIRT, COBBLESTONE, SAND, GRAVEL, SANDSTONE, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK, CLAY,
 		NETHERRACK, SOUL_SAND, STONE_BRICKS, MYCELIUM, NETHER_BRICK, END_STONE, EMERALD_ORE, QUARTZ_BLOCK, SLIME_BLOCK,
-		PRISMARINE, PACKED_ICE, RED_SANDSTONE}, ORES, TERRACOTTAS, GLAZED_TERRACOTTAS, WOOL, WOODS, PLANKSS,
-		STRIPPED_WOODS, LOGS, CONCRETES, CONCRETE_POWDERS, STAINED_GLASSES);
+		PRISMARINE, PACKED_ICE, RED_SANDSTONE}, ORES, TERRACOTTAS, GLAZED_TERRACOTTAS, WOOL, WOODS, PLANKS_E,
+		STRIPPED_LOGS, LOGS, CONCRETES, CONCRETE_POWDERS, STAINED_GLASSES, STRIPPED_WOODS);
 
 
 	public final EnumStorage<Material> TRUNK_BLOCKS = new EnumStorage<>(new Material[]{MUSHROOM_STEM,
-		BROWN_MUSHROOM_BLOCK, RED_MUSHROOM_BLOCK}, LOGS);
+		BROWN_MUSHROOM_BLOCK, RED_MUSHROOM_BLOCK}, LOGS, WOODS, STRIPPED_WOODS, STRIPPED_LOGS);
 
 	public final EnumStorage<Material> LUMBER_WHITELIST = new EnumStorage<>(new Material[]{
 		DIRT, GRASS, VINE, SNOW, COCOA, GRAVEL, STONE, DIORITE, GRANITE, ANDESITE, WATER, LAVA, SAND, BROWN_MUSHROOM,
 		RED_MUSHROOM, MOSSY_COBBLESTONE, CLAY, BROWN_MUSHROOM, RED_MUSHROOM, MYCELIUM, TORCH, SUGAR_CANE, GRASS_BLOCK,
-		PODZOL, FERN, GRASS, MELON, PUMPKIN}, TRUNK_BLOCKS, LEAVESS, SMALL_FLOWERS, LARGE_FLOWERS, SAPLINGS, AIRS);
+		PODZOL, FERN, GRASS, MELON, PUMPKIN}, TRUNK_BLOCKS, LEAVES_E, SMALL_FLOWERS, LARGE_FLOWERS, SAPLINGS, AIRS);
+
+
 
 	public final EnumStorage<Material> GROWN_CROPS  =
 		new EnumStorage<>(new Material[]{WHEAT, POTATOES, CARROTS, COCOA, BEETROOTS, NETHER_WART});
@@ -259,6 +264,78 @@ public class CompatibilityAdapter {
 	public final EnumStorage<Material> PERSEPHONE_CROPS = new EnumStorage<>(new Material[]{WHEAT, POTATO, CARROT,
 		BEETROOT, NETHER_WART, SOUL_SAND, FARMLAND});
 
+	public final EnumStorage<Material> ICES = new EnumStorage<>(new Material[]{ICE, BLUE_ICE, PACKED_ICE});
+
+	public final EnumStorage<Material> DIRTS = new EnumStorage<>(new Material[]{DIRT, COARSE_DIRT, PODZOL, GRASS_BLOCK,
+		MYCELIUM, GRASS_PATH});
+
+	public final EnumStorage<Material> STONES = new EnumStorage<>(new Material[]{STONE, GRANITE, ANDESITE, DIORITE});
+
+	public final EnumStorage<Material> COBBLESTONES = new EnumStorage<>(new Material[]{COBBLESTONE, MOSSY_COBBLESTONE});
+
+	public final EnumStorage<Material> NETHERBRICKS = new EnumStorage<>(new Material[]{NETHER_BRICKS, RED_NETHER_BRICKS});
+
+	public final EnumStorage<Material> STONE_BRICKS_E = new EnumStorage<>(new Material[]{STONE_BRICKS,
+		CRACKED_STONE_BRICKS, MOSSY_STONE_BRICKS, CHISELED_STONE_BRICKS});
+
+	public final EnumStorage<Material> QUARTZ_E = new EnumStorage<>(new Material[]{QUARTZ_BLOCK, CHISELED_QUARTZ_BLOCK,
+		QUARTZ_PILLAR});
+
+	public final EnumStorage<Material> POLISHED_STONES = new EnumStorage<>(new Material[]{POLISHED_ANDESITE,
+		POLISHED_DIORITE, POLISHED_GRANITE});
+
+	public final EnumStorage<Material> PRISMARINES = new EnumStorage<>(new Material[]{PRISMARINE,
+		PRISMARINE_BRICKS, DARK_PRISMARINE});
+
+	public final EnumStorage<Material> SANDSTONE_STAIRS_E = new EnumStorage<>(new Material[]{SANDSTONE_STAIRS,
+	RED_SANDSTONE_STAIRS});
+
+	public final EnumStorage<Material> SANDSTONE_SLABS = new EnumStorage<>(new Material[]{SANDSTONE_SLAB,
+		RED_SANDSTONE_SLAB});
+
+	public final EnumStorage<Material> ENDSTONES = new EnumStorage<>(new Material[]{END_STONE, END_STONE_BRICKS});
+
+	public final EnumStorage<Material> PURPURS = new EnumStorage<>(new Material[]{PURPUR_BLOCK, PURPUR_PILLAR});
+
+	public final EnumStorage<Material> PRISMARINE_STAIRS_E = new EnumStorage<>(new Material[]{PRISMARINE_STAIRS,
+	PRISMARINE_BRICK_STAIRS, DARK_PRISMARINE_STAIRS});
+
+	public final EnumStorage<Material> PRISMARINE_SLABS = new EnumStorage<>(new Material[]{PRISMARINE_SLAB,
+	PRISMARINE_BRICK_SLAB, DARK_PRISMARINE_SLAB});
+
+	public final EnumStorage<Material> COBBLESTONE_WALLS = new EnumStorage<>(new Material[]{COBBLESTONE_WALL,
+		MOSSY_COBBLESTONE_WALL});
+
+	public final EnumStorage<Material> CORAL_BLOCKS = new EnumStorage<>(new Material[]{BRAIN_CORAL_BLOCK,
+		BUBBLE_CORAL_BLOCK, FIRE_CORAL_BLOCK, HORN_CORAL_BLOCK, TUBE_CORAL_BLOCK});
+
+	public final EnumStorage<Material> DEAD_CORAL_BLOCKS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL_BLOCK,
+		DEAD_BUBBLE_CORAL_BLOCK, DEAD_FIRE_CORAL_BLOCK, DEAD_HORN_CORAL_BLOCK, DEAD_TUBE_CORAL_BLOCK});
+
+	public final EnumStorage<Material> CORALS = new EnumStorage<>(new Material[]{BRAIN_CORAL, BUBBLE_CORAL,
+		FIRE_CORAL, HORN_CORAL, TUBE_CORAL});
+
+	public final EnumStorage<Material> CORAL_FANS = new EnumStorage<>(new Material[]{BRAIN_CORAL_FAN, BUBBLE_CORAL_FAN,
+		FIRE_CORAL_FAN, HORN_CORAL_FAN, TUBE_CORAL_FAN});
+
+	public final EnumStorage<Material> DEAD_CORAL_FANS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL_FAN,
+		DEAD_BUBBLE_CORAL_FAN, DEAD_FIRE_CORAL_FAN, DEAD_HORN_CORAL_FAN, DEAD_TUBE_CORAL_FAN});
+
+	public final EnumStorage<Material> DEAD_CORALS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
+		DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL});
+
+	public final EnumStorage<Material> DEAD_CORAL_WALL_FANS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL_WALL_FAN,
+		DEAD_BUBBLE_CORAL_WALL_FAN, DEAD_FIRE_CORAL_WALL_FAN, DEAD_HORN_CORAL_WALL_FAN, DEAD_TUBE_CORAL_WALL_FAN});
+
+	public final EnumStorage<Material> MUSHROOMS = new EnumStorage<>(new Material[]{RED_MUSHROOM, BROWN_MUSHROOM});
+
+	public final EnumStorage<Material> MUSHROOM_BLOCKS = new EnumStorage<>(new Material[]{BROWN_MUSHROOM_BLOCK,
+		MUSHROOM_STEM, RED_MUSHROOM_BLOCK});
+
+	public final EnumStorage<Material> SHORT_GRASSES = new EnumStorage<>(new Material[]{GRASS, DEAD_BUSH, FERN});
+
+	//public final EnumStorage<Material>  = new EnumStorage<>(new Material[]{});
+
 	public final int[]      GLUTTONY_FOOD_LEVELS = {4, 5, 1, 6, 5, 3, 1, 6, 5, 6, 8, 5, 6, 2, 1, 2, 6, 8, 10, 8};
 	public final double[]   GLUTTONY_SATURATIONS = {2.4, 6, 1.2, 7.2, 6, 3.6, 0.2, 7.2, 6, 9.6, 12.8, 6, 9.6, 0.4, 0.6,
 		1.2, 7.2, 4.8, 12, 12.8};
@@ -277,6 +354,8 @@ public class CompatibilityAdapter {
 	public final EnumStorage<PotionEffectType> POTION_POTIONS = new EnumStorage<>(new PotionEffectType[]{ABSORPTION,
 		DAMAGE_RESISTANCE, FIRE_RESISTANCE, SPEED, JUMP, INVISIBILITY, INCREASE_DAMAGE, HEALTH_BOOST, HEAL,
 		REGENERATION, NIGHT_VISION, SATURATION, FAST_DIGGING, WATER_BREATHING, DOLPHINS_GRACE});
+
+
 
 	public static CompatibilityAdapter getInstance() {
 		return INSTANCE;

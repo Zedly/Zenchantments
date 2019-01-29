@@ -35,11 +35,11 @@ public class Arborist extends CustomEnchantment {
 	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
 		Block blk = evt.getBlock();
 		Material mat = blk.getType();
-		if (Storage.COMPATIBILITY_ADAPTER.LEAVESS.contains(mat) || Storage.COMPATIBILITY_ADAPTER.LOGS.contains(mat)) {
+		if (Storage.COMPATIBILITY_ADAPTER.LEAVES_E.contains(mat) || Storage.COMPATIBILITY_ADAPTER.LOGS.contains(mat)) {
 			// Crudely get the index in the array of materials
 
-			int index = Math.max(Storage.COMPATIBILITY_ADAPTER.LEAVESS.indexOf(mat),
-				Storage.COMPATIBILITY_ADAPTER.LEAVESS.indexOf(mat));
+			int index = Math.max(Storage.COMPATIBILITY_ADAPTER.LEAVES_E.indexOf(mat),
+				Storage.COMPATIBILITY_ADAPTER.LEAVES_E.indexOf(mat));
 			ItemStack stk = new ItemStack(Storage.COMPATIBILITY_ADAPTER.SAPLINGS.get(index), 1);
 
 			if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {

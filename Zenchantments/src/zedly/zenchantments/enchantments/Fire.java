@@ -60,7 +60,9 @@ public class Fire extends CustomEnchantment {
 		} else if (Storage.COMPATIBILITY_ADAPTER.SANDS.contains(original)) {
 			mat = GLASS;
 		} else if (Storage.COMPATIBILITY_ADAPTER.LOGS.contains(original)
-			|| Storage.COMPATIBILITY_ADAPTER.STRIPPED_WOODS.contains(original)) {
+			|| Storage.COMPATIBILITY_ADAPTER.STRIPPED_LOGS.contains(original)
+			|| Storage.COMPATIBILITY_ADAPTER.STRIPPED_WOODS.contains(original)
+			|| Storage.COMPATIBILITY_ADAPTER.WOODS.contains(original)) {
 			mat = CHARCOAL;
 		} else if (original == CLAY) {
 			Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
