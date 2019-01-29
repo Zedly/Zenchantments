@@ -28,7 +28,7 @@ public class FireworkArrow extends EnchantedArrow {
 		b = b.with(type[(getLevel() > 4 ? 4 : getLevel()) - 1]);
 		final Firework f = (Firework) l.getWorld().spawnEntity(l, EntityType.FIREWORK);
 		FireworkMeta d = f.getFireworkMeta();
-		d.setPower(1);
+		d.setPower(0);
 		d.addEffect(b.build());
 		f.setFireworkMeta(d);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {

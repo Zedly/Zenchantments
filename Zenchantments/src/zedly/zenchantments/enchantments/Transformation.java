@@ -1,9 +1,12 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
@@ -32,9 +35,12 @@ public class Transformation extends CustomEnchantment {
 
 	@Override
 	public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-		if (!(evt.getEntity() instanceof LivingEntity) ||
+		if (evt.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+			return false;
+		}
+		if (evt.getEntity() instanceof LivingEntity &&
 			ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
-			if (Storage.rnd.nextInt(100) > (100 - (level * power * 8))) {
+			if (true || Storage.rnd.nextInt(100) > (100 - (level * power * 8))) {
 				int position =
 					Storage.COMPATIBILITY_ADAPTER.TRANSFORMATION_ENTITY_TYPES.indexOf(evt.getEntity().getType());
 				if (position != -1) {
@@ -44,11 +50,17 @@ public class Transformation extends CustomEnchantment {
 					int newPosition = position + 1 - 2 * (position % 2);
 					Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f,
 						.5f, 2, .5f);
+
+					double originalHealth = ((LivingEntity) evt.getEntity()).getHealth();
 					evt.getEntity().remove();
+
 					LivingEntity ent =
 						(LivingEntity) (evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(),
 							Storage.COMPATIBILITY_ADAPTER.TRANSFORMATION_ENTITY_TYPES.get(newPosition));
-					ent.setHealth(Math.max(1, ((LivingEntity) evt.getEntity()).getHealth()));
+
+					ent.setHealth(Math.max(1,
+						Math.min(originalHealth, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
+
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package zedly.zenchantments;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -67,13 +68,12 @@ public class Watcher implements Listener {
 					target.setY(target.getY() + .5);
 					play.setY(play.getY() + 1.1);
 					double d = target.distance(play);
-					for (int i = 0; i < (int) d * 5; i++) {
+					for (int i = 0; i < (int) d * 10; i++) {
 						Location tempLoc = target.clone();
-						tempLoc.setX(play.getX() + (i * ((target.getX() - play.getX()) / (d * 5))));
-						tempLoc.setY(play.getY() + (i * ((target.getY() - play.getY()) / (d * 5))));
-						tempLoc.setZ(play.getZ() + (i * ((target.getZ() - play.getZ()) / (d * 5))));
-						tempLoc.getWorld().spawnParticle(Particle.REDSTONE, tempLoc.getX(), tempLoc.getY(),
-							tempLoc.getZ(), 0, 255, 0, 0, 0);
+						tempLoc.setX(play.getX() + (i * ((target.getX() - play.getX()) / (d * 10))));
+						tempLoc.setY(play.getY() + (i * ((target.getY() - play.getY()) / (d * 10))));
+						tempLoc.setZ(play.getZ() + (i * ((target.getZ() - play.getZ()) / (d * 10))));
+						tempLoc.getWorld().spawnParticle(Particle.REDSTONE, tempLoc, 1, new Particle.DustOptions(Color.RED, 0.75f));
 						for (Entity ent : Bukkit.getWorld(play.getWorld().getName()).getEntities()) {
 							if (ent.getLocation().distance(tempLoc) < .75) {
 								if (ent instanceof LivingEntity) {

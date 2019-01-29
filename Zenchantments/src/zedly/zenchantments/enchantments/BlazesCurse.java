@@ -1,13 +1,14 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Storage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -17,13 +18,6 @@ import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
 public class BlazesCurse extends CustomEnchantment {
 
-	private static final Biome[] noRainBiomes   = new Biome[]{Biome.DESERT, Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
-		Biome.SNOWY_TUNDRA, Biome.SNOWY_MOUNTAINS, Biome.DESERT_HILLS, Biome.SNOWY_BEACH, Biome.SNOWY_TAIGA,
-		Biome.SNOWY_TAIGA_HILLS,
-		Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.BADLANDS, Biome.WOODED_BADLANDS_PLATEAU, Biome.BADLANDS_PLATEAU,
-		Biome.DESERT_LAKES, Biome.ICE_SPIKES, Biome.SNOWY_TAIGA_MOUNTAINS, Biome.SHATTERED_SAVANNA,
-		Biome.SHATTERED_SAVANNA_PLATEAU,
-		Biome.ERODED_BADLANDS, Biome.MODIFIED_WOODED_BADLANDS_PLATEAU, Biome.MODIFIED_BADLANDS_PLATEAU};
 	private static final float   submergeDamage = 1.5f;
 	private static final float   rainDamage     = .5f;
 	public static final  int     ID             = 5;
@@ -77,9 +71,17 @@ public class BlazesCurse extends CustomEnchantment {
 			return true;
 		}
 		if (player.getWorld().hasStorm()
-			&& !ArrayUtils.contains(noRainBiomes, player.getLocation().getBlock().getBiome())
-			&& player.getLocation().getY() >= player.getWorld().getHighestBlockYAt(player.getLocation())) {
-			ADAPTER.damagePlayer(player, rainDamage, EntityDamageEvent.DamageCause.CUSTOM);
+			&& !Storage.COMPATIBILITY_ADAPTER.DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
+			Location check_loc = player.getLocation();
+			while (check_loc.getBlockY() < 256) {
+				if (!Storage.COMPATIBILITY_ADAPTER.AIRS.contains(check_loc.getBlock().getType())) {
+					break;
+				}
+				check_loc.setY(check_loc.getBlockY() + 1);
+			}
+			if (check_loc.getBlockY() == 256) {
+				ADAPTER.damagePlayer(player, rainDamage, EntityDamageEvent.DamageCause.CUSTOM);
+			}
 		}
 		player.setFireTicks(0);
 		return true;

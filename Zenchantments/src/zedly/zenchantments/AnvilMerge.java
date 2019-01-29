@@ -88,7 +88,7 @@ public class AnvilMerge implements Listener {
 		}
 
 		ItemMeta newOutMeta = newOutItem.getItemMeta();
-		List<String> outLore = newOutMeta.getLore();
+		List<String> outLore = newOutMeta.hasLore() ? newOutMeta.getLore() : new ArrayList<>();
 		outLore.addAll(normalLeftLore);
 
 		if (leftUnbLvl * rightUnbLvl == 0 && leftUnbLvl < 1 && rightUnbLvl < 1) {

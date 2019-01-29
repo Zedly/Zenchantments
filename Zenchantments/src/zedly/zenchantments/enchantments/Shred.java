@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -9,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.*;
-import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -22,16 +20,6 @@ import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class Shred extends CustomEnchantment {
 
-
-	private static final EnumStorage<Material> ALLOWED_MATERIALS = new EnumStorage<>(new Material[]{STONE, GRANITE,
-		ANDESITE, DIORITE, NETHERRACK, GLOWSTONE, GRASS_BLOCK, SOUL_SAND, DIRT, MYCELIUM, SAND, GRAVEL, SOUL_SAND,
-        CLAY,
-		SANDSTONE, RED_SANDSTONE, ICE, PACKED_ICE}, Storage.COMPATIBILITY_ADAPTER.ORES,
-		Storage.COMPATIBILITY_ADAPTER.TERRACOTTAS);
-
-
-	private static final Material SHOVELABLE_MATERIALS[] =
-		new Material[]{GLOWSTONE, GRASS_BLOCK, DIRT, MYCELIUM, SOUL_SAND, SAND, GRAVEL, SOUL_SAND, CLAY};
 	public static final  int      ID                     = 52;
 
 	@Override
@@ -50,7 +38,8 @@ public class Shred extends CustomEnchantment {
 
 	@Override
 	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		if (!ALLOWED_MATERIALS.contains(evt.getBlock().getType())) {
+		if (!Storage.COMPATIBILITY_ADAPTER.SHRED_PICKS.contains(evt.getBlock().getType()) &&
+			!Storage.COMPATIBILITY_ADAPTER.SHRED_SHOVELS.contains(evt.getBlock().getType())) {
 			return false;
 		}
 		ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
@@ -67,9 +56,8 @@ public class Shred extends CustomEnchantment {
 
 		if (!Storage.COMPATIBILITY_ADAPTER.AIRS.contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
 			final Material originalType = relativeBlock.getType();
-			if (!ALLOWED_MATERIALS.contains(relativeBlock.getType())
-				|| (Tool.SHOVEL.contains(itemType)
-				&& !ArrayUtils.contains(SHOVELABLE_MATERIALS, relativeBlock.getType()))) {
+			if ((Tool.PICKAXE.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.SHRED_PICKS.contains(relativeBlock.getType()))
+				|| (Tool.SHOVEL.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.SHRED_SHOVELS.contains(relativeBlock.getType()))) {
 				return;
 			}
 			if (config.getShredDrops() == 0) {

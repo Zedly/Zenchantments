@@ -1,8 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -18,9 +16,7 @@ import static zedly.zenchantments.enums.Tool.HOE;
 
 public class Persephone extends CustomEnchantment {
 
-	private static final Material[] CROP_BLOCKS =
-		{WHEAT, POTATO, CARROT, BEETROOT, NETHER_WART, SOUL_SAND, FARMLAND};
-	public static final  int        ID          = 41;
+	public static final int ID = 41;
 
 	@Override
 	public Builder<Persephone> defaults() {
@@ -43,7 +39,7 @@ public class Persephone extends CustomEnchantment {
 			Location loc = evt.getClickedBlock().getLocation();
 			int radiusXZ = (int) Math.round(power * level + 2);
 
-			if (ArrayUtils.contains(CROP_BLOCKS, evt.getClickedBlock().getType())) {
+			if (Storage.COMPATIBILITY_ADAPTER.PERSEPHONE_CROPS.contains(evt.getClickedBlock().getType())) {
 				Block block = loc.getBlock();
 				for (int x = -radiusXZ; x <= radiusXZ; x++) {
 					for (int y = -2; y <= 0; y++) {
@@ -55,7 +51,7 @@ public class Persephone extends CustomEnchantment {
 									&& block.getRelative(x, y + 1, z).getType() == AIR) {
 									if (evt.getPlayer().getInventory().contains(CARROT)) {
 										if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS,
-                                            null)) {
+											null)) {
 											Utilities.removeItem(player, CARROT, 1);
 										}
 									}
