@@ -266,8 +266,8 @@ public class CompatibilityAdapter {
 
 	public final EnumStorage<Material> ICES = new EnumStorage<>(new Material[]{ICE, BLUE_ICE, PACKED_ICE});
 
-	public final EnumStorage<Material> DIRTS = new EnumStorage<>(new Material[]{DIRT, COARSE_DIRT, PODZOL, GRASS_BLOCK,
-		MYCELIUM, GRASS_PATH});
+	public final EnumStorage<Material> DIRTS = new EnumStorage<>(new Material[]{DIRT, COARSE_DIRT, MYCELIUM, PODZOL,
+		GRASS_BLOCK, GRASS_PATH});
 
 	public final EnumStorage<Material> STONES = new EnumStorage<>(new Material[]{STONE, GRANITE, ANDESITE, DIORITE});
 

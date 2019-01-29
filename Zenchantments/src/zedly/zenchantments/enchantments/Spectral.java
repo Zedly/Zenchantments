@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -33,6 +34,8 @@ public class Spectral extends CustomEnchantment {
 			.power(-1.0)
 			.handUse(Hand.RIGHT);
 	}
+
+	private static final BlockFace[] BED_ORIENTATIONS = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 
 	@Override
 	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
@@ -152,9 +155,37 @@ public class Spectral extends CustomEnchantment {
 
 		if (!newMat.equals(original)) {
 			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-			BlockData blockData = evt.getClickedBlock().getBlockData();
-			evt.getClickedBlock().setType(newMat, true);
 
+			BlockData blockData = evt.getClickedBlock().getBlockData();
+			final Material newMatFinal = newMat;
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+
+			evt.getClickedBlock().setType(newMatFinal, false);
+
+			if (blockData instanceof Bisected){
+				Bisected newBlockData = (Bisected) evt.getClickedBlock().getBlockData();
+				if (evt.getClickedBlock().getRelative(BlockFace.UP).getType().equals(original)) {
+					newBlockData.setHalf(Bisected.Half.TOP);
+					evt.getClickedBlock().getRelative(BlockFace.UP).setBlockData(newBlockData, false);
+				}
+				if (evt.getClickedBlock().getRelative(BlockFace.DOWN).getType().equals(original)) {
+					newBlockData.setHalf(Bisected.Half.BOTTOM);
+					evt.getClickedBlock().getRelative(BlockFace.DOWN).setBlockData(newBlockData, false);
+				}
+				newBlockData.setHalf(((Bisected) blockData).getHalf());
+				evt.getClickedBlock().setBlockData(newBlockData, false);
+			}
+			if (blockData instanceof Bed) {
+				// Here, we need to use Bed.Part and Directional.GetFacing to determine what other section to change
+				Bed newBlockData = (Bed) evt.getClickedBlock().getBlockData();
+				//Bukkit.broadcastMessage(newBlockData.getFacing() + "");
+				for (BlockFace bf : BED_ORIENTATIONS) {
+					if (evt.getClickedBlock().getRelative(bf).getType().equals(original)) {
+						//newBlockData.setHalf(Bisected.Half.TOP);
+						//evt.getClickedBlock().getRelative(BlockFace.UP).setBlockData(newBlockData, false);
+					}
+				}
+			}
 			if (blockData instanceof Orientable){
 				Orientable newBlockData = (Orientable) evt.getClickedBlock().getBlockData();
 				newBlockData.setAxis(((Orientable) blockData).getAxis());
@@ -164,28 +195,6 @@ public class Spectral extends CustomEnchantment {
 				Stairs newBlockData = (Stairs) evt.getClickedBlock().getBlockData();
 				newBlockData.setShape(((Stairs) blockData).getShape());
 				evt.getClickedBlock().setBlockData(newBlockData, true);
-			}
-			if (blockData instanceof Bisected){
-				Bukkit.createBlockData(newMat);
-				/*Bisected newBlockData = (Bisected) evt.getClickedBlock().getBlockData();
-				newBlockData.setHalf(((Bisected) blockData).getHalf());
-				evt.getClickedBlock().setBlockData(newBlockData, true);
-
-				if (evt.getClickedBlock().getRelative(BlockFace.UP).getType().equals(original)) {
-					BlockData blockDataUp = evt.getClickedBlock().getRelative(BlockFace.UP).getBlockData();
-					evt.getClickedBlock().getRelative(BlockFace.UP).setType(newMat, true);
-					Bisected newBlockDataUp = (Bisected) evt.getClickedBlock().getRelative(BlockFace.UP).getBlockData();
-					newBlockDataUp.setHalf(((Bisected) blockDataUp).getHalf());
-					evt.getClickedBlock().getRelative(BlockFace.UP).setBlockData(newBlockData, true);
-				}
-
-				if (evt.getClickedBlock().getRelative(BlockFace.DOWN).getType().equals(original)) {
-					BlockData blockDataUp = evt.getClickedBlock().getRelative(BlockFace.DOWN).getBlockData();
-					evt.getClickedBlock().getRelative(BlockFace.DOWN).setType(newMat, true);
-					Bisected newBlockDataUp = (Bisected) evt.getClickedBlock().getRelative(BlockFace.DOWN).getBlockData();
-					newBlockDataUp.setHalf(((Bisected) blockDataUp).getHalf());
-					evt.getClickedBlock().getRelative(BlockFace.DOWN).setBlockData(newBlockData, true);
-				}*/
 			}
 			if (blockData instanceof Slab){
 				Slab newBlockData = (Slab) evt.getClickedBlock().getBlockData();
@@ -209,6 +218,7 @@ public class Spectral extends CustomEnchantment {
 				newBlockData.setWaterlogged(((Waterlogged) blockData).isWaterlogged());
 				evt.getClickedBlock().setBlockData(newBlockData, true);
 			}
+			}, 0);
 			return true;
 		}
 		return false;
