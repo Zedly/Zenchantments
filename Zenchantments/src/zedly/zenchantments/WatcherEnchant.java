@@ -83,6 +83,19 @@ public class WatcherEnchant implements Listener {
 		}
 	}
 
+	@EventHandler(ignoreCancelled = false)
+	public void onBlockInteractInteractable(PlayerInteractEvent evt) {
+		if (evt.getClickedBlock() == null || Storage.INTERACTABLE_BLOCKS.contains(evt.getClickedBlock().getType())) {
+			Player player = evt.getPlayer();
+			boolean isMainHand = Utilities.isMainHand(evt.getHand());
+			for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
+				CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
+					return ench.onBlockInteractInteractable(evt, level, isMainHand);
+				});
+			}
+		}
+	}
+
 	@EventHandler
 	public void onEntityInteract(PlayerInteractEntityEvent evt) {
 		final EntityType[] badEnts = new EntityType[]{HORSE, EntityType.ARMOR_STAND, EntityType.ITEM_FRAME, VILLAGER};

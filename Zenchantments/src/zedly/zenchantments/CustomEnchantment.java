@@ -60,6 +60,10 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 		return false;
 	}
 
+	public boolean onBlockInteractInteractable(PlayerInteractEvent evt, int level, boolean usedHand) {
+		return false;
+	}
+
 	public boolean onEntityInteract(PlayerInteractEntityEvent evt, int level, boolean usedHand) {
 		return false;
 	}
