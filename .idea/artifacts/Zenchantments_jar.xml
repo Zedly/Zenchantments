@@ -4,8 +4,9 @@
     <root id="archive" name="Zenchantments.jar">
       <element id="module-output" name="Zenchantments" />
       <element id="module-output" name="compatibility-adapter" />
-      <element id="module-output" name="NMS_1_13_1_R1" />
+      <element id="module-output" name="NMS_1_13_R2" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/3.1.10/fast-classpath-scanner-3.1.10.jar" path-in-jar="/" />
+      <element id="module-output" name="NMS_1_13_R1" />
     </root>
   </artifact>
 </component>

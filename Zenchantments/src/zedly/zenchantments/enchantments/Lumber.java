@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.CustomEnchantment;
@@ -40,7 +39,7 @@ public class Lumber extends CustomEnchantment {
 			return false;
 		}
 		Block startBlock = evt.getBlock();
-		if (!Storage.COMPATIBILITY_ADAPTER.TRUNK_BLOCKS.contains(startBlock.getType())) {
+		if (!Storage.COMPATIBILITY_ADAPTER.TrunkBlocks().contains(startBlock.getType())) {
 			return false;
 		}
 		// BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large
@@ -53,14 +52,14 @@ public class Lumber extends CustomEnchantment {
 			Block searchBlock = searchPerimeter.remove(0);
 
 			// If block is a trunk, add all adjacent blocks to search perimeter
-			if (Storage.COMPATIBILITY_ADAPTER.TRUNK_BLOCKS.contains(searchBlock.getType())) {
+			if (Storage.COMPATIBILITY_ADAPTER.TrunkBlocks().contains(searchBlock.getType())) {
 				trunk.add(searchBlock);
 				for (int y = -1; y <= 1; y++) {
 					for (int x = -1; x <= 1; x++) {
 						for (int z = -1; z <= 1; z++) {
 							Block testBlock = searchBlock.getRelative(x, y, z);
 							if (!searchBody.contains(testBlock)) {
-								if (Storage.COMPATIBILITY_ADAPTER.LUMBER_WHITELIST.contains(testBlock.getType())) {
+								if (Storage.COMPATIBILITY_ADAPTER.LumberWhitelist().contains(testBlock.getType())) {
 									searchPerimeter.add(testBlock);
 									searchBody.add(testBlock);
 								} else {
@@ -79,10 +78,10 @@ public class Lumber extends CustomEnchantment {
 						for (int z = -1; z <= 1; z++) {
 							Block testBlock = searchBlock.getRelative(x, y, z);
 							if (!searchBody.contains(testBlock) &&
-								Storage.COMPATIBILITY_ADAPTER.TRUNK_BLOCKS.contains(testBlock.getType())) {
+								Storage.COMPATIBILITY_ADAPTER.TrunkBlocks().contains(testBlock.getType())) {
 								searchPerimeter.add(testBlock);
 								searchBody.add(testBlock);
-							} else if (!Storage.COMPATIBILITY_ADAPTER.LUMBER_WHITELIST.contains(testBlock.getType())) {
+							} else if (!Storage.COMPATIBILITY_ADAPTER.LumberWhitelist().contains(testBlock.getType())) {
 								// Trunk is adjacent to a forbidden block. Nothing to do here
 								return false;
 							}

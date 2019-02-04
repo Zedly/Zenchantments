@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -40,9 +39,9 @@ public class Transformation extends CustomEnchantment {
 		}
 		if (evt.getEntity() instanceof LivingEntity &&
 			ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
-			if (true || Storage.rnd.nextInt(100) > (100 - (level * power * 8))) {
+			if (Storage.rnd.nextInt(100) > (100 - (level * power * 8))) {
 				int position =
-					Storage.COMPATIBILITY_ADAPTER.TRANSFORMATION_ENTITY_TYPES.indexOf(evt.getEntity().getType());
+					Storage.COMPATIBILITY_ADAPTER.TransformationEntityTypes().indexOf(evt.getEntity().getType());
 				if (position != -1) {
 					if (evt.getDamage() > ((LivingEntity) evt.getEntity()).getHealth()) {
 						evt.setCancelled(true);
@@ -56,7 +55,7 @@ public class Transformation extends CustomEnchantment {
 
 					LivingEntity ent =
 						(LivingEntity) (evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(),
-							Storage.COMPATIBILITY_ADAPTER.TRANSFORMATION_ENTITY_TYPES.get(newPosition));
+							Storage.COMPATIBILITY_ADAPTER.TransformationEntityTypes().get(newPosition));
 
 					ent.setHealth(Math.max(1,
 						Math.min(originalHealth, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));

@@ -36,15 +36,15 @@ public class Rainbow extends CustomEnchantment {
 	@Override
 	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
 		Material dropMaterial;
-		if (Storage.COMPATIBILITY_ADAPTER.SMALL_FLOWERS.contains(evt.getBlock().getType())) {
-			dropMaterial = Storage.COMPATIBILITY_ADAPTER.SMALL_FLOWERS.getRandom();
-		} else if (Storage.COMPATIBILITY_ADAPTER.LARGE_FLOWERS.contains(evt.getBlock().getType())) {
-			dropMaterial = Storage.COMPATIBILITY_ADAPTER.LARGE_FLOWERS.getRandom();
+		if (Storage.COMPATIBILITY_ADAPTER.SmallFlowers().contains(evt.getBlock().getType())) {
+			dropMaterial = Storage.COMPATIBILITY_ADAPTER.SmallFlowers().getRandom();
+		} else if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(evt.getBlock().getType())) {
+			dropMaterial = Storage.COMPATIBILITY_ADAPTER.LargeFlowers().getRandom();
 		} else {
 			return false;
 		}
 		evt.setCancelled(true);
-		if (Storage.COMPATIBILITY_ADAPTER.LARGE_FLOWERS.contains(evt.getBlock().getRelative(DOWN).getType())) {
+		if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(evt.getBlock().getRelative(DOWN).getType())) {
 			evt.getBlock().getRelative(DOWN).setType(AIR);
 		}
 		evt.getBlock().setType(AIR);
@@ -62,7 +62,7 @@ public class Rainbow extends CustomEnchantment {
 			evt.setCancelled(true);
 			sheep.setSheared(true);
 			evt.getEntity().getWorld().dropItemNaturally(Utilities.getCenter(evt.getEntity().getLocation()),
-				new ItemStack(Storage.COMPATIBILITY_ADAPTER.WOOL.getRandom(), count));
+				new ItemStack(Storage.COMPATIBILITY_ADAPTER.Wools().getRandom(), count));
 		}
 		return true;
 	}

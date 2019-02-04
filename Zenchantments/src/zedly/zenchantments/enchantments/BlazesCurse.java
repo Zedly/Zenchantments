@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -71,10 +70,10 @@ public class BlazesCurse extends CustomEnchantment {
 			return true;
 		}
 		if (player.getWorld().hasStorm()
-			&& !Storage.COMPATIBILITY_ADAPTER.DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
+			&& !Storage.COMPATIBILITY_ADAPTER.DryBiomes().contains(player.getLocation().getBlock().getBiome())) {
 			Location check_loc = player.getLocation();
 			while (check_loc.getBlockY() < 256) {
-				if (!Storage.COMPATIBILITY_ADAPTER.AIRS.contains(check_loc.getBlock().getType())) {
+				if (!Storage.COMPATIBILITY_ADAPTER.Airs().contains(check_loc.getBlock().getType())) {
 					break;
 				}
 				check_loc.setY(check_loc.getBlockY() + 1);

@@ -39,7 +39,7 @@ public class Persephone extends CustomEnchantment {
 			Location loc = evt.getClickedBlock().getLocation();
 			int radiusXZ = (int) Math.round(power * level + 2);
 
-			if (Storage.COMPATIBILITY_ADAPTER.PERSEPHONE_CROPS.contains(evt.getClickedBlock().getType())) {
+			if (Storage.COMPATIBILITY_ADAPTER.PersephoneCrops().contains(evt.getClickedBlock().getType())) {
 				Block block = loc.getBlock();
 				for (int x = -radiusXZ; x <= radiusXZ; x++) {
 					for (int y = -2; y <= 0; y++) {

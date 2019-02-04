@@ -6,7 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.compatibility.EnumStorage;
-import zedly.zenchantments.compatibility.NMS_1_13_1_R1;
+import zedly.zenchantments.compatibility.NMS_1_13_R2;
+import zedly.zenchantments.compatibility.NMS_1_13_R1;
 
 import java.util.*;
 
@@ -49,8 +50,11 @@ public class Storage {
 		String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
 		System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
 		switch (nmsVersionString) {
+			case "v1_13_R1":
+				COMPATIBILITY_ADAPTER = NMS_1_13_R1.getInstance();
+				break;
 			case "v1_13_R2":
-				COMPATIBILITY_ADAPTER = NMS_1_13_1_R1.getInstance();
+				COMPATIBILITY_ADAPTER = NMS_1_13_R2.getInstance();
 				break;
 			default:
 				System.out.println(
@@ -58,9 +62,9 @@ public class Storage {
 				COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.CompatibilityAdapter.getInstance();
 				break;
 		}
-		UNBREAKABLE_BLOCKS = COMPATIBILITY_ADAPTER.UNBREAKABLE_BLOCKS;
-		STORAGE_BLOCKS = COMPATIBILITY_ADAPTER.STORAGE_BLOCKS;
-		INTERACTABLE_BLOCKS = COMPATIBILITY_ADAPTER.INTERACTABLE_BLOCKS;
-		ORES = COMPATIBILITY_ADAPTER.ORES;
+		UNBREAKABLE_BLOCKS = COMPATIBILITY_ADAPTER.UnbreakableBlocks();
+		STORAGE_BLOCKS = COMPATIBILITY_ADAPTER.StorageBlocks();
+		INTERACTABLE_BLOCKS = COMPATIBILITY_ADAPTER.InteractableBlocks();
+		ORES = COMPATIBILITY_ADAPTER.Ores();
 	}
 }

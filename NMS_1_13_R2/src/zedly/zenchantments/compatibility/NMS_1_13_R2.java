@@ -13,6 +13,7 @@ import net.minecraft.server.v1_13_R2.EnumHand;
 import net.minecraft.server.v1_13_R2.PacketDataSerializer;
 import net.minecraft.server.v1_13_R2.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_13_R2.PacketPlayOutSpawnEntityLiving;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftSheep;
@@ -21,15 +22,26 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class NMS_1_13_1_R1 extends CompatibilityAdapter {
+import static org.bukkit.Material.*;
 
-    private static final NMS_1_13_1_R1 INSTANCE = new NMS_1_13_1_R1();
-    public static NMS_1_13_1_R1 getInstance() {
+public class NMS_1_13_R2 extends CompatibilityAdapter {
+
+    private static final NMS_1_13_R2 INSTANCE = new NMS_1_13_R2();
+    public static NMS_1_13_R2 getInstance() {
         return INSTANCE;
     }
 
-    private NMS_1_13_1_R1() {
+    private NMS_1_13_R2() {
     }
+
+    //region Dead Corals
+    private final EnumStorage<Material> DEAD_CORALS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
+        DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL});
+
+    public EnumStorage<Material> DeadCorals() {
+        return DEAD_CORALS;
+    }
+    //endregion
 
     @Override
     public boolean breakBlockNMS(Block block, Player player) {

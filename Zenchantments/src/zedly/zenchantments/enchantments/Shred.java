@@ -38,15 +38,14 @@ public class Shred extends CustomEnchantment {
 
 	@Override
 	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		if (!Storage.COMPATIBILITY_ADAPTER.SHRED_PICKS.contains(evt.getBlock().getType()) &&
-			!Storage.COMPATIBILITY_ADAPTER.SHRED_SHOVELS.contains(evt.getBlock().getType())) {
+		if (!Storage.COMPATIBILITY_ADAPTER.ShredPicks().contains(evt.getBlock().getType()) &&
+			!Storage.COMPATIBILITY_ADAPTER.ShredShovels().contains(evt.getBlock().getType())) {
 			return false;
 		}
 		ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
-		final Config config = Config.get(evt.getBlock().getWorld());
-		Set<Block> broken = new HashSet<>();
-		blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3},
-			0, 4.6 + (level * .22), broken, evt.getPlayer(), config, hand.getType(), usedHand);
+		blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3}, 0,
+			4.6 + (level * .22), new HashSet<>(), evt.getPlayer(), Config.get(evt.getBlock().getWorld()),
+			hand.getType(), usedHand);
 		return true;
 	}
 
@@ -54,10 +53,10 @@ public class Shred extends CustomEnchantment {
 		Set<Block> used,
 		final Player player, final Config config, final Material itemType, boolean usedHand) {
 
-		if (!Storage.COMPATIBILITY_ADAPTER.AIRS.contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
+		if (!Storage.COMPATIBILITY_ADAPTER.Airs().contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
 			final Material originalType = relativeBlock.getType();
-			if ((Tool.PICKAXE.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.SHRED_PICKS.contains(relativeBlock.getType()))
-				|| (Tool.SHOVEL.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.SHRED_SHOVELS.contains(relativeBlock.getType()))) {
+			if ((Tool.PICKAXE.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.ShredPicks().contains(relativeBlock.getType()))
+				|| (Tool.SHOVEL.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.ShredShovels().contains(relativeBlock.getType()))) {
 				return;
 			}
 			if (config.getShredDrops() == 0) {

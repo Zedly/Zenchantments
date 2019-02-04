@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -8,7 +7,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -55,7 +53,7 @@ public class Terraformer extends CustomEnchantment {
 				for (int i = 0; i < 9; i++) {
 					if (evt.getPlayer().getInventory().getItem(i) != null) {
 						if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
-							Storage.COMPATIBILITY_ADAPTER.TERRAFORMER_MATERIALS.contains(
+							Storage.COMPATIBILITY_ADAPTER.TerraformerMaterials().contains(
 								evt.getPlayer().getInventory().getItem(i).getType())) {
 							mat = evt.getPlayer().getInventory().getItem(i).getType();
 							break;
@@ -65,10 +63,12 @@ public class Terraformer extends CustomEnchantment {
 
 				for (Block b : blocks) {
 					if (b.getType().equals(AIR)) {
-						if (Utilities.removeItem(evt.getPlayer(), mat, 1)) {
-							Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, null); // TODO bt
-							if (Storage.rnd.nextInt(10) == 5) {
-								Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+						if (Utilities.hasItem(evt.getPlayer(), mat, 1)) {
+							if (Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, null)) {
+								Utilities.removeItem(evt.getPlayer(), mat, 1);
+								if (Storage.rnd.nextInt(10) == 5) {
+									Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+								}
 							}
 						}
 					}

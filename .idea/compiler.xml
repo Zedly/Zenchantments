@@ -7,7 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="compatibility-adapter" />
-        <module name="NMS_1_13_1_R1" />
+        <module name="NMS_1_13_R1" />
+        <module name="NMS_1_13_R2" />
       </profile>
       <profile name="Annotation profile for Zenchantments-parent" enabled="true">
         <sourceOutputDir name="../target/generated-sources/annotations" />
@@ -20,10 +21,10 @@
       <module name="compatibility-adapter" target="1.8" />
       <module name="NMS_1_10_R1" target="1.8" />
       <module name="NMS_1_11_R1" target="1.8" />
-      <module name="NMS_1_13_1_R1" target="1.8" />
       <module name="NMS_1_13_1_R2" target="1.8" />
       <module name="NMS_1_13_2_R1" target="1.8" />
       <module name="NMS_1_13_R1" target="1.8" />
+      <module name="NMS_1_13_R2" target="1.8" />
       <module name="Zenchantments" target="1.8" />
       <module name="Zenchantments-parent" target="1.5" />
     </bytecodeTargetLevel>

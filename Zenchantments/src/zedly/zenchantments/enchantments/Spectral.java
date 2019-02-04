@@ -43,118 +43,116 @@ public class Spectral extends CustomEnchantment {
 		for (Block block : blocks) {
 			Material original = block.getType();
 			Material newMat = original;
-			if (adapter.WOOL.contains(original)) {
-				newMat = adapter.WOOL.getNext(original);
-			} else if (adapter.STAINED_GLASSES.contains(original)) {
-				newMat = adapter.STAINED_GLASSES.getNext(original);
-			} else if (adapter.STAINED_GLASS_PANES.contains(original)) {
-				newMat = adapter.STAINED_GLASS_PANES.getNext(original);
-			} else if (adapter.CARPETS.contains(original)) {
-				newMat = adapter.CARPETS.getNext(original);
-			} else if (adapter.TERRACOTTAS.contains(original)) {
-				newMat = adapter.TERRACOTTAS.getNext(original);
-			} else if (adapter.GLAZED_TERRACOTTAS.contains(original)) {
-				newMat = adapter.GLAZED_TERRACOTTAS.getNext(original);
-			} else if (adapter.CONCRETE_POWDERS.contains(original)) {
-				newMat = adapter.CONCRETE_POWDERS.getNext(original);
-			} else if (adapter.CONCRETES.contains(original)) {
-				newMat = adapter.CONCRETES.getNext(original);
-			} else if (adapter.WOODS.contains(original)) {
-				newMat = adapter.WOODS.getNext(original);
-			} else if (adapter.STRIPPED_LOGS.contains(original)) {
-				newMat = adapter.STRIPPED_LOGS.getNext(original);
-			} else if (adapter.PLANKS_E.contains(original)) {
-				newMat = adapter.PLANKS_E.getNext(original);
-			} else if (adapter.SANDS.contains(original)) {
-				newMat = adapter.SANDS.getNext(original);
-			} else if (adapter.SAPLINGS.contains(original)) {
-				newMat = adapter.SAPLINGS.getNext(original);
-			} else if (adapter.LEAVES_E.contains(original)) {
-				newMat = adapter.LEAVES_E.getNext(original);
-			} else if (adapter.WOOD_FENCES.contains(original)) {
-				newMat = adapter.WOOD_FENCES.getNext(original);
-			} else if (adapter.WOOD_STAIRS_E.contains(original)) {
-				newMat = adapter.WOOD_STAIRS_E.getNext(original);
-			} else if (adapter.SMALL_FLOWERS.contains(original)) {
-				newMat = adapter.SMALL_FLOWERS.getNext(original);
-			} else if (adapter.LOGS.contains(original)) {
-				newMat = adapter.LOGS.getNext(original);
-			} else if (adapter.SANDSTONES.contains(original)) {
-				newMat = adapter.SANDSTONES.getNext(original);
-			} else if (adapter.DIRTS.contains(original)) {
-				newMat = adapter.DIRTS.getNext(original);
-			} else if (adapter.STONES.contains(original)) {
-				newMat = adapter.STONES.getNext(original);
-			} else if (adapter.NETHERBRICKS.contains(original)) {
-				newMat = adapter.NETHERBRICKS.getNext(original);
-			} else if (adapter.COBBLESTONES.contains(original)) {
-				newMat = adapter.COBBLESTONES.getNext(original);
-			} else if (adapter.STONE_BRICKS_E.contains(original)) {
-				newMat = adapter.STONE_BRICKS_E.getNext(original);
-			} else if (adapter.ICES.contains(original)) {
-				newMat = adapter.ICES.getNext(original);
-			} else if (adapter.QUARTZ_E.contains(original)) {
-				newMat = adapter.QUARTZ_E.getNext(original);
-			} else if (adapter.WOOD_PRESSURE_PLATES.contains(original)) {
-				newMat = adapter.WOOD_PRESSURE_PLATES.getNext(original);
-			} else if (adapter.POLISHED_STONES.contains(original)) {
-				newMat = adapter.POLISHED_STONES.getNext(original);
-			} else if (adapter.PRISMARINES.contains(original)) {
-				newMat = adapter.PRISMARINES.getNext(original);
-			} else if (adapter.STRIPPED_WOODS.contains(original)) {
-				newMat = adapter.STRIPPED_WOODS.getNext(original);
-			} else if (adapter.WOOD_SLABS.contains(original)) {
-				newMat = adapter.WOOD_SLABS.getNext(original);
-			} else if (adapter.WOOD_TRAPDOORS.contains(original)) {
-				newMat = adapter.WOOD_TRAPDOORS.getNext(original);
-			} else if (adapter.SANDSTONE_STAIRS_E.contains(original)) {
-				newMat = adapter.SANDSTONE_STAIRS_E.getNext(original);
-			} else if (adapter.SANDSTONE_SLABS.contains(original)) {
-				newMat = adapter.SANDSTONE_SLABS.getNext(original);
-			} else if (adapter.ENDSTONES.contains(original)) {
-				newMat = adapter.ENDSTONES.getNext(original);
-			} else if (adapter.PURPURS.contains(original)) {
-				newMat = adapter.PURPURS.getNext(original);
-			} else if (adapter.PRISMARINE_STAIRS_E.contains(original)) {
-				newMat = adapter.PRISMARINE_STAIRS_E.getNext(original);
-			} else if (adapter.PRISMARINE_SLABS.contains(original)) {
-				newMat = adapter.PRISMARINE_SLABS.getNext(original);
-			} else if (adapter.COBBLESTONE_WALLS.contains(original)) {
-				newMat = adapter.COBBLESTONE_WALLS.getNext(original);
-			} else if (adapter.CORAL_BLOCKS.contains(original)) {
-				newMat = adapter.CORAL_BLOCKS.getNext(original);
-			} else if (adapter.DEAD_CORAL_BLOCKS.contains(original)) {
-				newMat = adapter.DEAD_CORAL_BLOCKS.getNext(original);
-			} else if (adapter.DEAD_CORALS.contains(original)) {
-				newMat = adapter.DEAD_CORALS.getNext(original);
-			} else if (adapter.CORALS.contains(original)) {
-				newMat = adapter.CORALS.getNext(original);
-			} else if (adapter.CORAL_FANS.contains(original)) {
-				newMat = adapter.CORAL_FANS.getNext(original);
-			} else if (adapter.DEAD_CORAL_FANS.contains(original)) {
-				newMat = adapter.DEAD_CORAL_FANS.getNext(original);
-			} else if (adapter.DEAD_CORAL_WALL_FANS.contains(original)) {
-				newMat = adapter.DEAD_CORAL_WALL_FANS.getNext(original);
-			} else if (adapter.MUSHROOMS.contains(original)) {
-				newMat = adapter.MUSHROOMS.getNext(original);
-			} else if (adapter.MUSHROOM_BLOCKS.contains(original)) {
-				newMat = adapter.MUSHROOM_BLOCKS.getNext(original);
-			} else if (adapter.MUSHROOM_BLOCKS.contains(original)) {
-				newMat = adapter.MUSHROOM_BLOCKS.getNext(original);
-			} else if (adapter.SHORT_GRASSES.contains(original)) {
-				newMat = adapter.SHORT_GRASSES.getNext(original);
-			} else if (adapter.LARGE_FLOWERS.contains(original)) {
-				newMat = adapter.LARGE_FLOWERS.getNext(original);
-			} else if (adapter.WOOD_TRAPDOORS.contains(original)) {
-				newMat = adapter.WOOD_TRAPDOORS.getNext(original);
-			} else if (adapter.WOOD_DOORS.contains(original)) {
-				newMat = adapter.WOOD_DOORS.getNext(original);
-			} else if (adapter.FENCE_GATES.contains(original)) {
-				newMat = adapter.FENCE_GATES.getNext(original);
-			} else if (adapter.WOOD_BUTTONS.contains(original)) {
-				newMat = adapter.WOOD_BUTTONS.getNext(original);
-			} else if (adapter.BEDS.contains(original)) {
-				newMat = adapter.BEDS.getNext(original);
+			if (adapter.Wools().contains(original)) {
+				newMat = adapter.Wools().getNext(original);
+			} else if (adapter.StainedGlass().contains(original)) {
+				newMat = adapter.StainedGlass().getNext(original);
+			} else if (adapter.StainedGlassPanes().contains(original)) {
+				newMat = adapter.StainedGlassPanes().getNext(original);
+			} else if (adapter.Carpets().contains(original)) {
+				newMat = adapter.Carpets().getNext(original);
+			} else if (adapter.Terracottas().contains(original)) {
+				newMat = adapter.Terracottas().getNext(original);
+			} else if (adapter.GlazedTerracottas().contains(original)) {
+				newMat = adapter.GlazedTerracottas().getNext(original);
+			} else if (adapter.ConcretePowders().contains(original)) {
+				newMat = adapter.ConcretePowders().getNext(original);
+			} else if (adapter.Concretes().contains(original)) {
+				newMat = adapter.Concretes().getNext(original);
+			} else if (adapter.Woods().contains(original)) {
+				newMat = adapter.Woods().getNext(original);
+			} else if (adapter.StrippedLogs().contains(original)) {
+				newMat = adapter.StrippedLogs().getNext(original);
+			} else if (adapter.Planks().contains(original)) {
+				newMat = adapter.Planks().getNext(original);
+			} else if (adapter.Sands().contains(original)) {
+				newMat = adapter.Sands().getNext(original);
+			} else if (adapter.Saplings().contains(original)) {
+				newMat = adapter.Saplings().getNext(original);
+			} else if (adapter.Leaves().contains(original)) {
+				newMat = adapter.Leaves().getNext(original);
+			} else if (adapter.WoodFences().contains(original)) {
+				newMat = adapter.WoodFences().getNext(original);
+			} else if (adapter.WoodStairs().contains(original)) {
+				newMat = adapter.WoodStairs().getNext(original);
+			} else if (adapter.SmallFlowers().contains(original)) {
+				newMat = adapter.SmallFlowers().getNext(original);
+			} else if (adapter.Logs().contains(original)) {
+				newMat = adapter.Logs().getNext(original);
+			} else if (adapter.Sandstones().contains(original)) {
+				newMat = adapter.Sandstones().getNext(original);
+			} else if (adapter.Dirts().contains(original)) {
+				newMat = adapter.Dirts().getNext(original);
+			} else if (adapter.Stones().contains(original)) {
+				newMat = adapter.Stones().getNext(original);
+			} else if (adapter.Netherbricks().contains(original)) {
+				newMat = adapter.Netherbricks().getNext(original);
+			} else if (adapter.Cobblestones().contains(original)) {
+				newMat = adapter.Cobblestones().getNext(original);
+			} else if (adapter.Stonebricks().contains(original)) {
+				newMat = adapter.Stonebricks().getNext(original);
+			} else if (adapter.Ices().contains(original)) {
+				newMat = adapter.Ices().getNext(original);
+			} else if (adapter.Quartz().contains(original)) {
+				newMat = adapter.Quartz().getNext(original);
+			} else if (adapter.WoodPressurePlates().contains(original)) {
+				newMat = adapter.WoodPressurePlates().getNext(original);
+			} else if (adapter.PolishedStones().contains(original)) {
+				newMat = adapter.PolishedStones().getNext(original);
+			} else if (adapter.Prismarines().contains(original)) {
+				newMat = adapter.Prismarines().getNext(original);
+			} else if (adapter.StrippedWoods().contains(original)) {
+				newMat = adapter.StrippedWoods().getNext(original);
+			} else if (adapter.WoodSlabs().contains(original)) {
+				newMat = adapter.WoodSlabs().getNext(original);
+			} else if (adapter.WoodTrapdoors().contains(original)) {
+				newMat = adapter.WoodTrapdoors().getNext(original);
+			} else if (adapter.SandstoneStairs().contains(original)) {
+				newMat = adapter.SandstoneStairs().getNext(original);
+			} else if (adapter.SandstoneSlabs().contains(original)) {
+				newMat = adapter.SandstoneSlabs().getNext(original);
+			} else if (adapter.Endstones().contains(original)) {
+				newMat = adapter.Endstones().getNext(original);
+			} else if (adapter.Purpurs().contains(original)) {
+				newMat = adapter.Purpurs().getNext(original);
+			} else if (adapter.PrismarineStairs().contains(original)) {
+				newMat = adapter.PrismarineStairs().getNext(original);
+			} else if (adapter.PrismarineSlabs().contains(original)) {
+				newMat = adapter.PrismarineSlabs().getNext(original);
+			} else if (adapter.CobblestoneWalls().contains(original)) {
+				newMat = adapter.CobblestoneWalls().getNext(original);
+			} else if (adapter.CoralBlocks().contains(original)) {
+				newMat = adapter.CoralBlocks().getNext(original);
+			} else if (adapter.DeadCoralBlocks().contains(original)) {
+				newMat = adapter.DeadCoralBlocks().getNext(original);
+			} else if (adapter.DeadCorals().contains(original)) {
+				newMat = adapter.DeadCorals().getNext(original);
+			} else if (adapter.Corals().contains(original)) {
+				newMat = adapter.Corals().getNext(original);
+			} else if (adapter.CoralFans().contains(original)) {
+				newMat = adapter.CoralFans().getNext(original);
+			} else if (adapter.DeadCoralFans().contains(original)) {
+				newMat = adapter.DeadCoralFans().getNext(original);
+			} else if (adapter.DeadCoralWallFans().contains(original)) {
+				newMat = adapter.DeadCoralWallFans().getNext(original);
+			} else if (adapter.Mushrooms().contains(original)) {
+				newMat = adapter.Mushrooms().getNext(original);
+			} else if (adapter.MushroomBlocks().contains(original)) {
+				newMat = adapter.MushroomBlocks().getNext(original);
+			} else if (adapter.ShortGrasses().contains(original)) {
+				newMat = adapter.ShortGrasses().getNext(original);
+			} else if (adapter.LargeFlowers().contains(original)) {
+				newMat = adapter.LargeFlowers().getNext(original);
+			} else if (adapter.WoodTrapdoors().contains(original)) {
+				newMat = adapter.WoodTrapdoors().getNext(original);
+			} else if (adapter.WoodDoors().contains(original)) {
+				newMat = adapter.WoodDoors().getNext(original);
+			} else if (adapter.FenceGates().contains(original)) {
+				newMat = adapter.FenceGates().getNext(original);
+			} else if (adapter.WoodButtons().contains(original)) {
+				newMat = adapter.WoodButtons().getNext(original);
+			} else if (adapter.Beds().contains(original)) {
+				newMat = adapter.Beds().getNext(original);
 			}
 
 			if (!newMat.equals(original)) {

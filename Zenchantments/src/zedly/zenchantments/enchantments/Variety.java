@@ -33,17 +33,17 @@ public class Variety extends CustomEnchantment {
 	@Override
 	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
 		Material mat = evt.getBlock().getType();
-		if (Storage.COMPATIBILITY_ADAPTER.LOGS.contains(mat)) {
+		if (Storage.COMPATIBILITY_ADAPTER.Logs().contains(mat)) {
 			evt.getBlock().setType(AIR);
 			evt.getBlock().getWorld()
 			   .dropItemNaturally(Utilities.getCenter(evt.getBlock()),
-				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.LOGS.getRandom()));
+				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.Logs().getRandom()));
 			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-		} else if (Storage.COMPATIBILITY_ADAPTER.LEAVES_E.contains(mat)) {
+		} else if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(mat)) {
 			evt.getBlock().setType(AIR);
 			evt.getBlock().getWorld()
 			   .dropItemNaturally(Utilities.getCenter(evt.getBlock()),
-				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.LEAVES_E.getRandom()));
+				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.Leaves().getRandom()));
 			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
 		}
 		return true;

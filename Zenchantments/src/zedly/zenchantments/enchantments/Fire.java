@@ -43,9 +43,9 @@ public class Fire extends CustomEnchantment {
 		Material original = evt.getBlock().getType();
 		Material mat = AIR;
 		if (Tool.PICKAXE.contains(hand)) {
-			if (Storage.COMPATIBILITY_ADAPTER.FIRE_RAW.contains(original)) {
-				mat = Storage.COMPATIBILITY_ADAPTER.FIRE_COOKED.get(
-					Storage.COMPATIBILITY_ADAPTER.FIRE_RAW.indexOf(original));
+			if (Storage.COMPATIBILITY_ADAPTER.FireRaw().contains(original)) {
+				mat = Storage.COMPATIBILITY_ADAPTER.FireCooked().get(
+					Storage.COMPATIBILITY_ADAPTER.FireRaw().indexOf(original));
 			}
 			if (original == GOLD_ORE || original == IRON_ORE) {
 				ExperienceOrb o =
@@ -57,12 +57,12 @@ public class Fire extends CustomEnchantment {
 
 		if (original == WET_SPONGE) {
 			mat = SPONGE;
-		} else if (Storage.COMPATIBILITY_ADAPTER.SANDS.contains(original)) {
+		} else if (Storage.COMPATIBILITY_ADAPTER.Sands().contains(original)) {
 			mat = GLASS;
-		} else if (Storage.COMPATIBILITY_ADAPTER.LOGS.contains(original)
-			|| Storage.COMPATIBILITY_ADAPTER.STRIPPED_LOGS.contains(original)
-			|| Storage.COMPATIBILITY_ADAPTER.STRIPPED_WOODS.contains(original)
-			|| Storage.COMPATIBILITY_ADAPTER.WOODS.contains(original)) {
+		} else if (Storage.COMPATIBILITY_ADAPTER.Logs().contains(original)
+			|| Storage.COMPATIBILITY_ADAPTER.StrippedLogs().contains(original)
+			|| Storage.COMPATIBILITY_ADAPTER.StrippedWoods().contains(original)
+			|| Storage.COMPATIBILITY_ADAPTER.Woods().contains(original)) {
 			mat = CHARCOAL;
 		} else if (original == CLAY) {
 			Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
