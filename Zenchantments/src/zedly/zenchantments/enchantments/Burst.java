@@ -24,59 +24,59 @@ import static zedly.zenchantments.enums.Tool.BOW;
 
 public class Burst extends CustomEnchantment {
 
-    public static final int ID = 8;
+	public static final int ID = 8;
 
-    @Override
-    public Builder<Burst> defaults() {
-        return new Builder<>(Burst::new, ID)
-            .maxLevel(3)
-            .loreName("Burst")
-            .probability(0)
-            .enchantable(new Tool[]{BOW})
-            .conflicting(new Class[]{Spread.class})
-            .description("Rapidly fires arrows in series")
-            .cooldown(0)
-            .power(1.0)
-            .handUse(Hand.RIGHT);
-    }
+	@Override
+	public Builder<Burst> defaults() {
+		return new Builder<>(Burst::new, ID)
+			.maxLevel(3)
+			.loreName("Burst")
+			.probability(0)
+			.enchantable(new Tool[]{BOW})
+			.conflicting(new Class[]{Spread.class})
+			.description("Rapidly fires arrows in series")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.RIGHT);
+	}
 
-    @Override
-    public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-        final Player player = evt.getPlayer();
-        final ItemStack hand = Utilities.usedStack(player, usedHand);
-        boolean result = false;
-        if(evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-            for(int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
-                if(hand.containsEnchantment(Enchantment.ARROW_INFINITE) ||
-                   Utilities.removeItemCheck(player, Material.ARROW, (short) 0, 1)) {
-                	result = true;
-                    Utilities.setHand(player, hand, usedHand);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                        Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(),
-                                                                   player.getLocation().getDirection(), 1, 0);
-                        arrow.setShooter(player);
-                        if(hand.containsEnchantment(Enchantment.ARROW_FIRE)) {
-                            arrow.setFireTicks(Integer.MAX_VALUE);
-                        }
-                        arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
-                        EntityShootBowEvent shootEvent = new EntityShootBowEvent(player, hand, arrow, 1f);
-                        ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
-                        Bukkit.getPluginManager().callEvent(shootEvent);
-                        Bukkit.getPluginManager().callEvent(launchEvent);
-                        if(shootEvent.isCancelled() || launchEvent.isCancelled()) {
-                            arrow.remove();
-                        } else {
-                            arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
-                            arrow.setCritical(true);
-                            EnchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
-                            Utilities.damageTool(player, 1, usedHand);
-                        }
+	@Override
+	public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
+		final Player player = evt.getPlayer();
+		final ItemStack hand = Utilities.usedStack(player, usedHand);
+		boolean result = false;
+		if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
+			for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
+				if (hand.containsEnchantment(Enchantment.ARROW_INFINITE) ||
+					Utilities.removeItem(player, Material.ARROW, 1)) {
+					result = true;
+					Utilities.setHand(player, hand, usedHand);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+						Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation(),
+							player.getLocation().getDirection(), 1, 0);
+						arrow.setShooter(player);
+						if (hand.containsEnchantment(Enchantment.ARROW_FIRE)) {
+							arrow.setFireTicks(Integer.MAX_VALUE);
+						}
+						arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
+						EntityShootBowEvent shootEvent = new EntityShootBowEvent(player, hand, arrow, 1f);
+						ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
+						Bukkit.getPluginManager().callEvent(shootEvent);
+						Bukkit.getPluginManager().callEvent(launchEvent);
+						if (shootEvent.isCancelled() || launchEvent.isCancelled()) {
+							arrow.remove();
+						} else {
+							arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
+							arrow.setCritical(true);
+							EnchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
+							Utilities.damageTool(player, 1, usedHand);
+						}
 
-                    }, i * 2);
-                }
-            }
-        }
-        return result;
-    }
+					}, i * 2);
+				}
+			}
+		}
+		return result;
+	}
 
 }

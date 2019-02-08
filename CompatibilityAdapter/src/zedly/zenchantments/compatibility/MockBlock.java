@@ -7,22 +7,23 @@ package zedly.zenchantments.compatibility;
 
 import java.util.Collection;
 import java.util.List;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 /**
  * Wrapper class for firing more accurate events
- * @author Dennis
  */
 public class MockBlock implements Block {
 
@@ -39,6 +40,10 @@ public class MockBlock implements Block {
     @Override
     public byte getData() {
         return newData;
+    }
+
+    @Override public BlockData getBlockData() {
+        return realBlock.getBlockData();
     }
 
     @Override
@@ -59,11 +64,6 @@ public class MockBlock implements Block {
     @Override
     public Material getType() {
         return newType;
-    }
-
-    @Override
-    public int getTypeId() {
-        return newType.getId();
     }
 
     @Override
@@ -117,13 +117,12 @@ public class MockBlock implements Block {
     }
 
     @Override
-    public void setData(byte b) {
-        realBlock.setData(b);
+    public void setBlockData(BlockData data) {
+        realBlock.setBlockData(data);
     }
 
-    @Override
-    public void setData(byte b, boolean bln) {
-        realBlock.setData(b, bln);
+    @Override public void setBlockData(BlockData data, boolean applyPhysics) {
+        realBlock.setBlockData(data, applyPhysics);
     }
 
     @Override
@@ -134,21 +133,6 @@ public class MockBlock implements Block {
     @Override
     public void setType(Material mtrl, boolean bln) {
         realBlock.setType(mtrl, bln);
-    }
-
-    @Override
-    public boolean setTypeId(int i) {
-        return realBlock.setTypeId(i);
-    }
-
-    @Override
-    public boolean setTypeId(int i, boolean bln) {
-        return realBlock.setTypeId(i, bln);
-    }
-
-    @Override
-    public boolean setTypeIdAndData(int i, byte b, boolean bln) {
-        return realBlock.setTypeIdAndData(i, b, bln);
     }
 
     @Override
@@ -244,6 +228,19 @@ public class MockBlock implements Block {
     @Override
     public Collection<ItemStack> getDrops(ItemStack is) {
         return realBlock.getDrops(is);
+    }
+
+    @Override public boolean isPassable() {
+        return false;
+    }
+
+    @Override
+    public RayTraceResult rayTrace(Location location, Vector vector, double v, FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
+
+    @Override public BoundingBox getBoundingBox() {
+        return null;
     }
 
     @Override

@@ -1,299 +1,337 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.*;
+import org.bukkit.block.data.type.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
-import static org.bukkit.Material.*;
-import static org.bukkit.block.BlockFace.DOWN;
-import static org.bukkit.block.BlockFace.UP;
+import java.util.*;
+
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class Spectral extends CustomEnchantment {
 
-    public static final int ID = 54;
+	public static final int ID = 54;
 
-    private static int increase(int old, int add) {
-        if(old < add) {
-            return ++old;
-        } else {
-            return 0;
-        }
-    }
+	@Override
+	public Builder<Spectral> defaults() {
+		return new Builder<>(Spectral::new, ID)
+			.maxLevel(1)
+			.loreName("Spectral")
+			.probability(0)
+			.enchantable(new Tool[]{SHOVEL})
+			.conflicting(new Class[]{})
+			.description("Allows for cycling through a block's types")
+			.cooldown(0)
+			.power(-1.0)
+			.handUse(Hand.RIGHT);
+	}
 
-    @Override
-    public Builder<Spectral> defaults() {
-        return new Builder<>(Spectral::new, ID)
-            .maxLevel(1)
-            .loreName("Spectral")
-            .probability(0)
-            .enchantable(new Tool[]{SHOVEL})
-            .conflicting(new Class[]{})
-            .description("Allows for cycling through a block's types")
-            .cooldown(0)
-            .power(-1.0)
-            .handUse(Hand.RIGHT);
-    }
+	private boolean cycleBlockType(Set<Block> blocks) {
+		CompatibilityAdapter adapter = Storage.COMPATIBILITY_ADAPTER;
+		boolean change = false;
+		for (Block block : blocks) {
+			Material original = block.getType();
+			Material newMat = original;
+			if (adapter.Wools().contains(original)) {
+				newMat = adapter.Wools().getNext(original);
+			} else if (adapter.StainedGlass().contains(original)) {
+				newMat = adapter.StainedGlass().getNext(original);
+			} else if (adapter.StainedGlassPanes().contains(original)) {
+				newMat = adapter.StainedGlassPanes().getNext(original);
+			} else if (adapter.Carpets().contains(original)) {
+				newMat = adapter.Carpets().getNext(original);
+			} else if (adapter.Terracottas().contains(original)) {
+				newMat = adapter.Terracottas().getNext(original);
+			} else if (adapter.GlazedTerracottas().contains(original)) {
+				newMat = adapter.GlazedTerracottas().getNext(original);
+			} else if (adapter.ConcretePowders().contains(original)) {
+				newMat = adapter.ConcretePowders().getNext(original);
+			} else if (adapter.Concretes().contains(original)) {
+				newMat = adapter.Concretes().getNext(original);
+			} else if (adapter.Woods().contains(original)) {
+				newMat = adapter.Woods().getNext(original);
+			} else if (adapter.StrippedLogs().contains(original)) {
+				newMat = adapter.StrippedLogs().getNext(original);
+			} else if (adapter.Planks().contains(original)) {
+				newMat = adapter.Planks().getNext(original);
+			} else if (adapter.Sands().contains(original)) {
+				newMat = adapter.Sands().getNext(original);
+			} else if (adapter.Saplings().contains(original)) {
+				newMat = adapter.Saplings().getNext(original);
+			} else if (adapter.Leaves().contains(original)) {
+				newMat = adapter.Leaves().getNext(original);
+			} else if (adapter.WoodFences().contains(original)) {
+				newMat = adapter.WoodFences().getNext(original);
+			} else if (adapter.WoodStairs().contains(original)) {
+				newMat = adapter.WoodStairs().getNext(original);
+			} else if (adapter.SmallFlowers().contains(original)) {
+				newMat = adapter.SmallFlowers().getNext(original);
+			} else if (adapter.Logs().contains(original)) {
+				newMat = adapter.Logs().getNext(original);
+			} else if (adapter.Sandstones().contains(original)) {
+				newMat = adapter.Sandstones().getNext(original);
+			} else if (adapter.Dirts().contains(original)) {
+				newMat = adapter.Dirts().getNext(original);
+			} else if (adapter.Stones().contains(original)) {
+				newMat = adapter.Stones().getNext(original);
+			} else if (adapter.Netherbricks().contains(original)) {
+				newMat = adapter.Netherbricks().getNext(original);
+			} else if (adapter.Cobblestones().contains(original)) {
+				newMat = adapter.Cobblestones().getNext(original);
+			} else if (adapter.Stonebricks().contains(original)) {
+				newMat = adapter.Stonebricks().getNext(original);
+			} else if (adapter.Ices().contains(original)) {
+				newMat = adapter.Ices().getNext(original);
+			} else if (adapter.Quartz().contains(original)) {
+				newMat = adapter.Quartz().getNext(original);
+			} else if (adapter.WoodPressurePlates().contains(original)) {
+				newMat = adapter.WoodPressurePlates().getNext(original);
+			} else if (adapter.PolishedStones().contains(original)) {
+				newMat = adapter.PolishedStones().getNext(original);
+			} else if (adapter.Prismarines().contains(original)) {
+				newMat = adapter.Prismarines().getNext(original);
+			} else if (adapter.StrippedWoods().contains(original)) {
+				newMat = adapter.StrippedWoods().getNext(original);
+			} else if (adapter.WoodSlabs().contains(original)) {
+				newMat = adapter.WoodSlabs().getNext(original);
+			} else if (adapter.WoodTrapdoors().contains(original)) {
+				newMat = adapter.WoodTrapdoors().getNext(original);
+			} else if (adapter.SandstoneStairs().contains(original)) {
+				newMat = adapter.SandstoneStairs().getNext(original);
+			} else if (adapter.SandstoneSlabs().contains(original)) {
+				newMat = adapter.SandstoneSlabs().getNext(original);
+			} else if (adapter.Endstones().contains(original)) {
+				newMat = adapter.Endstones().getNext(original);
+			} else if (adapter.Purpurs().contains(original)) {
+				newMat = adapter.Purpurs().getNext(original);
+			} else if (adapter.PrismarineStairs().contains(original)) {
+				newMat = adapter.PrismarineStairs().getNext(original);
+			} else if (adapter.PrismarineSlabs().contains(original)) {
+				newMat = adapter.PrismarineSlabs().getNext(original);
+			} else if (adapter.CobblestoneWalls().contains(original)) {
+				newMat = adapter.CobblestoneWalls().getNext(original);
+			} else if (adapter.CoralBlocks().contains(original)) {
+				newMat = adapter.CoralBlocks().getNext(original);
+			} else if (adapter.DeadCoralBlocks().contains(original)) {
+				newMat = adapter.DeadCoralBlocks().getNext(original);
+			} else if (adapter.DeadCorals().contains(original)) {
+				newMat = adapter.DeadCorals().getNext(original);
+			} else if (adapter.Corals().contains(original)) {
+				newMat = adapter.Corals().getNext(original);
+			} else if (adapter.CoralFans().contains(original)) {
+				newMat = adapter.CoralFans().getNext(original);
+			} else if (adapter.DeadCoralFans().contains(original)) {
+				newMat = adapter.DeadCoralFans().getNext(original);
+			} else if (adapter.DeadCoralWallFans().contains(original)) {
+				newMat = adapter.DeadCoralWallFans().getNext(original);
+			} else if (adapter.Mushrooms().contains(original)) {
+				newMat = adapter.Mushrooms().getNext(original);
+			} else if (adapter.MushroomBlocks().contains(original)) {
+				newMat = adapter.MushroomBlocks().getNext(original);
+			} else if (adapter.ShortGrasses().contains(original)) {
+				newMat = adapter.ShortGrasses().getNext(original);
+			} else if (adapter.LargeFlowers().contains(original)) {
+				newMat = adapter.LargeFlowers().getNext(original);
+			} else if (adapter.WoodTrapdoors().contains(original)) {
+				newMat = adapter.WoodTrapdoors().getNext(original);
+			} else if (adapter.WoodDoors().contains(original)) {
+				newMat = adapter.WoodDoors().getNext(original);
+			} else if (adapter.FenceGates().contains(original)) {
+				newMat = adapter.FenceGates().getNext(original);
+			} else if (adapter.WoodButtons().contains(original)) {
+				newMat = adapter.WoodButtons().getNext(original);
+			} else if (adapter.Beds().contains(original)) {
+				newMat = adapter.Beds().getNext(original);
+			}
 
-    @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if(evt.getClickedBlock() == null) {
-            return false;
-        }
-        Material original = evt.getClickedBlock().getType();
-        int originalInt = evt.getClickedBlock().getData();
-        if(evt.getAction() != RIGHT_CLICK_BLOCK) {
-            return false;
-        }
-        int data = evt.getClickedBlock().getData();
-        switch(evt.getClickedBlock().getType()) {
-            case WOOL:
-            case STAINED_GLASS:
-            case STAINED_GLASS_PANE:
-            case CARPET:
-            case STAINED_CLAY:
-                data = increase(data, 15);
-                break;
-            case WOOD:
-            case WOOD_STEP:
-            case WOOD_DOUBLE_STEP:
-            case SAPLING:
-                data = increase(data, 6);
-                break;
-            case RED_SANDSTONE:
-                if(data < 2) {
-                    data++;
-                } else {/**/
-                    data = 0;
-                    evt.getClickedBlock().setType(SANDSTONE);
-                }
-                break;
-            case SANDSTONE:
-                if(data < 2) {
-                    data++;
-                } else {
-                    data = 0;
-                    evt.getClickedBlock().setType(RED_SANDSTONE);
-                }
-                break;
-            case RED_SANDSTONE_STAIRS:
-                evt.getClickedBlock().setType(SANDSTONE_STAIRS);
-                break;
-            case SANDSTONE_STAIRS:
-                evt.getClickedBlock().setType(RED_SANDSTONE_STAIRS);
-                break;
-            case SAND:
-                data = increase(data, 2);
-                break;
-            case LONG_GRASS:
-                data = increase(data, 3);
-                break;
-            case QUARTZ_BLOCK:
-                data = increase(data, 4);
-                break;
-            case COBBLE_WALL:
-                data = increase(data, 2);
-                break;
-            case STONE:
-                data = increase(data, 7);
-                break;
-            case SMOOTH_BRICK:
-                data = increase(data, 4);
-                break;
-            case COBBLESTONE:
-                evt.getClickedBlock().setType(MOSSY_COBBLESTONE);
-                break;
-            case MOSSY_COBBLESTONE:
-                evt.getClickedBlock().setType(COBBLESTONE);
-                break;
-            case BROWN_MUSHROOM:
-                evt.getClickedBlock().setType(RED_MUSHROOM);
-                break;
-            case RED_MUSHROOM:
-                evt.getClickedBlock().setType(BROWN_MUSHROOM);
-                break;
-            case HUGE_MUSHROOM_1:
-                evt.getClickedBlock().setType(HUGE_MUSHROOM_2);
-                break;
-            case HUGE_MUSHROOM_2:
-                evt.getClickedBlock().setType(HUGE_MUSHROOM_1);
-                break;
-            case STEP:
-                if(evt.getClickedBlock().getData() == 1) {
-                    evt.getClickedBlock().setType(STONE_SLAB2);
-                    data = 0;
-                }
-                break;
-            case STONE_SLAB2:
-                if(evt.getClickedBlock().getData() == 0) {
-                    evt.getClickedBlock().setType(STEP);
-                    data = 1;
-                }
-                break;
-            case DOUBLE_STEP:
-                if(evt.getClickedBlock().getData() == 1) {
-                    evt.getClickedBlock().setType(DOUBLE_STONE_SLAB2);
-                    data = 0;
-                }
-                break;
-            case DOUBLE_STONE_SLAB2:
-                if(evt.getClickedBlock().getData() == 0) {
-                    evt.getClickedBlock().setType(DOUBLE_STEP);
-                    data = 1;
-                }
-                break;
-            case DOUBLE_PLANT:
-                if(evt.getClickedBlock().getRelative(DOWN).getType().equals(DOUBLE_PLANT)) {
-                    evt.getClickedBlock().getRelative(DOWN)
-                       .setData((byte) increase(evt.getClickedBlock().getRelative(DOWN).getData(), 6));
-                } else if(evt.getClickedBlock().getRelative(UP).getType().equals(DOUBLE_PLANT)) {
-                    data = increase(data, 6);
-                }
-                break;
-            case LEAVES:
-                if((data + 1) % 4 != 0 || data == 0) {
-                    data++;
-                } else {
-                    data -= 3;
-                    evt.getClickedBlock().setType(LEAVES_2);
-                }
-                break;
-            case LEAVES_2:
-                if((data + 1) % 2 != 0 || data == 0) {
-                    data++;
-                } else {
-                    evt.getClickedBlock().setType(LEAVES);
-                    data -= 1;
-                }
-                break;
-            case LOG:
-                if((data + 1) % 4 != 0 || data == 0) {
-                    data++;
-                } else {
-                    data -= 3;
-                    evt.getClickedBlock().setType(LOG_2);
-                }
-                break;
-            case LOG_2:
-                if((data + 1) % 2 != 0 || data == 0) {
-                    data++;
-                } else {
-                    evt.getClickedBlock().setType(LOG);
-                    data -= 1;
-                }
-                break;
-            case YELLOW_FLOWER:
-                evt.getClickedBlock().setType(RED_ROSE);
-                break;
-            case RED_ROSE:
-                if(data < 8) {
-                    data++;
-                } else {
-                    data = 0;
-                    evt.getClickedBlock().setType(YELLOW_FLOWER);
-                }
-                break;
-	        case GRASS_PATH:
-		        evt.getClickedBlock().setType(GRASS);
-		        break;
-            case GRASS:
-	            evt.getClickedBlock().setType(GRASS_PATH);
-                break;
-            case DIRT:
-                if(data < 2) {
-                    data++;
-                } else {
-                    data = 0;
-                }
-                break;
-            case FENCE:
-            case SPRUCE_FENCE:
-            case BIRCH_FENCE:
-            case JUNGLE_FENCE:
-            case DARK_OAK_FENCE:
-            case ACACIA_FENCE: {
-                Material[] mats = new Material[]{FENCE, SPRUCE_FENCE, BIRCH_FENCE,
-                                                 JUNGLE_FENCE, DARK_OAK_FENCE, ACACIA_FENCE};
-                int index = ArrayUtils.indexOf(mats, evt.getClickedBlock().getType());
-                if(index < mats.length - 1) {
-                    evt.getClickedBlock().setType(mats[index + 1]);
-                } else {
-                    evt.getClickedBlock().setType(mats[0]);
-                }
-                break;
-            }
-            case FENCE_GATE:
-            case SPRUCE_FENCE_GATE:
-            case BIRCH_FENCE_GATE:
-            case JUNGLE_FENCE_GATE:
-            case DARK_OAK_FENCE_GATE:
-            case ACACIA_FENCE_GATE: {
-                Material[] mats = new Material[]{FENCE_GATE, SPRUCE_FENCE_GATE,
-                                                 BIRCH_FENCE_GATE, JUNGLE_FENCE_GATE, DARK_OAK_FENCE_GATE,
-                                                 ACACIA_FENCE_GATE};
-                int index = ArrayUtils.indexOf(mats, evt.getClickedBlock().getType());
-                if(index < mats.length - 1) {
-                    evt.getClickedBlock().setType(mats[index + 1]);
-                } else {
-                    evt.getClickedBlock().setType(mats[0]);
-                }
-                break;
-            }
-            case WOOD_STAIRS:
-            case SPRUCE_WOOD_STAIRS:
-            case BIRCH_WOOD_STAIRS:
-            case JUNGLE_WOOD_STAIRS:
-            case DARK_OAK_STAIRS:
-            case ACACIA_STAIRS: {
-                Material[] mats = new Material[]{WOOD_STAIRS, SPRUCE_WOOD_STAIRS,
-                                                 BIRCH_WOOD_STAIRS, JUNGLE_WOOD_STAIRS, DARK_OAK_STAIRS,
-                                                 ACACIA_STAIRS};
-                int index = ArrayUtils.indexOf(mats, evt.getClickedBlock().getType());
-                if(index < mats.length - 1) {
-                    evt.getClickedBlock().setType(mats[index + 1]);
-                } else {
-                    evt.getClickedBlock().setType(mats[0]);
-                }
-                break;
-            }
-            case WOODEN_DOOR:
-            case SPRUCE_DOOR:
-            case BIRCH_DOOR:
-            case JUNGLE_DOOR:
-            case DARK_OAK_DOOR:
-            case ACACIA_DOOR: {
-                Material type;
-                Material[] mats = new Material[]{WOODEN_DOOR, SPRUCE_DOOR,
-                                                 BIRCH_DOOR, JUNGLE_DOOR, DARK_OAK_DOOR, ACACIA_DOOR};
-                int index = ArrayUtils.indexOf(mats, evt.getClickedBlock().getType());
-                if(index < mats.length - 1) {
-                    type = mats[index + 1];
-                } else {
-                    type = mats[0];
-                }
-                if(evt.getClickedBlock().getRelative(UP).getType().equals(evt.getClickedBlock().getType())) {
-                    evt.getClickedBlock().setTypeIdAndData(type.getId(), (byte) data, false);
-                    evt.getClickedBlock().getRelative(UP).setTypeIdAndData(type.getId(), (byte) 8, true);
-                } else if(evt.getClickedBlock().getRelative(DOWN).getType()
-                             .equals(evt.getClickedBlock().getType())) {
-                    evt.getClickedBlock().setTypeIdAndData(type.getId(), (byte) 8, false);
-                    evt.getClickedBlock().getRelative(DOWN)
-                       .setTypeIdAndData(type.getId(), evt.getClickedBlock().getRelative(DOWN).getData(), true);
-                }
-                break;
-            }
-        }
-        if(!evt.getClickedBlock().getType().equals(original) || data != originalInt) {
-            evt.getClickedBlock().setData((byte) data);
-            Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-            return true;
-        }
-        return false;
-    }
+			if (!newMat.equals(original)) {
+				change = true;
+				BlockData blockData = block.getBlockData();
+				final Material newMatFinal = newMat;
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+
+					block.setType(newMatFinal, false);
+
+					if (blockData instanceof Bisected) {
+						Bisected newBlockData = (Bisected) block.getBlockData();
+						newBlockData.setHalf(((Bisected) blockData).getHalf());
+						block.setBlockData(newBlockData, false);
+
+						// Set the second half's data
+						if (block.getRelative(BlockFace.UP).getType().equals(original)) {
+							newBlockData.setHalf(Bisected.Half.TOP);
+							block.getRelative(BlockFace.UP).setBlockData(newBlockData, false);
+						}
+						if (block.getRelative(BlockFace.DOWN).getType().equals(original)) {
+							newBlockData.setHalf(Bisected.Half.BOTTOM);
+							block.getRelative(BlockFace.DOWN).setBlockData(newBlockData, false);
+						}
+					}
+
+					if (blockData instanceof Bed) {
+						Bed newBlockData = (Bed) block.getBlockData();
+						newBlockData.setPart(((Bed) blockData).getPart());
+						block.setBlockData(newBlockData, false);
+
+						// Set the second bed's part
+						BlockFace facing = !newBlockData.getPart().equals(Bed.Part.HEAD)
+							? ((Bed) blockData).getFacing()
+							: ((Bed) blockData).getFacing().getOppositeFace();
+						newBlockData.setPart(((Bed) block.getRelative(facing).getBlockData()).getPart());
+						block.getRelative(facing).setBlockData(newBlockData, false);
+
+						// Set the second bed's direction since we never do that later on
+						Directional secondaryBlockData = (Directional) block.getRelative(facing).getBlockData();
+						secondaryBlockData.setFacing(((Directional) blockData).getFacing());
+						block.getRelative(facing).setBlockData(secondaryBlockData, true);
+
+					}
+
+					if (blockData instanceof Gate) {
+						Gate newBlockData = (Gate) block.getBlockData();
+						newBlockData.setInWall(((Gate) blockData).isInWall());
+						block.setBlockData(newBlockData, true);
+					}
+
+					if (blockData instanceof Door) {
+						Door newBlockData = (Door) block.getBlockData();
+						newBlockData.setHinge(((Door) blockData).getHinge());
+						block.setBlockData(newBlockData, true);
+					}
+
+					if (blockData instanceof Orientable) {
+						Orientable newBlockData = (Orientable) block.getBlockData();
+						newBlockData.setAxis(((Orientable) blockData).getAxis());
+						block.setBlockData(newBlockData, true);
+					}
+
+					if (blockData instanceof Powerable) {
+						Powerable newBlockData = (Powerable) block.getBlockData();
+						newBlockData.setPowered(((Powerable) blockData).isPowered());
+						block.setBlockData(newBlockData, true);
+					}
+
+					if (blockData instanceof Openable) {
+						Openable newBlockData = (Openable) block.getBlockData();
+						newBlockData.setOpen(((Openable) blockData).isOpen());
+						block.setBlockData(newBlockData, true);
+					}
+
+					if (blockData instanceof Stairs) {
+						Stairs newBlockData = (Stairs) block.getBlockData();
+						newBlockData.setShape(((Stairs) blockData).getShape());
+						block.setBlockData(newBlockData, true);
+					}
+
+					if (blockData instanceof Slab) {
+						Slab newBlockData = (Slab) block.getBlockData();
+						newBlockData.setType(((Slab) blockData).getType());
+						block.setBlockData(newBlockData, true);
+					}
+					if (blockData instanceof MultipleFacing) {
+						MultipleFacing newBlockData = (MultipleFacing) block.getBlockData();
+						for (BlockFace bf : ((MultipleFacing) blockData).getFaces()) {
+							newBlockData.setFace(bf, true);
+						}
+						block.setBlockData(newBlockData, true);
+					}
+					if (blockData instanceof Directional) {
+						Directional newBlockData = (Directional) block.getBlockData();
+						newBlockData.setFacing(((Directional) blockData).getFacing());
+						block.setBlockData(newBlockData, true);
+					}
+					if (blockData instanceof Waterlogged) {
+						Waterlogged newBlockData = (Waterlogged) block.getBlockData();
+						newBlockData.setWaterlogged(((Waterlogged) blockData).isWaterlogged());
+						block.setBlockData(newBlockData, true);
+					}
+				}, 0);
+			}
+
+		}
+		return change;
+	}
+
+
+	public boolean doEvent(PlayerInteractEvent evt, int level, boolean usedHand) {
+		if (evt.getClickedBlock() == null) {
+			return false;
+		}
+
+		if (evt.getAction() != RIGHT_CLICK_BLOCK) {
+			return false;
+		}
+		Set<Block> blocks = new HashSet<>();
+		blocks.add(evt.getClickedBlock());
+		if (evt.getPlayer().isSneaking()) {
+			Set<Block> bfsResult = new HashSet<>();
+			Set<Material> whitelist = new HashSet<>();
+			whitelist.add(evt.getClickedBlock().getType());
+			BFS(evt.getClickedBlock(), new HashSet<>(), bfsResult, whitelist, new HashSet<>(), 1024);
+			blocks.addAll(bfsResult);
+		}
+
+		boolean result = cycleBlockType(blocks);
+		if (result) {
+			Utilities.damageTool(evt.getPlayer(), (int) Math.ceil(Math.log(blocks.size() + 1) / Math.log(2)),
+				usedHand);
+		}
+		evt.setCancelled(true);
+		return result;
+	}
+
+	@Override
+	public boolean onBlockInteractInteractable(PlayerInteractEvent evt, int level, boolean usedHand) {
+		return doEvent(evt, level, usedHand);
+	}
+
+	@Override
+	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
+		return doEvent(evt, level, usedHand);
+	}
+
+	private boolean BFS(Block blk, Set<Block> searched, Set<Block> discovered, Set<Material> whitelist,
+		Set<Material> blacklist, int maxCount) {
+
+		Queue<Block> q = new ArrayDeque<>();
+		searched.add(blk);
+		q.add(blk);
+
+		while (!q.isEmpty()) {
+			if (discovered.size() >= maxCount || searched.size() >= 10000) {
+				return true;
+			}
+
+			blk = q.poll();
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					for (int z = -1; z <= 1; z++) {
+						if (!searched.contains(blk.getRelative(x, y, z))) {
+							searched.add(blk.getRelative(x, y, z));
+							if (whitelist.contains(blk.getRelative(x, y, z).getType())) {
+								q.add(blk.getRelative(x, y, z));
+								discovered.add(blk.getRelative(x, y, z));
+							} else if (blacklist.contains(blk.getRelative(x, y, z).getType())) {
+								discovered.clear();
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
 
 }

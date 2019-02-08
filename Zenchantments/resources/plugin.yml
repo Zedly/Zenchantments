@@ -1,6 +1,7 @@
 name: Zenchantments
 main: zedly.zenchantments.Zenchantments
-version: ${project.version}
+api-version: 1.13
+version: 1.6_b-1
 commands:
   ench:
     description: Gives basic access; /ench help.

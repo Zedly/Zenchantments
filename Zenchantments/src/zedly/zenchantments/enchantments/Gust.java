@@ -20,39 +20,39 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Gust extends CustomEnchantment {
 
-    public static final int ID = 25;
+	public static final int ID = 25;
 
-    @Override
-    public Builder<Gust> defaults() {
-        return new Builder<>(Gust::new, ID)
-            .maxLevel(1)
-            .loreName("Gust")
-            .probability(0)
-            .enchantable(new Tool[]{SWORD})
-            .conflicting(new Class[]{Force.class, RainbowSlam.class})
-            .description("Pushes the user through the air at the cost of their health")
-            .cooldown(0)
-            .power(1.0)
-            .handUse(Hand.RIGHT);
-    }
+	@Override
+	public Builder<Gust> defaults() {
+		return new Builder<>(Gust::new, ID)
+			.maxLevel(1)
+			.loreName("Gust")
+			.probability(0)
+			.enchantable(new Tool[]{SWORD})
+			.conflicting(new Class[]{Force.class, RainbowSlam.class})
+			.description("Pushes the user through the air at the cost of their health")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.RIGHT);
+	}
 
-    @Override
-    public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final boolean usedHand) {
-        final Player player = evt.getPlayer();
-        if(evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-            if(player.getHealth() > 2 && (evt.getClickedBlock() == null ||
-                                          evt.getClickedBlock().getLocation().distance(player.getLocation()) > 2)) {
-                final Block blk = player.getTargetBlock((HashSet<Material>) null, 10);
-                player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector())
-                                      .multiply(.25 * power));
-                player.setFallDistance(-40);
-                ADAPTER.damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                    Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-                }, 1);
-                return true;
-            }
-        }
-        return false;
-    }
+	@Override
+	public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final boolean usedHand) {
+		final Player player = evt.getPlayer();
+		if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
+			if (player.getHealth() > 2 && (evt.getClickedBlock() == null ||
+				evt.getClickedBlock().getLocation().distance(player.getLocation()) > 2)) {
+				final Block blk = player.getTargetBlock(null, 10);
+				player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector())
+				                      .multiply(.25 * power));
+				player.setFallDistance(-40);
+				ADAPTER.damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+					Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+				}, 1);
+				return true;
+			}
+		}
+		return false;
+	}
 }

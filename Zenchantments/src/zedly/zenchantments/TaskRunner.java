@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 /**
  * A runnable class that will execute all events of the specified frequency.
  *
- * @author rfrowe
  */
 public class TaskRunner implements Runnable {
 	private Set<Method> tasks;
@@ -49,6 +48,7 @@ public class TaskRunner implements Runnable {
 				}).scan();
 	}
 
+
 	/**
 	 * Runs all methods on subclasses of CustomEnchantment that are annotated with {@link EffectTask}
 	 * and have the same event frequency as this EventRunner.
@@ -60,7 +60,8 @@ public class TaskRunner implements Runnable {
 			try {
 				m.invoke(null);
 			} catch (IllegalAccessException | InvocationTargetException e) {
-				this.logger.log(Level.SEVERE, "Could not invoke event '" + m.getName() + "' due to \n" + e.getCause(), e);
+				this.logger.log(Level.SEVERE, "Could not invoke event '" + m.getName() + "' due to \n" + e.getCause(),
+					e);
 				e.printStackTrace();
 			}
 		}

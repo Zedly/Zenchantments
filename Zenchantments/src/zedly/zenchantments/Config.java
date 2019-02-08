@@ -137,7 +137,6 @@ public class Config {
         CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
             try {
-                ClassLoader classloader = Thread.currentThread().getContextClassLoader();
                 InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
                 File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
                 if (!file.exists()) {
@@ -148,7 +147,7 @@ public class Config {
                         fos.write(b, 0, b.length);
                         fos.flush();
                     } catch (IOException e) {
-
+                        System.err.println("Error loading config");
                     }
                 }
                 YamlConfiguration yamlConfig = new YamlConfiguration();
@@ -172,7 +171,6 @@ public class Config {
                     version = new int[]{1, 5, 0};
                 }
                 UpdateConfig.update(yamlConfig, version);
-
                 //Init variables
                 final int shredDrops;
                 yamlConfig.save(file);
@@ -215,9 +213,12 @@ public class Config {
                 }
 
                 List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+
                 new FastClasspathScanner(CustomEnchantment.class.getPackage().getName())
                     .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
                     .scan();
+
+
                 for (Class<? extends CustomEnchantment> cl : customEnchantments) {
                     try {
                         CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();

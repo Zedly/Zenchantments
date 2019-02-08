@@ -11,29 +11,29 @@ import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
 public class Saturation extends CustomEnchantment {
 
-    public static final int ID = 50;
+	public static final int ID = 50;
 
-    @Override
-    public Builder<Saturation> defaults() {
-        return new Builder<>(Saturation::new, ID)
-            .maxLevel(3)
-            .loreName("Saturation")
-            .probability(0)
-            .enchantable(new Tool[]{LEGGINGS})
-            .conflicting(new Class[]{})
-            .description("Uses less of the player's hunger")
-            .cooldown(0)
-            .power(1.0)
+	@Override
+	public Builder<Saturation> defaults() {
+		return new Builder<>(Saturation::new, ID)
+			.maxLevel(3)
+			.loreName("Saturation")
+			.probability(0)
+			.enchantable(new Tool[]{LEGGINGS})
+			.conflicting(new Class[]{})
+			.description("Uses less of the player's hunger")
+			.cooldown(0)
+			.power(1.0)
 
-            .handUse(Hand.NONE);
-    }
+			.handUse(Hand.NONE);
+	}
 
-    @Override
-    public boolean onHungerChange(FoodLevelChangeEvent evt, int level, boolean usedHand) {
-        if(evt.getFoodLevel() < ((Player) evt.getEntity()).getFoodLevel() &&
-           Storage.rnd.nextInt(10) > 10 - 2 * level * power) {
-            evt.setCancelled(true);
-        }
-        return true;
-    }
+	@Override
+	public boolean onHungerChange(FoodLevelChangeEvent evt, int level, boolean usedHand) {
+		if (evt.getFoodLevel() < ((Player) evt.getEntity()).getFoodLevel() &&
+			Storage.rnd.nextInt(10) > 10 - 2 * level * power) {
+			evt.setCancelled(true);
+		}
+		return true;
+	}
 }

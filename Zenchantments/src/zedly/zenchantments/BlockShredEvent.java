@@ -9,14 +9,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
-/**
- *
- * @author Dennis
- */
 public class BlockShredEvent extends BlockBreakEvent {
-    
-    public BlockShredEvent(Block theBlock, Player player) {
-        super(theBlock, player);
-    }
-    
+
+	public BlockShredEvent(Block theBlock, Player player) {
+		super(theBlock, player);
+	}
+
 }

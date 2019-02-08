@@ -20,7 +20,7 @@ public class Tracer extends CustomEnchantment {
 
 	// Map of tracer arrows to their expected accuracy
 	public static final Map<Arrow, Integer> tracer = new HashMap<>();
-	public static final int ID = 63;
+	public static final int                 ID     = 63;
 
 	@Override
 	public Builder<Tracer> defaults() {
@@ -34,14 +34,14 @@ public class Tracer extends CustomEnchantment {
 			.cooldown(0)
 			.power(1.0)
 			.handUse(Hand.RIGHT);
-    }
+	}
 
-    @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-	    TracerArrow arrow = new TracerArrow((Arrow) evt.getProjectile(), level, power);
-        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
-        return true;
-    }
+	@Override
+	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
+		TracerArrow arrow = new TracerArrow((Arrow) evt.getProjectile(), level, power);
+		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+		return true;
+	}
 
 	@EffectTask(Frequency.HIGH)
 	// Moves Tracer arrows towards a target
@@ -56,8 +56,8 @@ public class Tracer extends CustomEnchantment {
 					double d = e1.getLocation().distance(e.getLocation());
 					if (e.getLocation().getWorld().equals(((Entity) e.getShooter()).getLocation().getWorld())) {
 						if (d < distance && e1 instanceof LivingEntity
-								&& !e1.equals(e.getShooter())
-								&& e.getLocation().distance(((Entity) e.getShooter()).getLocation()) > 15) {
+							&& !e1.equals(e.getShooter())
+							&& e.getLocation().distance(((Entity) e.getShooter()).getLocation()) > 15) {
 							distance = d;
 							close = e1;
 						}

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>zedly</groupId>
     <artifactId>Zenchantments</artifactId>
-    <version>1.5.2</version>
+    <version>1.6.0</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,13 +13,13 @@
     <parent>
         <groupId>zedly</groupId>
         <artifactId>Zenchantments-parent</artifactId>
-        <version>1.5.2</version>
+        <version>1.6.0</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.10.2-R0.1-SNAPSHOT</version>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- Apache commons is inbcluded in CB/Spigot -->
@@ -39,25 +39,19 @@
         <dependency>
             <groupId>zedly</groupId>
             <artifactId>compatibility-adapter</artifactId>
-            <version>1.5.2</version>
+            <version>1.6.0</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>zedly</groupId>
-            <artifactId>NMS_1_12_R1</artifactId>
-            <version>1.5.2</version>
+            <artifactId>NMS_1_13_R1</artifactId>
+            <version>1.6.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>zedly</groupId>
-            <artifactId>NMS_1_11_R1</artifactId>
-            <version>1.5.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>zedly</groupId>
-            <artifactId>NMS_1_10_R1</artifactId>
-            <version>1.5.2</version>
+            <artifactId>NMS_1_13_R2</artifactId>
+            <version>1.6.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -67,7 +61,7 @@
             <scope>compile</scope>
         </dependency>
      </dependencies>
-    
+
     <build>
         <defaultGoal>clean package</defaultGoal>
         <directory>../target</directory> <!-- Build it one level up, because it is the one we care about -->

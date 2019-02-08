@@ -13,27 +13,27 @@ import static zedly.zenchantments.enums.Tool.*;
 
 public class Haste extends CustomEnchantment {
 
-    public static final int ID = 27;
+	public static final int ID = 27;
 
-    @Override
-    public Builder<Haste> defaults() {
-        return new Builder<>(Haste::new, ID)
-            .maxLevel(4)
-            .loreName("Haste")
-            .probability(0)
-            .enchantable(new Tool[]{PICKAXE, AXE, SHOVEL})
-            .conflicting(new Class[]{})
-            .description("Gives the player a mining boost")
-            .cooldown(0)
-            .power(1.0)
-            .handUse(Hand.NONE);
-    }
+	@Override
+	public Builder<Haste> defaults() {
+		return new Builder<>(Haste::new, ID)
+			.maxLevel(4)
+			.loreName("Haste")
+			.probability(0)
+			.enchantable(new Tool[]{PICKAXE, AXE, SHOVEL})
+			.conflicting(new Class[]{})
+			.description("Gives the player a mining boost")
+			.cooldown(0)
+			.power(1.0)
+			.handUse(Hand.NONE);
+	}
 
-    @Override
-    public boolean onScanHands(Player player, int level, boolean usedHand) {
-        Utilities.addPotion(player, FAST_DIGGING, 610, (int) Math.round(level * power));
-        player.setMetadata("ze.haste", new FixedMetadataValue(Storage.zenchantments, null));
-        return false;
-    }
+	@Override
+	public boolean onScanHands(Player player, int level, boolean usedHand) {
+		Utilities.addPotion(player, FAST_DIGGING, 610, (int) Math.round(level * power));
+		player.setMetadata("ze.haste", new FixedMetadataValue(Storage.zenchantments, null));
+		return false;
+	}
 
 }

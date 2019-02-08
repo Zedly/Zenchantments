@@ -8,7 +8,6 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-import java.util.HashSet;
 import java.util.List;
 
 import static org.bukkit.Material.AIR;
@@ -22,7 +21,7 @@ public class MissileArrow extends EnchantedArrow {
 	public void onLaunch(LivingEntity player, List<String> lore) {
 		final Config config = Config.get(player.getWorld());
 		Location playLoc = player.getLocation();
-		final Location target = Utilities.getCenter(player.getTargetBlock((HashSet<Material>) null, 220));
+		final Location target = Utilities.getCenter(player.getTargetBlock(null, 220));
 		target.setY(target.getY() + .5);
 		final Location c = playLoc;
 		c.setY(c.getY() + 1.1);
@@ -50,7 +49,7 @@ public class MissileArrow extends EnchantedArrow {
 					loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10,
 						config.explosionBlockBreak(), config.explosionBlockBreak());
 				}
-			}, (int) (i / 7));
+			}, i / 7);
 		}
 	}
 }

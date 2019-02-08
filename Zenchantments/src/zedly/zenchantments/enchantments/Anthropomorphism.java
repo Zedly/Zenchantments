@@ -16,6 +16,7 @@ import zedly.zenchantments.annotations.EffectTask;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -25,15 +26,15 @@ import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Anthropomorphism extends CustomEnchantment {
 	// The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
-	public static final  Map<FallingBlock, Double> attackBlocks = new HashMap<>();
+	public static final  Map<FallingBlock, Pair<Double, Vector>> attackBlocks = new HashMap<>();
 	// Players currently using the Anthropomorphism enchantment
-	public static final List<Entity> anthVortex = new ArrayList<>();
+	private static final List<Entity>              anthVortex   = new ArrayList<>();
 	// The falling blocks from the Anthropomorphism enchantment that are idle, staying within the relative region
-	public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
-	private static final Material[]                MAT          = new Material[]{STONE, GRAVEL, DIRT, GRASS};
-	public static final int ID = 1;
+	public static final  Map<FallingBlock, Entity> idleBlocks   = new HashMap<>();
+	private static final Material[]                MAT          = new Material[]{STONE, GRAVEL, DIRT, GRASS_BLOCK};
+	public static final  int                       ID           = 1;
 	// Determines if falling entities from Anthropomorphism should fall up or down
-	public static boolean fallBool = false;
+	private static       boolean                   fallBool     = false;
 
 	@Override
 	public Builder<Anthropomorphism> defaults() {
@@ -80,15 +81,23 @@ public class Anthropomorphism extends CustomEnchantment {
 				for (Entity e : blockEntity.getNearbyEntities(7, 7, 7)) {
 					if (e instanceof Monster) {
 						LivingEntity targetEntity = (LivingEntity) e;
-						blockEntity.setVelocity(
-								e.getLocation().subtract(blockEntity.getLocation()).toVector().multiply(.25));
+
+
+						Vector playerDir = attackBlocks.get(blockEntity) == null
+							? new Vector()
+							: attackBlocks.get(blockEntity).getValue();
+
+
+						blockEntity.setVelocity(e.getLocation().add(playerDir.multiply(.75)).subtract(blockEntity.getLocation()).toVector().multiply(0.25));
+
 						if (targetEntity.getLocation().getWorld().equals(blockEntity.getLocation().getWorld())) {
 							if (targetEntity.getLocation().distance(blockEntity.getLocation()) < 1.2
-									&& blockEntity.hasMetadata("ze.anthrothrower")) {
+								&& blockEntity.hasMetadata("ze.anthrothrower")) {
 								Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
-								if (targetEntity.getNoDamageTicks() == 0
-										&& Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
-										.5 * attackBlocks.get(blockEntity))) {
+
+								if (targetEntity.getNoDamageTicks() == 0 && attackBlocks.get(blockEntity) != null
+									&& Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
+									2.0 * attackBlocks.get(blockEntity).getKey())) {
 									targetEntity.setNoDamageTicks(0);
 									anthroIterator.remove();
 									blockEntity.remove();
@@ -153,31 +162,29 @@ public class Anthropomorphism extends CustomEnchantment {
 				if (counter < 64 && player.getInventory().contains(COBBLESTONE)) {
 					Utilities.removeItem(player, COBBLESTONE, 1);
 					Utilities.damageTool(player, 2, usedHand);
-					player.updateInventory();
 					Location loc = player.getLocation();
 					FallingBlock blockEntity =
-							loc.getWorld().spawnFallingBlock(loc, MAT[Storage.rnd.nextInt(4)], (byte) 0x0);
+						loc.getWorld().spawnFallingBlock(loc, Bukkit.createBlockData(MAT[Storage.rnd.nextInt(4)]));
 					blockEntity.setDropItem(false);
 					blockEntity.setGravity(false);
 					blockEntity
-							.setMetadata("ze.anthrothrower", new FixedMetadataValue(Storage.zenchantments, player));
+						.setMetadata("ze.anthrothrower", new FixedMetadataValue(Storage.zenchantments, player));
 					idleBlocks.put(blockEntity, player);
 					return true;
 				}
 			}
 			return false;
 		} else if ((evt.getAction() == LEFT_CLICK_AIR || evt.getAction() == LEFT_CLICK_BLOCK)
-				|| hand.getType() == AIR) {
+			|| hand.getType() == AIR) {
 			anthVortex.remove(player);
 			List<FallingBlock> toRemove = new ArrayList<>();
 			for (FallingBlock blk : idleBlocks.keySet()) {
 				if (idleBlocks.get(blk).equals(player)) {
-					attackBlocks.put(blk, power);
+					attackBlocks.put(blk, new Pair<>(power, player.getLocation().getDirection()));
 					toRemove.add(blk);
-					Block targetBlock = player.getTargetBlock((Set<Material>) null, 7);
-					Bukkit.getLogger().info(targetBlock.toString());
+					Block targetBlock = player.getTargetBlock(null, 7);
 					blk.setVelocity(targetBlock
-							.getLocation().subtract(player.getLocation()).toVector().multiply(.25));
+						.getLocation().subtract(player.getLocation()).toVector().multiply(.25));
 				}
 			}
 			for (FallingBlock blk : toRemove) {

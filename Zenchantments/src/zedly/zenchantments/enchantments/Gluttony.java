@@ -1,9 +1,9 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -13,48 +13,39 @@ import static zedly.zenchantments.enums.Tool.HELMET;
 
 public class Gluttony extends CustomEnchantment {
 
-    private static final int[] FOOD_LEVELS = {10, 8, 8, 8, 6, 6, 6, 6, 6, 6, 5, 5, 4, 3, 2, 2, 1};
-    private static final double[]   SATURATIONS =
-            {12.0, 12.8, 4.8, 12.8, 6.0, 7.2, 7.2, 9.6, 7.2, 6.0, 9.6, 6.0, 2.4, 3.6, 0.4, 1.2, 1.2};
-    private static final Material[] FOOD_ITEMS = new Material[]{RABBIT_STEW, COOKED_BEEF, PUMPKIN_PIE,
-                                                                 GRILLED_PORK, BAKED_POTATO, BEETROOT_SOUP,
-                                                                 COOKED_CHICKEN, COOKED_MUTTON,
-                                                                 MUSHROOM_SOUP, COOKED_FISH, COOKED_FISH, BREAD,
-                                                                 APPLE, CARROT_ITEM, COOKIE,
-                                                                 MELON, BEETROOT};
-    public static final  int        ID         = 21;
+	public static final int ID = 21;
 
-    @Override
-    public Builder<Gluttony> defaults() {
-        return new Builder<>(Gluttony::new, ID)
-            .maxLevel(1)
-            .loreName("Gluttony")
-            .probability(0)
-            .enchantable(new Tool[]{HELMET})
-            .conflicting(new Class[]{})
-            .description("Automatically eats for the player")
-            .cooldown(0)
-            .power(-1.0)
-            .handUse(Hand.NONE);
-    }
+	@Override
+	public Builder<Gluttony> defaults() {
+		return new Builder<>(Gluttony::new, ID)
+			.maxLevel(1)
+			.loreName("Gluttony")
+			.probability(0)
+			.enchantable(new Tool[]{HELMET})
+			.conflicting(new Class[]{})
+			.description("Automatically eats for the player")
+			.cooldown(0)
+			.power(-1.0)
+			.handUse(Hand.NONE);
+	}
 
-    @Override
-    public boolean onScan(Player player, int level, boolean usedHand) {
-        int check = 0;
-        for(int i = 0; i < FOOD_ITEMS.length; i++) {
-            if(FOOD_ITEMS[i] == COOKED_FISH) {
-                check = (check + 1) % 2;
-            }
-            if(player.getInventory().containsAtLeast(new ItemStack(FOOD_ITEMS[i], 1, (short) check), 1)
-               && player.getFoodLevel() <= 20 - FOOD_LEVELS[i]) {
-                Utilities.removeItem(player, FOOD_ITEMS[i], (short) check, 1);
-                player.setFoodLevel(player.getFoodLevel() + FOOD_LEVELS[i]);
-                player.setSaturation((float) (player.getSaturation() + SATURATIONS[i]));
-                if(FOOD_ITEMS[i] == RABBIT_STEW || FOOD_ITEMS[i] == MUSHROOM_SOUP || FOOD_ITEMS[i] == BEETROOT_SOUP) {
-                    player.getInventory().addItem(new ItemStack(BOWL));
-                }
-            }
-        }
-        return true;
-    }
+	@Override
+	public boolean onScan(Player player, int level, boolean usedHand) {
+		for (int i = 0; i < Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems().length; i++) {
+			if (player.getInventory().containsAtLeast(
+				new ItemStack(Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i]), 1)
+				&& player.getFoodLevel() <= 20 - Storage.COMPATIBILITY_ADAPTER.GluttonyFoodLevels()[i]) {
+				Utilities.removeItem(player, Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i], 1);
+				player.setFoodLevel(player.getFoodLevel() + Storage.COMPATIBILITY_ADAPTER.GluttonyFoodLevels()[i]);
+				player.setSaturation(
+					(float) (player.getSaturation() + Storage.COMPATIBILITY_ADAPTER.GluttonySaturations()[i]));
+				if (Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i] == RABBIT_STEW
+					|| Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i] == MUSHROOM_STEW
+					|| Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i] == BEETROOT_SOUP) {
+					player.getInventory().addItem(new ItemStack(BOWL));
+				}
+			}
+		}
+		return true;
+	}
 }
