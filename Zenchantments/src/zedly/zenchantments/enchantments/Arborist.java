@@ -25,7 +25,7 @@ public class Arborist extends CustomEnchantment {
 			.probability(0)
 			.enchantable(new Tool[]{AXE})
 			.conflicting(new Class[]{})
-			.description("Drops more apples, sticks, and saplings when used on leaves and wood")
+			.description("Drops more apples, sticks, and saplings when used on leaves")
 			.cooldown(0)
 			.power(1.0)
 			.handUse(Hand.LEFT);
@@ -35,11 +35,12 @@ public class Arborist extends CustomEnchantment {
 	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
 		Block blk = evt.getBlock();
 		Material mat = blk.getType();
-		if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(mat) || Storage.COMPATIBILITY_ADAPTER.Logs().contains(mat)) {
+		if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(mat)) {
 			// Crudely get the index in the array of materials
 
 			int index = Math.max(Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(mat),
 				Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(mat));
+
 			ItemStack stk = new ItemStack(Storage.COMPATIBILITY_ADAPTER.Saplings().get(index), 1);
 
 			if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
