@@ -52,7 +52,7 @@ public class UpdateConfig {
 		Map<String, CustomEnchantment> enchantments = new HashMap<>();
 		List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
 
-		new FastClasspathScanner(CustomEnchantment.class.getPackage().getName())
+		new FastClasspathScanner(CustomEnchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
 			.matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
 			.scan();
 

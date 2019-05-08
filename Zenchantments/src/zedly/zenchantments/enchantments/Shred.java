@@ -70,7 +70,7 @@ public class Shred extends CustomEnchantment {
 				if (config.getShredDrops() == 1) {
 					if (relativeBlock.getType().equals(NETHER_QUARTZ_ORE)) {
 						relativeBlock.setType(NETHERRACK);
-					} else if (Storage.ORES.contains(relativeBlock.getType())) {
+					} else if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(relativeBlock.getType())) {
 						relativeBlock.setType(STONE);
 					}
 					WatcherEnchant.instance().onBlockShred(relativeEvent);

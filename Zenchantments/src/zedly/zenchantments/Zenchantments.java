@@ -145,8 +145,8 @@ public class Zenchantments extends JavaPlugin {
 	// Loads configs and starts tasks
 	public void onEnable() {
 		Storage.zenchantments = this;
-		Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription()
-		                        .getVersion();
+		Storage.pluginPath = Bukkit.getPluginManager().getPlugin("Zenchantments").getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+		Storage.version = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDescription().getVersion();
 		loadConfigs();
 		getCommand("ench").setTabCompleter(new CommandProcessor.TabCompletion());
 		getServer().getPluginManager().registerEvents(new AnvilMerge(), this);

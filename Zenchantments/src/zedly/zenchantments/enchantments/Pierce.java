@@ -131,7 +131,7 @@ public class Pierce extends CustomEnchantment {
 			}
 		} else if (mode == 5) {
 			List<Block> used = new ArrayList<>();
-			if (Storage.ORES.contains(evt.getBlock().getType())) {
+			if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(evt.getBlock().getType())) {
 				Material mat[];
 				mat = new Material[]{evt.getBlock().getType()};
 				oreBFS(evt.getBlock(), used, total, mat, 0);

@@ -32,7 +32,7 @@ public class TaskRunner implements Runnable {
 
 		tasks = new HashSet<>();
 
-		new FastClasspathScanner(Zenchantments.class.getPackage().getName())
+		new FastClasspathScanner(Zenchantments.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
 			.matchClassesWithMethodAnnotation(
 				EffectTask.class,
 				(clazz, method) -> {

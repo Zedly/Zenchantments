@@ -49,7 +49,7 @@ public class Reveal extends CustomEnchantment {
                     for (int y = -radius; y <= radius; y++) {
                         for (int z = -radius; z <= radius; z++) {
                             Block blk = evt.getPlayer().getLocation().getBlock().getRelative(x, y, z);
-                            if (Storage.ORES.contains(blk.getType())) {
+                            if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(blk.getType())) {
                                 boolean exposed = false;
                                 for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
                                     if (blk.getRelative(face).getType() == Material.AIR) {

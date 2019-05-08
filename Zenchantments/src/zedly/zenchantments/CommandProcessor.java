@@ -30,69 +30,69 @@ public class CommandProcessor {
 			ItemStack stack = player.getPlayer().getInventory().getItemInMainHand();
 			String label = args[0].toLowerCase();
 			List<String> results = new LinkedList<>();
-			switch (commandlabel.getName().toLowerCase()) {
-				case "ench":
-					switch (label) {
-						case "reload":
-						case "list":
-						case "help":
-							break;
-						case "give":
-							if (args.length == 2) {
-								for (Player plyr : Bukkit.getOnlinePlayers()) {
-									if (plyr.getPlayerListName().toLowerCase().startsWith(args[1].toLowerCase())) {
-										results.add(plyr.getPlayerListName());
-									}
-								}
-							} else if (args.length == 3) {
-								for (Material mat : Tool.ALL.getMaterials()) {
-									if (mat.toString().toLowerCase().startsWith(args[2].toLowerCase())) {
-										results.add(mat.toString());
-									}
-								}
-							} else if (config.enchantFromString(args[args.length - 2]) != null) {
-								CustomEnchantment ench = config.enchantFromString(args[args.length - 2]);
-								for (int i = 1; i <= ench.getMaxLevel(); i++) {
-									results.add(i + "");
-								}
-							} else if (args.length != 1){
-								for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
-									if (ench.getKey().startsWith(args[args.length - 1]) && (stack.getType() == BOOK
-										|| stack.getType() == ENCHANTED_BOOK
-										|| ench.getValue().validMaterial(Material.matchMaterial(args[2])))) {
-										results.add(ench.getKey());
-									}
-								}
-							}
-							break;
-						case "disable":
-						case "enable":
-							results.add("all");
-						case "info":
-							results = config.getEnchantNames();
-							if (args.length > 1) {
-								results.removeIf(e -> !e.startsWith(args[1]));
-							}
-							break;
-						default:
-							if (args.length == 1) {
-								for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
-									if (ench.getKey().startsWith(args[0]) && (stack.getType() == BOOK ||
-										stack.getType() == ENCHANTED_BOOK || ench.getValue().validMaterial(
-										stack.getType())
-										|| stack.getType() == AIR)) {
-										results.add(ench.getKey());
-									}
-								}
-							} else if (args.length == 2) {
-								CustomEnchantment ench = config.enchantFromString(args[0]);
-								if (ench != null) {
-									for (int i = 1; i <= ench.getMaxLevel(); i++) {
-										results.add(i + "");
-									}
-								}
 
+			switch (label) {
+				case "reload":
+				case "list":
+				case "help":
+					break;
+				case "give":
+					if (args.length == 2) {
+						for (Player plyr : Bukkit.getOnlinePlayers()) {
+							if (plyr.getPlayerListName().toLowerCase().startsWith(args[1].toLowerCase())) {
+								results.add(plyr.getPlayerListName());
 							}
+						}
+					} else if (args.length == 3) {
+						for (Material mat : Tool.ALL.getMaterials()) {
+							if (mat.toString().toLowerCase().startsWith(args[2].toLowerCase())) {
+								results.add(mat.toString());
+							}
+						}
+						// TODO: Fix out of bounds error below
+					} else if (config.enchantFromString(args[args.length - 2]) != null) {
+						CustomEnchantment ench = config.enchantFromString(args[args.length - 2]);
+						for (int i = 1; i <= ench.getMaxLevel(); i++) {
+							results.add(i + "");
+						}
+					} else if (args.length != 1) {
+						for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
+							if (ench.getKey().startsWith(args[args.length - 1]) && (stack.getType() == BOOK
+								|| stack.getType() == ENCHANTED_BOOK
+								|| ench.getValue().validMaterial(Material.matchMaterial(args[2])))) {
+								results.add(ench.getKey());
+							}
+						}
+					}
+					break;
+				case "disable":
+				case "enable":
+					results.add("all");
+				case "info":
+					results = config.getEnchantNames();
+					if (args.length > 1) {
+						results.removeIf(e -> !e.startsWith(args[1]));
+					}
+					break;
+				default:
+
+					if (args.length == 1) {
+						for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
+							if (ench.getKey().startsWith(args[0]) && (stack.getType() == BOOK ||
+								stack.getType() == ENCHANTED_BOOK || ench.getValue().validMaterial(
+								stack.getType())
+								|| stack.getType() == AIR)) {
+								results.add(ench.getKey());
+							}
+						}
+					} else if (args.length == 2) {
+						CustomEnchantment ench = config.enchantFromString(args[0]);
+						if (ench != null) {
+							for (int i = 1; i <= ench.getMaxLevel(); i++) {
+								results.add(i + "");
+							}
+						}
+
 					}
 			}
 			return results;
@@ -222,7 +222,7 @@ public class CommandProcessor {
 			ItemStack stk = new ItemStack(mat);
 			StringBuilder msgBldr =
 				new StringBuilder(Storage.logo + "Gave " + ChatColor.DARK_AQUA + recipient.getName()
-				+ ChatColor.AQUA + " the enchantments ");
+					+ ChatColor.AQUA + " the enchantments ");
 
 			for (Map.Entry<CustomEnchantment, Integer> ench : enchantsToAdd.entrySet()) {
 				ench.getKey().setEnchantment(stk, ench.getValue(), config.getWorld());
