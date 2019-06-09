@@ -35,12 +35,20 @@ public class NMS_1_13_R2 extends CompatibilityAdapter {
     }
 
     //region Dead Corals
-    private final EnumStorage<Material> DEAD_CORALS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
-        DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL});
+    private EnumStorage<Material> DEAD_CORALS;
 
     public EnumStorage<Material> DeadCorals() {
+        deadCoralsInit();
         return DEAD_CORALS;
     }
+
+    private void deadCoralsInit() {
+        if (DEAD_CORALS == null) {
+            DEAD_CORALS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
+                DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL});
+        }
+    }
+
     //endregion
 
     @Override

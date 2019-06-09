@@ -94,7 +94,7 @@ public class Fire extends CustomEnchantment {
 				Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 
 				evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location),
-					new ItemStack(CACTUS_GREEN, 1));
+					new ItemStack(Storage.COMPATIBILITY_ADAPTER.Dyes().get(14), 1));
 				Block affectedBlock = location.getBlock();
 				Grab.fireDropLocs.add(affectedBlock);
 

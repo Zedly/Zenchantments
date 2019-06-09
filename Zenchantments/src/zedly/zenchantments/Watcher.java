@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +26,6 @@ import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.enchantments.*;
 
@@ -60,8 +60,7 @@ public class Watcher implements Listener {
 					int level = CustomEnchantment.getEnchants(stk, config.getWorld()).get(ench);
 					int range = 6 + (int) Math.round(level * ench.power * 3);
 					Block blk =
-						evt.getBlock().getRelative(((Dispenser) evt.getBlock().getState().getData()).getFacing(),
-							range);
+						evt.getBlock().getRelative(((Directional) evt.getBlock().getState().getData()).getFacing(), range);
 					Location play = Utilities.getCenter(evt.getBlock());
 					Location target = Utilities.getCenter(blk);
 					play.setY(play.getY() - .5);

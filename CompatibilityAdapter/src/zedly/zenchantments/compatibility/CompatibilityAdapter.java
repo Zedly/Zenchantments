@@ -212,6 +212,14 @@ public class CompatibilityAdapter {
 
 	//region Woods
 
+	//region Signs
+	private final EnumStorage<Material> SIGNS = new EnumStorage<>(new Material[]{SIGN});
+
+	public EnumStorage<Material> Signs(){
+		return SIGNS;
+	}
+	//endregion
+
 	//region Boats
 	private final EnumStorage<Material> BOATS = new EnumStorage<>(new Material[]{ACACIA_BOAT, BIRCH_BOAT,
 		DARK_OAK_BOAT, JUNGLE_BOAT, OAK_BOAT, SPRUCE_BOAT});
@@ -381,6 +389,14 @@ public class CompatibilityAdapter {
 
 
 	//region Plants
+
+	//region Deadly Plants
+	private final EnumStorage<Material> DEADLY_PLANTS = new EnumStorage<>(new Material[]{});
+
+	public EnumStorage<Material> DeadlyPlants() {
+		return DEADLY_PLANTS;
+	}
+	//endregion
 
 	//region Small Flowers
 	private final EnumStorage<Material> SMALL_FLOWERS = new EnumStorage<>(new Material[]{DANDELION, POPPY, BLUE_ORCHID,
@@ -823,10 +839,17 @@ public class CompatibilityAdapter {
 	//endregion
 
 
-	//region Iteractable Blocks
+	//region Interactable Blocks
 	private final EnumStorage<Material> INTERACTABLE_BLOCKS = new EnumStorage<>(new Material[]{
 		NOTE_BLOCK, CRAFTING_TABLE, LEVER, REPEATER, ENCHANTING_TABLE, COMPARATOR, DAYLIGHT_DETECTOR, OBSERVER},
-		Beds(), Doors(), Trapdoors(), FenceGates(), CommandBlocks(), Buttons(), ShulkerBoxes(), StorageBlocks());
+		Beds(),
+		Doors(),
+		Trapdoors(),
+		FenceGates(),
+		CommandBlocks(),
+		Buttons(),
+		ShulkerBoxes(),
+		StorageBlocks());
 
 	public EnumStorage<Material> InteractableBlocks(){
 		return INTERACTABLE_BLOCKS;
@@ -857,7 +880,7 @@ public class CompatibilityAdapter {
 		DIRT, GRASS, VINE, SNOW, COCOA, GRAVEL, STONE, DIORITE, GRANITE, ANDESITE, WATER, LAVA, SAND, BROWN_MUSHROOM,
 		RED_MUSHROOM, MOSSY_COBBLESTONE, CLAY, BROWN_MUSHROOM, RED_MUSHROOM, MYCELIUM, TORCH, SUGAR_CANE, GRASS_BLOCK,
 		PODZOL, FERN, GRASS, MELON, PUMPKIN}, TrunkBlocks(), Leaves(), SmallFlowers(), LargeFlowers(), Saplings(),
-		Airs());
+		Airs(), DeadlyPlants());
 
 	public EnumStorage<Material> LumberWhitelist(){
 		return LUMBER_WHITELIST;
@@ -1161,7 +1184,7 @@ public class CompatibilityAdapter {
 	}
 
 	public boolean isZombie(Entity e) {
-		return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER;
+		return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER || e.getType() == EntityType.HUSK;
 	}
 
 	public boolean isBlockSafeToBreak(Block b) {

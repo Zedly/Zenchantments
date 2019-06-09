@@ -156,5 +156,6 @@ public class Zenchantments extends JavaPlugin {
 		for (Frequency f : Frequency.values()) {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
 		}
+		//System.err.println(Storage.COMPATIBILITY_ADAPTER);
 	}
 }

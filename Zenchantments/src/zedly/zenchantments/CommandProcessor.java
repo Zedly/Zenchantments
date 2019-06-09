@@ -272,9 +272,15 @@ public class CommandProcessor {
 					+ ChatColor.AQUA + ench.description);
 			}
 		} else {
-			player.sendMessage(Storage.logo + "Enchantment Info:");
-			for (CustomEnchantment ench : CustomEnchantment.getEnchants(
-				player.getPlayer().getInventory().getItemInMainHand(), true, config.getWorld()).keySet()) {
+			Set<CustomEnchantment> enchs = CustomEnchantment.getEnchants(
+				player.getPlayer().getInventory().getItemInMainHand(), true, config.getWorld()).keySet();
+			if (enchs.isEmpty()) {
+				player.sendMessage(Storage.logo + "There are no custom enchantments on this tool!");
+			} else {
+				player.sendMessage(Storage.logo + "Enchantment Info:");
+			}
+
+			for (CustomEnchantment ench : enchs) {
 				player.sendMessage(ChatColor.DARK_AQUA + ench.loreName + ": "
 					+ (player.isDisabled(ench.getId()) ? ChatColor.RED + "**Disabled** " : "")
 					+ ChatColor.AQUA + ench.description);

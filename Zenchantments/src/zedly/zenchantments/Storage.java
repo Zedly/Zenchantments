@@ -4,8 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
-import zedly.zenchantments.compatibility.NMS_1_13_R2;
 import zedly.zenchantments.compatibility.NMS_1_13_R1;
+import zedly.zenchantments.compatibility.NMS_1_13_R2;
+import zedly.zenchantments.compatibility.NMS_1_14_R1;
 
 import java.util.*;
 
@@ -48,6 +49,9 @@ public class Storage {
 				break;
 			case "v1_13_R2":
 				COMPATIBILITY_ADAPTER = NMS_1_13_R2.getInstance();
+				break;
+			case "v1_14_R1":
+				COMPATIBILITY_ADAPTER = NMS_1_14_R1.getInstance();
 				break;
 			default:
 				System.out.println(

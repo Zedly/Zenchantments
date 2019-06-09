@@ -1,6 +1,6 @@
 package zedly.zenchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -21,7 +21,6 @@ import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Tool;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.bukkit.Material.AIR;
@@ -264,8 +263,7 @@ public class WatcherEnchant implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent evt) {
 		Player player = evt.getEntity();
-		for (ItemStack usedStack : ArrayUtils.addAll(player.getInventory().getArmorContents(),
-			player.getInventory().getContents())) {
+		for (ItemStack usedStack : (ItemStack[])ArrayUtils.addAll(player.getInventory().getArmorContents(), (player.getInventory().getContents()))) {
 			CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
 				return ench.onPlayerDeath(evt, level, true);
 			});
@@ -276,7 +274,7 @@ public class WatcherEnchant implements Listener {
 	public void onCombust(EntityCombustByEntityEvent evt) {
 		if (evt.getEntity() instanceof Player) {
 			Player player = (Player) evt.getEntity();
-			for (ItemStack usedStack : ArrayUtils.addAll(player.getInventory().getArmorContents(),
+			for (ItemStack usedStack : (ItemStack[])ArrayUtils.addAll(player.getInventory().getArmorContents(),
 				player.getInventory().getContents())) {
 				CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
 					return ench.onCombust(evt, level, true);
