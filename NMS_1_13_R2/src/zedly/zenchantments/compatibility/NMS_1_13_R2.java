@@ -1,6 +1,5 @@
 package zedly.zenchantments.compatibility;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
@@ -31,31 +30,32 @@ public class NMS_1_13_R2 extends CompatibilityAdapter {
         return INSTANCE;
     }
 
-    private NMS_1_13_R2() {
-    }
+    //region Plants
 
     //region Dead Corals
-    private EnumStorage<Material> DEAD_CORALS;
+    private EnumStorage<Material> DEAD_CORALS_E;
 
+    @Override
     public EnumStorage<Material> DeadCorals() {
         deadCoralsInit();
-        return DEAD_CORALS;
+        return DEAD_CORALS_E;
     }
 
     private void deadCoralsInit() {
-        if (DEAD_CORALS == null) {
-            DEAD_CORALS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
+        if (DEAD_CORALS_E == null) {
+            DEAD_CORALS_E = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
                 DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL});
         }
     }
 
     //endregion
 
+    //endregion
+
     @Override
     public boolean breakBlockNMS(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
-        return success;
+        return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 
     @Override
@@ -154,7 +154,7 @@ public class NMS_1_13_R2 extends CompatibilityAdapter {
 
         // Inject metadata into network stream
         @Override
-        public void a(PacketDataSerializer pds) throws IOException {
+        public void a(PacketDataSerializer pds) {
             pds.writeByte(0); // Set Metadata at index 0
             pds.writeByte(0); // Value is type Byte
             pds.writeByte(0x60); // Set Glowing and Invisible bits

@@ -29,12 +29,6 @@
             <version>1.6.0</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>zedly</groupId>
-            <artifactId>NMS_1_13_R1</artifactId>
-            <version>1.6.0</version>
-            <scope>compile</scope>
-        </dependency>
         <!--Spigot API-->
         <dependency>
             <groupId>org.spigotmc</groupId>

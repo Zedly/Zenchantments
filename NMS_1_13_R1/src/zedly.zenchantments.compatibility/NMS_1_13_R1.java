@@ -1,6 +1,5 @@
 package zedly.zenchantments.compatibility;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
@@ -17,6 +16,8 @@ import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftSheep;
 
+
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,14 +29,10 @@ public class NMS_1_13_R1 extends CompatibilityAdapter {
         return INSTANCE;
     }
 
-    private NMS_1_13_R1() {
-    }
-
     @Override
     public boolean breakBlockNMS(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
-        return success;
+        return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 
     @Override
@@ -134,7 +131,7 @@ public class NMS_1_13_R1 extends CompatibilityAdapter {
 
         // Inject metadata into network stream
         @Override
-        public void a(PacketDataSerializer pds) throws IOException {
+        public void a(PacketDataSerializer pds) {
             pds.writeByte(0); // Set Metadata at index 0
             pds.writeByte(0); // Value is type Byte
             pds.writeByte(0x60); // Set Glowing and Invisible bits

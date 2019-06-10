@@ -1,6 +1,5 @@
 package zedly.zenchantments.compatibility;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
@@ -28,6 +27,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Rabbit;
 import org.bukkit.event.block.BlockGrowEvent;
 
 import static org.bukkit.Material.*;
@@ -42,20 +42,22 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return INSTANCE;
     }
 
-    private NMS_1_14_R1() {
-    }
+    //region Enums
+
+    //region Colors
 
     //region Dyes
-    private EnumStorage<Material> DYES;
+    private EnumStorage<Material> DYES_E;
 
+    @Override
     public EnumStorage<Material> Dyes(){
         dyesInit();
-        return DYES;
+        return DYES_E;
     }
 
     private void dyesInit() {
-        if (DYES == null) {
-            DYES = new EnumStorage<>(new Material[]{WHITE_DYE, ORANGE_DYE, MAGENTA_DYE,
+        if (DYES_E == null) {
+            DYES_E = new EnumStorage<>(new Material[]{WHITE_DYE, ORANGE_DYE, MAGENTA_DYE,
                 LIGHT_BLUE_DYE, YELLOW_DYE, LIME_DYE, PINK_DYE, GRAY_DYE, LIGHT_GRAY_DYE, CYAN_DYE, PURPLE_DYE,
                 BLUE_DYE, BROWN_DYE, GREEN_DYE, RED_DYE, BLACK_DYE});
         }
@@ -63,18 +65,389 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
     //endregion
 
+    //endregion
+
+
+    //region Woods
+
+    //region Signs
+    private EnumStorage<Material> SIGNS_E;
+
+    @Override
+    public EnumStorage<Material> Signs(){
+        signInit();
+        return SIGNS_E;
+    }
+
+    private void signInit() {
+        if (SIGNS_E == null) {
+            SIGNS_E = new EnumStorage<>(new Material[]{ACACIA_SIGN, BIRCH_SIGN,
+                DARK_OAK_SIGN, JUNGLE_SIGN, OAK_SIGN, SPRUCE_SIGN});
+        }
+    }
+
+    //endregion
+
+    //endregion
+
+
+    //region Plants
+
+    //region Deadly Plants
+    private EnumStorage<Material> DEADLY_PLANTS_E;
+
+    @Override
+    public EnumStorage<Material> DeadlyPlants() {
+        deadlyPlantsInit();
+        return DEADLY_PLANTS_E;
+    }
+
+    private void deadlyPlantsInit() {
+        if (DEADLY_PLANTS_E == null) {
+            DEADLY_PLANTS_E = new EnumStorage<>(new Material[]{WITHER_ROSE});
+        }
+    }
+
+    //endregion
+
+
+    //region Small Flowers
+    private EnumStorage<Material> SMALL_FLOWERS_E;
+
+    @Override
+    public EnumStorage<Material> SmallFlowers() {
+        smallFlowersInit();
+        return SMALL_FLOWERS_E;
+    }
+
+    private void smallFlowersInit() {
+        if (SMALL_FLOWERS_E == null) {
+            SMALL_FLOWERS_E = new EnumStorage<>(new Material[]{LILY_OF_THE_VALLEY, DANDELION,
+                CORNFLOWER, POPPY, BLUE_ORCHID, ALLIUM, AZURE_BLUET, RED_TULIP, ORANGE_TULIP, WHITE_TULIP, PINK_TULIP, OXEYE_DAISY});
+        }
+    }
+
+    //endregion
+
+
+    //region Dead Corals
+    private EnumStorage<Material> DEAD_CORALS_E;
+
+    @Override
+    public EnumStorage<Material> DeadCorals() {
+        deadCoralsInit();
+        return DEAD_CORALS_E;
+    }
+
+    private void deadCoralsInit() {
+        if (DEAD_CORALS_E == null) {
+            DEAD_CORALS_E = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
+                DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL});
+        }
+    }
+
+    //endregion
+
+    //endregion
+
+
+    //region Misc
+
+    //region Stone Slabs
+    private EnumStorage<Material> STONE_SLABS_E;
+
+    @Override
+    public EnumStorage<Material> StoneSlabs() {
+        StoneSlabsInit();
+        return STONE_SLABS_E;
+    }
+
+    private void StoneSlabsInit(){
+        if (STONE_SLABS_E == null) {
+            STONE_SLABS_E = new EnumStorage<>(new Material[]{STONE_SLAB, SMOOTH_STONE_SLAB, ANDESITE_SLAB, POLISHED_ANDESITE_SLAB, DIORITE_SLAB, POLISHED_DIORITE_SLAB, GRANITE_SLAB, POLISHED_GRANITE_SLAB});
+        }
+    }
+
+    //endregion
+
+
+    //region Sandstone Slabs
+    private EnumStorage<Material> SANDSTONE_SLABS_E;
+
+    @Override
+    public EnumStorage<Material> SandstoneSlabs(){
+        sandstoneSlabInit();
+        return SANDSTONE_SLABS_E;
+    }
+
+    private void sandstoneSlabInit() {
+        if (SANDSTONE_SLABS_E == null) {
+            SANDSTONE_SLABS_E = new EnumStorage<>(new Material[]{SANDSTONE_SLAB,
+                SMOOTH_SANDSTONE_SLAB, CUT_SANDSTONE_SLAB, RED_SANDSTONE_SLAB, SMOOTH_RED_SANDSTONE_SLAB, CUT_RED_SANDSTONE_SLAB});
+        }
+    }
+
+    //endregion
+
+
+    //region Stone Brick Slabs
+    private EnumStorage<Material> STONE_BRICK_SLABS_E;
+
+    @Override
+    public EnumStorage<Material> StoneBrickSlabs() {
+        StoneBrickSlabsInit();
+        return STONE_BRICK_SLABS_E;
+    }
+
+    private void StoneBrickSlabsInit(){
+        if (STONE_BRICK_SLABS_E == null) {
+            STONE_BRICK_SLABS_E = new EnumStorage<>(new Material[]{STONE_BRICK_SLAB, MOSSY_STONE_BRICK_SLAB});
+        }
+    }
+    //endregion
+
+
+    //region Cobblestone Slabs
+    private EnumStorage<Material> COBBLESTONE_SLABS_E;
+
+    @Override
+    public EnumStorage<Material> CobblestoneSlabs() {
+        CobblestoneSlabsInit();
+        return COBBLESTONE_SLABS_E;
+    }
+
+    private void CobblestoneSlabsInit(){
+        if (COBBLESTONE_SLABS_E == null) {
+            COBBLESTONE_SLABS_E = new EnumStorage<>(new Material[]{COBBLESTONE_SLAB, MOSSY_COBBLESTONE_SLAB});
+        }
+    }
+    //endregion
+
+
+    //region Quartz Slabs
+    private EnumStorage<Material> QUARTZ_SLABS_E;
+
+    @Override
+    public EnumStorage<Material> QuartzSlabs() {
+        QuartzSlabsInit();
+        return QUARTZ_SLABS_E;
+    }
+
+    private void QuartzSlabsInit(){
+        if (QUARTZ_SLABS_E == null) {
+            QUARTZ_SLABS_E = new EnumStorage<>(new Material[]{QUARTZ_SLAB, SMOOTH_QUARTZ_SLAB});
+        }
+    }
+    //endregion
+
+
+    //region Nether Brick Slabs
+    private EnumStorage<Material> NETHER_BRICK_SLABS_E;
+
+    @Override
+    public EnumStorage<Material> NetherBrickSlabs() {
+        NetherBrickSlabsInit();
+        return NETHER_BRICK_SLABS_E;
+    }
+
+    private void NetherBrickSlabsInit(){
+        if (NETHER_BRICK_SLABS_E == null) {
+            NETHER_BRICK_SLABS_E = new EnumStorage<>(new Material[]{NETHER_BRICK_SLAB, RED_NETHER_BRICK_SLAB});
+        }
+    }
+    //endregion
+
+
+
+
+    //region Stone Stairs
+    private EnumStorage<Material> STONE_STAIRS_E;
+
+    @Override
+    public EnumStorage<Material> StoneStairs() {
+        StoneStairsInit();
+        return STONE_STAIRS_E;
+    }
+
+    private void StoneStairsInit(){
+        if (STONE_STAIRS_E == null) {
+            STONE_STAIRS_E = new EnumStorage<>(new Material[]{STONE_STAIRS, ANDESITE_STAIRS, POLISHED_ANDESITE_STAIRS, DIORITE_STAIRS, POLISHED_DIORITE_STAIRS, GRANITE_STAIRS, POLISHED_GRANITE_STAIRS});
+        }
+    }
+    //endregion
+
+
+    //region Stone Brick Stairs
+    private EnumStorage<Material> STONE_BRICK_STAIRS_E;
+
+    @Override
+    public EnumStorage<Material> StoneBrickStairs() {
+        StoneBrickStairsInit();
+        return STONE_BRICK_STAIRS_E;
+    }
+
+    private void StoneBrickStairsInit(){
+        if (STONE_BRICK_STAIRS_E == null) {
+            STONE_BRICK_STAIRS_E = new EnumStorage<>(new Material[]{STONE_BRICK_STAIRS, MOSSY_STONE_BRICK_STAIRS});
+        }
+    }
+    //endregion
+
+
+    //region Sandstone Stairs
+    private EnumStorage<Material> SANDSTONE_STAIRS_E;
+
+    @Override
+    public EnumStorage<Material> SandstoneStairs(){
+        SandstoneStairsInit();
+        return SANDSTONE_STAIRS_E;
+    }
+
+    private void SandstoneStairsInit(){
+        if (SANDSTONE_STAIRS_E == null) {
+            SANDSTONE_STAIRS_E = new EnumStorage<>(new Material[]{SANDSTONE_STAIRS, SMOOTH_SANDSTONE_STAIRS, RED_SANDSTONE_STAIRS, SMOOTH_RED_SANDSTONE_STAIRS});
+        }
+    }
+    //endregion
+
+
+    //region Cobblestone Stairs
+    private EnumStorage<Material> COBBLESTONE_STAIRS_E;
+
+    @Override
+    public EnumStorage<Material> CobblestoneStairs() {
+        CobblestoneStairsInit();
+        return COBBLESTONE_STAIRS_E;
+    }
+
+    private void CobblestoneStairsInit(){
+        if (COBBLESTONE_STAIRS_E == null) {
+            COBBLESTONE_STAIRS_E = new EnumStorage<>(new Material[]{COBBLESTONE_STAIRS, MOSSY_COBBLESTONE_STAIRS});
+        }
+    }
+    //endregion
+
+
+    //region Quartz Stairs
+    private EnumStorage<Material> QUARTZ_STAIRS_E;
+
+    @Override
+    public EnumStorage<Material> QuartzStairs() {
+        QuartzStairsInit();
+        return QUARTZ_STAIRS_E;
+    }
+
+    private void QuartzStairsInit(){
+        if (QUARTZ_STAIRS_E == null) {
+            QUARTZ_STAIRS_E = new EnumStorage<>(new Material[]{QUARTZ_STAIRS, SMOOTH_QUARTZ_STAIRS});
+        }
+    }
+    //endregion
+
+
+    //region Nether Brick Stairs
+    private EnumStorage<Material> NETHER_BRICK_STAIRS_E;
+
+    @Override
+    public EnumStorage<Material> NetherBrickStairs() {
+        NetherBrickStairsInit();
+        return NETHER_BRICK_STAIRS_E;
+    }
+
+    private void NetherBrickStairsInit(){
+        if (NETHER_BRICK_STAIRS_E == null) {
+            NETHER_BRICK_STAIRS_E = new EnumStorage<>(new Material[]{NETHER_BRICK_STAIRS, RED_NETHER_BRICK_STAIRS});
+        }
+    }
+    //endregion
+
+
+
+
+    //region Stone Walls
+    private EnumStorage<Material> STONE_WALLS_E;
+
+    @Override
+    public EnumStorage<Material> StoneWalls() {
+        StoneWallsInit();
+        return STONE_WALLS_E;
+    }
+
+    private void StoneWallsInit(){
+        if (STONE_WALLS_E == null) {
+            STONE_WALLS_E = new EnumStorage<>(new Material[]{ANDESITE_WALL, DIORITE_WALL, GRANITE_WALL});
+        }
+    }
+    //endregion
+
+
+    //region Stone Brick Walls
+    private EnumStorage<Material> STONE_BRICK_WALLS_E;
+
+    @Override
+    public EnumStorage<Material> StoneBrickWalls() {
+        StoneBrickWallsInit();
+        return STONE_BRICK_WALLS_E;
+    }
+
+    private void StoneBrickWallsInit(){
+        if (STONE_BRICK_WALLS_E == null) {
+            STONE_BRICK_WALLS_E = new EnumStorage<>(new Material[]{STONE_BRICK_WALL, MOSSY_STONE_BRICK_WALL});
+        }
+    }
+    //endregion
+
+
+    //region Sandstone Walls
+    private EnumStorage<Material> SANDSTONE_WALLS_E;
+
+    @Override
+    public EnumStorage<Material> SandstoneWalls() {
+        SandstoneWallsInit();
+        return SANDSTONE_WALLS_E;
+    }
+
+    private void SandstoneWallsInit(){
+        if (SANDSTONE_WALLS_E == null) {
+            SANDSTONE_WALLS_E = new EnumStorage<>(new Material[]{SANDSTONE_WALL, RED_SANDSTONE_WALL});
+        }
+    }
+    //endregion
+
+
+    //region Nether Brick Walls
+    private EnumStorage<Material> NETHER_BRICK_WALLS_E;
+
+    @Override
+    public EnumStorage<Material> NetherBrickWalls() {
+        NetherBrickWallsInit();
+        return NETHER_BRICK_WALLS_E;
+    }
+
+    private void NetherBrickWallsInit(){
+        if (NETHER_BRICK_WALLS_E == null) {
+            NETHER_BRICK_WALLS_E = new EnumStorage<>(new Material[]{NETHER_BRICK_WALL, RED_NETHER_BRICK_WALL});
+        }
+    }
+    //endregion
+
+    //endregion
+
+
+    //region Block Categories
+
     //region Storage Blocks
-    private EnumStorage<Material> STORAGE_BLOCKS;
+    private EnumStorage<Material> STORAGE_BLOCKS_E;
 
     @Override
     public EnumStorage<Material> StorageBlocks(){
         storageBlocksInit();
-        return STORAGE_BLOCKS;
+        return STORAGE_BLOCKS_E;
     }
 
     private void storageBlocksInit() {
-        if (STORAGE_BLOCKS == null) {
-            STORAGE_BLOCKS = new EnumStorage<>(new Material[]{DISPENSER, SPAWNER,
+        if (STORAGE_BLOCKS_E == null) {
+            STORAGE_BLOCKS_E = new EnumStorage<>(new Material[]{DISPENSER, SPAWNER,
                 CHEST, FURNACE, JUKEBOX, ENDER_CHEST, BEACON, TRAPPED_CHEST, HOPPER, DROPPER, BREWING_STAND, ANVIL,
                 BARREL,
                 BLAST_FURNACE, LECTERN, SMOKER},
@@ -84,17 +457,19 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
     //endregion
 
-    //region Interactable Blocks
-    private EnumStorage<Material> INTERACTABLE_BLOCKS;
 
+    //region Interactable Blocks
+    private EnumStorage<Material> INTERACTABLE_BLOCKS_E;
+
+    @Override
     public EnumStorage<Material> InteractableBlocks(){
         interactableBlocksInit();
-        return INTERACTABLE_BLOCKS;
+        return INTERACTABLE_BLOCKS_E;
     }
 
     private void interactableBlocksInit() {
-        if (INTERACTABLE_BLOCKS == null) {
-            INTERACTABLE_BLOCKS = new EnumStorage<>(new Material[]{
+        if (INTERACTABLE_BLOCKS_E == null) {
+            INTERACTABLE_BLOCKS_E = new EnumStorage<>(new Material[]{
                 NOTE_BLOCK, CRAFTING_TABLE, LEVER, REPEATER, ENCHANTING_TABLE, COMPARATOR, DAYLIGHT_DETECTOR, OBSERVER, BELL,
                 CARTOGRAPHY_TABLE, COMPOSTER, FLETCHING_TABLE, GRINDSTONE, LOOM, SMITHING_TABLE, STONECUTTER},
                 Beds(), Doors(), Trapdoors(), FenceGates(), CommandBlocks(), Buttons(), ShulkerBoxes(), StorageBlocks());
@@ -103,17 +478,20 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
     //endregion
 
-    //region Unbreakable Blocks
-    private EnumStorage<Material> UNBREAKABLE_BLOCKS;
 
+    //region Unbreakable Blocks
+    private EnumStorage<Material> UNBREAKABLE_BLOCKS_E;
+
+
+    @Override
     public EnumStorage<Material> UnbreakableBlocks(){
         unbreakableBlocks();
-        return UNBREAKABLE_BLOCKS;
+        return UNBREAKABLE_BLOCKS_E;
     }
 
     private void unbreakableBlocks() {
-        if (UNBREAKABLE_BLOCKS == null) {
-            UNBREAKABLE_BLOCKS = new EnumStorage<>(new Material[]{BARRIER, BEDROCK,
+        if (UNBREAKABLE_BLOCKS_E == null) {
+            UNBREAKABLE_BLOCKS_E = new EnumStorage<>(new Material[]{BARRIER, BEDROCK,
                 BUBBLE_COLUMN, DRAGON_BREATH, DRAGON_EGG, END_CRYSTAL, END_GATEWAY, END_PORTAL, END_PORTAL_FRAME, LAVA,
                 STRUCTURE_VOID, STRUCTURE_BLOCK, WATER, PISTON_HEAD, MOVING_PISTON, JIGSAW}, Airs(), CommandBlocks());
         }
@@ -121,101 +499,43 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
     //endregion
 
-    //region Signs
-    private EnumStorage<Material> SIGNS;
-
-    public EnumStorage<Material> Signs(){
-        signInit();
-        return SIGNS;
-    }
-
-    private void signInit() {
-        if (SIGNS == null) {
-            SIGNS = new EnumStorage<>(new Material[]{ACACIA_SIGN, BIRCH_SIGN,
-                DARK_OAK_SIGN, JUNGLE_SIGN, OAK_SIGN, SPRUCE_SIGN});
-        }
-    }
-
     //endregion
 
-    //region Sandstone Slabs
-    private EnumStorage<Material> SANDSTONE_SLABS;
 
-    public EnumStorage<Material> SandstoneSlabs(){
-        sandstoneSlabInit();
-        return SANDSTONE_SLABS;
+    //region Enchantment Enum Storage
+
+    //region Lumber Whitelist
+    private EnumStorage<Material> LUMBER_WHITELIST_E;
+
+    @Override
+    public EnumStorage<Material> LumberWhitelist(){
+        LumberWhitelistInit();
+        return LUMBER_WHITELIST_E;
     }
 
-    private void sandstoneSlabInit() {
-        if (SANDSTONE_SLABS == null) {
-            SANDSTONE_SLABS = new EnumStorage<>(new Material[]{SANDSTONE_SLAB,
-                SMOOTH_SANDSTONE_SLAB, CUT_SANDSTONE_SLAB, RED_SANDSTONE_SLAB, SMOOTH_RED_SANDSTONE_SLAB, CUT_RED_SANDSTONE_SLAB});
+    private void LumberWhitelistInit() {
+        if (LUMBER_WHITELIST_E == null) {
+            LUMBER_WHITELIST_E = new EnumStorage<>(new Material[]{
+                DIRT, GRASS, VINE, SNOW, COCOA, GRAVEL, STONE, DIORITE, GRANITE, ANDESITE, WATER, LAVA, SAND, BROWN_MUSHROOM,
+                RED_MUSHROOM, MOSSY_COBBLESTONE, CLAY, BROWN_MUSHROOM, RED_MUSHROOM, MYCELIUM, TORCH, SUGAR_CANE, GRASS_BLOCK,
+                PODZOL, FERN, GRASS, MELON, PUMPKIN, SWEET_BERRY_BUSH, BAMBOO, BAMBOO_SAPLING}, TrunkBlocks(), Leaves(),
+                SmallFlowers(), LargeFlowers(), Saplings(), Airs(), DeadlyPlants());
         }
     }
-
     //endregion
 
-    //region Small Flowers
-    private EnumStorage<Material> SMALL_FLOWERS;
-
-    public EnumStorage<Material> SmallFlowers() {
-        smallFlowersInit();
-        return SMALL_FLOWERS;
-    }
-
-    private void smallFlowersInit() {
-        if (SMALL_FLOWERS == null) {
-            SMALL_FLOWERS = new EnumStorage<>(new Material[]{LILY_OF_THE_VALLEY, DANDELION,
-                CORNFLOWER, POPPY, BLUE_ORCHID, ALLIUM, AZURE_BLUET, RED_TULIP, ORANGE_TULIP, WHITE_TULIP, PINK_TULIP, OXEYE_DAISY});
-        }
-    }
-
-    //endregion
-
-    //region Deadly Plants
-    private EnumStorage<Material> DEADLY_PLANTS;
-
-    public EnumStorage<Material> DeadlyPlants() {
-        deadlyPlantsInit();
-        return DEADLY_PLANTS;
-    }
-
-    private void deadlyPlantsInit() {
-        if (DEADLY_PLANTS == null) {
-            DEADLY_PLANTS = new EnumStorage<>(new Material[]{WITHER_ROSE});
-        }
-    }
-
-    //endregion
-
-    //region Dead Corals
-    private EnumStorage<Material> DEAD_CORALS;
-
-    public EnumStorage<Material> DeadCorals() {
-        deadCoralsInit();
-        return DEAD_CORALS;
-    }
-
-    private void deadCoralsInit() {
-        if (DEAD_CORALS == null) {
-            DEAD_CORALS = new EnumStorage<>(new Material[]{DEAD_BRAIN_CORAL,
-                DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL});
-        }
-    }
-
-    //endregion
 
     //region Transformation Entity Types
-    private EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES;
+    private EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_E;
 
     public EnumStorage<EntityType> TransformationEntityTypes(){
         transformationEntityTypesInit();
-        return TRANSFORMATION_ENTITY_TYPES;
+        return TRANSFORMATION_ENTITY_TYPES_E;
     }
 
     private void transformationEntityTypesInit() {
-        if (TRANSFORMATION_ENTITY_TYPES == null) {
-            TRANSFORMATION_ENTITY_TYPES = new EnumStorage<>(new EntityType[]{
+        if (TRANSFORMATION_ENTITY_TYPES_E == null) {
+            TRANSFORMATION_ENTITY_TYPES_E = new EnumStorage<>(new EntityType[]{
                 SKELETON, WITHER_SKELETON, ZOMBIE, DROWNED, WITCH, VILLAGER, COW, MUSHROOM_COW, PIG, PIG_ZOMBIE, SILVERFISH,
                 ENDERMITE, OCELOT, WOLF, SLIME, MAGMA_CUBE, GUARDIAN, ELDER_GUARDIAN, PARROT, BAT, SPIDER, CAVE_SPIDER, COW,
                 MUSHROOM_COW, DONKEY, LLAMA, HORSE, SKELETON_HORSE, BLAZE, VEX});
@@ -224,34 +544,36 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
     //endregion
 
+
     //region Fire Raw
-    private EnumStorage<Material> FIRE_RAW;
+    private EnumStorage<Material> FIRE_RAW_E;
 
     public EnumStorage<Material> FireRaw(){
         fireRawInit();
-        return FIRE_RAW;
+        return FIRE_RAW_E;
     }
 
     private void fireRawInit() {
-        if (FIRE_RAW == null) {
-            FIRE_RAW = new EnumStorage<>(new Material[]{DIORITE, ANDESITE, GRANITE,
+        if (FIRE_RAW_E == null) {
+            FIRE_RAW_E = new EnumStorage<>(new Material[]{DIORITE, ANDESITE, GRANITE,
                 IRON_ORE, GOLD_ORE, COBBLESTONE, MOSSY_COBBLESTONE, NETHERRACK, STONE_BRICKS, QUARTZ_BLOCK, SANDSTONE, RED_SANDSTONE, STONE}, Terracottas());
         }
     }
 
     //endregion
 
+
     //region Fire Cooked
-    private EnumStorage<Material> FIRE_COOKED;
+    private EnumStorage<Material> FIRE_COOKED_E;
 
     public EnumStorage<Material> FireCooked(){
         fireCookedInit();
-        return FIRE_COOKED;
+        return FIRE_COOKED_E;
     }
 
     private void fireCookedInit() {
-        if (FIRE_COOKED == null) {
-            FIRE_COOKED = new EnumStorage<>(new Material[]{POLISHED_DIORITE,
+        if (FIRE_COOKED_E == null) {
+            FIRE_COOKED_E = new EnumStorage<>(new Material[]{POLISHED_DIORITE,
                 POLISHED_ANDESITE, POLISHED_GRANITE, IRON_INGOT, GOLD_INGOT, STONE, MOSSY_STONE_BRICKS, NETHER_BRICK,
                 CRACKED_STONE_BRICKS, SMOOTH_QUARTZ, SMOOTH_SANDSTONE, SMOOTH_RED_SANDSTONE, SMOOTH_STONE}, GlazedTerracottas());
         }
@@ -259,11 +581,18 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
     //endregion
 
+    //endregion
+
+
+    //endregion
+
+
     //region Gluttony
 
     //region Gluttony Food Levels
     private int[] GLUTTONY_FOOD_LEVELS;
 
+    @Override
     public int[] GluttonyFoodLevels(){
         gluttonyFoodLevelsInit();
         return GLUTTONY_FOOD_LEVELS;
@@ -280,10 +609,11 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     //region Gluttony Saturations
     private double[] GLUTTONY_SATURATIONS;
 
+    @Override
     public double[] GluttonySaturations() {
         gluttonySaturationsInit();
         return GLUTTONY_SATURATIONS;
-}
+    }
 
     private void gluttonySaturationsInit() {
         if (GLUTTONY_SATURATIONS == null) {
@@ -297,6 +627,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     //region Gluttony Food Items
     private Material[] GLUTTONY_FOOD_ITEMS;
 
+    @Override
     public Material[] GluttonyFoodItems(){
         gluttonyFoodItemsInit();
         return GLUTTONY_FOOD_ITEMS;
@@ -477,8 +808,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     @Override
     public boolean breakBlockNMS(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        boolean success = ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
-        return success;
+        return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 
     @Override
@@ -574,7 +904,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
         // Inject metadata into network stream
         @Override
-        public void a(PacketDataSerializer pds) throws IOException {
+        public void a(PacketDataSerializer pds) {
             pds.writeByte(0); // Set Metadata at index 0
             pds.writeByte(0); // Value is type Byte
             pds.writeByte(0x60); // Set Glowing and Invisible bits

@@ -107,10 +107,6 @@ public class Spectral extends CustomEnchantment {
 				newMat = adapter.WoodSlabs().getNext(original);
 			} else if (adapter.WoodTrapdoors().contains(original)) {
 				newMat = adapter.WoodTrapdoors().getNext(original);
-			} else if (adapter.SandstoneStairs().contains(original)) {
-				newMat = adapter.SandstoneStairs().getNext(original);
-			} else if (adapter.SandstoneSlabs().contains(original)) {
-				newMat = adapter.SandstoneSlabs().getNext(original);
 			} else if (adapter.Endstones().contains(original)) {
 				newMat = adapter.Endstones().getNext(original);
 			} else if (adapter.Purpurs().contains(original)) {
@@ -151,6 +147,38 @@ public class Spectral extends CustomEnchantment {
 				newMat = adapter.FenceGates().getNext(original);
 			} else if (adapter.WoodButtons().contains(original)) {
 				newMat = adapter.WoodButtons().getNext(original);
+			} else if (adapter.Beds().contains(original)) {
+				newMat = adapter.Beds().getNext(original);
+			} else if (adapter.StoneSlabs().contains(original)) {
+				newMat = adapter.StoneSlabs().getNext(original);
+			} else if (adapter.SandstoneSlabs().contains(original)) {
+				newMat = adapter.SandstoneSlabs().getNext(original);
+			} else if (adapter.StoneBrickSlabs().contains(original)) {
+				newMat = adapter.StoneBrickSlabs().getNext(original);
+			} else if (adapter.CobblestoneSlabs().contains(original)) {
+				newMat = adapter.CobblestoneSlabs().getNext(original);
+			} else if (adapter.QuartzSlabs().contains(original)) {
+				newMat = adapter.QuartzSlabs().getNext(original);
+			} else if (adapter.NetherBrickSlabs().contains(original)) {
+				newMat = adapter.NetherBrickSlabs().getNext(original);
+			} else if (adapter.StoneStairs().contains(original)) {
+				newMat = adapter.StoneStairs().getNext(original);
+			} else if (adapter.StoneBrickStairs().contains(original)) {
+				newMat = adapter.StoneBrickStairs().getNext(original);
+			} else if (adapter.SandstoneStairs().contains(original)) {
+				newMat = adapter.SandstoneStairs().getNext(original);
+			} else if (adapter.CobblestoneStairs().contains(original)) {
+				newMat = adapter.CobblestoneStairs().getNext(original);
+			} else if (adapter.QuartzStairs().contains(original)) {
+				newMat = adapter.QuartzStairs().getNext(original);
+			} else if (adapter.NetherBrickStairs().contains(original)) {
+				newMat = adapter.NetherBrickStairs().getNext(original);
+			} else if (adapter.StoneWalls().contains(original)) {
+				newMat = adapter.StoneWalls().getNext(original);
+			} else if (adapter.StoneBrickWalls().contains(original)) {
+				newMat = adapter.StoneBrickWalls().getNext(original);
+			} else if (adapter.Beds().contains(original)) {
+				newMat = adapter.Beds().getNext(original);
 			} else if (adapter.Beds().contains(original)) {
 				newMat = adapter.Beds().getNext(original);
 			}
