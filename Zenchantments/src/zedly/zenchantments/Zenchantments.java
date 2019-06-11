@@ -156,6 +156,18 @@ public class Zenchantments extends JavaPlugin {
 		for (Frequency f : Frequency.values()) {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
 		}
-		//System.err.println(Storage.COMPATIBILITY_ADAPTER);
+
+		int[][] ALL_SEARCH_FACES = new int[27][3];
+		int i = 0;
+		for (int x = -1; x <= 1; x++) {
+			for (int y = -1; y <= 1; y++) {
+				for (int z = -1; z <= 1; z++) {
+					ALL_SEARCH_FACES[i++] = new int[]{x, y, z};
+				}
+			}
+		}
+		Lumber.SEARCH_FACES = ALL_SEARCH_FACES;
+		Spectral.SEARCH_FACES = ALL_SEARCH_FACES;
+		Pierce.SEARCH_FACES = ALL_SEARCH_FACES;
 	}
 }

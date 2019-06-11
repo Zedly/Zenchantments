@@ -1,5 +1,6 @@
 package zedly.zenchantments;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import zedly.zenchantments.compatibility.EnumStorage;
 
 import java.util.*;
 
@@ -499,6 +501,96 @@ public class Utilities {
 				}
 			}
 		}
+	}
+
+	// Returns a list of blocks found using the BFS algorithm given the passed search parameters
+	//
+	// startBlock: The starting position of the BFS algorithm
+	// maxBlocks: The max number of blocks to found (will return empty list if strict is true)
+	// maxDistFromOrigin: The max distance the center of a found block can be from the center of startBlock to be a valid find
+	// strictMax: true -> return nothing if maxBlocks num is exceeded; false -> return current find if maxBlock num is exceeded
+	// searchFaces: The block faces to search
+	// validFind: valid materials for a found block
+	// validSearch: valid materials for a searched block; Will return empty list if not one of these
+	// strictValidSearch: true -> return nothing if blacklist block is found; false -> return current find if blacklist block is found
+	// flipValidSearch: true -> validSearch is a blacklist; false -> validSearch is a whitelist
+	public static List<Block> BFS(Block startBlock, int maxBlocks, boolean strictMax, float maxDistFromOrigin, int[][] searchFaces,
+		EnumStorage<Material> validFind, EnumStorage<Material> validSearch,  boolean strictValidSearch, boolean flipValidSearch) {
+
+		// Ensure the search list is in the whitelist
+		if (!flipValidSearch) {
+			validSearch = new EnumStorage<>(new Material[]{}, validSearch, validFind);
+		}
+
+		// BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large
+
+		// Searched blocks
+		Set<Block> searchedBlocks = new LinkedHashSet<>();
+
+		// Searched blocks that match the whitelist
+		List<Block> foundBlocks = new ArrayList<>();
+
+		// Blocks that still need to be searched
+		List<Block> toSearch = new ArrayList<>();
+
+		// Add the origin block
+		searchedBlocks.add(startBlock);
+		toSearch.add(startBlock);
+
+		// Keep searching as long as there's more blocks to search
+		while (!toSearch.isEmpty()) {
+			// Get the next block to search
+			Block searchBlock = toSearch.remove(0);
+
+			// If block is in the search list, add adjacent blocks to search perimeter
+			if (validFind.contains(searchBlock.getType())) {
+				foundBlocks.add(searchBlock);
+
+				for (int[] blockFace : searchFaces) {
+					// Add the adjacent block
+					Block nextBlock = searchBlock.getRelative(blockFace[0], blockFace[1], blockFace[2]);
+
+					// See if its been searched before
+					if (!searchedBlocks.contains(nextBlock)) {
+
+						// Determine if the block is in the whitelist and flip the condition if flipValidSearch
+						boolean check = validSearch.contains(nextBlock.getType());
+						if (flipValidSearch) {
+							check = !check;
+						}
+
+						// Add to search body if it meets the condition, else return
+						if (check) {
+
+							if (nextBlock.getLocation().distance(startBlock.getLocation()) > maxDistFromOrigin) {
+								continue;
+							}
+
+							toSearch.add(nextBlock);
+							searchedBlocks.add(nextBlock);
+						} else {
+							// Adjacent to a forbidden block. Nothing more to do
+							if (strictValidSearch) {
+								return new ArrayList<>();
+							} else {
+								return foundBlocks;
+							}
+						}
+					}
+				}
+			}
+
+			if (foundBlocks.size() > maxBlocks) {
+				// Allowed size exceeded
+				if (strictMax) {
+					return new ArrayList<>();
+				} else {
+					return foundBlocks;
+				}
+			}
+		}
+
+		return foundBlocks;
 	}
 
 }

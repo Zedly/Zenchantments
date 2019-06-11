@@ -11,6 +11,7 @@ import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -20,6 +21,10 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class Spectral extends CustomEnchantment {
+
+	private static final int MAX_BLOCKS = 1024;
+
+	public static int[][] SEARCH_FACES = new int[][]{new int[]{}};
 
 	public static final int ID = 54;
 
@@ -303,11 +308,9 @@ public class Spectral extends CustomEnchantment {
 		Set<Block> blocks = new HashSet<>();
 		blocks.add(evt.getClickedBlock());
 		if (evt.getPlayer().isSneaking()) {
-			Set<Block> bfsResult = new HashSet<>();
-			Set<Material> whitelist = new HashSet<>();
-			whitelist.add(evt.getClickedBlock().getType());
-			BFS(evt.getClickedBlock(), new HashSet<>(), bfsResult, whitelist, new HashSet<>(), 1024);
-			blocks.addAll(bfsResult);
+			blocks.addAll(Utilities.BFS(evt.getClickedBlock(), MAX_BLOCKS, false, Float.MAX_VALUE,
+				SEARCH_FACES, new EnumStorage<>(new Material[]{evt.getClickedBlock().getType()}),
+				new EnumStorage<>(new Material[]{}), false, true));
 		}
 
 		boolean result = cycleBlockType(blocks);
@@ -327,39 +330,6 @@ public class Spectral extends CustomEnchantment {
 	@Override
 	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
 		return doEvent(evt, level, usedHand);
-	}
-
-	private boolean BFS(Block blk, Set<Block> searched, Set<Block> discovered, Set<Material> whitelist,
-		Set<Material> blacklist, int maxCount) {
-
-		Queue<Block> q = new ArrayDeque<>();
-		searched.add(blk);
-		q.add(blk);
-
-		while (!q.isEmpty()) {
-			if (discovered.size() >= maxCount || searched.size() >= 10000) {
-				return true;
-			}
-
-			blk = q.poll();
-			for (int x = -1; x <= 1; x++) {
-				for (int y = -1; y <= 1; y++) {
-					for (int z = -1; z <= 1; z++) {
-						if (!searched.contains(blk.getRelative(x, y, z))) {
-							searched.add(blk.getRelative(x, y, z));
-							if (whitelist.contains(blk.getRelative(x, y, z).getType())) {
-								q.add(blk.getRelative(x, y, z));
-								discovered.add(blk.getRelative(x, y, z));
-							} else if (blacklist.contains(blk.getRelative(x, y, z).getType())) {
-								discovered.clear();
-								return false;
-							}
-						}
-					}
-				}
-			}
-		}
-		return true;
 	}
 
 }

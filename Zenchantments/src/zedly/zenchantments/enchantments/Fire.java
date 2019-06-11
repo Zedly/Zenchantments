@@ -8,14 +8,23 @@ import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
+
+import java.util.List;
+import java.util.Set;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 import static zedly.zenchantments.enums.Tool.*;
 
 public class Fire extends CustomEnchantment {
+
+	private static final int MAX_BLOCKS = 256;
+
+	public static int[][] SEARCH_FACES_CACTUS = new int[][]{new int[]{0, 1, 0}};
+	public static int[][] SEARCH_FACES_CHORUS = new int[][]{new int[]{-1, 0, 0}, new int[]{1, 0, 0}, new int[]{0, 1, 0}, new int[]{0, 0, -1}, new int[]{0, 0, 1}};
 
 	public static final int ID = 13;
 
@@ -79,28 +88,53 @@ public class Fire extends CustomEnchantment {
 
 			return true;
 		} else if (original == CACTUS) {
-			Location location = evt.getBlock().getLocation().clone();
-			double height = location.getY();
-			for (double i = location.getY(); i <= 256; i++) {
-				location.setY(i);
-				if (location.getBlock().getType() == CACTUS) {
-					height++;
-				} else {
-					break;
-				}
-			}
-			for (double i = height - 1; i >= evt.getBlock().getLocation().getY(); i--) {
-				location.setY(i);
-				Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+			List<Block> bks = Utilities.BFS(evt.getBlock(), MAX_BLOCKS, false, 256,
+				SEARCH_FACES_CACTUS, new EnumStorage<>(new Material[]{CACTUS}), new EnumStorage<>(new Material[]{}),
+				false, true);
 
-				evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(location),
-					new ItemStack(Storage.COMPATIBILITY_ADAPTER.Dyes().get(14), 1));
-				Block affectedBlock = location.getBlock();
-				Grab.fireDropLocs.add(affectedBlock);
+			for (int i = bks.size() - 1; i >= 0; i--) {
+				Block block = bks.get(i);
+
+				Utilities.display(Utilities.getCenter(block), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+
+				evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(block.getLocation()),
+					new ItemStack(Storage.COMPATIBILITY_ADAPTER.Dyes().get(13), 1));
+				block.setType(AIR);
+
+				Grab.fireDropLocs.add(block);
 
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-					Grab.fireDropLocs.remove(affectedBlock);
+					Grab.fireDropLocs.remove(block);
 				}, 5);
+
+			}
+			return true;
+		} else if (original == CHORUS_PLANT) {
+			List<Block> bks = Utilities.BFS(evt.getBlock(), MAX_BLOCKS, false, 256,
+				SEARCH_FACES_CHORUS, new EnumStorage<>(new Material[]{CHORUS_PLANT, CHORUS_FLOWER}), new EnumStorage<>(new Material[]{}),
+				false, true);
+
+			for (int i = bks.size() - 1; i >= 0; i--) {
+				Block block = bks.get(i);
+
+				Utilities.display(Utilities.getCenter(block), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+
+				if (block.getType().equals(CHORUS_PLANT)) {
+					evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(block.getLocation()),
+						new ItemStack(CHORUS_FRUIT, 1));
+					block.setType(AIR);
+				} else {
+					if (!Storage.COMPATIBILITY_ADAPTER.breakBlockNMS(block, evt.getPlayer())){
+						return false;
+					}
+				}
+
+				Grab.fireDropLocs.add(block);
+
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+					Grab.fireDropLocs.remove(block);
+				}, 5);
+
 			}
 			return true;
 		}

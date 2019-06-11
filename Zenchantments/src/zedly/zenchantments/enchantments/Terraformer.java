@@ -2,16 +2,15 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -19,13 +18,11 @@ import static zedly.zenchantments.enums.Tool.SHOVEL;
 
 public class Terraformer extends CustomEnchantment {
 
-	private static final BlockFace[] SEARCH_FACES = {
-		BlockFace.NORTH,
-		BlockFace.SOUTH,
-		BlockFace.EAST,
-		BlockFace.WEST,
-		BlockFace.DOWN,};
-	public static final  int         ID           = 61;
+	public static int[][] SEARCH_FACES = new int[][]{new int[]{-1, 0, 0}, new int[]{1, 0, 0}, new int[]{0, -1, 0}, new int[]{0, 0, -1}, new int[]{0, 0, 1}};
+
+	private static final int MAX_BLOCKS = 64;
+
+	public static final int ID = 61;
 
 	@Override
 	public Builder<Terraformer> defaults() {
@@ -46,8 +43,6 @@ public class Terraformer extends CustomEnchantment {
 		if (evt.getPlayer().isSneaking()) {
 			if (evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
 				Block start = evt.getClickedBlock().getRelative(evt.getBlockFace());
-				List<Block> blocks = bfs(start);
-
 				Material mat = AIR;
 
 				for (int i = 0; i < 9; i++) {
@@ -61,7 +56,8 @@ public class Terraformer extends CustomEnchantment {
 					}
 				}
 
-				for (Block b : blocks) {
+				for (Block b : Utilities.BFS(start, MAX_BLOCKS, false, 5.f, SEARCH_FACES,
+					Storage.COMPATIBILITY_ADAPTER.Airs(), new EnumStorage<>(new Material[]{}), false, true)) {
 					if (b.getType().equals(AIR)) {
 						if (Utilities.hasItem(evt.getPlayer(), mat, 1)) {
 							if (Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, null)) {
@@ -79,25 +75,5 @@ public class Terraformer extends CustomEnchantment {
 		return false;
 	}
 
-	private List<Block> bfs(Block start) {
-		LinkedList<Block> core = new LinkedList<>();
-		LinkedList<Block> perimeter = new LinkedList<>();
-		perimeter.add(start);
-
-		while (!perimeter.isEmpty() && core.size() < 64) {
-			Block block = perimeter.remove(0);
-			for (BlockFace bf : SEARCH_FACES) {
-				Block rBlock = block.getRelative(bf);
-				if (rBlock.getType() == Material.AIR
-					&& rBlock.getLocation().distanceSquared(start.getLocation()) < 25
-					&& !perimeter.contains(rBlock)
-					&& !core.contains(rBlock)) {
-					perimeter.add(rBlock);
-				}
-			}
-			core.add(block);
-		}
-		return core;
-	}
 
 }

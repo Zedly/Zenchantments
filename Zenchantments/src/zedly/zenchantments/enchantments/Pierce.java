@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,19 +11,21 @@ import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
 public class Pierce extends CustomEnchantment {
+
+	private static final int MAX_BLOCKS = 128;
+
+	public static int[][] SEARCH_FACES = new int[][]{new int[]{}};
 
 	// Map of players who use pierce and what mode they are currently using
 	public static final Map<Player, Integer> pierceModes = new HashMap<>();
@@ -83,7 +84,7 @@ public class Pierce extends CustomEnchantment {
 			player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
 		}
 		final int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
-		List<Block> total = new ArrayList<>();
+		Set<Block> total = new HashSet<>();
 		final Location blkLoc = evt.getBlock().getLocation();
 		if (mode != 1 && mode != 5) {
 			int add = -1;
@@ -130,45 +131,22 @@ public class Pierce extends CustomEnchantment {
 				}
 			}
 		} else if (mode == 5) {
-			List<Block> used = new ArrayList<>();
 			if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(evt.getBlock().getType())) {
-				Material mat[];
-				mat = new Material[]{evt.getBlock().getType()};
-				oreBFS(evt.getBlock(), used, total, mat, 0);
+				total.addAll(Utilities.BFS(evt.getBlock(), MAX_BLOCKS, false, Float.MAX_VALUE, SEARCH_FACES,
+					new EnumStorage<>(new Material[]{evt.getBlock().getType()}),
+					new EnumStorage<>(new Material[]{}), false, true));
+
 			} else {
 				return false;
 			}
 		}
-		if (total.size() < 128) {
-			for (Block b : total) {
-				if (ADAPTER.isBlockSafeToBreak(b)) {
-					ADAPTER.breakBlockNMS(b, evt.getPlayer());
-				}
+		for (Block b : total) {
+			if (ADAPTER.isBlockSafeToBreak(b)) {
+				ADAPTER.breakBlockNMS(b, evt.getPlayer());
 			}
 		}
 		return true;
 	}
 
-	private void oreBFS(Block blk, List<Block> bks, List<Block> total, Material[] mat, int i) {
-		i++;
-		if (i >= 128 || total.size() >= 128) {
-			return;
-		}
-		bks.add(blk);
-		Location loc = blk.getLocation().clone();
-		for (int x = -1; x <= 1; x++) {
-			for (int y = -1; y <= 1; y++) {
-				for (int z = -1; z <= 1; z++) {
-					Location loc2 = loc.clone();
-					loc2.setX(loc2.getX() + x);
-					loc2.setY(loc2.getY() + y);
-					loc2.setZ(loc2.getZ() + z);
-					if (!bks.contains(loc2.getBlock()) && (ArrayUtils.contains(mat, loc2.getBlock().getType()))) {
-						oreBFS(loc2.getBlock(), bks, total, mat, i);
-						total.add(loc2.getBlock());
-					}
-				}
-			}
-		}
-	}
+
 }
