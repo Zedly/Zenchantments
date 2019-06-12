@@ -4,14 +4,17 @@ import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
+import static org.bukkit.Material.AIR;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Transformation extends CustomEnchantment {
@@ -37,28 +40,43 @@ public class Transformation extends CustomEnchantment {
 		if (evt.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
 			return false;
 		}
+		if (evt.getEntity() instanceof Tameable) {
+			if (((Tameable) evt.getEntity()).isTamed() ) {
+				return false;
+			}
+		}
 		if (evt.getEntity() instanceof LivingEntity &&
 			ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
 			if (Storage.rnd.nextInt(100) > (100 - (level * power * 8))) {
-				int position =
-					Storage.COMPATIBILITY_ADAPTER.TransformationEntityTypes().indexOf(evt.getEntity().getType());
-				if (position != -1) {
+				LivingEntity newEnt = Storage.COMPATIBILITY_ADAPTER.TransformationCycle((LivingEntity) evt.getEntity(),
+					Storage.rnd);
+
+				if (newEnt != null) {
 					if (evt.getDamage() > ((LivingEntity) evt.getEntity()).getHealth()) {
 						evt.setCancelled(true);
 					}
-					int newPosition = position + 1 - 2 * (position % 2);
 					Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f,
 						.5f, 2, .5f);
 
 					double originalHealth = ((LivingEntity) evt.getEntity()).getHealth();
+					for (ItemStack stk : ((LivingEntity) evt.getEntity()).getEquipment().getArmorContents()) {
+						if (stk.getType() != AIR) {
+							newEnt.getWorld().dropItemNaturally(newEnt.getLocation(), stk);
+						}
+					}
+					if (((LivingEntity) evt.getEntity()).getEquipment().getItemInMainHand().getType() != AIR) {
+						newEnt.getWorld().dropItemNaturally(newEnt.getLocation(),
+							((LivingEntity) evt.getEntity()).getEquipment().getItemInMainHand());
+					}
+					if (((LivingEntity) evt.getEntity()).getEquipment().getItemInOffHand().getType() != AIR) {
+						newEnt.getWorld().dropItemNaturally(newEnt.getLocation(),
+							((LivingEntity) evt.getEntity()).getEquipment().getItemInOffHand());
+					}
+
 					evt.getEntity().remove();
 
-					LivingEntity ent =
-						(LivingEntity) (evt.getDamager()).getWorld().spawnEntity(evt.getEntity().getLocation(),
-							Storage.COMPATIBILITY_ADAPTER.TransformationEntityTypes().get(newPosition));
-
-					ent.setHealth(Math.max(1,
-						Math.min(originalHealth, ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
+					newEnt.setHealth(Math.max(1,
+						Math.min(originalHealth, newEnt.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
 
 				}
 			}

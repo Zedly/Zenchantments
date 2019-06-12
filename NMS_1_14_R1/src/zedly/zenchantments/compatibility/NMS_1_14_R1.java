@@ -1,6 +1,7 @@
 package zedly.zenchantments.compatibility;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.server.v1_14_R1.BlockPosition;
@@ -13,6 +14,7 @@ import net.minecraft.server.v1_14_R1.PacketDataSerializer;
 import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_14_R1.PacketPlayOutSpawnEntityLiving;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -24,15 +26,13 @@ import org.bukkit.craftbukkit.v1_14_R1.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftSheep;
 
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockGrowEvent;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Material.TROPICAL_FISH;
 import static org.bukkit.entity.EntityType.*;
+import static org.bukkit.entity.EntityType.PUFFERFISH;
 import static org.bukkit.entity.EntityType.VEX;
 
 public class NMS_1_14_R1 extends CompatibilityAdapter {
@@ -526,20 +526,113 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
 
     //region Transformation Entity Types
-    private EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_E;
+    private EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_FROM_E;
 
-    public EnumStorage<EntityType> TransformationEntityTypes(){
-        transformationEntityTypesInit();
-        return TRANSFORMATION_ENTITY_TYPES_E;
+    @Override
+    public EnumStorage<EntityType> TransformationEntityTypesFrom(){
+        TransformationEntityTypesFromInit();
+        return TRANSFORMATION_ENTITY_TYPES_FROM_E;
     }
 
-    private void transformationEntityTypesInit() {
-        if (TRANSFORMATION_ENTITY_TYPES_E == null) {
-            TRANSFORMATION_ENTITY_TYPES_E = new EnumStorage<>(new EntityType[]{
-                SKELETON, WITHER_SKELETON, ZOMBIE, DROWNED, WITCH, VILLAGER, COW, MUSHROOM_COW, PIG, PIG_ZOMBIE, SILVERFISH,
-                ENDERMITE, OCELOT, WOLF, SLIME, MAGMA_CUBE, GUARDIAN, ELDER_GUARDIAN, PARROT, BAT, SPIDER, CAVE_SPIDER, COW,
-                MUSHROOM_COW, DONKEY, LLAMA, HORSE, SKELETON_HORSE, BLAZE, VEX});
+    private void TransformationEntityTypesFromInit(){
+        if (TRANSFORMATION_ENTITY_TYPES_FROM_E == null) {
+            TRANSFORMATION_ENTITY_TYPES_FROM_E = new EnumStorage<>(new EntityType[]{
+                HUSK, WITCH, EntityType.COD, VILLAGER, SKELETON, HORSE, FOX, EntityType.CHICKEN, SQUID, POLAR_BEAR,
+                PHANTOM, COW, PIG, SPIDER, CAT, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT,
+                TRADER_LLAMA, SHULKER, SNOWMAN, RAVAGER, DROWNED, VINDICATOR, EntityType.SALMON, PILLAGER,
+                WITHER_SKELETON, DONKEY, PARROT, DOLPHIN, PANDA, VEX, MUSHROOM_COW, PIG_ZOMBIE, CAVE_SPIDER,
+                OCELOT, MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, LLAMA, ENDERMAN,
+                IRON_GOLEM, GHAST, ZOMBIE, EVOKER, PUFFERFISH, WANDERING_TRADER, STRAY, MULE, WOLF, BAT, TURTLE, SHEEP,
+                BLAZE, ZOMBIE_VILLAGER, ILLUSIONER, EntityType.TROPICAL_FISH, CREEPER});
         }
+    }
+
+
+
+    private EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_TO_E;
+
+    @Override
+    public EnumStorage<EntityType> TransformationEntityTypesTo(){
+        TransformationEntityTypesToInit();
+        return TRANSFORMATION_ENTITY_TYPES_TO_E;
+    }
+
+    private void TransformationEntityTypesToInit(){
+        if (TRANSFORMATION_ENTITY_TYPES_TO_E == null) {
+            TRANSFORMATION_ENTITY_TYPES_TO_E = new EnumStorage<>(new EntityType[]{
+                DROWNED, VINDICATOR, EntityType.SALMON, PILLAGER, WITHER_SKELETON, DONKEY, WOLF, PARROT, DOLPHIN, PANDA,
+                VEX, MUSHROOM_COW, PIG_ZOMBIE, CAVE_SPIDER, OCELOT, MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH,
+                ZOMBIE_HORSE, EntityType.RABBIT, LLAMA, ENDERMAN, IRON_GOLEM, GHAST, ZOMBIE, EVOKER, PUFFERFISH,
+                WANDERING_TRADER, STRAY, MULE, BAT, TURTLE, SHEEP, BLAZE, COW, PIG, SPIDER, CAT, SLIME, GUARDIAN,
+                ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, TRADER_LLAMA, SHULKER, SNOWMAN, RAVAGER, ZOMBIE_VILLAGER,
+                ILLUSIONER, EntityType.TROPICAL_FISH, VILLAGER, SKELETON, HORSE, FOX, EntityType.CHICKEN, SQUID,
+                POLAR_BEAR, PHANTOM, HUSK, WITCH, EntityType.COD, CREEPER});
+        }
+    }
+
+    @Override
+    public LivingEntity TransformationCycle(LivingEntity ent, Random rnd) {
+        int newTypeID = TransformationEntityTypesFrom().indexOf(ent.getType());
+        if (newTypeID == -1) {
+            return null;
+        }
+        EntityType newType = TransformationEntityTypesTo().get(newTypeID);
+        LivingEntity newEnt = (LivingEntity) ent.getWorld().spawnEntity(ent.getLocation(), newType);
+
+        switch (newType) {
+            case HORSE:
+                ((Horse) newEnt).setColor(Horse.Color.values()[rnd.nextInt(Horse.Color.values().length)]);
+                ((Horse) newEnt).setStyle(Horse.Style.values()[rnd.nextInt(Horse.Style.values().length)]);
+                break;
+            case RABBIT:
+                if (((Rabbit) ent).getRabbitType().equals(Rabbit.Type.THE_KILLER_BUNNY)) {
+                    ((Rabbit) newEnt).setRabbitType(Rabbit.Type.values()[rnd.nextInt(Rabbit.Type.values().length - 1)]);
+                } else {
+                    ((Rabbit) newEnt).setRabbitType(Rabbit.Type.THE_KILLER_BUNNY);
+                }
+                break;
+            case VILLAGER:
+                ((Villager) newEnt).setProfession(
+                    Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)]);
+                ((Villager) newEnt).setVillagerType(Villager.Type.values()[rnd.nextInt(Villager.Type.values().length)]);
+                break;
+            case LLAMA:
+                ((Llama) newEnt).setColor(Llama.Color.values()[rnd.nextInt(Llama.Color.values().length)]);
+                break;
+            case TROPICAL_FISH:
+                ((TropicalFish) newEnt).setBodyColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
+                ((TropicalFish) newEnt).setPatternColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
+                ((TropicalFish) newEnt).setPattern(
+                    TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
+                break;
+            case PARROT:
+                ((Parrot) newEnt).setVariant(Parrot.Variant.values()[rnd.nextInt(Parrot.Variant.values().length)]);
+                break;
+            case CAT:
+                ((Cat) newEnt).setCatType(Cat.Type.values()[rnd.nextInt(Cat.Type.values().length)]);
+                break;
+            case SHEEP:
+                ((Sheep) newEnt).setColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
+                break;
+            case CREEPER:
+                ((Creeper) newEnt).setPowered(!((Creeper) ent).isPowered());
+                break;
+            case MUSHROOM_COW:
+                ((MushroomCow) newEnt).setVariant(
+                    MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
+                break;
+            case FOX:
+                ((Fox) newEnt).setFoxType(Fox.Type.values()[rnd.nextInt(Fox.Type.values().length)]);
+                break;
+            case ILLUSIONER:
+                ((Panda) newEnt).setHiddenGene(Panda.Gene.values()[rnd.nextInt(Panda.Gene.values().length)]);
+                ((Panda) newEnt).setMainGene(Panda.Gene.values()[rnd.nextInt(Panda.Gene.values().length)]);
+                break;
+        }
+
+        newEnt.setCustomName(ent.getCustomName());
+        newEnt.setCustomNameVisible(ent.isCustomNameVisible());
+        return ent;
     }
 
     //endregion
@@ -556,7 +649,8 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     private void fireRawInit() {
         if (FIRE_RAW_E == null) {
             FIRE_RAW_E = new EnumStorage<>(new Material[]{DIORITE, ANDESITE, GRANITE,
-                IRON_ORE, GOLD_ORE, COBBLESTONE, MOSSY_COBBLESTONE, NETHERRACK, STONE_BRICKS, QUARTZ_BLOCK, SANDSTONE, RED_SANDSTONE, STONE}, Terracottas());
+                IRON_ORE, GOLD_ORE, COBBLESTONE, MOSSY_COBBLESTONE, NETHERRACK, STONE_BRICKS, QUARTZ_BLOCK, SANDSTONE,
+                RED_SANDSTONE, STONE}, Terracottas());
         }
     }
 

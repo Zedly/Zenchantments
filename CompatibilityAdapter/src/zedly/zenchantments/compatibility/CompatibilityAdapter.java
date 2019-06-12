@@ -7,20 +7,15 @@ package zedly.zenchantments.compatibility;
 
 import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.MushroomCow;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
+import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
@@ -29,11 +24,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
-import org.bukkit.entity.EntityType;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Material.TROPICAL_FISH;
 import static org.bukkit.entity.EntityType.*;
+import static org.bukkit.entity.EntityType.PUFFERFISH;
 import static org.bukkit.potion.PotionEffectType.*;
 import static org.bukkit.potion.PotionEffectType.DOLPHINS_GRACE;
 import static org.bukkit.potion.PotionEffectType.WATER_BREATHING;
@@ -1022,15 +1017,83 @@ public class CompatibilityAdapter {
 
 
 	//region Transformation Entity Types
-	private final EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_E = new EnumStorage<>(new EntityType[]{
-		SKELETON, WITHER_SKELETON, ZOMBIE, DROWNED, WITCH, VILLAGER, COW, MUSHROOM_COW, PIG, PIG_ZOMBIE, SILVERFISH,
-		ENDERMITE, OCELOT, WOLF, SLIME, MAGMA_CUBE, GUARDIAN, ELDER_GUARDIAN, PARROT, BAT, SPIDER, CAVE_SPIDER, COW,
-		MUSHROOM_COW, DONKEY, LLAMA, HORSE, SKELETON_HORSE, BLAZE, VEX});
+	private final EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_FROM_E = new EnumStorage<>(new EntityType[]{
+		HUSK, WITCH, EntityType.COD, PHANTOM, HORSE, SKELETON, EntityType.CHICKEN, SQUID, OCELOT, POLAR_BEAR, COW, PIG,
+		SPIDER, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, SHULKER, SNOWMAN, DROWNED, VINDICATOR,
+		EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW, PIG_ZOMBIE, CAVE_SPIDER,
+		MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN, IRON_GOLEM, ZOMBIE, EVOKER,
+		PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, ZOMBIE_VILLAGER, VILLAGER, EntityType.TROPICAL_FISH, GHAST,
+		LLAMA, CREEPER});
 
-	public EnumStorage<EntityType> TransformationEntityTypes(){
-		return TRANSFORMATION_ENTITY_TYPES_E;
+	public EnumStorage<EntityType> TransformationEntityTypesFrom(){
+		return TRANSFORMATION_ENTITY_TYPES_FROM_E;
 	}
 
+
+
+	private final EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_TO_E = new EnumStorage<>(new EntityType[]{
+		DROWNED, VINDICATOR, EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW,
+		PIG_ZOMBIE, CAVE_SPIDER, MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN,
+		IRON_GOLEM, ZOMBIE, EVOKER, PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, OCELOT, POLAR_BEAR, COW, PIG,
+		SPIDER, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, SHULKER, SNOWMAN, ZOMBIE_VILLAGER,
+		VILLAGER, EntityType.TROPICAL_FISH, GHAST, LLAMA, SKELETON, EntityType.CHICKEN, SQUID, HUSK, WITCH,
+		EntityType.COD, PHANTOM, HORSE, CREEPER});
+
+	public EnumStorage<EntityType> TransformationEntityTypesTo(){
+		return TRANSFORMATION_ENTITY_TYPES_TO_E;
+	}
+
+
+
+	public LivingEntity TransformationCycle(LivingEntity ent, Random rnd) {
+		int newTypeID = TransformationEntityTypesFrom().indexOf(ent.getType());
+		if (newTypeID == -1) {
+			return null;
+		}
+		EntityType newType = TransformationEntityTypesTo().get(newTypeID);
+		LivingEntity newEnt = (LivingEntity) ent.getWorld().spawnEntity(ent.getLocation(), newType);
+
+		switch (newType) {
+			case HORSE:
+				((Horse) newEnt).setColor(Horse.Color.values()[rnd.nextInt(Horse.Color.values().length)]);
+				((Horse) newEnt).setStyle(Horse.Style.values()[rnd.nextInt(Horse.Style.values().length)]);
+				break;
+			case RABBIT:
+				if (((Rabbit) ent).getRabbitType().equals(Rabbit.Type.THE_KILLER_BUNNY)) {
+					((Rabbit) newEnt).setRabbitType(Rabbit.Type.values()[rnd.nextInt(Rabbit.Type.values().length - 1)]);
+				} else {
+					((Rabbit) newEnt).setRabbitType(Rabbit.Type.THE_KILLER_BUNNY);
+				}
+				break;
+			case VILLAGER:
+				Villager.Career career = Villager.Career.values()[rnd.nextInt(Villager.Career.values().length)];
+				((Villager) newEnt).setProfession(career.getProfession());
+				((Villager) newEnt).setCareer(career);
+				break;
+			case LLAMA:
+				((Llama) newEnt).setColor(Llama.Color.values()[rnd.nextInt(Llama.Color.values().length)]);
+				break;
+			case TROPICAL_FISH:
+				((TropicalFish) newEnt).setBodyColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
+				((TropicalFish) newEnt).setPatternColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
+				((TropicalFish) newEnt).setPattern(TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
+				break;
+			case PARROT:
+				((Parrot) newEnt).setVariant(Parrot.Variant.values()[rnd.nextInt(Parrot.Variant.values().length)]);
+				break;
+			case OCELOT:
+				((Ocelot) newEnt).setCatType(Ocelot.Type.values()[rnd.nextInt(Ocelot.Type.values().length)]);
+				break;
+			case SHEEP:
+				((Sheep) newEnt).setColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
+				break;
+			case CREEPER:
+				((Creeper) newEnt).setPowered(!((Creeper) ent).isPowered());
+		}
+		newEnt.setCustomName(ent.getCustomName());
+		newEnt.setCustomNameVisible(ent.isCustomNameVisible());
+		return ent;
+	}
 	//endregion
 
 
