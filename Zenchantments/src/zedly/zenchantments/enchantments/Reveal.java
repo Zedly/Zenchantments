@@ -52,7 +52,7 @@ public class Reveal extends CustomEnchantment {
                             if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(blk.getType())) {
                                 boolean exposed = false;
                                 for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
-                                    if (blk.getRelative(face).getType() == Material.AIR) {
+                                    if (Storage.COMPATIBILITY_ADAPTER.Airs().contains(blk.getRelative(face).getType())) {
                                         exposed = true;
                                     }
                                 }

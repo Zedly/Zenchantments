@@ -4,6 +4,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -485,15 +487,28 @@ public class Utilities {
 
 	public static void selfRemovingArea(Material fill, Material check, int radius, Block center, Player player,
 		Map<Location, Long> placed) {
-		for (int x = -(radius); x <= radius; x++) {
-			for (int z = -(radius); z <= radius; z++) {
+		for (int x = -radius; x <= radius; x++) {
+			for (int z = -radius; z <= radius; z++) {
+
 				Block possiblePlatformBlock = center.getRelative(x, -1, z);
 				Location possiblePlatformLoc = possiblePlatformBlock.getLocation();
 				if (possiblePlatformLoc.distanceSquared(center.getLocation()) < radius * radius - 2) {
 					if (placed.containsKey(possiblePlatformLoc)) {
 						placed.put(possiblePlatformLoc, System.nanoTime());
 					} else if (possiblePlatformBlock.getType() == check
-						&& possiblePlatformBlock.getRelative(0, 1, 0).getType() == AIR) {
+						&& Storage.COMPATIBILITY_ADAPTER.Airs().contains( possiblePlatformBlock.getRelative(0, 1, 0).getType())) {
+
+
+						if (possiblePlatformBlock.getBlockData() instanceof Levelled) {
+							if (((Levelled) possiblePlatformBlock.getBlockData()).getLevel() != 0) {
+								//Bukkit.broadcastMessage(((Levelled) possiblePlatformBlock.getBlockData()).getLevel()  + "");
+								continue;
+							}
+						}
+
+
+
+
 						if (Storage.COMPATIBILITY_ADAPTER.formBlock(possiblePlatformBlock, fill, player)) {
 							placed.put(possiblePlatformLoc, System.nanoTime());
 						}

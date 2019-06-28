@@ -1,7 +1,10 @@
 package zedly.zenchantments.enchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.enums.Hand;
@@ -37,10 +40,13 @@ public class FrozenStep extends CustomEnchantment {
 	public boolean onScan(Player player, int level, boolean usedHand) {
 		if (player.isSneaking() && player.getLocation().getBlock().getType() == WATER &&
 			!player.isFlying()) {
+
+
 			player.setVelocity(player.getVelocity().setY(.4));
 		}
 		Block block = player.getLocation().getBlock();
 		int radius = (int) Math.round(power * level + 2);
+
 
 		selfRemovingArea(PACKED_ICE, WATER, radius, block, player, frozenLocs);
 		return true;

@@ -48,7 +48,7 @@ public class Persephone extends CustomEnchantment {
 							if (block.getRelative(x, y, z).getLocation().distanceSquared(loc) <
 								radiusXZ * radiusXZ) {
 								if (block.getRelative(x, y, z).getType() == FARMLAND
-									&& block.getRelative(x, y + 1, z).getType() == AIR) {
+									&& Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(x, y + 1, z).getType())) {
 									if (evt.getPlayer().getInventory().contains(CARROT)) {
 										if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS,
 											null)) {
@@ -73,7 +73,7 @@ public class Persephone extends CustomEnchantment {
 										}
 									}
 								} else if (block.getRelative(x, y, z).getType() == SOUL_SAND
-									&& block.getRelative(x, y + 1, z).getType() == AIR) {
+									&& Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(x, y + 1, z).getType())) {
 									if (evt.getPlayer().getInventory().contains(NETHER_WART)) {
 										if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART,
 											null)) {

@@ -50,7 +50,7 @@ public class CommandProcessor {
 							}
 						}
 						// TODO: Fix out of bounds error below
-					} else if (config.enchantFromString(args[args.length - 2]) != null) {
+					} else if (args.length > 1 && config.enchantFromString(args[args.length - 2]) != null) {
 						CustomEnchantment ench = config.enchantFromString(args[args.length - 2]);
 						for (int i = 1; i <= ench.getMaxLevel(); i++) {
 							results.add(i + "");

@@ -505,7 +505,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 	}
 
 	public static void setGlow(ItemStack stk, boolean customEnch, World world) {
-		if (!Config.get(world).enchantGlow()) {
+		if (Config.get(world) == null || !Config.get(world).enchantGlow()) {
 			return;
 		}
 		ItemMeta itemMeta = stk.getItemMeta();

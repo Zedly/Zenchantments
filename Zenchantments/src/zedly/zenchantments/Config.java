@@ -136,127 +136,134 @@ public class Config {
     public static void loadConfigs() {
         CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
-            try {
-                InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
-                File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
-                if (!file.exists()) {
-                    try {
-                        String raw = IOUtils.toString(stream, "UTF-8");
-                        byte[] b = raw.getBytes();
-                        FileOutputStream fos = new FileOutputStream(file);
-                        fos.write(b, 0, b.length);
-                        fos.flush();
-                    } catch (IOException e) {
-                        System.err.println("Error loading config");
-                    }
-                }
-                YamlConfiguration yamlConfig = new YamlConfiguration();
-                yamlConfig.load(file);
-                int[] version = new int[3];
-                try {
-                    String[] versionString;
-                    try {
-                        versionString = yamlConfig.getString("ZenchantmentsConfigVersion").split("\\.");
-                    } catch (NullPointerException ex) {
-                        versionString = ((String) yamlConfig.getList("ZenchantmentsConfigVersion").get(0)).split("\\.");
-                    }
-                    if (versionString.length == 3) {
-                        for (int i = 0; i < 3; i++) {
-                            version[i] = Integer.parseInt(versionString[i]);
-                        }
-                    } else {
-                        version = new int[]{0, 0, 0};
-                    }
-                } catch (Exception ex) {
-                    version = new int[]{1, 5, 0};
-                }
-                UpdateConfig.update(yamlConfig, version);
-                //Init variables
-                final int shredDrops;
-                yamlConfig.save(file);
-                //Load Variables
-                double rarity = (double) (yamlConfig.get("enchant_rarity"));
-                double enchantRarity = (rarity / 100.0);
-                int maxEnchants = (int) yamlConfig.get("max_enchants");
-                boolean explosionBlockBreak = (boolean) yamlConfig.get("explosion_block_break");
-                boolean descriptionLore = (boolean) yamlConfig.get("description_lore");
-                boolean enchantGlow = (boolean) yamlConfig.get("enchantment_glow");
-                ChatColor descriptionColor = ChatColor.getByChar("" + yamlConfig.get("description_color"));
-	            ChatColor enchantColor = ChatColor.getByChar("" + yamlConfig.get("enchantment_color"));
-	            ChatColor curseColor = ChatColor.getByChar("" + yamlConfig.get("curse_color"));
-
-	            descriptionColor = (descriptionColor != null) ? descriptionColor : ChatColor.GREEN;
-	            enchantColor = enchantColor != null ? enchantColor : ChatColor.GRAY;
-	            curseColor = curseColor != null ? curseColor : ChatColor.RED;
-
-                switch ((String) yamlConfig.get("shred_drops")) {
-                    case "all":
-                        shredDrops = 0;
-                        break;
-                    case "block":
-                        shredDrops = 1;
-                        break;
-                    case "none":
-                        shredDrops = 2;
-                        break;
-                    default:
-                        shredDrops = 0;
-                }
-                //Load CustomEnchantment Classes
-                Set<CustomEnchantment> enchantments = new HashSet<>();
-                Map<String, LinkedHashMap<String, Object>> configInfo = new HashMap<>();
-                for (Map<String, LinkedHashMap<String, Object>> part
-                        : (List<Map<String, LinkedHashMap<String, Object>>>) yamlConfig.get("enchantments")) {
-                    for (String name : part.keySet()) {
-                        configInfo.put(name, part.get(name));
-                    }
-                }
-
-                List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
-
-                new FastClasspathScanner(CustomEnchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
-                    .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add).scan();
-
-                for (Class<? extends CustomEnchantment> cl : customEnchantments) {
-                    try {
-
-                        CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();
-                        if (configInfo.containsKey(ench.loreName())) {
-                            LinkedHashMap<String, Object> data = configInfo.get(ench.loreName());
-                            ench.probability((float) (double) data.get("Probability"));
-                            ench.loreName((String) data.get("Name"));
-                            ench.cooldown((int) data.get("Cooldown"));
-
-                            if (data.get("Max Level") != null) {
-                                ench.maxLevel((int) data.get("Max Level"));
-                            }
-                            if (data.get("Power") != null) {
-                                ench.power((double) data.get("Power"));
-                            }
-                            Set<Tool> materials = new HashSet<>();
-                            for (String s : ((String) data.get("Tools")).split(", |\\,")) {
-                                materials.add(Tool.fromString(s));
-                            }
-                            ench.enchantable(materials.toArray(new Tool[0]));
-                            if (ench.probability() != -1) {
-                                enchantments.add(ench.build());
-                            }
-                        }
-                    } catch (IllegalAccessException | ClassCastException | InstantiationException ex) {
-                        System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
-                    }
-                }
-                Config config = new Config(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
-	                descriptionLore, descriptionColor, enchantColor, curseColor, enchantGlow, world);
-                Config.CONFIGS.put(world, config);
-            } catch (IOException | InvalidConfigurationException ex) {
-	            System.err.println("Error parsing config for world " + world.getName() + ", skipping");
-            }
+            Config.CONFIGS.put(world, getWorldConfig(world));
         }
+    }
+
+    public static Config getWorldConfig (World world) {
+        try {
+            InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
+            File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
+            if (!file.exists()) {
+                try {
+                    String raw = IOUtils.toString(stream, "UTF-8");
+                    byte[] b = raw.getBytes();
+                    FileOutputStream fos = new FileOutputStream(file);
+                    fos.write(b, 0, b.length);
+                    fos.flush();
+                } catch (IOException e) {
+                    System.err.println("Error loading config");
+                }
+            }
+            YamlConfiguration yamlConfig = new YamlConfiguration();
+            yamlConfig.load(file);
+            int[] version = new int[3];
+            try {
+                String[] versionString;
+                try {
+                    versionString = yamlConfig.getString("ZenchantmentsConfigVersion").split("\\.");
+                } catch (NullPointerException ex) {
+                    versionString = ((String) yamlConfig.getList("ZenchantmentsConfigVersion").get(0)).split("\\.");
+                }
+                if (versionString.length == 3) {
+                    for (int i = 0; i < 3; i++) {
+                        version[i] = Integer.parseInt(versionString[i]);
+                    }
+                } else {
+                    version = new int[]{0, 0, 0};
+                }
+            } catch (Exception ex) {
+                version = new int[]{1, 5, 0};
+            }
+            UpdateConfig.update(yamlConfig, version);
+            //Init variables
+            final int shredDrops;
+            yamlConfig.save(file);
+            //Load Variables
+            double rarity = (double) (yamlConfig.get("enchant_rarity"));
+            double enchantRarity = (rarity / 100.0);
+            int maxEnchants = (int) yamlConfig.get("max_enchants");
+            boolean explosionBlockBreak = (boolean) yamlConfig.get("explosion_block_break");
+            boolean descriptionLore = (boolean) yamlConfig.get("description_lore");
+            boolean enchantGlow = (boolean) yamlConfig.get("enchantment_glow");
+            ChatColor descriptionColor = ChatColor.getByChar("" + yamlConfig.get("description_color"));
+            ChatColor enchantColor = ChatColor.getByChar("" + yamlConfig.get("enchantment_color"));
+            ChatColor curseColor = ChatColor.getByChar("" + yamlConfig.get("curse_color"));
+
+            descriptionColor = (descriptionColor != null) ? descriptionColor : ChatColor.GREEN;
+            enchantColor = enchantColor != null ? enchantColor : ChatColor.GRAY;
+            curseColor = curseColor != null ? curseColor : ChatColor.RED;
+
+            switch ((String) yamlConfig.get("shred_drops")) {
+                case "all":
+                    shredDrops = 0;
+                    break;
+                case "block":
+                    shredDrops = 1;
+                    break;
+                case "none":
+                    shredDrops = 2;
+                    break;
+                default:
+                    shredDrops = 0;
+            }
+            //Load CustomEnchantment Classes
+            Set<CustomEnchantment> enchantments = new HashSet<>();
+            Map<String, LinkedHashMap<String, Object>> configInfo = new HashMap<>();
+            for (Map<String, LinkedHashMap<String, Object>> part
+                : (List<Map<String, LinkedHashMap<String, Object>>>) yamlConfig.get("enchantments")) {
+                for (String name : part.keySet()) {
+                    configInfo.put(name, part.get(name));
+                }
+            }
+
+            List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+
+            new FastClasspathScanner(CustomEnchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
+                                                                                    .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add).scan();
+
+            for (Class<? extends CustomEnchantment> cl : customEnchantments) {
+                try {
+
+                    CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();
+                    if (configInfo.containsKey(ench.loreName())) {
+                        LinkedHashMap<String, Object> data = configInfo.get(ench.loreName());
+                        ench.probability((float) (double) data.get("Probability"));
+                        ench.loreName((String) data.get("Name"));
+                        ench.cooldown((int) data.get("Cooldown"));
+
+                        if (data.get("Max Level") != null) {
+                            ench.maxLevel((int) data.get("Max Level"));
+                        }
+                        if (data.get("Power") != null) {
+                            ench.power((double) data.get("Power"));
+                        }
+                        Set<Tool> materials = new HashSet<>();
+                        for (String s : ((String) data.get("Tools")).split(", |\\,")) {
+                            materials.add(Tool.fromString(s));
+                        }
+                        ench.enchantable(materials.toArray(new Tool[0]));
+                        if (ench.probability() != -1) {
+                            enchantments.add(ench.build());
+                        }
+                    }
+                } catch (IllegalAccessException | ClassCastException | InstantiationException ex) {
+                    System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
+                }
+            }
+            return new Config(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
+                descriptionLore, descriptionColor, enchantColor, curseColor, enchantGlow, world);
+        } catch (IOException | InvalidConfigurationException ex) {
+            System.err.println("Error parsing config for world " + world.getName() + ", skipping");
+        }
+        return null;
     }
 
     // Returns the config object associated with the given world
     public static Config get(World world) {
+        if (CONFIGS.get(world) == null) {
+            Config.CONFIGS.put(world, getWorldConfig(world));
+        }
         return CONFIGS.get(world);
     }
 

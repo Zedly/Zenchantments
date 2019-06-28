@@ -51,7 +51,7 @@ public class GreenThumb extends CustomEnchantment {
 						boolean applied = false;
 						switch (relativeBlock.getType()) {
 							case DIRT:
-								if (relativeBlock.getRelative(0, 1, 0).getType() == AIR) {
+								if (Storage.COMPATIBILITY_ADAPTER.Airs().contains(relativeBlock.getRelative(0, 1, 0).getType())) {
 									Material mat;
 									switch (centerBlock.getBiome()) {
 										case MUSHROOM_FIELD_SHORE:
