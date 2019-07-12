@@ -55,6 +55,7 @@ public class Harvest extends CustomEnchantment {
 							continue;
 						}
 
+
 						BlockData cropState = block.getBlockData();
 						boolean harvestReady = !(cropState instanceof Ageable);
 						if (!harvestReady) {

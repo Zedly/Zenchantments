@@ -501,7 +501,6 @@ public class Utilities {
 
 						if (possiblePlatformBlock.getBlockData() instanceof Levelled) {
 							if (((Levelled) possiblePlatformBlock.getBlockData()).getLevel() != 0) {
-								//Bukkit.broadcastMessage(((Levelled) possiblePlatformBlock.getBlockData()).getLevel()  + "");
 								continue;
 							}
 						}

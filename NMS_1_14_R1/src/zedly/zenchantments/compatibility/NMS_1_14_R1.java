@@ -130,6 +130,40 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     //endregion
 
 
+    //region Partial Harvest Crops
+    private EnumStorage<Material> PARTIAL_HARVEST_CROPS_E;
+
+    public EnumStorage<Material> PartialHarvestCrops(){
+        partialHarvestCropsInit();
+        return PARTIAL_HARVEST_CROPS_E;
+    }
+
+    private void partialHarvestCropsInit() {
+        if (PARTIAL_HARVEST_CROPS_E == null) {
+            PARTIAL_HARVEST_CROPS_E  =
+                new EnumStorage<>(new Material[]{SWEET_BERRY_BUSH});
+        }
+    }
+    //endregion
+
+
+    //region Partial Harvest Crop Yields
+    private EnumStorage<Material> PARTIAL_HARVEST_CROP_YIELDS_E;
+
+    public EnumStorage<Material> PartialHarvestCropYeilds(){
+        partialHarvestCropYieldsInit();
+        return PARTIAL_HARVEST_CROP_YIELDS_E;
+    }
+
+    private void partialHarvestCropYieldsInit() {
+        if (PARTIAL_HARVEST_CROP_YIELDS_E == null) {
+            PARTIAL_HARVEST_CROP_YIELDS_E  =
+                new EnumStorage<>(new Material[]{SWEET_BERRIES});
+        }
+    }
+    //endregion
+
+
     //region Dead Corals
     private EnumStorage<Material> DEAD_CORALS_E;
 

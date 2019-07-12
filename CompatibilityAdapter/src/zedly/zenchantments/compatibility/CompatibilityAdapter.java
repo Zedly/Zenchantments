@@ -8,7 +8,6 @@ package zedly.zenchantments.compatibility;
 import java.util.Random;
 
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -432,6 +431,24 @@ public class CompatibilityAdapter {
 		return CROP_YIELDS_E;
 	}
 
+	//endregion
+
+
+	//region Partial Harvest Crops
+	private final EnumStorage<Material> PARTIAL_HARVEST_CROPS_E = new EnumStorage<>(new Material[]{});
+
+	public EnumStorage<Material> PartialHarvestCrops(){
+		return PARTIAL_HARVEST_CROPS_E;
+	}
+	//endregion
+
+
+	//region Partial Harvest Crop Yields
+	private final EnumStorage<Material> PARTIAL_HARVEST_CROP_YIELDS_E = new EnumStorage<>(new Material[]{});
+
+	public EnumStorage<Material> PartialHarvestCropYeilds(){
+		return PARTIAL_HARVEST_CROP_YIELDS_E;
+	}
 	//endregion
 
 

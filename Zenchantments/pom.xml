@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>zedly</groupId>
     <artifactId>Zenchantments</artifactId>
-    <version>1.6.0</version>
+    <version>1.6.2</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,7 +13,7 @@
     <parent>
         <groupId>zedly</groupId>
         <artifactId>Zenchantments-parent</artifactId>
-        <version>1.6.0</version>
+        <version>1.6.2</version>
     </parent>
     <dependencies>
         <dependency>
@@ -39,25 +39,25 @@
         <dependency>
             <groupId>zedly</groupId>
             <artifactId>compatibility-adapter</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.2</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>zedly</groupId>
             <artifactId>NMS_1_13_R1</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>zedly</groupId>
             <artifactId>NMS_1_13_R2</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>zedly</groupId>
             <artifactId>NMS_1_14_R1</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
