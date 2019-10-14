@@ -975,14 +975,15 @@ public class CompatibilityAdapter {
             case PARROT:
                 ((Parrot) newEnt).setVariant(Parrot.Variant.values()[rnd.nextInt(Parrot.Variant.values().length)]);
                 break;
-            case OCELOT:
-                ((Ocelot) newEnt).setCatType(Ocelot.Type.values()[rnd.nextInt(Ocelot.Type.values().length)]);
-                break;
             case SHEEP:
                 ((Sheep) newEnt).setColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
                 break;
             case CREEPER:
                 ((Creeper) newEnt).setPowered(!((Creeper) ent).isPowered());
+                break;
+            case MUSHROOM_COW:
+                ((MushroomCow) newEnt).setVariant(MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
+                break;
         }
         newEnt.setCustomName(ent.getCustomName());
         newEnt.setCustomNameVisible(ent.isCustomNameVisible());
@@ -1328,15 +1329,18 @@ public class CompatibilityAdapter {
     }
 
     public boolean pickBerries(Block berryBlock, Player player) {
-        Ageable a = (Ageable) berryBlock.getState();
+        BlockData data = berryBlock.getBlockData();
+        Ageable a = (Ageable) data;
         if (a.getAge() > 1) { // Age of ripe Berries
             PlayerInteractEvent pie = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getInventory().getItemInMainHand(), berryBlock, player.getFacing());
             Bukkit.getPluginManager().callEvent(pie);
             if (!pie.isCancelled()) {
                 int numDropped = (a.getAge() == 3 ? 2 : 1) + (RND.nextBoolean() ? 1 : 0); // Natural drop rate. Age 2 -> 1-2 berries, Age 3 -> 2-3 berries
                 a.setAge(1); // Picked adult berry bush
-                berryBlock.getWorld().dropItem(berryBlock.getLocation().add(0.5, 0.5, 0.5),
+                berryBlock.setBlockData(a);
+                berryBlock.getWorld().dropItem(berryBlock.getLocation(),
                         new ItemStack(Material.SWEET_BERRIES, numDropped));
+                return true;
             }
         }
         return false;

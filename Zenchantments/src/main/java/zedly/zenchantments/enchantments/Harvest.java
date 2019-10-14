@@ -62,11 +62,19 @@ public class Harvest extends CustomEnchantment {
                             Ageable ag = (Ageable) cropState;
                             harvestReady = ag.getAge() == ag.getMaximumAge();
                         }
+                        if (!harvestReady) {
+                            harvestReady = block.getType() == Material.SWEET_BERRY_BUSH;
+                        }
 
                         if (harvestReady) {
+                            boolean blockAltered;
                             if (block.getType() == Material.SWEET_BERRY_BUSH) {
-                                Storage.COMPATIBILITY_ADAPTER.pickBerries(block, evt.getPlayer());
-                            } else if (ADAPTER.breakBlockNMS(block, evt.getPlayer())) {
+                                blockAltered = Storage.COMPATIBILITY_ADAPTER.pickBerries(block, evt.getPlayer());
+                            } else {
+                                blockAltered = ADAPTER.breakBlockNMS(block, evt.getPlayer());
+                            }
+
+                            if (blockAltered) {
                                 Utilities.damageTool(evt.getPlayer(), 1, usedHand);
                                 Grab.grabLocs.put(block, evt.getPlayer().getLocation());
                                 Bukkit.getServer().getScheduler()
