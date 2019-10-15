@@ -1231,6 +1231,24 @@ public class CompatibilityAdapter {
         return false;
     }
 
+    public boolean explodeCreeper(Creeper c, boolean damage) {
+        float power;
+        Location l = c.getLocation();
+        if (c.isPowered()) {
+            power = 6f;
+        } else {
+            power = 3.1f;
+        }
+        if (damage) {
+            c.getWorld().createExplosion(l, power);
+        } else {
+            c.getWorld().createExplosion(l.getX(), l.getY(), l.getZ(), power, false, false);
+        }
+        c.remove();
+
+        return true;
+    }
+
     public boolean formBlock(Block block, Material mat, Player player) {
         BlockState bs = block.getState();
         bs.setType(mat);

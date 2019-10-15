@@ -49,18 +49,7 @@ public class FuseArrow extends EnchantedArrow {
 			0)) {
 			if (evt.getEntity().getType().equals(EntityType.CREEPER)) {
 				Creeper c = (Creeper) evt.getEntity();
-				float power;
-				if (c.isPowered()) {
-					power = 6f;
-				} else {
-					power = 3.1f;
-				}
-				if (Config.get(evt.getDamager().getWorld()).explosionBlockBreak()) {
-					evt.getEntity().getWorld().createExplosion(evt.getEntity().getLocation(), power);
-				} else {
-					evt.getEntity().getWorld().createExplosion(l.getX(), l.getY(), l.getZ(), power, false, false);
-				}
-				c.remove();
+				Storage.COMPATIBILITY_ADAPTER.explodeCreeper(c, Config.get(evt.getDamager().getWorld()).explosionBlockBreak());
 			} else if (evt.getEntity().getType().equals(EntityType.MUSHROOM_COW)) {
 				MushroomCow c = (MushroomCow) evt.getEntity();
 				if (c.isAdult()) {

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import net.minecraft.server.v1_14_R1.BlockPosition;
 import net.minecraft.server.v1_14_R1.DataWatcher;
+import net.minecraft.server.v1_14_R1.EntityCreeper;
 import net.minecraft.server.v1_14_R1.EntityMushroomCow;
 import net.minecraft.server.v1_14_R1.EntityPlayer;
 import net.minecraft.server.v1_14_R1.EntitySheep;
@@ -31,6 +32,7 @@ import org.bukkit.event.block.BlockGrowEvent;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Material.TROPICAL_FISH;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftCreeper;
 import static org.bukkit.entity.EntityType.*;
 import static org.bukkit.entity.EntityType.PUFFERFISH;
 import static org.bukkit.entity.EntityType.VEX;
@@ -937,6 +939,13 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     public boolean breakBlockNMS(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+    }
+    
+    @Override
+    public boolean explodeCreeper(Creeper creeper, boolean damageWorld) {
+        EntityCreeper ec = ((CraftCreeper) creeper).getHandle();
+        ec.explode();
+        return true;
     }
 
     @Override
