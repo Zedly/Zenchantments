@@ -203,9 +203,11 @@ public class Watcher implements Listener {
 
 		Config config = Config.get(evt.getEnchantBlock().getWorld());
 
+                Map<CustomEnchantment, Integer> existingEnchants = CustomEnchantment.getEnchants(evt.getItem(), evt.getEnchantBlock().getWorld());
+                
 		Map<CustomEnchantment, Integer> addedEnchants = new HashMap<>();
 		ItemStack stk = evt.getItem();
-		for (int l = 1; l <= config.getMaxEnchants(); l++) {
+		for (int l = 1; l <= config.getMaxEnchants() - existingEnchants.size(); l++) {
 
 
 			float totalChance = 0;
