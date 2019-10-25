@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>zedly</groupId>
     <artifactId>Zenchantments</artifactId>
-    <version>1.6.2</version>
+    <version>1.6.3</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,7 +13,7 @@
     <parent>
         <groupId>zedly</groupId>
         <artifactId>Zenchantments-parent</artifactId>
-        <version>1.6.2</version>
+        <version>1.6.3</version>
     </parent>
     <dependencies>
         <dependency>
