@@ -47,7 +47,7 @@ public class Burst extends CustomEnchantment {
         boolean result = false;
         if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
             for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
-                if (hand.containsEnchantment(Enchantment.ARROW_INFINITE)
+                if ((hand.containsEnchantment(Enchantment.ARROW_INFINITE) && Utilities.hasItem(player, Material.ARROW, 1))
                         || Utilities.removeItem(player, Material.ARROW, 1)) {
                     result = true;
                     Utilities.setHand(player, hand, usedHand);
