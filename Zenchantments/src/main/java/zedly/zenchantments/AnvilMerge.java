@@ -70,6 +70,10 @@ public class AnvilMerge implements Listener {
 				return new ItemStack(Material.AIR);
 			}
 		}
+                
+                if(leftEnchantments.isEmpty() && rightEnchantments.isEmpty()) {
+                    return oldOutItem;
+                }
 
 		EnchantmentPool pool = new EnchantmentPool(oldOutItem, config.getMaxEnchants());
 		pool.addAll(leftEnchantments);
