@@ -23,7 +23,7 @@ import static zedly.zenchantments.enums.Tool.SWORD;
 public class Vortex extends CustomEnchantment {
 
     // Locations where Vortex has been used on a block and are waiting for the Watcher to handle their teleportation
-    public static final Map<Block, Location> vortexLocs = new HashMap<>();
+    public static final Map<Block, Player> vortexLocs = new HashMap<>();
     public static final int ID = 66;
 
     @Override
@@ -43,10 +43,12 @@ public class Vortex extends CustomEnchantment {
     @Override
     public boolean onEntityKill(final EntityDeathEvent evt, int level, boolean usedHand) {
         final Block deathBlock = evt.getEntity().getLocation().getBlock();
-        vortexLocs.put(deathBlock, evt.getEntity().getKiller().getLocation());
+        vortexLocs.put(deathBlock, evt.getEntity().getKiller());
+        
         int i = evt.getDroppedExp();
         evt.setDroppedExp(0);
-        evt.getEntity().getKiller().giveExp(i);
+        Storage.COMPATIBILITY_ADAPTER.collectXP(evt.getEntity().getKiller(), i);
+        
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
             vortexLocs.remove(deathBlock);
         }, 3);

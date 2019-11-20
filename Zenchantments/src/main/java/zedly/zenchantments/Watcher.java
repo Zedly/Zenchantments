@@ -127,7 +127,8 @@ public class Watcher implements Listener {
                     evt.getEntity().setPickupDelay(0);
                     for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
                         if (e instanceof ExperienceOrb) {
-                            e.teleport(Grab.grabLocs.get(block));
+                            Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.grabLocs.get(block), ((ExperienceOrb) e).getExperience());
+                            e.remove();
                         }
                     }
                 }
@@ -139,7 +140,8 @@ public class Watcher implements Listener {
                         evt.getEntity().setPickupDelay(0);
                         for (Entity e : evt.getEntity().getNearbyEntities(1, 1, 1)) {
                             if (e instanceof ExperienceOrb) {
-                                e.teleport(Vortex.vortexLocs.get(block));
+                                Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.grabLocs.get(block), ((ExperienceOrb) e).getExperience());
+                                e.remove();
                             }
                         }
                     }

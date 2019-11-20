@@ -193,12 +193,12 @@ public class Anthropomorphism extends CustomEnchantment {
         }
         return false;
     }
-    
+
     private class Pair<K, V> {
-        
+
         private K key;
         private V value;
-        
+
         public Pair(K k, V v) {
             this.key = k;
             this.value = v;
@@ -220,5 +220,5 @@ public class Anthropomorphism extends CustomEnchantment {
             this.value = value;
         }
     }
-    
+
 }

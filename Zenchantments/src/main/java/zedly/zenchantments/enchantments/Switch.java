@@ -69,7 +69,7 @@ public class Switch extends CustomEnchantment {
 
             // Breaking succeeded, begin invasive operations
             Block clickedBlock = evt.getClickedBlock();
-            Grab.grabLocs.put(clickedBlock, evt.getPlayer().getLocation());
+            Grab.grabLocs.put(clickedBlock, evt.getPlayer());
             evt.setCancelled(true);
 
             Material mat = switchItem.getType();

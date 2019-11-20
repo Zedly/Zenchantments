@@ -9,8 +9,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
-        <module>Zenchantments</module>
         <module>CompatibilityAdapter</module>
+        <module>Zenchantments</module>
         <module>NMS_1_13_R1</module>
         <!--<module>NMS_1_13_R2</module>-->
         <module>NMS_1_14_R1</module>

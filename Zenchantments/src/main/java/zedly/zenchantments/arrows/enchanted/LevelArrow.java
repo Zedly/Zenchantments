@@ -11,7 +11,10 @@ public class LevelArrow extends EnchantedArrow {
 	}
 
 	public void onKill(EntityDeathEvent evt) {
-		evt.setDroppedExp((int) (evt.getDroppedExp() * (1.3 + (getLevel() * getPower() * .5))));
-		die();
+		die(true);
 	}
+        
+        public void onImpact() {
+            die(false);
+        }
 }

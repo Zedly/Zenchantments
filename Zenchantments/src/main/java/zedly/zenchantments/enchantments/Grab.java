@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.entity.Player;
 
 import static zedly.zenchantments.enums.Tool.*;
 
@@ -21,7 +22,7 @@ public class Grab extends CustomEnchantment {
 	// Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
 	public static final Set<Block>           fireDropLocs = new HashSet<>();
 	// Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
-	public static final Map<Block, Location> grabLocs     = new HashMap<>();
+	public static final Map<Block, Player> grabLocs     = new HashMap<>();
 	public static final int                  ID           = 23;
 
 	@Override
@@ -40,12 +41,12 @@ public class Grab extends CustomEnchantment {
 
 	@Override
 	public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
-		grabLocs.put(evt.getBlock(), evt.getPlayer().getLocation());
+		grabLocs.put(evt.getBlock(), evt.getPlayer());
 		final Block block = evt.getBlock();
 		//ADAPTER.breakBlockNMS(evt.getBlock(), evt.getPlayer());
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
 			grabLocs.remove(block);
-		}, 15);
+		}, 3);
 		return true;
 	}
 }

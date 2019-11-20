@@ -7,6 +7,8 @@ import java.util.UUID;
 import net.minecraft.server.v1_14_R1.BlockPosition;
 import net.minecraft.server.v1_14_R1.DataWatcher;
 import net.minecraft.server.v1_14_R1.EntityCreeper;
+import net.minecraft.server.v1_14_R1.EntityExperienceOrb;
+import net.minecraft.server.v1_14_R1.EntityHuman;
 import net.minecraft.server.v1_14_R1.EntityMushroomCow;
 import net.minecraft.server.v1_14_R1.EntityPlayer;
 import net.minecraft.server.v1_14_R1.EntitySheep;
@@ -32,7 +34,9 @@ import org.bukkit.event.block.BlockGrowEvent;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Material.TROPICAL_FISH;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftCreeper;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftExperienceOrb;
 import static org.bukkit.entity.EntityType.*;
 import static org.bukkit.entity.EntityType.PUFFERFISH;
 import static org.bukkit.entity.EntityType.VEX;
@@ -939,6 +943,15 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     public boolean breakBlockNMS(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+    }
+    
+    @Override
+    public void collectXP(Player player, int amount) {
+        EntityExperienceOrb eOrb = new EntityExperienceOrb(((CraftWorld)player.getWorld()).getHandle(), 
+                player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), amount);
+        EntityHuman ePlayer = ((CraftPlayer) player).getHandle();
+        eOrb.pickup(ePlayer); // XP Orb Entity handles mending. Don't blame me, I didn't code it
+        ePlayer.bF = 0; // Reset XP Pickup Timer
     }
     
     @Override

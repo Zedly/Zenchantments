@@ -1099,6 +1099,10 @@ public class CompatibilityAdapter {
 
     protected CompatibilityAdapter() {
     }
+    
+    public void collectXP(Player player, int amount) {
+        player.giveExp(amount);
+    }
 
     public boolean breakBlockNMS(Block block, Player player) {
         BlockBreakEvent evt = new BlockBreakEvent(block, player);
