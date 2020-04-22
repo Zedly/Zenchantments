@@ -42,7 +42,7 @@ public class Laser extends CustomEnchantment {
 	}
 
 	public void shoot(Player player, int level, boolean usedHand) {
-		EnchantPlayer.matchPlayer(player).setCooldown(33, 5); // Avoid recursing into Lumber enchant
+		EnchantPlayer.matchPlayer(player).setCooldown(Lumber.ID, 5); // Avoid recursing into Lumber enchant
 		Block blk = player.getTargetBlock(null, 6
 			+ (int) Math.round(level * power * 3));
 		Location playLoc = player.getLocation();
@@ -65,7 +65,7 @@ public class Laser extends CustomEnchantment {
 				}
 			}
 		}
-		if (ADAPTER.isBlockSafeToBreak(blk)) {
+		if (ADAPTER.isBlockSafeToBreak(blk) && !ADAPTER.LaserBlackListBlocks().contains(blk.getType())) {
 			ADAPTER.breakBlockNMS(blk, player);
 		}
 	}

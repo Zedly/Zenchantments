@@ -61,7 +61,7 @@ public class Rainbow extends CustomEnchantment {
 			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
 			evt.setCancelled(true);
 			sheep.setSheared(true);
-			evt.getEntity().getWorld().dropItemNaturally(Utilities.getCenter(evt.getEntity().getLocation()),
+			evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(),
 				new ItemStack(Storage.COMPATIBILITY_ADAPTER.Wools().getRandom(), count));
 		}
 		return true;

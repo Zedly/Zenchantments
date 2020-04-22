@@ -36,13 +36,13 @@ public class Variety extends CustomEnchantment {
 		if (Storage.COMPATIBILITY_ADAPTER.Logs().contains(mat)) {
 			evt.getBlock().setType(AIR);
 			evt.getBlock().getWorld()
-			   .dropItemNaturally(Utilities.getCenter(evt.getBlock()),
+			   .dropItemNaturally(evt.getBlock().getLocation(),
 				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.Logs().getRandom()));
 			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
 		} else if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(mat)) {
 			evt.getBlock().setType(AIR);
 			evt.getBlock().getWorld()
-			   .dropItemNaturally(Utilities.getCenter(evt.getBlock()),
+			   .dropItemNaturally(evt.getBlock().getLocation(),
 				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.Leaves().getRandom()));
 			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
 		}

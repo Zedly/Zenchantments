@@ -117,8 +117,12 @@ public class Watcher implements Listener {
     //      a Grab or Vortex enchantment was used
     @EventHandler
     public void onItemSpawn(final ItemSpawnEvent evt) {
+        if (Fire.cancelledItemDrops.contains(evt.getLocation().getBlock())) {
+            evt.setCancelled(true);
+            return;
+        }
+        Location loc = evt.getEntity().getLocation();
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            Location loc = evt.getEntity().getLocation();
             for (Block block : Grab.grabLocs.keySet()) {
                 if (block.getLocation().getBlockX() == loc.getBlockX()
                         && block.getLocation().getBlockY() == loc.getBlockY()
@@ -148,10 +152,6 @@ public class Watcher implements Listener {
                 }
             }
         }, 1);
-
-        if (Grab.fireDropLocs.contains(evt.getLocation().getBlock())) {
-            evt.setCancelled(true);
-        }
     }
 
     // Prevents players from harvesting materials from the Water Walker and Fire Walker trails

@@ -861,6 +861,14 @@ public class CompatibilityAdapter {
         return UNBREAKABLE_BLOCKS_E;
     }
     //endregion
+    
+    //region Laser Blacklist Blocks
+    private final EnumStorage<Material> LASER_BLACKLIST_BLOCKS = new EnumStorage<>(new Material[]{OBSIDIAN});
+
+    public EnumStorage<Material> LaserBlackListBlocks() {
+        return LASER_BLACKLIST_BLOCKS;
+    }
+    //endregion
 
     //region Storage Blocks
     private final EnumStorage<Material> STORAGE_BLOCKS_E = new EnumStorage<>(new Material[]{DISPENSER, SPAWNER,
@@ -874,7 +882,7 @@ public class CompatibilityAdapter {
     //endregion
     //region Interactable Blocks
     private final EnumStorage<Material> INTERACTABLE_BLOCKS_E = new EnumStorage<>(new Material[]{
-        NOTE_BLOCK, CRAFTING_TABLE, LEVER, REPEATER, ENCHANTING_TABLE, COMPARATOR, DAYLIGHT_DETECTOR, OBSERVER},
+        NOTE_BLOCK, CRAFTING_TABLE, LEVER, REPEATER, ENCHANTING_TABLE, COMPARATOR, DAYLIGHT_DETECTOR, PISTON, OBSERVER},
             Beds(),
             Doors(),
             Trapdoors(),
@@ -893,7 +901,7 @@ public class CompatibilityAdapter {
     //region Enchantment Enum Storage
     //region Terraformer Materials
     private final EnumStorage<Material> TERRAFORMER_MATERIALS_E = new EnumStorage<>(new Material[]{STONE, GRASS_BLOCK,
-        DIRT, COBBLESTONE, SAND, GRAVEL, SANDSTONE, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK, CLAY,
+        DIRT, COBBLESTONE, SAND, RED_SAND, GRAVEL, SANDSTONE, BRICK, TNT, BOOKSHELF, MOSSY_COBBLESTONE, ICE, SNOW_BLOCK, CLAY,
         NETHERRACK, SOUL_SAND, STONE_BRICKS, MYCELIUM, NETHER_BRICK, END_STONE, EMERALD_ORE, QUARTZ_BLOCK, SLIME_BLOCK,
         PRISMARINE, PACKED_ICE, RED_SANDSTONE}, Ores(), Terracottas(), GlazedTerracottas(), Wools(), Woods(), Planks(),
             StrippedLogs(), Logs(), Concretes(), ConcretePowders(), StainedGlass(), StrippedWoods());
@@ -905,7 +913,7 @@ public class CompatibilityAdapter {
 
     //region Lumber Whitelist
     private final EnumStorage<Material> LUMBER_WHITELIST_E = new EnumStorage<>(new Material[]{
-        DIRT, GRASS, VINE, SNOW, COCOA, GRAVEL, STONE, DIORITE, GRANITE, ANDESITE, WATER, LAVA, SAND, BROWN_MUSHROOM,
+        DIRT, GRASS, VINE, SNOW, COCOA, GRAVEL, STONE, DIORITE, GRANITE, ANDESITE, WATER, LAVA, SAND, RED_SAND, BROWN_MUSHROOM,
         RED_MUSHROOM, MOSSY_COBBLESTONE, CLAY, BROWN_MUSHROOM, RED_MUSHROOM, MYCELIUM, TORCH, SUGAR_CANE, GRASS_BLOCK,
         PODZOL, FERN, GRASS, MELON, PUMPKIN}, TrunkBlocks(), Leaves(), SmallFlowers(), LargeFlowers(), Saplings(),
             Airs(), DeadlyPlants());

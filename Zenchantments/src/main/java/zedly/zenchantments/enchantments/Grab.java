@@ -20,8 +20,6 @@ import static zedly.zenchantments.enums.Tool.*;
 public class Grab extends CustomEnchantment {
 
 	// Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
-	public static final Set<Block>           fireDropLocs = new HashSet<>();
-	// Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
 	public static final Map<Block, Player> grabLocs     = new HashMap<>();
 	public static final int                  ID           = 23;
 
