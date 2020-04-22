@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
 public class CompatibilityAdapter {
@@ -1097,9 +1098,66 @@ public class CompatibilityAdapter {
         return INSTANCE;
     }
 
+    // Removes the given ItemStack's durability by the given 'damage' and then sets the item direction the given
+    // players hand.
+    //      This also takes into account the unbreaking enchantment
+    public static void damageTool(Player player, int damage, boolean handUsed) {
+        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+            ItemStack hand
+                    = handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+            for (int i = 0; i < damage; i++) {
+                if (RND.nextInt(100) <= (100 / (hand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                    setDamage(hand, getDamage(hand) + 1);
+                }
+            }
+            if (handUsed) {
+                player.getInventory().setItemInMainHand(
+                        getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
+            } else {
+                player.getInventory().setItemInOffHand(
+                        getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
+            }
+        }
+    }
+
+    // Displays a particle with the given data
+    public static void display(Location loc, Particle particle, int amount, double speed, double xO, double yO,
+            double zO) {
+        loc.getWorld().spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), amount, (float) xO, (float) yO,
+                (float) zO, (float) speed);
+    }
+
+    // Removes the given ItemStack's durability by the given 'damage'
+    //      This also takes into account the unbreaking enchantment
+    public static void addUnbreaking(Player player, ItemStack is, int damage) {
+        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+            for (int i = 0; i < damage; i++) {
+                if (RND.nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                    setDamage(is, getDamage(is) + 1);
+                }
+            }
+        }
+    }
+
+    public static void setDamage(ItemStack is, int damage) {
+        if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
+            org.bukkit.inventory.meta.Damageable dm = ((org.bukkit.inventory.meta.Damageable) is.getItemMeta());
+            dm.setDamage(damage);
+            is.setItemMeta((ItemMeta) dm);
+        }
+    }
+
+    public static int getDamage(ItemStack is) {
+        if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
+            org.bukkit.inventory.meta.Damageable dm = ((org.bukkit.inventory.meta.Damageable) is.getItemMeta());
+            return dm.getDamage();
+        }
+        return 0;
+    }
+
     protected CompatibilityAdapter() {
     }
-    
+
     public void collectXP(Player player, int amount) {
         player.giveExp(amount);
     }
@@ -1109,7 +1167,7 @@ public class CompatibilityAdapter {
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
             block.breakNaturally(player.getInventory().getItemInMainHand());
-            // TODO: Apply tool damage
+            damageTool(player, 1, true);
             return true;
         }
         return false;
@@ -1160,6 +1218,7 @@ public class CompatibilityAdapter {
         if (!damageEvent.isCancelled()) {
             target.damage(damage, attacker);
             target.setLastDamageCause(damageEvent);
+            //damageTool(attacker, 1, true);
             return true;
         }
         return false;
