@@ -1226,7 +1226,7 @@ public class CompatibilityAdapter {
         if (!damageEvent.isCancelled()) {
             target.damage(damage, attacker);
             target.setLastDamageCause(damageEvent);
-            //damageTool(attacker, 1, true);
+            damageTool(attacker, 1, true);
             return true;
         }
         return false;

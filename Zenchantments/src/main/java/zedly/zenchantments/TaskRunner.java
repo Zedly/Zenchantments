@@ -18,52 +18,54 @@ import java.util.logging.Logger;
  *
  */
 public class TaskRunner implements Runnable {
-	private Set<Method> tasks;
-	private Logger      logger;
 
-	/**
-	 * Initializes this EventRunner by collecting all methods with an {@link EffectTask} annotation of
-	 * the specified frequency.
-	 *
-	 * @param freq The frequency of annotation that we'll be running.
-	 */
-	TaskRunner(Frequency freq) {
-		this.logger = Bukkit.getLogger();
+    private Set<Method> tasks;
+    private Logger logger;
 
-		tasks = new HashSet<>();
+    /**
+     * Initializes this EventRunner by collecting all methods with an
+     * {@link EffectTask} annotation of the specified frequency.
+     *
+     * @param freq The frequency of annotation that we'll be running.
+     */
+    TaskRunner(Frequency freq) {
+        this.logger = Bukkit.getLogger();
 
-		new FastClasspathScanner(Zenchantments.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
-			.matchClassesWithMethodAnnotation(
-				EffectTask.class,
-				(clazz, method) -> {
-					if (!Modifier.isStatic(method.getModifiers())) {
-						this.logger.warning(
-							"EffectTask on non-static method '" + method.getName() + "' in class '"
-								+ clazz.getName() + "'");
-					}
-					if (method.getAnnotation(EffectTask.class).value() == freq) {
-						assert method instanceof Method : "Event annotation not valid on constructors";
-						tasks.add((Method) method);
-					}
-				}).scan();
-	}
+        tasks = new HashSet<>();
 
+        new FastClasspathScanner(Zenchantments.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
+                .matchClassesWithMethodAnnotation(
+                        EffectTask.class,
+                        (clazz, method) -> {
+                            if (!Modifier.isStatic(method.getModifiers())) {
+                                this.logger.warning(
+                                        "EffectTask on non-static method '" + method.getName() + "' in class '"
+                                        + clazz.getName() + "'");
+                            }
+                            if (method.getAnnotation(EffectTask.class).value() == freq) {
+                                assert method instanceof Method : "Event annotation not valid on constructors";
+                                tasks.add((Method) method);
+                            }
+                        }).scan();
+    }
 
-	/**
-	 * Runs all methods on subclasses of CustomEnchantment that are annotated with {@link EffectTask}
-	 * and have the same event frequency as this EventRunner.
-	 *
-	 * @see Frequency
-	 */
-	@Override public void run() {
-		for (Method m : tasks) {
-			try {
-				m.invoke(null);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				this.logger.log(Level.SEVERE, "Could not invoke event '" + m.getName() + "' due to \n" + e.getCause(),
-					e);
-				e.printStackTrace();
-			}
-		}
-	}
+    /**
+     * Runs all methods on subclasses of CustomEnchantment that are annotated
+     * with {@link EffectTask} and have the same event frequency as this
+     * EventRunner.
+     *
+     * @see Frequency
+     */
+    @Override
+    public void run() {
+        for (Method m : tasks) {
+            try {
+                m.invoke(null);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                this.logger.log(Level.SEVERE, "Could not invoke event '" + m.getName() + "' due to \n" + e.getCause(),
+                        e);
+                e.printStackTrace();
+            }
+        }
+    }
 }

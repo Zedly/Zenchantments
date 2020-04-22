@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
+import org.bukkit.inventory.PlayerInventory;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
@@ -219,8 +220,11 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         return this.getLoreName().compareTo(o.getLoreName());
     }
 
+    
+    
     //endregion
     public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
+        
         getEnchants(tool, player.getWorld()).forEach((CustomEnchantment ench, Integer level) -> {
             if (!ench.used && Utilities.canUse(player, ench.id)) {
                 try {
