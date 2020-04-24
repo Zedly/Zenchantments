@@ -23,6 +23,8 @@ import zedly.zenchantments.enums.Tool;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.Triple;
 
 import static org.bukkit.Material.AIR;
@@ -40,6 +42,7 @@ import static zedly.zenchantments.enums.Tool.BOW;
 public class WatcherEnchant implements Listener {
 
     private static final WatcherEnchant INSTANCE = new WatcherEnchant();
+    private static final HighFrequencyRunnableCache cache = new HighFrequencyRunnableCache(WatcherEnchant::feedEnchCache, 5);
 
     public static WatcherEnchant instance() {
         return INSTANCE;
@@ -309,8 +312,6 @@ public class WatcherEnchant implements Listener {
     // TODO: rename
     // Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
     public static void scanPlayers2() {
-        long argh = System.nanoTime();
-        HIGH_FREQ_ENCH_CACHE.clear();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasMetadata("ze.haste")) {
                 boolean has = false;
@@ -325,63 +326,37 @@ public class WatcherEnchant implements Listener {
                     player.removeMetadata("ze.haste", Storage.zenchantments);
                 }
             }
-
-            EnchantPlayer.matchPlayer(player).tick();
-
-            for (ItemStack stk : player.getInventory().getArmorContents()) {
-                CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
-                    HIGH_FREQ_ENCH_CACHE.add(Triple.of(player, ench, level));
-                    return ench.onScan(player, level, true);
-                });
-            }
-            ItemStack stk = player.getInventory().getItemInMainHand();
-            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
-                return ench.onScanHands(player, level, true);
-            });
-            stk = player.getInventory().getItemInOffHand();
-            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
-                return ench.onScanHands(player, level, false);
-            });
-
         }
-        long time2 = System.nanoTime() - argh;
-        //System.out.println(time2);
-        argh++;
     }
 
-    private static final Collection<Triple<Player, CustomEnchantment, Integer>> HIGH_FREQ_ENCH_CACHE = new ArrayList<>();
-
-    @EffectTask(Frequency.HIGH)
-    // Fast Scan of Player's Armor and their hand to register enchantments
+    @EffectTask(Frequency.HIGH) // Fast Scan of Player's Armor and their hand to register enchantments
     public static void scanPlayers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             EnchantPlayer enchPlayer = EnchantPlayer.matchPlayer(player);
             if (enchPlayer != null) {
                 enchPlayer.tick();
             }
+        }
 
-            for (Triple<Player, CustomEnchantment, Integer> triple : HIGH_FREQ_ENCH_CACHE) {
-                if (triple.getMiddle().onFastScan(triple.getLeft(), triple.getRight(), true)) {
-                    EnchantPlayer.matchPlayer(player).setCooldown(triple.getMiddle().id, triple.getMiddle().cooldown);
-                }
-            }
+        // Sweeping scan over the player list for armor enchants
+        cache.run();
+    }
 
-            /*
-            for (ItemStack stk : player.getInventory().getArmorContents()) {
-                CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
-                    return ench.onFastScan(player, level, true);
+    // Implicitly scheduled MEDIUM_HIGH due to being called by HighFrequencyEnchCache with interval 5
+    private static void feedEnchCache(Player player, Consumer<Supplier<Boolean>> consoomer) {
+        for (ItemStack stk : player.getInventory().getArmorContents()) {
+            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
+                consoomer.accept(() -> {
+                    if (!player.isOnline()) {
+                        return false;
+                    }
+                    if (ench.onFastScan(player, level, true)) {
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                    }
+                    return true;
                 });
-            }
-
-            ItemStack stk = player.getInventory().getItemInMainHand();
-            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
-                return ench.onFastScanHands(player, level, true);
+                return ench.onScan(player, level, true);
             });
-            stk = player.getInventory().getItemInOffHand();
-            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
-                return ench.onFastScanHands(player, level, false);
-            });
-             */
         }
     }
 }
