@@ -358,5 +358,29 @@ public class WatcherEnchant implements Listener {
                 return ench.onScan(player, level, true);
             });
         }
+        CustomEnchantment.applyForTool(player, player.getInventory().getItemInMainHand(), (ench, level) -> {
+            consoomer.accept(() -> {
+                if (!player.isOnline()) {
+                    return false;
+                }
+                if (ench.onFastScanHands(player, level, true)) {
+                    EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                }
+                return true;
+            });
+            return ench.onScanHands(player, level, true);
+        });
+        CustomEnchantment.applyForTool(player, player.getInventory().getItemInOffHand(), (ench, level) -> {
+            consoomer.accept(() -> {
+                if (!player.isOnline()) {
+                    return false;
+                }
+                if (ench.onFastScanHands(player, level, false)) {
+                    EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                }
+                return true;
+            });
+            return ench.onScanHands(player, level, false);
+        });
     }
 }

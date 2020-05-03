@@ -223,8 +223,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     
     
     //endregion
-    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
-        
+    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {    
         getEnchants(tool, player.getWorld()).forEach((CustomEnchantment ench, Integer level) -> {
             if (!ench.used && Utilities.canUse(player, ench.id)) {
                 try {
