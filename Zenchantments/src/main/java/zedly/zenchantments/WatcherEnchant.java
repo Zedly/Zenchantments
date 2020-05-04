@@ -32,6 +32,7 @@ import static org.bukkit.entity.EntityType.HORSE;
 import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
+import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.enums.Tool.BOW;
 
@@ -352,6 +353,7 @@ public class WatcherEnchant implements Listener {
         long currentTime = System.currentTimeMillis();
         if (player.hasMetadata("ze.speed") && (player.getMetadata("ze.speed").get(0).asLong() < currentTime - 1000)) {
             player.removeMetadata("ze.speed", Storage.zenchantments);
+            player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
             player.setFlySpeed(0.1F);
             player.setWalkSpeed(0.2F);
         }
