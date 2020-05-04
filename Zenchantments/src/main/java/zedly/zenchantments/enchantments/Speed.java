@@ -31,7 +31,7 @@ public class Speed extends CustomEnchantment {
 	public boolean onScan(Player player, int level, boolean usedHand) {
 		player.setWalkSpeed((float) Math.min((.05f * level * power) + .2f, 1));
 		player.setFlySpeed((float) Math.min((.05f * level * power) + .2f, 1));
-		player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, true));
+		player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
 		return true;
 	}
 }

@@ -288,44 +288,10 @@ public class WatcherEnchant implements Listener {
         }
     }
 
-    @EffectTask(Frequency.SLOW)
-    public static void updateDescrptions() {
+    // Sets player fly and walk speed to default after certain enchantments are removed
+    static void speedPlayers(boolean clearAll) {
+        long currentTime = System.currentTimeMillis();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
-                    player.getInventory().getArmorContents(), player.getInventory().getContents())) {
-                CustomEnchantment.setEnchantment(stk, null, 0, player.getWorld());
-            }
-        }
-    }
-
-    @EffectTask(Frequency.SLOW)
-    public static void updateToNewFormat() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
-                    player.getInventory().getArmorContents(), player.getInventory().getContents())) {
-                CustomEnchantment.updateToNewFormat(stk, player.getWorld());
-            }
-        }
-    }
-
-    @EffectTask(Frequency.MEDIUM_HIGH)
-    // TODO: rename
-    // Scan of Player's Armor and their hand to register enchantments & make enchantment descriptions
-    public static void scanPlayers2() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.hasMetadata("ze.haste")) {
-                boolean has = false;
-                for (CustomEnchantment e : CustomEnchantment.getEnchants(
-                        player.getInventory().getItemInMainHand(), player.getWorld()).keySet()) {
-                    if (e.getClass().equals(Haste.class)) {
-                        has = true;
-                    }
-                }
-                if (!has) {
-                    player.removePotionEffect(FAST_DIGGING);
-                    player.removeMetadata("ze.haste", Storage.zenchantments);
-                }
-            }
         }
     }
 
@@ -382,5 +348,17 @@ public class WatcherEnchant implements Listener {
             });
             return ench.onScanHands(player, level, false);
         });
+
+        long currentTime = System.currentTimeMillis();
+        if (player.hasMetadata("ze.speed") && (player.getMetadata("ze.speed").get(0).asLong() < currentTime - 1000)) {
+            player.removeMetadata("ze.speed", Storage.zenchantments);
+            player.setFlySpeed(0.1F);
+            player.setWalkSpeed(0.2F);
+        }
+
+        if (player.hasMetadata("ze.haste") && (player.getMetadata("ze.haste").get(0).asLong() < currentTime - 1000)) {
+            player.removePotionEffect(FAST_DIGGING);
+            player.removeMetadata("ze.haste", Storage.zenchantments);
+        }
     }
 }

@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static org.bukkit.Material.*;
+import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
 public class Zenchantments extends JavaPlugin {
 
@@ -32,36 +33,9 @@ public class Zenchantments extends JavaPlugin {
         Config.loadConfigs();
     }
 
-    @EffectTask(Frequency.MEDIUM_HIGH)
-    public static void speedPlayers() {
-        speedPlayers(false);
-    }
-
-    // Sets player fly and walk speed to default after certain enchantments are removed
-    private static void speedPlayers(boolean checkAll) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            boolean check = false;
-            for (ItemStack stk : player.getInventory().getArmorContents()) {
-                Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(stk, player.getWorld());
-                Class[] enchs = new Class[]{Weight.class, Speed.class, Meador.class};
-                for (CustomEnchantment ench : map.keySet()) {
-                    if (ArrayUtils.contains(enchs, ench.getClass())) {
-                        check = true;
-                    }
-                }
-            }
-            if (player.hasMetadata("ze.speed") && (!check || checkAll)) {
-                player.removeMetadata("ze.speed", Storage.zenchantments);
-                player.setFlySpeed(.1f);
-                player.setWalkSpeed(.2f);
-                break;
-            }
-        }
-    }
-
     // Sets blocks to their natural states at shutdown
     public void onDisable() {
-        speedPlayers(true);
+        WatcherEnchant.speedPlayers(true);
         getServer().getScheduler().cancelTasks(this);
         for (Location l : FrozenStep.frozenLocs.keySet()) {
             l.getBlock().setType(WATER);
@@ -71,6 +45,18 @@ public class Zenchantments extends JavaPlugin {
         }
         for (Entity e : Anthropomorphism.idleBlocks.keySet()) {
             e.remove();
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.hasMetadata("ze.speed")) {
+                player.removeMetadata("ze.speed", Storage.zenchantments);
+                player.setFlySpeed(0.1F);
+                player.setWalkSpeed(0.2F);
+            }
+
+            if (player.hasMetadata("ze.haste")) {
+                player.removePotionEffect(FAST_DIGGING);
+                player.removeMetadata("ze.haste", Storage.zenchantments);
+            }
         }
     }
 
@@ -141,6 +127,16 @@ public class Zenchantments extends JavaPlugin {
         return false;
     }
 
+    private static void updateDescrptions() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (ItemStack stk : (ItemStack[]) org.apache.commons.lang.ArrayUtils.addAll(
+                    player.getInventory().getArmorContents(), player.getInventory().getContents())) {
+                CustomEnchantment.setEnchantment(stk, null, 0, player.getWorld());
+                CustomEnchantment.updateToNewFormat(stk, player.getWorld());
+            }
+        }
+    }
+
     // Loads configs and starts tasks
     public void onEnable() {
         Storage.zenchantments = this;
@@ -156,6 +152,10 @@ public class Zenchantments extends JavaPlugin {
         for (Frequency f : Frequency.values()) {
             getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(f), 1, f.period);
         }
+        if(getConfig().getBoolean("forceUpdateDescriptions")) {
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, Zenchantments::updateDescrptions, 1, 200);
+        }
+        
 
         int[][] ALL_SEARCH_FACES = new int[27][3];
         int i = 0;

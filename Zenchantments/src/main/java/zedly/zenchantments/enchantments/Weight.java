@@ -67,7 +67,7 @@ public class Weight extends CustomEnchantment {
 	) {
 		player.setWalkSpeed((float) (.164f - level * power * .014f));
 		Utilities.addPotion(player, INCREASE_DAMAGE, 610, (int) Math.round(power * level));
-		player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, true));
+		player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
 		return true;
 	}
 }
