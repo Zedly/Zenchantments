@@ -40,8 +40,8 @@ public class Siphon extends CustomEnchantment {
             Player player = (Player) evt.getDamager();
             int difference = (int) Math.round(.17 * level * power * evt.getDamage());
             while (difference > 0) {
-                if (player.getHealth() <= player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
-                    player.setHealth(player.getHealth() + 1);
+                if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
+                    player.setHealth(Math.min(player.getHealth() + 1, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
                 }
                 difference--;
             }
