@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
@@ -52,7 +53,7 @@ public class WatcherEnchant implements Listener {
     private WatcherEnchant() {
     }
 
-    @EventHandler(ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
     public void onBlockBreak(BlockBreakEvent evt) {
         if (!evt.isCancelled() && !(evt instanceof BlockShredEvent) && evt.getBlock().getType() != AIR) {
             Player player = evt.getPlayer();
@@ -64,6 +65,7 @@ public class WatcherEnchant implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
     public void onBlockShred(BlockShredEvent evt) {
         if (!evt.isCancelled() && evt.getBlock().getType() != AIR) {
             Player player = evt.getPlayer();
