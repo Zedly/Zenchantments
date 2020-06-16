@@ -3,6 +3,8 @@ package zedly.zenchantments;
 import java.util.ArrayList;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -10,6 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -18,7 +23,9 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.enchantments.FrozenStep;
 import zedly.zenchantments.enchantments.Haste;
+import zedly.zenchantments.enchantments.NetherStep;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Tool;
 
@@ -77,6 +84,88 @@ public class WatcherEnchant implements Listener {
         }
     }
 
+    /**
+     * This event is not thrown within regular spigot, however certain plugins may throw it, which is why this EventHandler exists
+     * @param evt The event
+     */
+    @EventHandler(ignoreCancelled = false)
+    public void onBlockExplodeEvent(BlockExplodeEvent evt) {
+    	for (Block block: evt.blockList()) {
+    		isProtectedBlock(block, false);
+    	}
+		isProtectedBlock(evt.getBlock(), false);
+    }
+    
+    @EventHandler(ignoreCancelled = false)
+    public void onEntityExplodeEvent(EntityExplodeEvent evt) {
+    	for (Block block: evt.blockList()) {
+    		isProtectedBlock(block, true);
+    	}
+    }
+    
+    @EventHandler(ignoreCancelled = false)
+    public void onBlockPistonExtendEvent(BlockPistonExtendEvent evt) {
+    	for (Block block: evt.getBlocks()) {
+    		if (isProtectedBlock(block, false)) {
+    			evt.setCancelled(true);
+    		}
+    	}
+    }
+    
+    @EventHandler(ignoreCancelled = false)
+    public void onBlockPistonRetractEvent(BlockPistonRetractEvent evt) {
+    	for (Block block: evt.getBlocks()) {
+    		if (isProtectedBlock(block, false)) {
+    			evt.setCancelled(true);
+    		}
+    	}
+    }
+    
+    /**
+     * This method returns whether a block is protected by the plugin and whether it should be considered <br>
+     * <!-- TODO: This functionality should be implemented through another way -->
+     * Note that this is not cached and repeated queries may affect performance.
+     * @param block The block to query
+     * @param remove Whether to remove the entry, if found
+     * @return True if the Block is considered protected and should thus not be removed
+     * @author Geolykt
+     */
+    public boolean isProtectedBlock(Block block, boolean remove) {
+    	Location a = block.getLocation();
+		/* Check whether the block was placed by either NetherStep or FrozenStep, other Enchantment might be also added
+		 * 
+		 * FIXME this is not a very clean way to do this. A proposed (better?) way of doing this would be by changing NetherStep and
+		 * FrozenStep in a way that they inherit a method that would check whether a given block was placed by them. This would allow for
+		 * easier upscaling.
+		 */
+    	for (Location b : NetherStep.netherstepLocs.keySet()) {
+        	if (a.getBlockX() == b.getBlockX()) {
+        		if (a.getBlockZ() == b.getBlockZ()) {
+        			if (a.getBlockY() == b.getBlockY()) {
+        	        	if (remove) {
+        	        		NetherStep.netherstepLocs.remove(b);
+        	        	}
+        				return true;
+        			}
+        		}
+        	}
+    	}
+    	for (Location b : FrozenStep.frozenLocs.keySet()) {
+        	if (a.getBlockX() == b.getBlockX()) {
+        		if (a.getBlockZ() == b.getBlockZ()) {
+        			if (a.getBlockY() == b.getBlockY()) {
+        	        	if (remove) {
+        	        		FrozenStep.frozenLocs.remove(b);
+        	        	}
+        				return true;
+        			}
+        		}
+        	}
+    	}
+    	
+    	return false;
+    }
+    
     @EventHandler(ignoreCancelled = false)
     public void onBlockInteract(PlayerInteractEvent evt) {
         if (evt.getClickedBlock() == null || !Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(evt.getClickedBlock().getType())) {
