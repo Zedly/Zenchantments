@@ -90,35 +90,35 @@ public class WatcherEnchant implements Listener {
      */
     @EventHandler(ignoreCancelled = false)
     public void onBlockExplodeEvent(BlockExplodeEvent evt) {
-    	for (Block block: evt.blockList()) {
-    		isProtectedBlock(block, false);
-    	}
-		isProtectedBlock(evt.getBlock(), false);
+        for (Block block: evt.blockList()) {
+            isProtectedBlock(block, false);
+        }
+        isProtectedBlock(evt.getBlock(), false);
     }
     
     @EventHandler(ignoreCancelled = false)
     public void onEntityExplodeEvent(EntityExplodeEvent evt) {
-    	for (Block block: evt.blockList()) {
-    		isProtectedBlock(block, true);
-    	}
+        for (Block block: evt.blockList()) {
+            isProtectedBlock(block, true);
+        }
     }
     
     @EventHandler(ignoreCancelled = false)
     public void onBlockPistonExtendEvent(BlockPistonExtendEvent evt) {
-    	for (Block block: evt.getBlocks()) {
-    		if (isProtectedBlock(block, false)) {
-    			evt.setCancelled(true);
-    		}
-    	}
+        for (Block block: evt.getBlocks()) {
+            if (isProtectedBlock(block, false)) {
+                evt.setCancelled(true);
+            }
+        }
     }
     
     @EventHandler(ignoreCancelled = false)
     public void onBlockPistonRetractEvent(BlockPistonRetractEvent evt) {
-    	for (Block block: evt.getBlocks()) {
-    		if (isProtectedBlock(block, false)) {
-    			evt.setCancelled(true);
-    		}
-    	}
+        for (Block block: evt.getBlocks()) {
+            if (isProtectedBlock(block, false)) {
+                evt.setCancelled(true);
+            }
+        }
     }
     
     /**
@@ -131,39 +131,39 @@ public class WatcherEnchant implements Listener {
      * @author Geolykt
      */
     public boolean isProtectedBlock(Block block, boolean remove) {
-    	Location a = block.getLocation();
-		/* Check whether the block was placed by either NetherStep or FrozenStep, other Enchantment might be also added
-		 * 
-		 * FIXME this is not a very clean way to do this. A proposed (better?) way of doing this would be by changing NetherStep and
-		 * FrozenStep in a way that they inherit a method that would check whether a given block was placed by them. This would allow for
-		 * easier upscaling.
-		 */
-    	for (Location b : NetherStep.netherstepLocs.keySet()) {
-        	if (a.getBlockX() == b.getBlockX()) {
-        		if (a.getBlockZ() == b.getBlockZ()) {
-        			if (a.getBlockY() == b.getBlockY()) {
-        	        	if (remove) {
-        	        		NetherStep.netherstepLocs.remove(b);
-        	        	}
-        				return true;
-        			}
-        		}
-        	}
-    	}
-    	for (Location b : FrozenStep.frozenLocs.keySet()) {
-        	if (a.getBlockX() == b.getBlockX()) {
-        		if (a.getBlockZ() == b.getBlockZ()) {
-        			if (a.getBlockY() == b.getBlockY()) {
-        	        	if (remove) {
-        	        		FrozenStep.frozenLocs.remove(b);
-        	        	}
-        				return true;
-        			}
-        		}
-        	}
-    	}
-    	
-    	return false;
+        Location a = block.getLocation();
+        /* Check whether the block was placed by either NetherStep or FrozenStep, other Enchantment might be also added
+         * 
+         * FIXME this is not a very clean way to do this. A proposed (better?) way of doing this would be by changing NetherStep and
+         * FrozenStep in a way that they inherit a method that would check whether a given block was placed by them. This would allow for
+         * easier upscaling.
+         */
+        for (Location b : NetherStep.netherstepLocs.keySet()) {
+            if (a.getBlockX() == b.getBlockX()) {
+                if (a.getBlockZ() == b.getBlockZ()) {
+                    if (a.getBlockY() == b.getBlockY()) {
+                        if (remove) {
+                            NetherStep.netherstepLocs.remove(b);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        for (Location b : FrozenStep.frozenLocs.keySet()) {
+            if (a.getBlockX() == b.getBlockX()) {
+                if (a.getBlockZ() == b.getBlockZ()) {
+                    if (a.getBlockY() == b.getBlockY()) {
+                        if (remove) {
+                            FrozenStep.frozenLocs.remove(b);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
     }
     
     @EventHandler(ignoreCancelled = false)
