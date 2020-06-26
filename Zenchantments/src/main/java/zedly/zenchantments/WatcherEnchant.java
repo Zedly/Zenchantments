@@ -85,28 +85,36 @@ public class WatcherEnchant implements Listener {
     }
 
     /**
-     * This event is not thrown within regular spigot, however certain plugins may throw it, which is why this EventHandler exists
-     * @param evt The event
+     * This event is not thrown within regular bukkit, however certain plugins may throw it, which is why this EventHandler exists
      */
     @EventHandler(ignoreCancelled = false)
     public void onBlockExplodeEvent(BlockExplodeEvent evt) {
         for (Block block: evt.blockList()) {
-            isProtectedBlock(block, false);
+            if (isProtectedBlock(block)) {
+                evt.setCancelled(true);
+                return;
+            }
         }
-        isProtectedBlock(evt.getBlock(), false);
+        if (isProtectedBlock(evt.getBlock())) {
+            evt.setCancelled(true);
+            return;
+        }
     }
     
     @EventHandler(ignoreCancelled = false)
     public void onEntityExplodeEvent(EntityExplodeEvent evt) {
         for (Block block: evt.blockList()) {
-            isProtectedBlock(block, true);
+            if (isProtectedBlock(block)) {
+                evt.setCancelled(true);
+                return;
+            }
         }
     }
     
     @EventHandler(ignoreCancelled = false)
     public void onBlockPistonExtendEvent(BlockPistonExtendEvent evt) {
         for (Block block: evt.getBlocks()) {
-            if (isProtectedBlock(block, false)) {
+            if (isProtectedBlock(block)) {
                 evt.setCancelled(true);
             }
         }
@@ -115,55 +123,20 @@ public class WatcherEnchant implements Listener {
     @EventHandler(ignoreCancelled = false)
     public void onBlockPistonRetractEvent(BlockPistonRetractEvent evt) {
         for (Block block: evt.getBlocks()) {
-            if (isProtectedBlock(block, false)) {
+            if (isProtectedBlock(block)) {
                 evt.setCancelled(true);
             }
         }
     }
     
     /**
-     * This method returns whether a block is protected by the plugin and whether it should be considered <br>
-     * <!-- TODO: This functionality should be implemented through another way -->
-     * Note that this is not cached and repeated queries may affect performance.
+     * Returns whether a block was protected.
+     * 
      * @param block The block to query
-     * @param remove Whether to remove the entry, if found
-     * @return True if the Block is considered protected and should thus not be removed
-     * @author Geolykt
+     * @return True if the block is considered protected
      */
-    public boolean isProtectedBlock(Block block, boolean remove) {
-        Location a = block.getLocation();
-        /* Check whether the block was placed by either NetherStep or FrozenStep, other Enchantment might be also added
-         * 
-         * FIXME this is not a very clean way to do this. A proposed (better?) way of doing this would be by changing NetherStep and
-         * FrozenStep in a way that they inherit a method that would check whether a given block was placed by them. This would allow for
-         * easier upscaling.
-         */
-        for (Location b : NetherStep.netherstepLocs.keySet()) {
-            if (a.getBlockX() == b.getBlockX()) {
-                if (a.getBlockZ() == b.getBlockZ()) {
-                    if (a.getBlockY() == b.getBlockY()) {
-                        if (remove) {
-                            NetherStep.netherstepLocs.remove(b);
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        for (Location b : FrozenStep.frozenLocs.keySet()) {
-            if (a.getBlockX() == b.getBlockX()) {
-                if (a.getBlockZ() == b.getBlockZ()) {
-                    if (a.getBlockY() == b.getBlockY()) {
-                        if (remove) {
-                            FrozenStep.frozenLocs.remove(b);
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        
-        return false;
+    public boolean isProtectedBlock(Block block) {
+        return NetherStep.netherstepLocs.containsKey(block.getLocation()) || FrozenStep.frozenLocs.containsKey(block.getLocation());
     }
     
     @EventHandler(ignoreCancelled = false)
@@ -203,10 +176,6 @@ public class WatcherEnchant implements Listener {
                 return ench.onEntityInteract(evt, level, usedHand);
             });
         }
-    }
-
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent evt) {
     }
 
     @EventHandler
