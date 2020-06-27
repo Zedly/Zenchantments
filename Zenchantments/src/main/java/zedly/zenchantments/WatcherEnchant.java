@@ -135,7 +135,7 @@ public class WatcherEnchant implements Listener {
      * @param block The block to query
      * @return True if the block is considered protected
      */
-    public boolean isProtectedBlock(Block block) {
+    private boolean isProtectedBlock(Block block) {
         return NetherStep.netherstepLocs.containsKey(block.getLocation()) || FrozenStep.frozenLocs.containsKey(block.getLocation());
     }
     
