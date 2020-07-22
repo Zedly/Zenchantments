@@ -27,8 +27,8 @@ import java.util.function.Supplier;
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
 
-// CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
-//      and will override any methods as neccecary in its behavior
+// CustomEnchantment is the default structure for any enchantment. Each enchantment below it will extend this class
+//      and will override any methods as nessecary in its behavior
 public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
 	protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 	protected              int                  id;
@@ -43,14 +43,14 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 	protected double  power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no
 	// effect
 	protected Hand    handUse;
-	// Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
+	// Which hands an enchantment has actions for; 0 = none, 1 = left, 2 = right, 3 = both
 	private   boolean used;
 	// Indicates that an enchantment has already been applied to an event, avoiding infinite regress
 	protected boolean isCursed;
 
 	public abstract Builder<? extends CustomEnchantment> defaults();
 
-	//region Enchanment Events
+	//region Enchantment Events
 
 	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
 		return false;
@@ -389,7 +389,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 	 *
 	 * @param m The material to test.
 	 *
-	 * @return true iff the material can be enchanted with this enchantment.
+	 * @return true if the material can be enchanted with this enchantment.
 	 */
 	// Returns true if the given material (tool) is compatible with the enchantment, otherwise false
 	public boolean validMaterial(Material m) {
@@ -406,7 +406,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 	 *
 	 * @param m The stack of material to test.
 	 *
-	 * @return true iff the stack of material can be enchanted with this enchantment.
+	 * @return true if the stack of material can be enchanted with this enchantment.
 	 */
 	public boolean validMaterial(ItemStack m) {
 		return validMaterial(m.getType());
