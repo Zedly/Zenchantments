@@ -33,6 +33,7 @@ import org.bukkit.inventory.PlayerInventory;
 public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
+    public static IEnchGatherer Enchantment_Adapter = new LegacyLoreGatherer();
     protected int id;
 
     protected int maxLevel;         // Max level the given enchant can naturally obtain
@@ -654,5 +655,107 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         public T build() {
             return customEnchantment;
         }
+    } 
+    public static interface IEnchGatherer {
+    	// Returns a mapping of custom enchantments and their level on a given tool
+        public abstract LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
+                List<String> outExtraLore);
+
+        // Returns a mapping of custom enchantments and their level on a given tool
+        public abstract LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+                World world);
+
+        // Returns a mapping of custom enchantments and their level on a given tool
+        public abstract LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world);
+
+        public abstract LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+                World world,
+                List<String> outExtraLore);
+    }
+    
+    /**
+     * The legacy Adapter for gathering Enchantments used up until 1.16
+     */
+    static class LegacyLoreGatherer implements IEnchGatherer {
+    	// Returns a mapping of custom enchantments and their level on a given tool
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
+                List<String> outExtraLore) {
+            return getEnchants(stk, false, world, outExtraLore);
+        }
+
+        // Returns a mapping of custom enchantments and their level on a given tool
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+                World world) {
+            return getEnchants(stk, acceptBooks, world, null);
+        }
+
+        // Returns a mapping of custom enchantments and their level on a given tool
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world) {
+            return getEnchants(stk, false, world, null);
+        }
+
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+                World world,
+                List<String> outExtraLore) {
+            Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
+            if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
+                if (stk.hasItemMeta()) {
+                    if (stk.getItemMeta().hasLore()) {
+                        List<String> lore = stk.getItemMeta().getLore();
+                        for (String raw : lore) {
+                            Map.Entry<CustomEnchantment, Integer> ench = getEnchant(raw, world);
+                            if (ench != null) {
+                                map.put(ench.getKey(), ench.getValue());
+                            } else {
+                                if (outExtraLore != null) {
+                                    outExtraLore.add(raw);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            LinkedHashMap<CustomEnchantment, Integer> finalMap = new LinkedHashMap<>();
+            for (int id : new int[]{Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID}) {
+                CustomEnchantment e = null;
+                for (CustomEnchantment en : Config.allEnchants) {
+                    if (en.getId() == id) {
+                        e = en;
+                    }
+                }
+                if (map.containsKey(e)) {
+                    finalMap.put(e, map.get(e));
+                    map.remove(e);
+                }
+            }
+            finalMap.putAll(map);
+            return finalMap;
+        }
+
+        // Returns the custom enchantment from the lore name
+        private Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
+            Map<String, Boolean> unescaped = Utilities.fromInvisibleString(raw);
+            for (Map.Entry<String, Boolean> entry : unescaped.entrySet()) {
+                if (!entry.getValue()) {
+                    String[] vals = entry.getKey().split("\\.");
+                    if (vals.length == 4 && vals[0].equals("ze") && vals[1].equals("ench")) {
+                        int enchID = Integer.parseInt(vals[2]);
+                        int enchLvl = Integer.parseInt(vals[3]);
+                        CustomEnchantment ench = Config.get(world).enchantFromID(enchID);
+                        if (ench == null) {
+                            continue;
+                        }
+                        return new AbstractMap.SimpleEntry<>(ench, enchLvl);
+                    }
+                }
+            }
+            return null;
+        }
+    }
+    
     }
 }
