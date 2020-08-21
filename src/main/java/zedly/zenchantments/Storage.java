@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
-import zedly.zenchantments.compatibility.NMS_1_15_R1;
+import zedly.zenchantments.compatibility.NMS_1_16_R1;
 
 import java.util.*;
 
@@ -42,10 +42,8 @@ public class Storage {
         String nmsVersionString = versionString.substring(versionString.lastIndexOf('.') + 1);
         System.out.println("Zenchantments: Detected NMS version \"" + nmsVersionString + "\"");
         switch (nmsVersionString) {
-            case "v1_15_R1":
-            case "v1_15_1_R1":
-            case "v1_15_2_R1":
-                COMPATIBILITY_ADAPTER = NMS_1_15_R1.getInstance();
+            case "v1_16_R2":
+                COMPATIBILITY_ADAPTER = NMS_1_16_R1.getInstance();
                 break;
             default:
                 System.out.println(

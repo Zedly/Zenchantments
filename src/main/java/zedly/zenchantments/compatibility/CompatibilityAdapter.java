@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Material.TROPICAL_FISH;
+import org.bukkit.block.data.type.Bamboo;
 import static org.bukkit.entity.EntityType.*;
 import static org.bukkit.entity.EntityType.PUFFERFISH;
 import org.bukkit.event.block.Action;
@@ -193,7 +194,8 @@ public class CompatibilityAdapter {
     //endregion
     //region Woods
     //region Signs
-    private final EnumStorage<Material> SIGNS_E = new EnumStorage<>(new Material[]{ACACIA_SIGN});
+    private final EnumStorage<Material> SIGNS_E = new EnumStorage<>(new Material[]{OAK_SIGN, BIRCH_SIGN, SPRUCE_SIGN, ACACIA_SIGN,
+        DARK_OAK_SIGN, JUNGLE_SIGN, CRIMSON_SIGN, WARPED_SIGN});
 
     public EnumStorage<Material> Signs() {
         return SIGNS_E;
@@ -201,8 +203,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Boats
-    private final EnumStorage<Material> BOATS_E = new EnumStorage<>(new Material[]{ACACIA_BOAT, BIRCH_BOAT,
-        DARK_OAK_BOAT, JUNGLE_BOAT, OAK_BOAT, SPRUCE_BOAT});
+    private final EnumStorage<Material> BOATS_E = new EnumStorage<>(new Material[]{OAK_BOAT, BIRCH_BOAT, SPRUCE_BOAT, ACACIA_BOAT,
+        DARK_OAK_BOAT, JUNGLE_BOAT});
 
     public EnumStorage<Material> Boats() {
         return BOATS_E;
@@ -210,8 +212,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Wood Buttons
-    private final EnumStorage<Material> WOOD_BUTTONS_E = new EnumStorage<>(new Material[]{ACACIA_BUTTON, BIRCH_BUTTON,
-        DARK_OAK_BUTTON, JUNGLE_BUTTON, OAK_BUTTON, SPRUCE_BUTTON});
+    private final EnumStorage<Material> WOOD_BUTTONS_E = new EnumStorage<>(new Material[]{OAK_BUTTON, BIRCH_BUTTON, SPRUCE_BUTTON, ACACIA_BUTTON,
+        DARK_OAK_BUTTON, JUNGLE_BUTTON, CRIMSON_BUTTON, WARPED_BUTTON});
 
     public EnumStorage<Material> WoodButtons() {
         return WOOD_BUTTONS_E;
@@ -219,8 +221,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Wood Doors
-    private final EnumStorage<Material> WOOD_DOORS_E = new EnumStorage<>(new Material[]{ACACIA_DOOR, BIRCH_DOOR,
-        DARK_OAK_DOOR, JUNGLE_DOOR, OAK_DOOR, SPRUCE_DOOR});
+    private final EnumStorage<Material> WOOD_DOORS_E = new EnumStorage<>(new Material[]{OAK_DOOR, BIRCH_DOOR, SPRUCE_DOOR, ACACIA_DOOR,
+        DARK_OAK_DOOR, JUNGLE_DOOR, CRIMSON_DOOR, WARPED_DOOR});
 
     public EnumStorage<Material> WoodDoors() {
         return WOOD_DOORS_E;
@@ -228,8 +230,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Wood Fences
-    private final EnumStorage<Material> WOOD_FENCES_E = new EnumStorage<>(new Material[]{ACACIA_FENCE, BIRCH_FENCE,
-        DARK_OAK_FENCE, JUNGLE_FENCE, OAK_FENCE, SPRUCE_FENCE});
+    private final EnumStorage<Material> WOOD_FENCES_E = new EnumStorage<>(new Material[]{OAK_FENCE, BIRCH_FENCE, SPRUCE_FENCE, ACACIA_FENCE,
+        DARK_OAK_FENCE, JUNGLE_FENCE, CRIMSON_FENCE, WARPED_FENCE});
 
     public EnumStorage<Material> WoodFences() {
         return WOOD_FENCES_E;
@@ -237,8 +239,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Fence Gates
-    private final EnumStorage<Material> FENCE_GATES_E = new EnumStorage<>(new Material[]{ACACIA_FENCE_GATE,
-        BIRCH_FENCE_GATE, DARK_OAK_FENCE_GATE, JUNGLE_FENCE_GATE, OAK_FENCE_GATE, SPRUCE_FENCE_GATE});
+    private final EnumStorage<Material> FENCE_GATES_E = new EnumStorage<>(new Material[]{OAK_FENCE_GATE, BIRCH_FENCE_GATE, SPRUCE_FENCE_GATE, ACACIA_FENCE_GATE,
+        DARK_OAK_FENCE_GATE, JUNGLE_FENCE_GATE, CRIMSON_FENCE_GATE, WARPED_FENCE_GATE});
 
     public EnumStorage<Material> FenceGates() {
         return FENCE_GATES_E;
@@ -246,8 +248,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Leaves
-    private final EnumStorage<Material> LEAVES_E = new EnumStorage<>(new Material[]{ACACIA_LEAVES, BIRCH_LEAVES,
-        DARK_OAK_LEAVES, JUNGLE_LEAVES, OAK_LEAVES, SPRUCE_LEAVES});
+    private final EnumStorage<Material> LEAVES_E = new EnumStorage<>(new Material[]{OAK_LEAVES, BIRCH_LEAVES, SPRUCE_LEAVES, ACACIA_LEAVES,
+        DARK_OAK_LEAVES, JUNGLE_LEAVES});
 
     public EnumStorage<Material> Leaves() {
         return LEAVES_E;
@@ -255,8 +257,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Logs
-    private final EnumStorage<Material> LOGS_E = new EnumStorage<>(new Material[]{ACACIA_LOG, BIRCH_LOG,
-        DARK_OAK_LOG, JUNGLE_LOG, OAK_LOG, SPRUCE_LOG});
+    private final EnumStorage<Material> LOGS_E = new EnumStorage<>(new Material[]{OAK_LOG, BIRCH_LOG, SPRUCE_LOG, ACACIA_LOG,
+        DARK_OAK_LOG, JUNGLE_LOG, CRIMSON_STEM, WARPED_STEM});
 
     public EnumStorage<Material> Logs() {
         return LOGS_E;
@@ -264,8 +266,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Planks
-    private final EnumStorage<Material> PLANKS_E = new EnumStorage<>(new Material[]{ACACIA_PLANKS, BIRCH_PLANKS,
-        DARK_OAK_PLANKS, JUNGLE_PLANKS, OAK_PLANKS, SPRUCE_PLANKS});
+    private final EnumStorage<Material> PLANKS_E = new EnumStorage<>(new Material[]{OAK_PLANKS, BIRCH_PLANKS, SPRUCE_PLANKS, ACACIA_PLANKS,
+        DARK_OAK_PLANKS, JUNGLE_PLANKS, CRIMSON_PLANKS, WARPED_PLANKS});
 
     public EnumStorage<Material> Planks() {
         return PLANKS_E;
@@ -273,9 +275,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Wood Pressure Plates
-    private final EnumStorage<Material> WOOD_PRESSURE_PLATES_E = new EnumStorage<>(new Material[]{ACACIA_PRESSURE_PLATE,
-        BIRCH_PRESSURE_PLATE, DARK_OAK_PRESSURE_PLATE, JUNGLE_PRESSURE_PLATE, OAK_PRESSURE_PLATE,
-        SPRUCE_PRESSURE_PLATE});
+    private final EnumStorage<Material> WOOD_PRESSURE_PLATES_E = new EnumStorage<>(new Material[]{OAK_PRESSURE_PLATE, BIRCH_PRESSURE_PLATE, SPRUCE_PRESSURE_PLATE, ACACIA_PRESSURE_PLATE,
+        DARK_OAK_PRESSURE_PLATE, JUNGLE_PRESSURE_PLATE, CRIMSON_PRESSURE_PLATE, WARPED_PRESSURE_PLATE});
 
     public EnumStorage<Material> WoodPressurePlates() {
         return WOOD_PRESSURE_PLATES_E;
@@ -292,8 +293,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Wood Slabs
-    private final EnumStorage<Material> WOOD_SLABS_E = new EnumStorage<>(new Material[]{ACACIA_SLAB, BIRCH_SLAB,
-        DARK_OAK_SLAB, JUNGLE_SLAB, OAK_SLAB, SPRUCE_SLAB});
+    private final EnumStorage<Material> WOOD_SLABS_E = new EnumStorage<>(new Material[]{OAK_SLAB, BIRCH_SLAB, SPRUCE_SLAB, ACACIA_SLAB,
+        DARK_OAK_SLAB, JUNGLE_SLAB, CRIMSON_SLAB, WARPED_SLAB});
 
     public EnumStorage<Material> WoodSlabs() {
         return WOOD_SLABS_E;
@@ -301,8 +302,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Wood Stairs
-    private final EnumStorage<Material> WOOD_STAIRS_E = new EnumStorage<>(new Material[]{ACACIA_STAIRS, BIRCH_STAIRS,
-        DARK_OAK_STAIRS, JUNGLE_STAIRS, OAK_STAIRS, SPRUCE_STAIRS});
+    private final EnumStorage<Material> WOOD_STAIRS_E = new EnumStorage<>(new Material[]{OAK_STAIRS, BIRCH_STAIRS, SPRUCE_STAIRS, ACACIA_STAIRS,
+        DARK_OAK_STAIRS, JUNGLE_STAIRS, CRIMSON_STAIRS, WARPED_STAIRS});
 
     public EnumStorage<Material> WoodStairs() {
         return WOOD_STAIRS_E;
@@ -311,8 +312,8 @@ public class CompatibilityAdapter {
 
     //region Wood Trapdoors
     private final EnumStorage<Material> WOOD_TRAPDOORS_E
-            = new EnumStorage<>(new Material[]{ACACIA_TRAPDOOR, BIRCH_TRAPDOOR,
-        DARK_OAK_TRAPDOOR, JUNGLE_TRAPDOOR, OAK_TRAPDOOR, SPRUCE_TRAPDOOR});
+            = new EnumStorage<>(new Material[]{OAK_TRAPDOOR, BIRCH_TRAPDOOR, SPRUCE_TRAPDOOR, ACACIA_TRAPDOOR,
+        DARK_OAK_TRAPDOOR, JUNGLE_TRAPDOOR, CRIMSON_TRAPDOOR, WARPED_SIGN});
 
     public EnumStorage<Material> WoodTrapdoors() {
         return WOOD_TRAPDOORS_E;
@@ -320,8 +321,8 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Woods
-    private final EnumStorage<Material> WOODS_E = new EnumStorage<>(new Material[]{ACACIA_WOOD, BIRCH_WOOD,
-        DARK_OAK_WOOD, JUNGLE_WOOD, OAK_WOOD, SPRUCE_WOOD});
+    private final EnumStorage<Material> WOODS_E = new EnumStorage<>(new Material[]{OAK_WOOD, BIRCH_WOOD, SPRUCE_WOOD, ACACIA_WOOD,
+        DARK_OAK_WOOD, JUNGLE_WOOD, CRIMSON_HYPHAE, WARPED_HYPHAE});
 
     public EnumStorage<Material> Woods() {
         return WOODS_E;
@@ -330,8 +331,8 @@ public class CompatibilityAdapter {
 
     //region Stripped Logs
     private final EnumStorage<Material> STRIPPED_LOGS_E
-            = new EnumStorage<>(new Material[]{STRIPPED_ACACIA_LOG, STRIPPED_BIRCH_LOG,
-        STRIPPED_DARK_OAK_LOG, STRIPPED_JUNGLE_LOG, STRIPPED_OAK_LOG, STRIPPED_SPRUCE_LOG});
+            = new EnumStorage<>(new Material[]{STRIPPED_OAK_LOG, STRIPPED_BIRCH_LOG, STRIPPED_SPRUCE_LOG, STRIPPED_ACACIA_LOG,
+        STRIPPED_DARK_OAK_LOG, STRIPPED_JUNGLE_LOG, STRIPPED_CRIMSON_STEM, STRIPPED_WARPED_STEM});
 
     public EnumStorage<Material> StrippedLogs() {
         return STRIPPED_LOGS_E;
@@ -340,8 +341,8 @@ public class CompatibilityAdapter {
 
     //region Stripped Woods
     private final EnumStorage<Material> STRIPPED_WOODS_E
-            = new EnumStorage<>(new Material[]{STRIPPED_ACACIA_WOOD, STRIPPED_BIRCH_WOOD,
-        STRIPPED_DARK_OAK_WOOD, STRIPPED_JUNGLE_WOOD, STRIPPED_OAK_WOOD, STRIPPED_SPRUCE_WOOD});
+            = new EnumStorage<>(new Material[]{STRIPPED_OAK_WOOD, STRIPPED_BIRCH_WOOD, STRIPPED_SPRUCE_WOOD, STRIPPED_ACACIA_WOOD,
+        STRIPPED_DARK_OAK_WOOD, STRIPPED_JUNGLE_WOOD, STRIPPED_CRIMSON_HYPHAE, STRIPPED_WARPED_HYPHAE});
 
     public EnumStorage<Material> StrippedWoods() {
         return STRIPPED_WOODS_E;
@@ -351,7 +352,7 @@ public class CompatibilityAdapter {
     //endregion
     //region Plants
     //region Deadly Plants
-    private final EnumStorage<Material> DEADLY_PLANTS_E = new EnumStorage<>(new Material[]{});
+    private final EnumStorage<Material> DEADLY_PLANTS_E = new EnumStorage<>(new Material[]{WITHER_ROSE});
 
     public EnumStorage<Material> DeadlyPlants() {
         return DEADLY_PLANTS_E;
@@ -498,7 +499,7 @@ public class CompatibilityAdapter {
     //endregion
 
     //region Mushrooms
-    private final EnumStorage<Material> MUSHROOMS_E = new EnumStorage<>(new Material[]{RED_MUSHROOM, BROWN_MUSHROOM});
+    private final EnumStorage<Material> MUSHROOMS_E = new EnumStorage<>(new Material[]{RED_MUSHROOM, BROWN_MUSHROOM, CRIMSON_FUNGUS, WARPED_FUNGUS});
 
     public EnumStorage<Material> Mushrooms() {
         return MUSHROOMS_E;
@@ -576,7 +577,7 @@ public class CompatibilityAdapter {
 
     //region Ores
     private final EnumStorage<Material> ORES_E = new EnumStorage<>(new Material[]{COAL_ORE, REDSTONE_ORE, DIAMOND_ORE,
-        GOLD_ORE, IRON_ORE, LAPIS_ORE, GLOWSTONE, NETHER_QUARTZ_ORE, EMERALD_ORE});
+        GOLD_ORE, IRON_ORE, LAPIS_ORE, GLOWSTONE, NETHER_QUARTZ_ORE, EMERALD_ORE, NETHER_GOLD_ORE, ANCIENT_DEBRIS});
 
     public EnumStorage<Material> Ores() {
         return ORES_E;
@@ -862,7 +863,7 @@ public class CompatibilityAdapter {
         return UNBREAKABLE_BLOCKS_E;
     }
     //endregion
-    
+
     //region Laser Blacklist Blocks
     private final EnumStorage<Material> LASER_BLACKLIST_BLOCKS = new EnumStorage<>(new Material[]{OBSIDIAN});
 
@@ -883,7 +884,8 @@ public class CompatibilityAdapter {
     //endregion
     //region Interactable Blocks
     private final EnumStorage<Material> INTERACTABLE_BLOCKS_E = new EnumStorage<>(new Material[]{
-        NOTE_BLOCK, CRAFTING_TABLE, LEVER, REPEATER, ENCHANTING_TABLE, COMPARATOR, DAYLIGHT_DETECTOR, PISTON, OBSERVER},
+        NOTE_BLOCK, CRAFTING_TABLE, LEVER, REPEATER, ENCHANTING_TABLE, COMPARATOR, DAYLIGHT_DETECTOR, PISTON, OBSERVER,
+            CARTOGRAPHY_TABLE, GRINDSTONE, SMITHING_TABLE},
             Beds(),
             Doors(),
             Trapdoors(),
@@ -928,7 +930,7 @@ public class CompatibilityAdapter {
     private final EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_FROM_E = new EnumStorage<>(new EntityType[]{
         HUSK, WITCH, EntityType.COD, PHANTOM, HORSE, SKELETON, EntityType.CHICKEN, SQUID, OCELOT, POLAR_BEAR, COW, PIG,
         SPIDER, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, SHULKER, SNOWMAN, DROWNED, VINDICATOR,
-        EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW, PIG_ZOMBIE, CAVE_SPIDER,
+        EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW, ZOMBIFIED_PIGLIN, CAVE_SPIDER,
         MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN, IRON_GOLEM, ZOMBIE, EVOKER,
         PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, ZOMBIE_VILLAGER, VILLAGER, EntityType.TROPICAL_FISH, GHAST,
         LLAMA, CREEPER});
@@ -939,7 +941,7 @@ public class CompatibilityAdapter {
 
     private final EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_TO_E = new EnumStorage<>(new EntityType[]{
         DROWNED, VINDICATOR, EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW,
-        PIG_ZOMBIE, CAVE_SPIDER, MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN,
+        ZOMBIFIED_PIGLIN, CAVE_SPIDER, MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN,
         IRON_GOLEM, ZOMBIE, EVOKER, PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, OCELOT, POLAR_BEAR, COW, PIG,
         SPIDER, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, SHULKER, SNOWMAN, ZOMBIE_VILLAGER,
         VILLAGER, EntityType.TROPICAL_FISH, GHAST, LLAMA, SKELETON, EntityType.CHICKEN, SQUID, HUSK, WITCH,
@@ -970,9 +972,9 @@ public class CompatibilityAdapter {
                 }
                 break;
             case VILLAGER:
-                Villager.Profession career = Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)];
-                ((Villager) newEnt).setProfession(career);
-                //((Villager) newEnt).setCareer(career);
+                ((Villager) newEnt).setProfession(
+                        Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)]);
+                ((Villager) newEnt).setVillagerType(Villager.Type.values()[rnd.nextInt(Villager.Type.values().length)]);
                 break;
             case LLAMA:
                 ((Llama) newEnt).setColor(Llama.Color.values()[rnd.nextInt(Llama.Color.values().length)]);
@@ -980,10 +982,14 @@ public class CompatibilityAdapter {
             case TROPICAL_FISH:
                 ((TropicalFish) newEnt).setBodyColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
                 ((TropicalFish) newEnt).setPatternColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
-                ((TropicalFish) newEnt).setPattern(TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
+                ((TropicalFish) newEnt).setPattern(
+                        TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
                 break;
             case PARROT:
                 ((Parrot) newEnt).setVariant(Parrot.Variant.values()[rnd.nextInt(Parrot.Variant.values().length)]);
+                break;
+            case CAT:
+                ((Cat) newEnt).setCatType(Cat.Type.values()[rnd.nextInt(Cat.Type.values().length)]);
                 break;
             case SHEEP:
                 ((Sheep) newEnt).setColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
@@ -992,14 +998,22 @@ public class CompatibilityAdapter {
                 ((Creeper) newEnt).setPowered(!((Creeper) ent).isPowered());
                 break;
             case MUSHROOM_COW:
-                ((MushroomCow) newEnt).setVariant(MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
+                ((MushroomCow) newEnt).setVariant(
+                        MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
+                break;
+            case FOX:
+                ((Fox) newEnt).setFoxType(Fox.Type.values()[rnd.nextInt(Fox.Type.values().length)]);
+                break;
+            case ILLUSIONER:
+                ((Panda) newEnt).setHiddenGene(Panda.Gene.values()[rnd.nextInt(Panda.Gene.values().length)]);
+                ((Panda) newEnt).setMainGene(Panda.Gene.values()[rnd.nextInt(Panda.Gene.values().length)]);
                 break;
         }
+
         newEnt.setCustomName(ent.getCustomName());
         newEnt.setCustomNameVisible(ent.isCustomNameVisible());
         return ent;
     }
-    //endregion
 
     //region Fire Raw
     private final EnumStorage<Material> FIRE_RAW_E = new EnumStorage<>(new Material[]{STONE, DIORITE, ANDESITE, GRANITE,
@@ -1206,7 +1220,7 @@ public class CompatibilityAdapter {
         if (!placeEvent.isCancelled()) {
             blockPlaced.setType(mat);
             BlockData data = blockPlaced.getBlockData();
-            if(Leaves().contains(mat)) {
+            if (Leaves().contains(mat)) {
                 Leaves l = (Leaves) data;
                 l.setPersistent(true);
                 blockPlaced.setBlockData(l);
@@ -1360,6 +1374,8 @@ public class CompatibilityAdapter {
                 && !StorageBlocks().contains(mat);
     }
 
+    //endregion
+    //endregion
     public boolean grow(Block cropBlock, Player player) {
         Material mat = cropBlock.getType();
         BlockData data = cropBlock.getBlockData();
@@ -1373,6 +1389,7 @@ public class CompatibilityAdapter {
             case COCOA:
             case NETHER_WART:
             case BEETROOTS:
+            case SWEET_BERRY_BUSH:
 
                 BlockData cropState = cropBlock.getBlockData();
                 if (cropState instanceof Ageable) {
@@ -1384,6 +1401,99 @@ public class CompatibilityAdapter {
                     data = ag;
                 }
                 break;
+            case BAMBOO_SAPLING: {
+                if (player != null) {
+                    boolean result = placeBlock(cropBlock, player, BAMBOO, null);
+                    if (!result) {
+                        return false;
+                    }
+                }
+
+                Bamboo bamboo = (Bamboo) cropBlock.getBlockData();
+                cropBlock = cropBlock.getRelative(BlockFace.UP);
+                bamboo.setLeaves(Bamboo.Leaves.SMALL);
+                data = bamboo;
+
+                break;
+            }
+            case BAMBOO: {
+                Bamboo bamboo = (Bamboo) cropBlock.getBlockData();
+
+                int height = 1;
+                if (cropBlock.getRelative(BlockFace.DOWN).getType() == mat) { // Only grow if argument is the base
+                    // block
+                    return false;
+                }
+                Block testBlock = cropBlock;
+                while ((testBlock = testBlock.getRelative(BlockFace.UP)).getType() == mat) {
+                    if (++height >= 16) { // Cancel if cactus/cane is fully grown
+                        return false;
+                    }
+                }
+                height++;
+
+                boolean result;
+                if (player != null) {
+                    result = placeBlock(testBlock, player, mat, null);
+
+                    if (!result) {
+                        return false;
+                    }
+                }
+                bamboo.setAge(0);
+
+                if (height == 4) {
+                    // Top piece
+                    bamboo.setLeaves(Bamboo.Leaves.LARGE);
+                    bamboo.setAge(1);
+                    result = placeBlock(cropBlock.getRelative(0, 3, 0), player, mat, bamboo);
+
+                    if (!result) {
+                        return false;
+                    }
+                }
+                if (height == 3 || height == 4) {
+                    // Top piece (height = 3) or second from top (height = 4)
+                    bamboo.setLeaves(Bamboo.Leaves.SMALL);
+                    bamboo.setAge(height == 4 ? 1 : 0);
+                    result = placeBlock(cropBlock.getRelative(0, 2, 0), player, mat, bamboo);
+
+                    if (!result) {
+                        return false;
+                    }
+
+                    // Second from bottom piece
+                    bamboo.setAge(0);
+                    bamboo.setLeaves(Bamboo.Leaves.NONE);
+                    result = placeBlock(cropBlock, player, mat, bamboo);
+
+                    if (!result) {
+                        return false;
+                    }
+
+                    bamboo.setLeaves(Bamboo.Leaves.SMALL);
+                    result = placeBlock(cropBlock.getRelative(0, 1, 0), player, mat, bamboo);
+
+                    if (!result) {
+                        return false;
+                    }
+
+                }
+
+                if (height > 4) {
+                    for (int i = height - 1; i >= 0; i--) {
+                        Bamboo.Leaves leaves = i < height - 3 ? Bamboo.Leaves.NONE : i == height - 3 ? Bamboo.Leaves.SMALL : Bamboo.Leaves.LARGE;
+                        bamboo.setLeaves(leaves);
+                        bamboo.setAge(height == 5 && i < 2 ? 0 : 1);
+                        result = placeBlock(cropBlock.getRelative(0, i, 0), player, mat, bamboo);
+
+                        if (!result) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
             case CACTUS:
             case SUGAR_CANE:
                 int height = 1;

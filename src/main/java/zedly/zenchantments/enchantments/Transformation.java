@@ -86,7 +86,7 @@ public class Transformation extends CustomEnchantment {
                     case AIR:
                         continue;
                     case GOLDEN_SWORD:
-                        if (le.getType() != EntityType.PIG_ZOMBIE) {
+                        if (le.getType() != EntityType.ZOMBIFIED_PIGLIN) {
                             return true;
                         }
                         break;
