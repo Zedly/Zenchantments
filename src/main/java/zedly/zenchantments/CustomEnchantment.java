@@ -1,5 +1,6 @@
 package zedly.zenchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -49,7 +50,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     protected double power;         // Power multiplier for the enchantment's effects; Default is 0; -1 means no
     // effect
     protected Hand handUse;
-    // Which hands an enchantment has actiosn for; 0 = none, 1 = left, 2 = right, 3 = both
+    // Which hands an enchantment has actions for; 0 = none, 1 = left, 2 = right, 3 = both
     private boolean used;
     // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
     protected boolean isCursed;
@@ -720,9 +721,19 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * The Enchantment gatherer used by
      * <a href="https://github.com/Geolykt/NMSless-Zenchantments"> Geolykt's
      * NMSless-Zenchantments </a> this implementation uses Persistent Data to store
-     * it's data.
+     * it's data. It is modified to be backwards compatible
      */
     static class GeolyktPersistentDataGatherer implements IEnchGatherer {
+        private LegacyLoreGatherer legacyGatherer = new LegacyLoreGatherer();
+        /**
+         * Used for enchantment conversion purposes
+         */
+        public final NamespacedKey ench_converted;
+        
+        public GeolyktPersistentDataGatherer() {
+            ench_converted = new NamespacedKey(Storage.zenchantments, "e_convert");
+        }
+        
         @Override
         public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
                 List<String> outExtraLore) {
@@ -742,10 +753,23 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         @Override
         public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks, World world,
                 List<String> outExtraLore) {
-            Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
-            if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
+            
+            LinkedHashMap<CustomEnchantment, Integer> map = new LinkedHashMap<>();
+            if ( (stk != null && stk.getType() != Material.AIR) && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
                 if (stk.hasItemMeta()) {
                     final PersistentDataContainer cont = stk.getItemMeta().getPersistentDataContainer();
+                    
+                    if (cont.getOrDefault(ench_converted, PersistentDataType.BYTE, (byte) 0) == 0) {
+                        //Legacy conversion
+                        Bukkit.getLogger().info("Item converted");
+                        map = legacyGatherer.getEnchants(stk, acceptBooks, world, outExtraLore);
+                        for (Map.Entry<CustomEnchantment, Integer> ench : map.entrySet()) {
+                            this.setEnchantment(stk, ench.getKey(), ench.getValue(), world);
+                        }
+                        cont.set(ench_converted, PersistentDataType.BYTE, (byte) 1);
+                        return map;
+                    }
+                    
                     Set<NamespacedKey> keys = cont.getKeys();
 
                     for (NamespacedKey key : keys) {

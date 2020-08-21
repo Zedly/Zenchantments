@@ -1,6 +1,5 @@
 package zedly.zenchantments;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -9,7 +8,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import zedly.zenchantments.annotations.EffectTask;
 import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.enums.Frequency;
 

@@ -1,6 +1,5 @@
 package zedly.zenchantments;
 
-import java.util.ArrayList;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -17,7 +16,6 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.enchantments.Haste;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Tool;
 
@@ -25,7 +23,6 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.apache.commons.lang3.tuple.Triple;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.entity.EntityType.HORSE;
