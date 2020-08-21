@@ -314,76 +314,24 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     // Returns a mapping of custom enchantments and their level on a given tool
     public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
             List<String> outExtraLore) {
-        return getEnchants(stk, false, world, outExtraLore);
+    	return Enchantment_Adapter.getEnchants(stk, world, outExtraLore);
     }
 
     // Returns a mapping of custom enchantments and their level on a given tool
     public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
             World world) {
-        return getEnchants(stk, acceptBooks, world, null);
+        return Enchantment_Adapter.getEnchants(stk, acceptBooks, world, null);
     }
 
     // Returns a mapping of custom enchantments and their level on a given tool
     public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world) {
-        return getEnchants(stk, false, world, null);
+        return Enchantment_Adapter.getEnchants(stk, false, world, null);
     }
 
     public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
             World world,
             List<String> outExtraLore) {
-        Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
-        if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
-            if (stk.hasItemMeta()) {
-                if (stk.getItemMeta().hasLore()) {
-                    List<String> lore = stk.getItemMeta().getLore();
-                    for (String raw : lore) {
-                        Map.Entry<CustomEnchantment, Integer> ench = getEnchant(raw, world);
-                        if (ench != null) {
-                            map.put(ench.getKey(), ench.getValue());
-                        } else {
-                            if (outExtraLore != null) {
-                                outExtraLore.add(raw);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        LinkedHashMap<CustomEnchantment, Integer> finalMap = new LinkedHashMap<>();
-        for (int id : new int[]{Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID}) {
-            CustomEnchantment e = null;
-            for (CustomEnchantment en : Config.allEnchants) {
-                if (en.getId() == id) {
-                    e = en;
-                }
-            }
-            if (map.containsKey(e)) {
-                finalMap.put(e, map.get(e));
-                map.remove(e);
-            }
-        }
-        finalMap.putAll(map);
-        return finalMap;
-    }
-
-    // Returns the custom enchantment from the lore name
-    private static Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
-        Map<String, Boolean> unescaped = Utilities.fromInvisibleString(raw);
-        for (Map.Entry<String, Boolean> entry : unescaped.entrySet()) {
-            if (!entry.getValue()) {
-                String[] vals = entry.getKey().split("\\.");
-                if (vals.length == 4 && vals[0].equals("ze") && vals[1].equals("ench")) {
-                    int enchID = Integer.parseInt(vals[2]);
-                    int enchLvl = Integer.parseInt(vals[3]);
-                    CustomEnchantment ench = Config.get(world).enchantFromID(enchID);
-                    if (ench == null) {
-                        continue;
-                    }
-                    return new AbstractMap.SimpleEntry<>(ench, enchLvl);
-                }
-            }
-        }
-        return null;
+        return Enchantment_Adapter.getEnchants(stk, acceptBooks, world, outExtraLore);
     }
 
     /**
@@ -466,45 +414,11 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     }
 
     public void setEnchantment(ItemStack stk, int level, World world) {
-        setEnchantment(stk, this, level, world);
+        Enchantment_Adapter.setEnchantment(stk, this, level, world);
     }
 
     public static void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world) {
-        if (stk == null) {
-            return;
-        }
-        ItemMeta meta = stk.getItemMeta();
-        List<String> lore = new LinkedList<>();
-        List<String> normalLore = new LinkedList<>();
-        boolean customEnch = false;
-        if (meta.hasLore()) {
-            for (String loreStr : meta.getLore()) {
-                Map.Entry<CustomEnchantment, Integer> enchEntry = getEnchant(loreStr, world);
-                if (enchEntry == null && !isDescription(loreStr)) {
-                    normalLore.add(loreStr);
-                } else if (enchEntry != null && enchEntry.getKey() != ench) {
-                    customEnch = true;
-                    lore.add(enchEntry.getKey().getShown(enchEntry.getValue(), world));
-                    lore.addAll(enchEntry.getKey().getDescription(world));
-                }
-            }
-        }
-
-        if (ench != null && level > 0 && level <= ench.maxLevel) {
-            lore.add(ench.getShown(level, world));
-            lore.addAll(ench.getDescription(world));
-            customEnch = true;
-        }
-
-        lore.addAll(normalLore);
-        meta.setLore(lore);
-        stk.setItemMeta(meta);
-
-        if (customEnch && stk.getType() == BOOK) {
-            stk.setType(ENCHANTED_BOOK);
-        }
-
-        setGlow(stk, customEnch, world);
+        Enchantment_Adapter.setEnchantment(stk, ench, level, world);
     }
 
     public static void setGlow(ItemStack stk, boolean customEnch, World world) {
@@ -671,6 +585,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         public abstract LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
                 World world,
                 List<String> outExtraLore);
+        public abstract void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world);
     }
     
     /**
@@ -754,6 +669,45 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
                 }
             }
             return null;
+        }
+        
+        @Override
+        public void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world) {
+            if (stk == null) {
+                return;
+            }
+            ItemMeta meta = stk.getItemMeta();
+            List<String> lore = new LinkedList<>();
+            List<String> normalLore = new LinkedList<>();
+            boolean customEnch = false;
+            if (meta.hasLore()) {
+                for (String loreStr : meta.getLore()) {
+                    Map.Entry<CustomEnchantment, Integer> enchEntry = getEnchant(loreStr, world);
+                    if (enchEntry == null && !isDescription(loreStr)) {
+                        normalLore.add(loreStr);
+                    } else if (enchEntry != null && enchEntry.getKey() != ench) {
+                        customEnch = true;
+                        lore.add(enchEntry.getKey().getShown(enchEntry.getValue(), world));
+                        lore.addAll(enchEntry.getKey().getDescription(world));
+                    }
+                }
+            }
+
+            if (ench != null && level > 0 && level <= ench.maxLevel) {
+                lore.add(ench.getShown(level, world));
+                lore.addAll(ench.getDescription(world));
+                customEnch = true;
+            }
+
+            lore.addAll(normalLore);
+            meta.setLore(lore);
+            stk.setItemMeta(meta);
+
+            if (customEnch && stk.getType() == BOOK) {
+                stk.setType(ENCHANTED_BOOK);
+            }
+
+            setGlow(stk, customEnch, world);
         }
     }
     
