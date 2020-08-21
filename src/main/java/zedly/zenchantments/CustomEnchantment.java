@@ -2,6 +2,7 @@ package zedly.zenchantments;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -15,6 +16,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.enums.Hand;
@@ -26,7 +30,6 @@ import java.util.function.Supplier;
 
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
-import org.bukkit.inventory.PlayerInventory;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
@@ -50,6 +53,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     private boolean used;
     // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
     protected boolean isCursed;
+    protected NamespacedKey key; // The NamespacedKey for this enchantment which can be used for storage
 
     public abstract Builder<? extends CustomEnchantment> defaults();
 
@@ -710,6 +714,108 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
             setGlow(stk, customEnch, world);
         }
     }
-    
+
+    /**
+     * The Enchantment gatherer used by
+     * <a href="https://github.com/Geolykt/NMSless-Zenchantments"> Geolykt's
+     * NMSless-Zenchantments </a> this implementation uses Persistent Data to store
+     * it's data.
+     */
+    static class GeolyktPersistentDataGatherer implements IEnchGatherer {
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
+                List<String> outExtraLore) {
+            return getEnchants(stk, false, world, outExtraLore);
+        }
+
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks, World world) {
+            return getEnchants(stk, acceptBooks, world, null);
+        }
+        
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world) {
+            return getEnchants(stk, false, world, null);
+        }
+
+        @Override
+        public LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks, World world,
+                List<String> outExtraLore) {
+            Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
+            if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
+                if (stk.hasItemMeta()) {
+                    final PersistentDataContainer cont = stk.getItemMeta().getPersistentDataContainer();
+                    Set<NamespacedKey> keys = cont.getKeys();
+
+                    for (NamespacedKey key : keys) {
+                        if (!key.getNamespace().equals("zenchantments")) {
+                            continue;
+                        }
+                        if (!key.getKey().split("\\.")[0].equals("ench")) {
+                            continue;
+                        }
+
+                        Integer level = (int) cont.getOrDefault(key, PersistentDataType.SHORT, (short) 0);
+                        Short id = Short.decode(key.getKey().split("\\.")[1]);
+                        CustomEnchantment ench = Config.get(world).enchantFromID(id);
+                        if (ench == null) {
+                            continue;
+                        }
+                        map.put(ench, level);
+                    }
+                }
+            }
+
+            LinkedHashMap<CustomEnchantment, Integer> finalMap = new LinkedHashMap<>();
+            for (int id : new int[] { Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID }) {
+                CustomEnchantment e = null;
+                for (CustomEnchantment en : Config.allEnchants) {
+                    if (en.getId() == id) {
+                        e = en;
+                    }
+                }
+                if (map.containsKey(e)) {
+                    finalMap.put(e, map.get(e));
+                    map.remove(e);
+                }
+            }
+            finalMap.putAll(map);
+            return finalMap;
+        }
+
+        @Override
+        public void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world) {
+            if (stk == null) {
+                return;
+            }
+            ItemMeta meta = stk.getItemMeta();
+            List<String> lore = new LinkedList<>();
+            if (meta.hasLore()) {
+                for (String loreStr : meta.getLore()) {
+                    if (!loreStr.toLowerCase(Locale.ENGLISH).contains(ench.loreName.toLowerCase(Locale.ENGLISH))) {
+                        lore.add(loreStr);
+                    }
+                }
+            }
+
+            if (ench != null && level > 0 && level <= ench.maxLevel) {
+                meta.getPersistentDataContainer().set(ench.key, PersistentDataType.SHORT, (short) level);
+                lore.add(ench.getShown(level, world));
+            }
+        
+            //Disenchant item
+            if (ench != null && level <= 0 && meta.getPersistentDataContainer().has(ench.key, PersistentDataType.SHORT)) {
+                meta.getPersistentDataContainer().remove(ench.key);
+            }
+        
+            meta.setLore(lore);
+            stk.setItemMeta(meta);
+        
+            if (stk.getType() == BOOK) {
+                stk.setType(ENCHANTED_BOOK);
+            }
+
+            setGlow(stk, true, world);
+        }
     }
 }
