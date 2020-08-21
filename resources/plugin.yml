@@ -1,6 +1,6 @@
 name: Zenchantments
 main: zedly.zenchantments.Zenchantments
-api-version: 1.14
+api-version: 1.16
 version: 1.6.2
 commands:
   ench:

@@ -36,7 +36,7 @@ import static org.bukkit.Material.ENCHANTED_BOOK;
 public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
-    public static IEnchGatherer Enchantment_Adapter = new LegacyLoreGatherer();
+    public static IEnchGatherer Enchantment_Adapter = new GeolyktPersistentDataGatherer();
     protected int id;
 
     protected int maxLevel;         // Max level the given enchant can naturally obtain
@@ -487,6 +487,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         public Builder(Supplier<T> sup, int id) {
             customEnchantment = sup.get();
             customEnchantment.setId(id);
+            customEnchantment.key = new NamespacedKey(Storage.zenchantments, "ench." + id);
         }
 
         public Builder<T> maxLevel(int maxLevel) {
