@@ -3,20 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>zedly</groupId>
     <artifactId>Zenchantments-parent</artifactId>
-    <version>1.6.2</version>
+    <version>1.6.3</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
-        <module>Zenchantments</module>
         <module>CompatibilityAdapter</module>
-        <module>NMS_1_13_R1</module>
+        <module>Zenchantments</module>
         <!--<module>NMS_1_13_R2</module>-->
         <module>NMS_1_14_R1</module>
-
-
+        <module>NMS_1_15_R1</module>
     </modules>
-
-
 </project>

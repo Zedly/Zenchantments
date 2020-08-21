@@ -46,19 +46,19 @@ public class Arborist extends CustomEnchantment {
 			if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
 				if (Storage.rnd.nextInt(3) % 3 == 0) {
 					evt.getBlock().getWorld()
-					   .dropItemNaturally(Utilities.getCenter(evt.getBlock()), stk);
+					   .dropItemNaturally(evt.getBlock().getLocation(), stk);
 				}
 				if (Storage.rnd.nextInt(3) % 3 == 0) {
 					evt.getBlock().getWorld()
-					   .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(STICK, 1));
+					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(STICK, 1));
 				}
 				if (Storage.rnd.nextInt(3) % 3 == 0) {
 					evt.getBlock().getWorld()
-					   .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(APPLE, 1));
+					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(APPLE, 1));
 				}
 				if (Storage.rnd.nextInt(65) == 25) {
 					evt.getBlock().getWorld()
-					   .dropItemNaturally(Utilities.getCenter(evt.getBlock()), new ItemStack(GOLDEN_APPLE, 1));
+					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(GOLDEN_APPLE, 1));
 				}
 				return true;
 			}

@@ -1,21 +1,27 @@
 package zedly.zenchantments.compatibility;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.server.v1_14_R1.BlockPosition;
-import net.minecraft.server.v1_14_R1.DataWatcher;
-import net.minecraft.server.v1_14_R1.EntityCreeper;
-import net.minecraft.server.v1_14_R1.EntityExperienceOrb;
-import net.minecraft.server.v1_14_R1.EntityHuman;
-import net.minecraft.server.v1_14_R1.EntityMushroomCow;
-import net.minecraft.server.v1_14_R1.EntityPlayer;
-import net.minecraft.server.v1_14_R1.EntitySheep;
-import net.minecraft.server.v1_14_R1.EnumHand;
-import net.minecraft.server.v1_14_R1.PacketDataSerializer;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_14_R1.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_15_R1.BlockPosition;
+import net.minecraft.server.v1_15_R1.DataWatcher;
+import net.minecraft.server.v1_15_R1.DataWatcherObject;
+import net.minecraft.server.v1_15_R1.DataWatcherRegistry;
+import net.minecraft.server.v1_15_R1.DataWatcherSerializer;
+import net.minecraft.server.v1_15_R1.EntityCreeper;
+import net.minecraft.server.v1_15_R1.EntityExperienceOrb;
+import net.minecraft.server.v1_15_R1.EntityHuman;
+import net.minecraft.server.v1_15_R1.EntityMushroomCow;
+import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.EntitySheep;
+import net.minecraft.server.v1_15_R1.EntityTypes;
+import net.minecraft.server.v1_15_R1.EnumHand;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_15_R1.PacketPlayOutSpawnEntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -24,9 +30,9 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftSheep;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftSheep;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -34,29 +40,27 @@ import org.bukkit.event.block.BlockGrowEvent;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.Material.TROPICAL_FISH;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftCreeper;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftExperienceOrb;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftCreeper;
 import static org.bukkit.entity.EntityType.*;
 import static org.bukkit.entity.EntityType.PUFFERFISH;
 import static org.bukkit.entity.EntityType.VEX;
 
-public class NMS_1_14_R1 extends CompatibilityAdapter {
+public class NMS_1_15_R1 extends CompatibilityAdapter {
 
-    private static final NMS_1_14_R1 INSTANCE = new NMS_1_14_R1();
-    public static NMS_1_14_R1 getInstance() {
+    private static final NMS_1_15_R1 INSTANCE = new NMS_1_15_R1();
+
+    public static NMS_1_15_R1 getInstance() {
         return INSTANCE;
     }
 
     //region Enums
-
     //region Colors
-
     //region Dyes
     private EnumStorage<Material> DYES_E;
 
     @Override
-    public EnumStorage<Material> Dyes(){
+    public EnumStorage<Material> Dyes() {
         dyesInit();
         return DYES_E;
     }
@@ -70,17 +74,13 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
     //endregion
-
-
     //region Woods
-
     //region Signs
     private EnumStorage<Material> SIGNS_E;
 
     @Override
-    public EnumStorage<Material> Signs(){
+    public EnumStorage<Material> Signs() {
         signInit();
         return SIGNS_E;
     }
@@ -93,12 +93,8 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
     //endregion
-
-
     //region Plants
-
     //region Deadly Plants
     private EnumStorage<Material> DEADLY_PLANTS_E;
 
@@ -115,8 +111,6 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
-
     //region Small Flowers
     private EnumStorage<Material> SMALL_FLOWERS_E;
 
@@ -134,41 +128,37 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
-
     //region Partial Harvest Crops
     private EnumStorage<Material> PARTIAL_HARVEST_CROPS_E;
 
-    public EnumStorage<Material> PartialHarvestCrops(){
+    public EnumStorage<Material> PartialHarvestCrops() {
         partialHarvestCropsInit();
         return PARTIAL_HARVEST_CROPS_E;
     }
 
     private void partialHarvestCropsInit() {
         if (PARTIAL_HARVEST_CROPS_E == null) {
-            PARTIAL_HARVEST_CROPS_E  =
-                new EnumStorage<>(new Material[]{SWEET_BERRY_BUSH});
+            PARTIAL_HARVEST_CROPS_E
+                    = new EnumStorage<>(new Material[]{SWEET_BERRY_BUSH});
         }
     }
     //endregion
 
-
     //region Partial Harvest Crop Yields
     private EnumStorage<Material> PARTIAL_HARVEST_CROP_YIELDS_E;
 
-    public EnumStorage<Material> PartialHarvestCropYeilds(){
+    public EnumStorage<Material> PartialHarvestCropYeilds() {
         partialHarvestCropYieldsInit();
         return PARTIAL_HARVEST_CROP_YIELDS_E;
     }
 
     private void partialHarvestCropYieldsInit() {
         if (PARTIAL_HARVEST_CROP_YIELDS_E == null) {
-            PARTIAL_HARVEST_CROP_YIELDS_E  =
-                new EnumStorage<>(new Material[]{SWEET_BERRIES});
+            PARTIAL_HARVEST_CROP_YIELDS_E
+                    = new EnumStorage<>(new Material[]{SWEET_BERRIES});
         }
     }
     //endregion
-
 
     //region Dead Corals
     private EnumStorage<Material> DEAD_CORALS_E;
@@ -187,12 +177,8 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
     //endregion
-
-
     //region Misc
-
     //region Stone Slabs
     private EnumStorage<Material> STONE_SLABS_E;
 
@@ -202,20 +188,18 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return STONE_SLABS_E;
     }
 
-    private void StoneSlabsInit(){
+    private void StoneSlabsInit() {
         if (STONE_SLABS_E == null) {
             STONE_SLABS_E = new EnumStorage<>(new Material[]{STONE_SLAB, SMOOTH_STONE_SLAB, ANDESITE_SLAB, POLISHED_ANDESITE_SLAB, DIORITE_SLAB, POLISHED_DIORITE_SLAB, GRANITE_SLAB, POLISHED_GRANITE_SLAB});
         }
     }
 
     //endregion
-
-
     //region Sandstone Slabs
     private EnumStorage<Material> SANDSTONE_SLABS_E;
 
     @Override
-    public EnumStorage<Material> SandstoneSlabs(){
+    public EnumStorage<Material> SandstoneSlabs() {
         sandstoneSlabInit();
         return SANDSTONE_SLABS_E;
     }
@@ -228,8 +212,6 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
-
     //region Stone Brick Slabs
     private EnumStorage<Material> STONE_BRICK_SLABS_E;
 
@@ -239,13 +221,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return STONE_BRICK_SLABS_E;
     }
 
-    private void StoneBrickSlabsInit(){
+    private void StoneBrickSlabsInit() {
         if (STONE_BRICK_SLABS_E == null) {
             STONE_BRICK_SLABS_E = new EnumStorage<>(new Material[]{STONE_BRICK_SLAB, MOSSY_STONE_BRICK_SLAB});
         }
     }
     //endregion
-
 
     //region Cobblestone Slabs
     private EnumStorage<Material> COBBLESTONE_SLABS_E;
@@ -256,13 +237,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return COBBLESTONE_SLABS_E;
     }
 
-    private void CobblestoneSlabsInit(){
+    private void CobblestoneSlabsInit() {
         if (COBBLESTONE_SLABS_E == null) {
             COBBLESTONE_SLABS_E = new EnumStorage<>(new Material[]{COBBLESTONE_SLAB, MOSSY_COBBLESTONE_SLAB});
         }
     }
     //endregion
-
 
     //region Quartz Slabs
     private EnumStorage<Material> QUARTZ_SLABS_E;
@@ -273,13 +253,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return QUARTZ_SLABS_E;
     }
 
-    private void QuartzSlabsInit(){
+    private void QuartzSlabsInit() {
         if (QUARTZ_SLABS_E == null) {
             QUARTZ_SLABS_E = new EnumStorage<>(new Material[]{QUARTZ_SLAB, SMOOTH_QUARTZ_SLAB});
         }
     }
     //endregion
-
 
     //region Nether Brick Slabs
     private EnumStorage<Material> NETHER_BRICK_SLABS_E;
@@ -290,15 +269,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return NETHER_BRICK_SLABS_E;
     }
 
-    private void NetherBrickSlabsInit(){
+    private void NetherBrickSlabsInit() {
         if (NETHER_BRICK_SLABS_E == null) {
             NETHER_BRICK_SLABS_E = new EnumStorage<>(new Material[]{NETHER_BRICK_SLAB, RED_NETHER_BRICK_SLAB});
         }
     }
     //endregion
-
-
-
 
     //region Stone Stairs
     private EnumStorage<Material> STONE_STAIRS_E;
@@ -309,13 +285,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return STONE_STAIRS_E;
     }
 
-    private void StoneStairsInit(){
+    private void StoneStairsInit() {
         if (STONE_STAIRS_E == null) {
             STONE_STAIRS_E = new EnumStorage<>(new Material[]{STONE_STAIRS, ANDESITE_STAIRS, POLISHED_ANDESITE_STAIRS, DIORITE_STAIRS, POLISHED_DIORITE_STAIRS, GRANITE_STAIRS, POLISHED_GRANITE_STAIRS});
         }
     }
     //endregion
-
 
     //region Stone Brick Stairs
     private EnumStorage<Material> STONE_BRICK_STAIRS_E;
@@ -326,30 +301,28 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return STONE_BRICK_STAIRS_E;
     }
 
-    private void StoneBrickStairsInit(){
+    private void StoneBrickStairsInit() {
         if (STONE_BRICK_STAIRS_E == null) {
             STONE_BRICK_STAIRS_E = new EnumStorage<>(new Material[]{STONE_BRICK_STAIRS, MOSSY_STONE_BRICK_STAIRS});
         }
     }
     //endregion
 
-
     //region Sandstone Stairs
     private EnumStorage<Material> SANDSTONE_STAIRS_E;
 
     @Override
-    public EnumStorage<Material> SandstoneStairs(){
+    public EnumStorage<Material> SandstoneStairs() {
         SandstoneStairsInit();
         return SANDSTONE_STAIRS_E;
     }
 
-    private void SandstoneStairsInit(){
+    private void SandstoneStairsInit() {
         if (SANDSTONE_STAIRS_E == null) {
             SANDSTONE_STAIRS_E = new EnumStorage<>(new Material[]{SANDSTONE_STAIRS, SMOOTH_SANDSTONE_STAIRS, RED_SANDSTONE_STAIRS, SMOOTH_RED_SANDSTONE_STAIRS});
         }
     }
     //endregion
-
 
     //region Cobblestone Stairs
     private EnumStorage<Material> COBBLESTONE_STAIRS_E;
@@ -360,13 +333,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return COBBLESTONE_STAIRS_E;
     }
 
-    private void CobblestoneStairsInit(){
+    private void CobblestoneStairsInit() {
         if (COBBLESTONE_STAIRS_E == null) {
             COBBLESTONE_STAIRS_E = new EnumStorage<>(new Material[]{COBBLESTONE_STAIRS, MOSSY_COBBLESTONE_STAIRS});
         }
     }
     //endregion
-
 
     //region Quartz Stairs
     private EnumStorage<Material> QUARTZ_STAIRS_E;
@@ -377,13 +349,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return QUARTZ_STAIRS_E;
     }
 
-    private void QuartzStairsInit(){
+    private void QuartzStairsInit() {
         if (QUARTZ_STAIRS_E == null) {
             QUARTZ_STAIRS_E = new EnumStorage<>(new Material[]{QUARTZ_STAIRS, SMOOTH_QUARTZ_STAIRS});
         }
     }
     //endregion
-
 
     //region Nether Brick Stairs
     private EnumStorage<Material> NETHER_BRICK_STAIRS_E;
@@ -394,15 +365,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return NETHER_BRICK_STAIRS_E;
     }
 
-    private void NetherBrickStairsInit(){
+    private void NetherBrickStairsInit() {
         if (NETHER_BRICK_STAIRS_E == null) {
             NETHER_BRICK_STAIRS_E = new EnumStorage<>(new Material[]{NETHER_BRICK_STAIRS, RED_NETHER_BRICK_STAIRS});
         }
     }
     //endregion
-
-
-
 
     //region Stone Walls
     private EnumStorage<Material> STONE_WALLS_E;
@@ -413,13 +381,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return STONE_WALLS_E;
     }
 
-    private void StoneWallsInit(){
+    private void StoneWallsInit() {
         if (STONE_WALLS_E == null) {
             STONE_WALLS_E = new EnumStorage<>(new Material[]{ANDESITE_WALL, DIORITE_WALL, GRANITE_WALL});
         }
     }
     //endregion
-
 
     //region Stone Brick Walls
     private EnumStorage<Material> STONE_BRICK_WALLS_E;
@@ -430,13 +397,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return STONE_BRICK_WALLS_E;
     }
 
-    private void StoneBrickWallsInit(){
+    private void StoneBrickWallsInit() {
         if (STONE_BRICK_WALLS_E == null) {
             STONE_BRICK_WALLS_E = new EnumStorage<>(new Material[]{STONE_BRICK_WALL, MOSSY_STONE_BRICK_WALL});
         }
     }
     //endregion
-
 
     //region Sandstone Walls
     private EnumStorage<Material> SANDSTONE_WALLS_E;
@@ -447,13 +413,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return SANDSTONE_WALLS_E;
     }
 
-    private void SandstoneWallsInit(){
+    private void SandstoneWallsInit() {
         if (SANDSTONE_WALLS_E == null) {
             SANDSTONE_WALLS_E = new EnumStorage<>(new Material[]{SANDSTONE_WALL, RED_SANDSTONE_WALL});
         }
     }
     //endregion
-
 
     //region Nether Brick Walls
     private EnumStorage<Material> NETHER_BRICK_WALLS_E;
@@ -464,7 +429,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         return NETHER_BRICK_WALLS_E;
     }
 
-    private void NetherBrickWallsInit(){
+    private void NetherBrickWallsInit() {
         if (NETHER_BRICK_WALLS_E == null) {
             NETHER_BRICK_WALLS_E = new EnumStorage<>(new Material[]{NETHER_BRICK_WALL, RED_NETHER_BRICK_WALL});
         }
@@ -472,15 +437,12 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     //endregion
 
     //endregion
-
-
     //region Block Categories
-
     //region Storage Blocks
     private EnumStorage<Material> STORAGE_BLOCKS_E;
 
     @Override
-    public EnumStorage<Material> StorageBlocks(){
+    public EnumStorage<Material> StorageBlocks() {
         storageBlocksInit();
         return STORAGE_BLOCKS_E;
     }
@@ -491,18 +453,16 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
                 CHEST, FURNACE, JUKEBOX, ENDER_CHEST, BEACON, TRAPPED_CHEST, HOPPER, DROPPER, BREWING_STAND, ANVIL,
                 BARREL,
                 BLAST_FURNACE, LECTERN, SMOKER},
-                ShulkerBoxes(), CommandBlocks());
+                    ShulkerBoxes(), CommandBlocks());
         }
     }
 
     //endregion
-
-
     //region Interactable Blocks
     private EnumStorage<Material> INTERACTABLE_BLOCKS_E;
 
     @Override
-    public EnumStorage<Material> InteractableBlocks(){
+    public EnumStorage<Material> InteractableBlocks() {
         interactableBlocksInit();
         return INTERACTABLE_BLOCKS_E;
     }
@@ -512,19 +472,16 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
             INTERACTABLE_BLOCKS_E = new EnumStorage<>(new Material[]{
                 NOTE_BLOCK, CRAFTING_TABLE, LEVER, REPEATER, ENCHANTING_TABLE, COMPARATOR, DAYLIGHT_DETECTOR, OBSERVER, BELL,
                 CARTOGRAPHY_TABLE, COMPOSTER, FLETCHING_TABLE, GRINDSTONE, LOOM, SMITHING_TABLE, STONECUTTER},
-                Beds(), Doors(), Trapdoors(), FenceGates(), CommandBlocks(), Buttons(), ShulkerBoxes(), StorageBlocks());
+                    Beds(), Doors(), Trapdoors(), FenceGates(), CommandBlocks(), Buttons(), ShulkerBoxes(), StorageBlocks());
         }
     }
 
     //endregion
-
-
     //region Unbreakable Blocks
     private EnumStorage<Material> UNBREAKABLE_BLOCKS_E;
 
-
     @Override
-    public EnumStorage<Material> UnbreakableBlocks(){
+    public EnumStorage<Material> UnbreakableBlocks() {
         unbreakableBlocks();
         return UNBREAKABLE_BLOCKS_E;
     }
@@ -538,17 +495,13 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
     //endregion
-
-
     //region Enchantment Enum Storage
-
     //region Lumber Whitelist
     private EnumStorage<Material> LUMBER_WHITELIST_E;
 
     @Override
-    public EnumStorage<Material> LumberWhitelist(){
+    public EnumStorage<Material> LumberWhitelist() {
         LumberWhitelistInit();
         return LUMBER_WHITELIST_E;
     }
@@ -559,22 +512,21 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
                 DIRT, GRASS, VINE, SNOW, COCOA, GRAVEL, STONE, DIORITE, GRANITE, ANDESITE, WATER, LAVA, SAND, BROWN_MUSHROOM,
                 RED_MUSHROOM, MOSSY_COBBLESTONE, CLAY, BROWN_MUSHROOM, RED_MUSHROOM, MYCELIUM, TORCH, SUGAR_CANE, GRASS_BLOCK,
                 PODZOL, FERN, GRASS, MELON, PUMPKIN, SWEET_BERRY_BUSH, BAMBOO, BAMBOO_SAPLING}, TrunkBlocks(), Leaves(),
-                SmallFlowers(), LargeFlowers(), Saplings(), Airs(), DeadlyPlants());
+                    SmallFlowers(), LargeFlowers(), Saplings(), Airs(), DeadlyPlants());
         }
     }
     //endregion
-
 
     //region Transformation Entity Types
     private EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_FROM_E;
 
     @Override
-    public EnumStorage<EntityType> TransformationEntityTypesFrom(){
+    public EnumStorage<EntityType> TransformationEntityTypesFrom() {
         TransformationEntityTypesFromInit();
         return TRANSFORMATION_ENTITY_TYPES_FROM_E;
     }
 
-    private void TransformationEntityTypesFromInit(){
+    private void TransformationEntityTypesFromInit() {
         if (TRANSFORMATION_ENTITY_TYPES_FROM_E == null) {
             TRANSFORMATION_ENTITY_TYPES_FROM_E = new EnumStorage<>(new EntityType[]{
                 HUSK, WITCH, EntityType.COD, VILLAGER, SKELETON, HORSE, FOX, EntityType.CHICKEN, SQUID, POLAR_BEAR,
@@ -587,17 +539,15 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         }
     }
 
-
-
     private EnumStorage<EntityType> TRANSFORMATION_ENTITY_TYPES_TO_E;
 
     @Override
-    public EnumStorage<EntityType> TransformationEntityTypesTo(){
+    public EnumStorage<EntityType> TransformationEntityTypesTo() {
         TransformationEntityTypesToInit();
         return TRANSFORMATION_ENTITY_TYPES_TO_E;
     }
 
-    private void TransformationEntityTypesToInit(){
+    private void TransformationEntityTypesToInit() {
         if (TRANSFORMATION_ENTITY_TYPES_TO_E == null) {
             TRANSFORMATION_ENTITY_TYPES_TO_E = new EnumStorage<>(new EntityType[]{
                 DROWNED, VINDICATOR, EntityType.SALMON, PILLAGER, WITHER_SKELETON, DONKEY, WOLF, PARROT, DOLPHIN, PANDA,
@@ -633,7 +583,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
                 break;
             case VILLAGER:
                 ((Villager) newEnt).setProfession(
-                    Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)]);
+                        Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)]);
                 ((Villager) newEnt).setVillagerType(Villager.Type.values()[rnd.nextInt(Villager.Type.values().length)]);
                 break;
             case LLAMA:
@@ -643,7 +593,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
                 ((TropicalFish) newEnt).setBodyColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
                 ((TropicalFish) newEnt).setPatternColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
                 ((TropicalFish) newEnt).setPattern(
-                    TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
+                        TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
                 break;
             case PARROT:
                 ((Parrot) newEnt).setVariant(Parrot.Variant.values()[rnd.nextInt(Parrot.Variant.values().length)]);
@@ -659,7 +609,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
                 break;
             case MUSHROOM_COW:
                 ((MushroomCow) newEnt).setVariant(
-                    MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
+                        MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
                 break;
             case FOX:
                 ((Fox) newEnt).setFoxType(Fox.Type.values()[rnd.nextInt(Fox.Type.values().length)]);
@@ -676,12 +626,10 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
-
     //region Fire Raw
     private EnumStorage<Material> FIRE_RAW_E;
 
-    public EnumStorage<Material> FireRaw(){
+    public EnumStorage<Material> FireRaw() {
         fireRawInit();
         return FIRE_RAW_E;
     }
@@ -695,12 +643,10 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
-
     //region Fire Cooked
     private EnumStorage<Material> FIRE_COOKED_E;
 
-    public EnumStorage<Material> FireCooked(){
+    public EnumStorage<Material> FireCooked() {
         fireCookedInit();
         return FIRE_COOKED_E;
     }
@@ -714,20 +660,14 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
     //endregion
-
-
     //endregion
-
-
     //region Gluttony
-
     //region Gluttony Food Levels
     private int[] GLUTTONY_FOOD_LEVELS;
 
     @Override
-    public int[] GluttonyFoodLevels(){
+    public int[] GluttonyFoodLevels() {
         gluttonyFoodLevelsInit();
         return GLUTTONY_FOOD_LEVELS;
     }
@@ -738,7 +678,6 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         }
     }
     //endregion
-
 
     //region Gluttony Saturations
     private double[] GLUTTONY_SATURATIONS;
@@ -757,19 +696,18 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
     //endregion
 
-
     //region Gluttony Food Items
     private Material[] GLUTTONY_FOOD_ITEMS;
 
     @Override
-    public Material[] GluttonyFoodItems(){
+    public Material[] GluttonyFoodItems() {
         gluttonyFoodItemsInit();
         return GLUTTONY_FOOD_ITEMS;
     }
 
     private void gluttonyFoodItemsInit() {
         if (GLUTTONY_FOOD_ITEMS == null) {
-            GLUTTONY_FOOD_ITEMS  = new Material[]{
+            GLUTTONY_FOOD_ITEMS = new Material[]{
                 APPLE, BAKED_POTATO, BEETROOT, BEETROOT_SOUP, BREAD, CARROT, TROPICAL_FISH, COOKED_CHICKEN, COOKED_COD,
                 COOKED_MUTTON, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON, COOKIE, DRIED_KELP, MELON_SLICE, MUSHROOM_STEW,
                 PUMPKIN_PIE, RABBIT_STEW, COOKED_BEEF, SWEET_BERRIES, SUSPICIOUS_STEW};
@@ -777,10 +715,7 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
     }
 
     //endregion
-
     //endregion
-
-
     @Override
     public boolean grow(Block cropBlock, Player player) {
         Material mat = cropBlock.getType();
@@ -796,7 +731,6 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
             case NETHER_WART:
             case BEETROOTS:
             case SWEET_BERRY_BUSH:
-
 
                 BlockData cropState = cropBlock.getBlockData();
                 if (cropState instanceof Ageable) {
@@ -885,7 +819,6 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
                         return false;
                     }
 
-
                 }
 
                 if (height > 4) {
@@ -944,16 +877,16 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
-    
+
     @Override
     public void collectXP(Player player, int amount) {
-        EntityExperienceOrb eOrb = new EntityExperienceOrb(((CraftWorld)player.getWorld()).getHandle(), 
+        EntityExperienceOrb eOrb = new EntityExperienceOrb(((CraftWorld) player.getWorld()).getHandle(),
                 player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), amount);
         EntityHuman ePlayer = ((CraftPlayer) player).getHandle();
         eOrb.pickup(ePlayer); // XP Orb Entity handles mending. Don't blame me, I didn't code it
         ePlayer.bF = 0; // Reset XP Pickup Timer
     }
-    
+
     @Override
     public boolean explodeCreeper(Creeper creeper, boolean damageWorld) {
         EntityCreeper ec = ((CraftCreeper) creeper).getHandle();
@@ -975,25 +908,72 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
 
     @Override
     public boolean showShulker(Block blockToHighlight, int entityId, Player player) {
-        PacketPlayOutSpawnEntityLiving pposel = generateShulkerSpawnPacket(blockToHighlight, entityId);
-        if (pposel == null) {
-            return false;
-        }
-        EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ep.playerConnection.networkManager.sendPacket(pposel);
-        return true;
+        return showHighlightBlock(blockToHighlight, player);
     }
 
     @Override
     public boolean hideShulker(int entityId, Player player) {
+        return hideHighlightBlock(entityId, player);
+    }
+    
+    public boolean showHighlightBlock(Block block, Player player) {
+        int entityId = 2000000000 + (block.hashCode()) % 10000000;
+        return showHighlightBlock(block.getX(), block.getY(), block.getZ(), entityId, player);
+    }
+    
+    public boolean hideHighlightBlock(int entityId, Player player) {
         PacketPlayOutEntityDestroy ppoed = new PacketPlayOutEntityDestroy(entityId);
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         ep.playerConnection.networkManager.sendPacket(ppoed);
         return true;
     }
 
-    private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(Block blockToHighlight, int entityId) {
+    private boolean showHighlightBlock(int x, int y, int z, int entityId, Player player) {
+        PacketPlayOutSpawnEntityLiving pposel = generateShulkerSpawnPacket(x, y, z, entityId);
+        PacketPlayOutEntityMetadata ppoem = generateShulkerGlowPacket(entityId);
+        if (pposel == null) {
+            return false;
+        }
+        if (ppoem == null) {
+            return false;
+        }
+        EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        ep.playerConnection.networkManager.sendPacket(pposel);
+        ep.playerConnection.networkManager.sendPacket(ppoem);
+        return true;
+    }
+
+    private static PacketPlayOutEntityMetadata generateShulkerGlowPacket(int entityId) {
+        PacketPlayOutEntityMetadata ppoem = new PacketPlayOutEntityMetadata();
+        Class clazz = ppoem.getClass();
+        try {
+            Field f = clazz.getDeclaredField("a");
+            f.setAccessible(true);
+            f.setInt(ppoem, entityId);
+
+            // Build data structure for Entity Metadata. Requires an index, a type and a value. 
+            // As of 1.15.2, an invisible + glowing LivingEntity is set by Index 0 Type Byte Value 0x60
+            DataWatcherSerializer<Byte> dws = DataWatcherRegistry.a; // Type (Byte)
+            DataWatcherObject<Byte> dwo = new DataWatcherObject<>(0, dws); // Index (0)
+            DataWatcher.Item<Byte> dwi = new DataWatcher.Item<>(dwo, (byte) 0x60); // Value (0x60)
+            List<DataWatcher.Item<Byte>> list = new ArrayList<>();
+            list.add(dwi); // Pack it in a list
+
+            f = clazz.getDeclaredField("b");
+            f.setAccessible(true);
+            f.set(ppoem, list);
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return ppoem;
+    }
+
+    private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(int x, int y, int z, int entityId) {
         PacketPlayOutSpawnEntityLiving pposel = new PacketPlayOutSpawnEntityLiving();
+
+        int mobTypeId = net.minecraft.server.v1_15_R1.IRegistry.ENTITY_TYPE.a(EntityTypes.SHULKER);
+
         Class clazz = pposel.getClass();
         try {
             Field f = clazz.getDeclaredField("a");
@@ -1004,16 +984,16 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
             f.set(pposel, new UUID(0xFF00FF00FF00FF00L, 0xFF00FF00FF00FF00L));
             f = clazz.getDeclaredField("c");
             f.setAccessible(true);
-            f.setInt(pposel, 62); // Mod data (changes every NMS update)
+            f.setInt(pposel, mobTypeId);
             f = clazz.getDeclaredField("d");
             f.setAccessible(true);
-            f.setDouble(pposel, blockToHighlight.getX() + 0.5);
+            f.setDouble(pposel, x + 0.5);
             f = clazz.getDeclaredField("e");
             f.setAccessible(true);
-            f.setDouble(pposel, blockToHighlight.getY());
+            f.setDouble(pposel, y);
             f = clazz.getDeclaredField("f");
             f.setAccessible(true);
-            f.setDouble(pposel, blockToHighlight.getZ() + 0.5);
+            f.setDouble(pposel, z + 0.5);
             f = clazz.getDeclaredField("g");
             f.setAccessible(true);
             f.setInt(pposel, 0);
@@ -1032,33 +1012,10 @@ public class NMS_1_14_R1 extends CompatibilityAdapter {
             f = clazz.getDeclaredField("l");
             f.setAccessible(true);
             f.setByte(pposel, (byte) 0);
-
-            DataWatcher m = new FakeDataWatcher();
-            f = clazz.getDeclaredField("m");
-            f.setAccessible(true);
-            f.set(pposel, m);
-
         } catch (NoSuchFieldException | IllegalAccessException ex) {
             ex.printStackTrace();
             return null;
         }
-
         return pposel;
-    }
-
-    private static class FakeDataWatcher extends DataWatcher {
-
-        public FakeDataWatcher() {
-            super(null); // We don't actually need DataWatcher methods, just the inheritance
-        }
-
-        // Inject metadata into network stream
-        @Override
-        public void a(PacketDataSerializer pds) {
-            pds.writeByte(0); // Set Metadata at index 0
-            pds.writeByte(0); // Value is type Byte
-            pds.writeByte(0x60); // Set Glowing and Invisible bits
-            pds.writeByte(0xFF); // Index -1 indicates end of Metadata
-        }
     }
 }

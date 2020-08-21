@@ -32,7 +32,7 @@ public class Haste extends CustomEnchantment {
 	@Override
 	public boolean onScanHands(Player player, int level, boolean usedHand) {
 		Utilities.addPotion(player, FAST_DIGGING, 610, (int) Math.round(level * power));
-		player.setMetadata("ze.haste", new FixedMetadataValue(Storage.zenchantments, null));
+		player.setMetadata("ze.haste", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
 		return false;
 	}
 

@@ -41,16 +41,16 @@ public class Extraction extends CustomEnchantment {
 		if (evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
 			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
 			for (int x = 0; x < Storage.rnd.nextInt((int) Math.round(power * level + 1)) + 1; x++) {
-				evt.getBlock().getWorld().dropItemNaturally(Utilities.getCenter(evt.getBlock()),
+				evt.getBlock().getWorld().dropItemNaturally(evt.getBlock().getLocation(),
 					new ItemStack(evt.getBlock().getType() == GOLD_ORE ?
 						GOLD_INGOT : IRON_INGOT));
 			}
 			ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld()
-			                                     .spawnEntity(Utilities.getCenter(evt.getBlock()), EXPERIENCE_ORB);
+			                                     .spawnEntity(evt.getBlock().getLocation(), EXPERIENCE_ORB);
 			o.setExperience(
 				evt.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
 			evt.getBlock().setType(AIR);
-			Utilities.display(Utilities.getCenter(evt.getBlock()), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+			Utilities.display(evt.getBlock().getLocation(), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 			return true;
 		}
 		return false;

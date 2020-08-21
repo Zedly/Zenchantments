@@ -53,7 +53,7 @@ public class Anthropomorphism extends CustomEnchantment {
 
     @EffectTask(Frequency.MEDIUM_HIGH)
     // Removes Anthropomorphism blocks when they are dead
-    public static void anthropomorphism2() {
+    public static void removeCheck() {
         Iterator it = idleBlocks.keySet().iterator();
         while (it.hasNext()) {
             FallingBlock b = (FallingBlock) it.next();
@@ -72,7 +72,7 @@ public class Anthropomorphism extends CustomEnchantment {
 
     // Moves Anthropomorphism blocks around depending on their state
     @EffectTask(Frequency.HIGH)
-    public static void anthropomorphism() {
+    public static void entityPhysics() {
         // Move agressive Anthropomorphism Blocks towards a target & attack
         Iterator<FallingBlock> anthroIterator = attackBlocks.keySet().iterator();
         while (anthroIterator.hasNext()) {
@@ -193,12 +193,12 @@ public class Anthropomorphism extends CustomEnchantment {
         }
         return false;
     }
-    
+
     private class Pair<K, V> {
-        
+
         private K key;
         private V value;
-        
+
         public Pair(K k, V v) {
             this.key = k;
             this.value = v;
@@ -220,5 +220,5 @@ public class Anthropomorphism extends CustomEnchantment {
             this.value = value;
         }
     }
-    
+
 }

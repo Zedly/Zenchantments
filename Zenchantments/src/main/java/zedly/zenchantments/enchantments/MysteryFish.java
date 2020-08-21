@@ -52,7 +52,6 @@ public class MysteryFish extends CustomEnchantment {
 					guardianMove.put(g, evt.getPlayer());
 					ent = g;
 				}
-				evt.getCaught().addPassenger(ent);
 			}
 		}
 		return true;

@@ -15,6 +15,7 @@ import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.AIR;
+import org.bukkit.entity.EntityType;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
 public class Transformation extends CustomEnchantment {
@@ -45,42 +46,65 @@ public class Transformation extends CustomEnchantment {
                 return false;
             }
         }
-        if (evt.getEntity() instanceof LivingEntity
-                && ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
-            if (Storage.rnd.nextInt(100) > (100 - (level * power * 8))) {
-                LivingEntity newEnt = Storage.COMPATIBILITY_ADAPTER.TransformationCycle((LivingEntity) evt.getEntity(),
-                        Storage.rnd);
+        if (!(evt.getEntity() instanceof LivingEntity)) {
+            return true;
+        }
 
+        LivingEntity le = (LivingEntity) evt.getEntity();
+        if (hasValuableItems(le)) {
+            return true;
+        }
+
+        if (ADAPTER.attackEntity(le, (Player) evt.getDamager(), 0)) {
+            if (Storage.rnd.nextInt(100) < (level * power * 8)) {
+                LivingEntity newEnt = Storage.COMPATIBILITY_ADAPTER.TransformationCycle(le,
+                        Storage.rnd);
                 if (newEnt != null) {
-                    if (evt.getDamage() > ((LivingEntity) evt.getEntity()).getHealth()) {
+                    if (evt.getDamage() > (le).getHealth()) {
                         evt.setCancelled(true);
                     }
                     Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f,
                             .5f, 2, .5f);
 
-                    double originalHealth = ((LivingEntity) evt.getEntity()).getHealth();
-                    for (ItemStack stk : ((LivingEntity) evt.getEntity()).getEquipment().getArmorContents()) {
-                        if (stk.getType() != AIR) {
-                            newEnt.getWorld().dropItemNaturally(newEnt.getLocation(), stk);
-                        }
-                    }
-                    if (((LivingEntity) evt.getEntity()).getEquipment().getItemInMainHand().getType() != AIR) {
-                        newEnt.getWorld().dropItemNaturally(newEnt.getLocation(),
-                                ((LivingEntity) evt.getEntity()).getEquipment().getItemInMainHand());
-                    }
-                    if (((LivingEntity) evt.getEntity()).getEquipment().getItemInOffHand().getType() != AIR) {
-                        newEnt.getWorld().dropItemNaturally(newEnt.getLocation(),
-                                ((LivingEntity) evt.getEntity()).getEquipment().getItemInOffHand());
-                    }
-
-                    evt.getEntity().remove();
-
+                    double originalHealth = (le).getHealth();
                     newEnt.setHealth(Math.max(1,
                             Math.min(originalHealth, newEnt.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
-
+                    evt.getEntity().remove();
                 }
             }
         }
         return true;
+    }
+
+    private boolean hasValuableItems(LivingEntity le) {
+        if (le.getEquipment() != null) {
+            for (ItemStack stk : le.getEquipment().getArmorContents()) {
+                if (stk.hasItemMeta() && stk.getItemMeta().hasEnchants()) {
+                    return true;
+                }
+                switch (stk.getType()) {
+                    case AIR:
+                        continue;
+                    case GOLDEN_SWORD:
+                        if (le.getType() != EntityType.PIG_ZOMBIE) {
+                            return true;
+                        }
+                        break;
+                    case BOW:
+                        if (le.getType() != EntityType.SKELETON) {
+                            return true;
+                        }
+                        break;
+                    case STONE_SWORD:
+                        if (le.getType() != EntityType.WITHER_SKELETON) {
+                            return true;
+                        }
+                        break;
+                    default:
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 }
