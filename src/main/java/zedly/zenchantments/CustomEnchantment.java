@@ -37,7 +37,7 @@ import static org.bukkit.Material.ENCHANTED_BOOK;
 public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
-    public static IEnchGatherer Enchantment_Adapter = new GeolyktPersistentDataGatherer();
+    public static IEnchGatherer Enchantment_Adapter = new PersistentDataGatherer();
     protected int id;
 
     protected int maxLevel;         // Max level the given enchant can naturally obtain
@@ -733,19 +733,20 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     }
 
     /**
-     * The Enchantment gatherer used by
-     * <a href="https://github.com/Geolykt/NMSless-Zenchantments"> Geolykt's
-     * NMSless-Zenchantments </a> this implementation uses Persistent Data to store
-     * it's data. It is modified to be backwards compatible
+     * The Enchantment gatherer used by <a href="https://github.com/Geolykt/NMSless-Zenchantments">
+     *  Geolykt's NMSless-Zenchantments </a>, the implementation uses Persistent Data to store
+     *  it's data. It is modified to be backwards compatible
      */
-    static class GeolyktPersistentDataGatherer implements IEnchGatherer {
+    static class PersistentDataGatherer implements IEnchGatherer {
         private LegacyLoreGatherer legacyGatherer = new LegacyLoreGatherer();
+        public boolean doCompat = true;
+        
         /**
          * Used for enchantment conversion purposes
          */
         public final NamespacedKey ench_converted;
         
-        public GeolyktPersistentDataGatherer() {
+        public PersistentDataGatherer() {
             ench_converted = new NamespacedKey(Storage.zenchantments, "e_convert");
         }
         
@@ -774,7 +775,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
                 if (stk.hasItemMeta()) {
                     final PersistentDataContainer cont = stk.getItemMeta().getPersistentDataContainer();
                     
-                    if (cont.getOrDefault(ench_converted, PersistentDataType.BYTE, (byte) 0) == 0) {
+                    if (doCompat && cont.getOrDefault(ench_converted, PersistentDataType.BYTE, (byte) 0) == 0) {
                         //Legacy conversion
                         Bukkit.getLogger().info("Item converted");
                         map = legacyGatherer.getEnchants(stk, acceptBooks, world, outExtraLore);

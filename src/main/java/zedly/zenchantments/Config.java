@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import zedly.zenchantments.enums.Tool;
 
 import java.io.File;
@@ -137,6 +138,13 @@ public class Config {
         CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
             Config.CONFIGS.put(world, getWorldConfig(world));
+        }
+        if (Storage.zenchantments.getConfig().getString("enchantmentGatherer", "NBT").equals("NBT")) {
+            CustomEnchantment.Enchantment_Adapter = new CustomEnchantment.PersistentDataGatherer();
+            ((CustomEnchantment.PersistentDataGatherer) CustomEnchantment.Enchantment_Adapter).doCompat =
+                    Storage.zenchantments.getConfig().getBoolean("compatibility", true);
+        } else {
+            CustomEnchantment.Enchantment_Adapter = new CustomEnchantment.LegacyLoreGatherer();
         }
     }
 

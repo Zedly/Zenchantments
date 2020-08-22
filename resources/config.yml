@@ -1,0 +1,4 @@
+# Global config
+
+enchantmentGatherer: "NBT" # can be set to "NBT" and "lore"
+compatibility: true # whether to convert lore into NBT, not used if above is "lore"
