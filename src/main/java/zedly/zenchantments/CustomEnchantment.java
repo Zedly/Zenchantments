@@ -659,22 +659,37 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 
         // Returns the custom enchantment from the lore name
         private Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
-            Map<String, Boolean> unescaped = Utilities.fromInvisibleString(raw);
-            for (Map.Entry<String, Boolean> entry : unescaped.entrySet()) {
-                if (!entry.getValue()) {
-                    String[] vals = entry.getKey().split("\\.");
-                    if (vals.length == 4 && vals[0].equals("ze") && vals[1].equals("ench")) {
-                        int enchID = Integer.parseInt(vals[2]);
-                        int enchLvl = Integer.parseInt(vals[3]);
-                        CustomEnchantment ench = Config.get(world).enchantFromID(enchID);
-                        if (ench == null) {
-                            continue;
-                        }
-                        return new AbstractMap.SimpleEntry<>(ench, enchLvl);
-                    }
+            raw = raw.replaceAll("(" + ChatColor.COLOR_CHAR + ".)", "");
+            switch (raw.split(" ").length) {
+            case 0: 
+            case 1:
+                return null; // Invalid length
+            case 2:
+                CustomEnchantment ench = Config.get(world).enchantFromString(raw.split(" ")[0]);
+                if (ench == null) {
+                    return null; // Not able to map enchantment
                 }
+                try {
+                    return new AbstractMap.SimpleEntry<CustomEnchantment, Integer>(ench,
+                            Utilities.getNumber(raw.split(" ")[1]));
+                } catch (NumberFormatException expected){
+                    return null; // Invalid roman numeral
+                }
+            case 3:
+                CustomEnchantment ench2 = Config.get(world).enchantFromString(raw.split(" ")[0] +
+                        raw.split(" ")[1]);
+                if (ench2 == null) {
+                    return null; // Not able to map enchantment
+                }
+                try {
+                    return new AbstractMap.SimpleEntry<CustomEnchantment, Integer>(ench2,
+                            Utilities.getNumber(raw.split(" ")[2]));
+                } catch (NumberFormatException expected){
+                    return null; // Invalid roman numeral
+                }
+            default:
+                return null; // Invalid length
             }
-            return null;
         }
         
         @Override

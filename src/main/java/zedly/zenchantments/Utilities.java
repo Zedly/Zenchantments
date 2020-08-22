@@ -186,7 +186,14 @@ public class Utilities {
 		}
 	}
 
-	// Returns the english number representation of the given roman number string
+	/**
+	 * Converts a Roman numeral representation (e.g.: IX) to an integer (e.g.: 9). <br>
+	 * <b>Warning</b>: only converts the range between 0 and 10! Where as 0 is represented as "-"! 
+	 * It also doesn't expect whitespaces.
+	 * @param numeral The numeral value in the Roman numeral representation to convert
+	 * @return The integral value of the numeral
+	 * @throws NumberFormatException if the conversion did not occur successfully
+	 */
 	public static int getNumber(String numeral) {
 		switch (numeral.toUpperCase()) {
 			case "-":
@@ -212,7 +219,7 @@ public class Utilities {
 			case "X":
 				return 10;
 			default:
-				return 1;
+				throw new NumberFormatException("Invalid roman numeral or outside of bounds between 0 and 10");
 		}
 	}
 
