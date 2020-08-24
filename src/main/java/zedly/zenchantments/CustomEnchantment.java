@@ -782,7 +782,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
                         for (Map.Entry<CustomEnchantment, Integer> ench : map.entrySet()) {
                             this.setEnchantment(stk, ench.getKey(), ench.getValue(), world);
                         }
-                        cont.set(ench_converted, PersistentDataType.BYTE, (byte) 1);
+                        ItemMeta itemMeta = stk.getItemMeta();
+                        itemMeta.getPersistentDataContainer().set(ench_converted, PersistentDataType.BYTE, (byte) 1);
+                        stk.setItemMeta(itemMeta);
                         return map;
                     }
                     
@@ -845,10 +847,12 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
             }
         
             //Disenchant item
-            if (ench != null && level <= 0 && meta.getPersistentDataContainer().has(ench.key, PersistentDataType.SHORT)) {
+            if (ench != null &&
+                    level <= 0 &&
+                    meta.getPersistentDataContainer().has(ench.key, PersistentDataType.SHORT)) {
                 meta.getPersistentDataContainer().remove(ench.key);
             }
-        
+            
             meta.setLore(lore);
             stk.setItemMeta(meta);
         
