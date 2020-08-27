@@ -24,8 +24,8 @@ public class Config {
     public static final HashSet<CustomEnchantment> allEnchants = new HashSet<>();
 
     private final Set<CustomEnchantment> worldEnchants;     // Set of active Custom Enchantments
-	private final Map<String, CustomEnchantment> nameToEnch;
-	private final Map<Integer, CustomEnchantment> idToEnch;
+    private final Map<String, CustomEnchantment> nameToEnch;
+    private final Map<Integer, CustomEnchantment> idToEnch;
     private final double enchantRarity;                        // Overall rarity of obtaining enchantments
     private final int maxEnchants;                             // Max number of Custom Enchantments on a tool
     private final int shredDrops;                              // The setting (all, block, none) for shred drops
@@ -33,15 +33,15 @@ public class Config {
     private final boolean descriptionLore;                     // Determines if description lore appears on tools
     private final ChatColor descriptionColor;                  // The color of the description lore
     private final World world;                                 // The World associated with the config
-	private final boolean enchantGlow;
-	private final ChatColor enchantmentColor;
-	private final ChatColor curseColor;
+    private final boolean enchantGlow;
+    private final ChatColor enchantmentColor;
+    private final ChatColor curseColor;
 
     // Constructs a new config object
     public Config(Set<CustomEnchantment> worldEnchants, double enchantRarity,
             int maxEnchants, int shredDrops, boolean explosionBlockBreak,
             boolean descriptionLore, ChatColor descriptionColor, ChatColor enchantmentColor,
-	        ChatColor curseColor, boolean enchantGlow, World world) {
+            ChatColor curseColor, boolean enchantGlow, World world) {
         this.worldEnchants = worldEnchants;
         this.enchantRarity = enchantRarity;
         this.maxEnchants = maxEnchants;
@@ -53,17 +53,17 @@ public class Config {
 
         this.nameToEnch = new HashMap<>();
         for (CustomEnchantment ench : this.worldEnchants) {
-	        nameToEnch.put(ChatColor.stripColor(ench.getLoreName().toLowerCase().replace(" ", "")), ench);
+            nameToEnch.put(ChatColor.stripColor(ench.getLoreName().toLowerCase().replace(" ", "")), ench);
         }
 
-	    this.idToEnch = new HashMap<>();
-	    for (CustomEnchantment ench : this.worldEnchants) {
-		    idToEnch.put(ench.getId(), ench);
-	    }
+        this.idToEnch = new HashMap<>();
+        for (CustomEnchantment ench : this.worldEnchants) {
+            idToEnch.put(ench.getId(), ench);
+        }
 
-	    this.enchantGlow = enchantGlow;
-	    this.enchantmentColor = enchantmentColor;
-	    this.curseColor = curseColor;
+        this.enchantGlow = enchantGlow;
+        this.enchantmentColor = enchantmentColor;
+        this.curseColor = curseColor;
 
         allEnchants.addAll(worldEnchants);
     }
@@ -104,13 +104,19 @@ public class Config {
     }
 
     // Returns whether enchant glow is enabled for custom enchantments
-    public boolean enchantGlow() { return enchantGlow; }
+    public boolean enchantGlow() {
+        return enchantGlow;
+    }
 
     // Returns the color for enchantment lore
-    public ChatColor getEnchantmentColor() { return enchantmentColor; }
+    public ChatColor getEnchantmentColor() {
+        return enchantmentColor;
+    }
 
     // Returns the color for curse lore
-    public ChatColor getCurseColor() { return curseColor; }
+    public ChatColor getCurseColor() {
+        return curseColor;
+    }
 
     // Returns the world associated with the config
     public World getWorld() {
@@ -118,7 +124,7 @@ public class Config {
     }
 
     public CustomEnchantment enchantFromString(String enchName) {
-    	return nameToEnch.get(ChatColor.stripColor(enchName.toLowerCase()));
+        return nameToEnch.get(ChatColor.stripColor(enchName.toLowerCase()));
     }
 
     public List<String> getEnchantNames() {
@@ -130,7 +136,7 @@ public class Config {
     }
 
     public CustomEnchantment enchantFromID(int id) {
-    	return idToEnch.get(id);
+        return idToEnch.get(id);
     }
 
     // Loads, parses, and auto updates the config file, creating a new config for each map 
@@ -148,7 +154,7 @@ public class Config {
         }
     }
 
-    public static Config getWorldConfig (World world) {
+    public static Config getWorldConfig(World world) {
         try {
             InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
             File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
@@ -219,7 +225,7 @@ public class Config {
             Set<CustomEnchantment> enchantments = new HashSet<>();
             Map<String, LinkedHashMap<String, Object>> configInfo = new HashMap<>();
             for (Map<String, LinkedHashMap<String, Object>> part
-                : (List<Map<String, LinkedHashMap<String, Object>>>) yamlConfig.get("enchantments")) {
+                    : (List<Map<String, LinkedHashMap<String, Object>>>) yamlConfig.get("enchantments")) {
                 for (String name : part.keySet()) {
                     configInfo.put(name, part.get(name));
                 }
@@ -228,7 +234,7 @@ public class Config {
             List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
 
             new FastClasspathScanner(CustomEnchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
-                                                                                    .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add).scan();
+                    .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add).scan();
 
             for (Class<? extends CustomEnchantment> cl : customEnchantments) {
                 try {
@@ -260,7 +266,7 @@ public class Config {
                 }
             }
             return new Config(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
-                descriptionLore, descriptionColor, enchantColor, curseColor, enchantGlow, world);
+                    descriptionLore, descriptionColor, enchantColor, curseColor, enchantGlow, world);
         } catch (IOException | InvalidConfigurationException ex) {
             System.err.println("Error parsing config for world " + world.getName() + ", skipping");
         }
