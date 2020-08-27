@@ -56,7 +56,6 @@
 
     <build>
         <defaultGoal>clean package</defaultGoal>
-        <directory>../target</directory> <!-- Build it one level up, because it is the one we care about -->
         <finalName>Zenchantments</finalName>
         <resources>
             <resource>

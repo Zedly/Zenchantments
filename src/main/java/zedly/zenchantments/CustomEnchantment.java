@@ -23,14 +23,17 @@ import zedly.zenchantments.enums.Tool;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
-import org.bukkit.inventory.PlayerInventory;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
 public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
+
+    private static final Pattern ENCH_LORE_PATTERN = Pattern.compile("§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)");
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
     protected int id;
@@ -220,10 +223,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         return this.getLoreName().compareTo(o.getLoreName());
     }
 
-    
-    
     //endregion
-    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {    
+    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
         getEnchants(tool, player.getWorld()).forEach((CustomEnchantment ench, Integer level) -> {
             if (!ench.used && Utilities.canUse(player, ench.id)) {
                 try {
@@ -367,22 +368,21 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 
     // Returns the custom enchantment from the lore name
     private static Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
-        Map<String, Boolean> unescaped = Utilities.fromInvisibleString(raw);
-        for (Map.Entry<String, Boolean> entry : unescaped.entrySet()) {
-            if (!entry.getValue()) {
-                String[] vals = entry.getKey().split("\\.");
-                if (vals.length == 4 && vals[0].equals("ze") && vals[1].equals("ench")) {
-                    int enchID = Integer.parseInt(vals[2]);
-                    int enchLvl = Integer.parseInt(vals[3]);
-                    CustomEnchantment ench = Config.get(world).enchantFromID(enchID);
-                    if (ench == null) {
-                        continue;
-                    }
-                    return new AbstractMap.SimpleEntry<>(ench, enchLvl);
-                }
-            }
+        Matcher m = ENCH_LORE_PATTERN.matcher(raw);
+        if (!m.find()) {
+            return null;
         }
-        return null;
+
+        String enchName = m.group(1);
+        enchName = ChatColor.stripColor(enchName);
+        int enchLvl = m.group(2) == null || m.group(2).equals("") ? 1 : Utilities.getNumber(m.group(2));
+
+        CustomEnchantment ench = Config.get(world).enchantFromString(enchName);
+        if (ench == null) {
+            return null;
+        }
+
+        return new AbstractMap.SimpleEntry<>(ench, enchLvl);
     }
 
     /**
@@ -417,9 +417,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 
     public String getShown(int level, World world) {
         String levelStr = Utilities.getRomanString(level);
-        return Utilities.toInvisibleString("ze.ench." + getId() + '.' + level)
-                + (isCursed ? Config.get(world).getCurseColor() : Config.get(world).getEnchantmentColor()) + loreName + " "
-                + (maxLevel == 1 ? "" : levelStr);
+        return (isCursed ? Config.get(world).getCurseColor() : Config.get(world).getEnchantmentColor()) + loreName
+                + (maxLevel == 1 ? " " : " " + levelStr);
     }
 
     public List<String> getDescription(World world) {
