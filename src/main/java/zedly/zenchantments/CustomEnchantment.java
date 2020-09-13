@@ -28,8 +28,6 @@ import zedly.zenchantments.enums.Tool;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
@@ -37,9 +35,6 @@ import static org.bukkit.Material.ENCHANTED_BOOK;
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
 public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
-
-    private static final Pattern ENCH_LORE_PATTERN = Pattern.compile("§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)");
-
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
     public static IEnchGatherer Enchantment_Adapter = new PersistentDataGatherer();
     protected int id;
@@ -661,32 +656,46 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         // Returns the custom enchantment from the lore name
         private Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
             raw = raw.replaceAll("(" + ChatColor.COLOR_CHAR + ".)", "");
+            CustomEnchantment ench;
             switch (raw.split(" ").length) {
             case 0: 
-            case 1:
                 return null; // Invalid length
-            case 2:
-                CustomEnchantment ench = Config.get(world).enchantFromString(raw.split(" ")[0]);
+            case 1:
+                ench = Config.get(world).enchantFromString(raw);
                 if (ench == null) {
                     return null; // Not able to map enchantment
                 }
                 try {
-                    return new AbstractMap.SimpleEntry<CustomEnchantment, Integer>(ench,
+                    return new AbstractMap.SimpleEntry<>(ench,1);
+                } catch (NumberFormatException expected){
+                    return null; // Invalid Roman numeral
+                }
+            case 2:
+                ench = Config.get(world).enchantFromString(raw.split(" ")[0]);
+                if (ench == null) {
+                    ench = Config.get(world).enchantFromString(raw);
+                    if (ench == null)
+                        return null;
+                    else
+                        return new AbstractMap.SimpleEntry<>(ench,1);
+                }
+                try {
+                    return new AbstractMap.SimpleEntry<>(ench,
                             Utilities.getNumber(raw.split(" ")[1]));
                 } catch (NumberFormatException expected){
-                    return null; // Invalid roman numeral
+                    return null; // Invalid Roman numeral
                 }
             case 3:
-                CustomEnchantment ench2 = Config.get(world).enchantFromString(raw.split(" ")[0] +
+                ench = Config.get(world).enchantFromString(raw.split(" ")[0] +
                         raw.split(" ")[1]);
-                if (ench2 == null) {
+                if (ench == null) {
                     return null; // Not able to map enchantment
                 }
                 try {
-                    return new AbstractMap.SimpleEntry<CustomEnchantment, Integer>(ench2,
+                    return new AbstractMap.SimpleEntry<>(ench,
                             Utilities.getNumber(raw.split(" ")[2]));
                 } catch (NumberFormatException expected){
-                    return null; // Invalid roman numeral
+                    return null; // Invalid Roman numeral
                 }
             default:
                 return null; // Invalid length
