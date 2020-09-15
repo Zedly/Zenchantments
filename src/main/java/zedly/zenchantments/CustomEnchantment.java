@@ -591,7 +591,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     }
     
     /**
-     * The legacy Adapter for gathering Enchantments used up until 1.16
+     * The legacy Adapter for gathering Enchantments used up until 1.16, modified to be upwards and downwards compatible
      */
     static class LegacyLoreGatherer implements IEnchGatherer {
     	// Returns a mapping of custom enchantments and their level on a given tool
@@ -655,7 +655,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 
         // Returns the custom enchantment from the lore name
         private Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
-            raw = raw.replaceAll("(" + ChatColor.COLOR_CHAR + ".)", "");
+            raw = raw.replaceAll("(" + ChatColor.COLOR_CHAR + ".)", "").trim();
             CustomEnchantment ench;
             switch (raw.split(" ").length) {
             case 0: 
