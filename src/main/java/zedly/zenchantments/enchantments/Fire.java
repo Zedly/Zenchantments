@@ -19,7 +19,7 @@ import java.util.Set;
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 import org.bukkit.entity.Item;
-import org.bukkit.event.entity.ItemSpawnEvent;
+
 import static zedly.zenchantments.enums.Tool.*;
 
 public class Fire extends CustomEnchantment {
@@ -95,7 +95,7 @@ public class Fire extends CustomEnchantment {
 
             return true;
         } else if (original == CACTUS) {
-            List<Block> bks = Utilities.BFS(evt.getBlock(), MAX_BLOCKS, false, 256,
+            List<Block> bks = Utilities.bfs(evt.getBlock(), MAX_BLOCKS, false, 256,
                     SEARCH_FACES_CACTUS, new EnumStorage<>(new Material[]{CACTUS}), new EnumStorage<>(new Material[]{}),
                     false, true);
 
@@ -117,7 +117,7 @@ public class Fire extends CustomEnchantment {
             }
             return true;
         } else if (original == CHORUS_PLANT) {
-            List<Block> bks = Utilities.BFS(evt.getBlock(), MAX_BLOCKS, false, 256,
+            List<Block> bks = Utilities.bfs(evt.getBlock(), MAX_BLOCKS, false, 256,
                     SEARCH_FACES_CHORUS, new EnumStorage<>(new Material[]{CHORUS_PLANT, CHORUS_FLOWER}), new EnumStorage<>(new Material[]{}),
                     false, true);
 

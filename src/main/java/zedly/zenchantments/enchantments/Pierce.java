@@ -132,7 +132,7 @@ public class Pierce extends CustomEnchantment {
 			}
 		} else if (mode == 5) {
 			if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(evt.getBlock().getType())) {
-				total.addAll(Utilities.BFS(evt.getBlock(), MAX_BLOCKS, false, Float.MAX_VALUE, SEARCH_FACES,
+				total.addAll(Utilities.bfs(evt.getBlock(), MAX_BLOCKS, false, Float.MAX_VALUE, SEARCH_FACES,
 					new EnumStorage<>(new Material[]{evt.getBlock().getType()}),
 					new EnumStorage<>(new Material[]{}), false, true));
 

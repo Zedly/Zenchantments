@@ -307,7 +307,7 @@ public class Spectral extends CustomEnchantment {
         Set<Block> blocks = new HashSet<>();
         blocks.add(evt.getClickedBlock());
         if (evt.getPlayer().isSneaking()) {
-            blocks.addAll(Utilities.BFS(evt.getClickedBlock(), MAX_BLOCKS, false, Float.MAX_VALUE,
+            blocks.addAll(Utilities.bfs(evt.getClickedBlock(), MAX_BLOCKS, false, Float.MAX_VALUE,
                     SEARCH_FACES, new EnumStorage<>(new Material[]{evt.getClickedBlock().getType()}),
                     new EnumStorage<>(new Material[]{}), false, true));
         }

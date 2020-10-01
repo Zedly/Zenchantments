@@ -45,7 +45,7 @@ public class Lumber extends CustomEnchantment {
 		if (!Storage.COMPATIBILITY_ADAPTER.TrunkBlocks().contains(startBlock.getType())) {
 			return false;
 		}
-		List<Block> blocks = Utilities.BFS(startBlock, MAX_BLOCKS, true, Float.MAX_VALUE, SEARCH_FACES,
+		List<Block> blocks = Utilities.bfs(startBlock, MAX_BLOCKS, true, Float.MAX_VALUE, SEARCH_FACES,
 			Storage.COMPATIBILITY_ADAPTER.TrunkBlocks(), Storage.COMPATIBILITY_ADAPTER.LumberWhitelist(),
 			true, false);
 		for (Block b : blocks) {
