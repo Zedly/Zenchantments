@@ -61,7 +61,7 @@ public class Watcher implements Listener {
             return;
         }
 
-        if (!CustomEnchantment.getEnchants(item, config.getWorld()).containsKey(laser) || item.getType().equals(ENCHANTED_BOOK)) {
+        if (!CustomEnchantment.getEnchants(item, config.getWorld()).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
             return;
         }
 
@@ -265,7 +265,7 @@ public class Watcher implements Listener {
                 }
 
                 if (!conflicts
-                    && (event.getItem().getType().equals(BOOK) || enchantment.validMaterial(event.getItem().getType()))
+                    && (event.getItem().getType() == BOOK || enchantment.validMaterial(event.getItem().getType()))
                 ) {
                     validPool.add(enchantment);
                     totalChance += enchantment.probability;
@@ -288,7 +288,7 @@ public class Watcher implements Listener {
             entry.getKey().setEnchantment(itemStack, entry.getValue(), config.getWorld());
         }
 
-        if (event.getItem().getType().equals(ENCHANTED_BOOK)) {
+        if (event.getItem().getType() == ENCHANTED_BOOK) {
             List<String> finalLore = itemStack.getItemMeta().getLore();
             Inventory inv = event.getInventory();
             Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
@@ -310,7 +310,7 @@ public class Watcher implements Listener {
     // Removes certain potion effects given by enchantments when the enchanted items are removed
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!event.getSlotType().equals(SlotType.ARMOR)) {
+        if (event.getSlotType() != SlotType.ARMOR) {
             return;
         }
 
@@ -348,7 +348,7 @@ public class Watcher implements Listener {
     @EventHandler
     public void onEat(PlayerInteractEvent event) {
         if (event.getPlayer().getInventory().getItemInMainHand().getType().isEdible()
-            && (event.getAction().equals(RIGHT_CLICK_AIR) || event.getAction().equals(RIGHT_CLICK_BLOCK))
+            && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)
             && Toxic.hungerPlayers.containsKey(event.getPlayer())
         ) {
             event.setCancelled(true);
