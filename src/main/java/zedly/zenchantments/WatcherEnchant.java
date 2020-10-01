@@ -1,8 +1,8 @@
 package zedly.zenchantments;
 
-import java.util.ArrayList;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,23 +16,21 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.enchantments.Haste;
 import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Tool;
 
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.apache.commons.lang3.tuple.Triple;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.entity.EntityType.HORSE;
 import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
-import org.bukkit.potion.PotionEffectType;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.enums.Tool.BOW;
 
@@ -41,9 +39,8 @@ import static zedly.zenchantments.enums.Tool.BOW;
 //      perform a certain action and the cooldown time is 0. It will add the given enchantment's cooldown to the player
 //      if the action performed is successful, determined by each enchantment in their respective classes.
 public class WatcherEnchant implements Listener {
-
-    private static final WatcherEnchant INSTANCE = new WatcherEnchant();
-    private static final HighFrequencyRunnableCache cache = new HighFrequencyRunnableCache(WatcherEnchant::feedEnchCache, 5);
+    private static final WatcherEnchant             INSTANCE = new WatcherEnchant();
+    private static final HighFrequencyRunnableCache CACHE    = new HighFrequencyRunnableCache(WatcherEnchant::feedEnchCache, 5);
 
     public static WatcherEnchant instance() {
         return INSTANCE;
@@ -52,303 +49,379 @@ public class WatcherEnchant implements Listener {
     private WatcherEnchant() {
     }
 
-    @EventHandler(ignoreCancelled = false)
-    public void onBlockBreak(BlockBreakEvent evt) {
-        if (!evt.isCancelled() && !(evt instanceof BlockShredEvent) && evt.getBlock().getType() != AIR) {
-            Player player = evt.getPlayer();
-            boolean usedHand = Utilities.isMainHand(HAND);
-            ItemStack usedStack = Utilities.usedStack(player, usedHand);
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onBlockBreak(evt, level, usedHand);
-            });
-        }
-    }
-
-    public void onBlockShred(BlockShredEvent evt) {
-        if (!evt.isCancelled() && evt.getBlock().getType() != AIR) {
-            Player player = evt.getPlayer();
-            boolean usedHand = Utilities.isMainHand(HAND);
-            ItemStack usedStack = Utilities.usedStack(player, usedHand);
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onBlockBreak(evt, level, usedHand);
-            });
-        }
-    }
-
-    @EventHandler(ignoreCancelled = false)
-    public void onBlockInteract(PlayerInteractEvent evt) {
-        if (evt.getClickedBlock() == null || !Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(evt.getClickedBlock().getType())) {
-            Player player = evt.getPlayer();
-            boolean isMainHand = Utilities.isMainHand(evt.getHand());
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
-                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                    return ench.onBlockInteract(evt, level, isMainHand);
-                });
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = false)
-    public void onBlockInteractInteractable(PlayerInteractEvent evt) {
-        if (evt.getClickedBlock() == null || Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(evt.getClickedBlock().getType())) {
-            Player player = evt.getPlayer();
-            boolean isMainHand = Utilities.isMainHand(evt.getHand());
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
-                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                    return ench.onBlockInteractInteractable(evt, level, isMainHand);
-                });
-            }
-        }
-    }
-
     @EventHandler
-    public void onEntityInteract(PlayerInteractEntityEvent evt) {
-        final EntityType[] badEnts = new EntityType[]{HORSE, EntityType.ARMOR_STAND, EntityType.ITEM_FRAME, VILLAGER};
-        Player player = evt.getPlayer();
-        if (!ArrayUtils.contains(badEnts, evt.getRightClicked().getType())) {
-            boolean usedHand = Utilities.isMainHand(HAND);
-            ItemStack usedStack = Utilities.usedStack(player, usedHand);
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onEntityInteract(evt, level, usedHand);
-            });
-        }
-    }
-
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent evt) {
-    }
-
-    @EventHandler
-    public void onEntityKill(EntityDeathEvent evt) {
-        if (evt.getEntity().getKiller() != null) {
-            Player player = evt.getEntity().getKiller();
-            EquipmentSlot slot = evt.getEntity().getLastDamageCause().getCause() == PROJECTILE
-                    && Tool.fromItemStack(player.getInventory().getItemInOffHand()) == BOW
-                    && Tool.fromItemStack(player.getInventory().getItemInMainHand()) != BOW ? EquipmentSlot.OFF_HAND
-                    : EquipmentSlot.HAND;
-            boolean usedHand = Utilities.isMainHand(slot);
-            ItemStack usedStack = Utilities.usedStack(player, usedHand);
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onEntityKill(evt, level, usedHand);
-            });
-
-        }
-    }
-
-    @EventHandler
-    public void onEntityHit(EntityDamageByEntityEvent evt) {
-        if (evt.getDamage() <= 0) {
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (event.isCancelled() || event instanceof BlockShredEvent || event.getBlock().getType() == AIR) {
             return;
         }
-        if (evt.getDamager() instanceof Player) {
-            Player player = (Player) evt.getDamager();
+
+        Player player = event.getPlayer();
+        boolean usedHand = Utilities.isMainHand(HAND);
+
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onBlockBreak(event, level, usedHand)
+        );
+    }
+
+    public void onBlockShred(BlockShredEvent event) {
+        if (event.isCancelled() || event.getBlock().getType() == AIR) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        boolean usedHand = Utilities.isMainHand(HAND);
+
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onBlockBreak(event, level, usedHand)
+        );
+    }
+
+    @EventHandler
+    public void onBlockInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null
+            || !Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(event.getClickedBlock().getType())
+        ) {
+            Player player = event.getPlayer();
+            boolean isMainHand = Utilities.isMainHand(event.getHand());
+            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
+                CustomEnchantment.applyForTool(
+                    player,
+                    usedStack,
+                    (ench, level) -> ench.onBlockInteract(event, level, isMainHand)
+                );
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockInteractInteractable(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null
+            || Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(event.getClickedBlock().getType())
+        ) {
+            Player player = event.getPlayer();
+            boolean isMainHand = Utilities.isMainHand(event.getHand());
+            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
+                CustomEnchantment.applyForTool(
+                    player,
+                    usedStack,
+                    (ench, level) -> ench.onBlockInteractInteractable(event, level, isMainHand)
+                );
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityInteract(PlayerInteractEntityEvent event) {
+        EntityType[] badEntities = new EntityType[]{HORSE, EntityType.ARMOR_STAND, EntityType.ITEM_FRAME, VILLAGER};
+
+        if (ArrayUtils.contains(badEntities, event.getRightClicked().getType())) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        boolean usedHand = Utilities.isMainHand(HAND);
+
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onEntityInteract(event, level, usedHand)
+        );
+    }
+
+    @EventHandler
+    public void onEntityKill(EntityDeathEvent event) {
+        if (event.getEntity().getKiller() == null) {
+            return;
+        }
+
+        Player player = event.getEntity().getKiller();
+        PlayerInventory inventory = player.getInventory();
+        EquipmentSlot slot = event.getEntity().getLastDamageCause().getCause() == PROJECTILE
+            && Tool.fromItemStack(inventory.getItemInOffHand()) == BOW
+            && Tool.fromItemStack(inventory.getItemInMainHand()) != BOW
+            ? EquipmentSlot.OFF_HAND
+            : EquipmentSlot.HAND;
+        boolean usedHand = Utilities.isMainHand(slot);
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onEntityKill(event, level, usedHand)
+        );
+    }
+
+    @EventHandler
+    public void onEntityHit(EntityDamageByEntityEvent event) {
+        if (event.getDamage() <= 0) {
+            return;
+        }
+
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
             boolean usedHand = Utilities.isMainHand(HAND);
-            if (evt.getEntity() instanceof LivingEntity) {
+            if (event.getEntity() instanceof LivingEntity) {
                 for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, usedHand)) {
-                    CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                        return ench.onEntityHit(evt, level, usedHand);
-                    });
+                    CustomEnchantment.applyForTool(
+                        player,
+                        usedStack,
+                        (ench, level) -> ench.onEntityHit(event, level, usedHand)
+                    );
                 }
             }
         }
-        if (evt.getEntity() instanceof Player) {
-            Player player = (Player) evt.getEntity();
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player,
-                    true)) { // Only check main hand for some reason
-                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                    return ench.onBeingHit(evt, level, true);
-                });
-            }
-        }
-    }
 
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent evt) {
-        if (evt.getEntity() instanceof Player) {
-            Player player = (Player) evt.getEntity();
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, false)) {
-                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                    return ench.onEntityDamage(evt, level, false);
-                });
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerFish(PlayerFishEvent evt) {
-        Player player = evt.getPlayer();
-        Tool main = Tool.fromItemStack(player.getInventory().getItemInMainHand());
-        Tool off = Tool.fromItemStack(player.getInventory().getItemInOffHand());
-        boolean usedHand
-                = Utilities.isMainHand(main != Tool.ROD && off == Tool.ROD ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
-        ItemStack usedStack = Utilities.usedStack(player, usedHand);
-        CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-            return ench.onPlayerFish(evt, level, true);
-        });
-    }
-
-    @EventHandler
-    public void onHungerChange(FoodLevelChangeEvent evt) {
-        if (!evt.isCancelled() && evt.getEntity() instanceof Player) {
-            Player player = (Player) evt.getEntity();
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            // Only check main hand for some reason.
             for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
-                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                    return ench.onHungerChange(evt, level, true);
-                });
+                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> ench.onBeingHit(event, level, true));
             }
         }
     }
 
     @EventHandler
-    public void onShear(PlayerShearEntityEvent evt) {
-        Player player = evt.getPlayer();
-        Tool main = Tool.fromItemStack(player.getInventory().getItemInMainHand());
-        Tool off = Tool.fromItemStack(player.getInventory().getItemInOffHand());
-        boolean usedHand
-                = Utilities.isMainHand(main != Tool.SHEAR && off == Tool.SHEAR ? EquipmentSlot.OFF_HAND
-                        : EquipmentSlot.HAND);
-        ItemStack usedStack = Utilities.usedStack(player, usedHand);
-        if (!evt.isCancelled()) {
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onShear(evt, level, true);
-            });
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getEntity();
+        for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, false)) {
+            CustomEnchantment.applyForTool(
+                player,
+                usedStack,
+                (ench, level) -> ench.onEntityDamage(event, level, false)
+            );
         }
     }
 
     @EventHandler
-    public void onEntityShootBow(EntityShootBowEvent evt) {
-        if (evt.getEntity() instanceof Player) {
-            Player player = (Player) evt.getEntity();
-            Tool main = Tool.fromItemStack(player.getInventory().getItemInMainHand());
-            Tool off = Tool.fromItemStack(player.getInventory().getItemInOffHand());
-            boolean usedHand
-                    = Utilities.isMainHand(main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
-            ItemStack usedStack = Utilities.usedStack(player, usedHand);
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onEntityShootBow(evt, level, true);
-            });
+    public void onPlayerFish(PlayerFishEvent event) {
+        Player player = event.getPlayer();
+        PlayerInventory inventory = player.getInventory();
+        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        boolean usedHand = Utilities.isMainHand(
+            main != Tool.ROD && off == Tool.ROD ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
+        );
+
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onPlayerFish(event, level, true)
+        );
+    }
+
+    @EventHandler
+    public void onHungerChange(FoodLevelChangeEvent event) {
+        if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getEntity();
+        for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
+            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> ench.onHungerChange(event, level, true));
         }
     }
 
     @EventHandler
-    public void onPotionSplash(PotionSplashEvent evt) {
-        Collection<LivingEntity> affected = evt.getAffectedEntities();
-        for (LivingEntity entity : affected) {
-            if (entity instanceof Player) {
-                Player player = (Player) entity;
-                AtomicBoolean apply = new AtomicBoolean(true);
-                for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
-                    CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                        // Only apply one enchantment, which in practice is Potion Resistance.
-                        // This will always skip execution of the Lambda and return false after a Lambda returned true
-                        // once
-                        // Yes, I am bored
-                        return apply.get() && apply.compareAndSet(ench.onPotionSplash(evt, level, false), false);
-                    });
-                }
+    public void onShear(PlayerShearEntityEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        PlayerInventory inventory = player.getInventory();
+        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        boolean usedHand = Utilities.isMainHand(
+            main != Tool.SHEAR && off == Tool.SHEAR ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
+        );
+
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onShear(event, level, true)
+        );
+    }
+
+    @EventHandler
+    public void onEntityShootBow(EntityShootBowEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getEntity();
+        PlayerInventory inventory = player.getInventory();
+        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        boolean usedHand = Utilities.isMainHand(
+            main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
+        );
+
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onEntityShootBow(event, level, true)
+        );
+    }
+
+    @EventHandler
+    public void onPotionSplash(PotionSplashEvent event) {
+        for (LivingEntity entity : event.getAffectedEntities()) {
+            if (!(entity instanceof Player)) {
+                continue;
+            }
+
+            Player player = (Player) entity;
+            AtomicBoolean apply = new AtomicBoolean(true);
+
+            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
+                // Only apply one enchantment, which in practice is Potion Resistance.
+                // This will always skip execution of the Lambda and return false after a Lambda returned true once
+                // Yes, I am bored
+                CustomEnchantment.applyForTool(
+                    player,
+                    usedStack,
+                    (ench, level) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, false), false)
+                );
             }
         }
     }
 
     @EventHandler
-    public void onProjectileLaunch(ProjectileLaunchEvent evt) {
-        if (evt.getEntity().getShooter() != null && evt.getEntity().getShooter() instanceof Player) {
-            Player player = (Player) evt.getEntity().getShooter();
-            Tool main = Tool.fromItemStack(player.getInventory().getItemInMainHand());
-            Tool off = Tool.fromItemStack(player.getInventory().getItemInOffHand());
-            boolean usedHand = Utilities.isMainHand(
-                    main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND
-                            : EquipmentSlot.HAND);
-            ItemStack usedStack = Utilities.usedStack(player, usedHand);
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onProjectileLaunch(evt, level, usedHand);
-            });
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        Entity shooter = (Entity) event.getEntity().getShooter();
+
+        if (!(shooter instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) shooter;
+        PlayerInventory inventory = player.getInventory();
+        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        boolean usedHand = Utilities.isMainHand(
+            main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
+        );
+
+        CustomEnchantment.applyForTool(
+            player,
+            Utilities.usedStack(player, usedHand),
+            (ench, level) -> ench.onProjectileLaunch(event, level, usedHand)
+        );
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        PlayerInventory inventory = player.getInventory();
+
+        for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
+            CustomEnchantment.applyForTool(
+                player,
+                usedStack,
+                (ench, level) -> ench.onPlayerDeath(event, level, true)
+            );
         }
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent evt) {
-        Player player = evt.getEntity();
-        for (ItemStack usedStack : (ItemStack[]) ArrayUtils.addAll(player.getInventory().getArmorContents(), (player.getInventory().getContents()))) {
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                return ench.onPlayerDeath(evt, level, true);
-            });
+    public void onCombust(EntityCombustByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getEntity();
+        PlayerInventory inventory = player.getInventory();
+
+        for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
+            CustomEnchantment.applyForTool(
+                player,
+                usedStack,
+                (ench, level) -> ench.onCombust(event, level, true)
+            );
         }
     }
 
-    @EventHandler
-    public void onCombust(EntityCombustByEntityEvent evt) {
-        if (evt.getEntity() instanceof Player) {
-            Player player = (Player) evt.getEntity();
-            for (ItemStack usedStack : (ItemStack[]) ArrayUtils.addAll(player.getInventory().getArmorContents(),
-                    player.getInventory().getContents())) {
-                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> {
-                    return ench.onCombust(evt, level, true);
-                });
-            }
-        }
-    }
-
-    // Sets player fly and walk speed to default after certain enchantments are removed
-    static void speedPlayers(boolean clearAll) {
-        long currentTime = System.currentTimeMillis();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-        }
-    }
-
-    @EffectTask(Frequency.HIGH) // Fast Scan of Player's Armor and their hand to register enchantments
+    // Fast Scan of Player's Armor and their hand to register enchantments
+    @EffectTask(Frequency.HIGH)
     public static void scanPlayers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            EnchantPlayer enchPlayer = EnchantPlayer.matchPlayer(player);
-            if (enchPlayer != null) {
-                enchPlayer.tick();
-            }
+            EnchantPlayer.matchPlayer(player).tick();
         }
 
         // Sweeping scan over the player list for armor enchants
-        cache.run();
+        CACHE.run();
     }
 
     // Implicitly scheduled MEDIUM_HIGH due to being called by HighFrequencyEnchCache with interval 5
-    private static void feedEnchCache(Player player, Consumer<Supplier<Boolean>> consoomer) {
-        for (ItemStack stk : player.getInventory().getArmorContents()) {
-            CustomEnchantment.applyForTool(player, stk, (ench, level) -> {
-                consoomer.accept(() -> {
+    private static void feedEnchCache(Player player, Consumer<Supplier<Boolean>> consumer) {
+        PlayerInventory inventory = player.getInventory();
+        for (ItemStack itemStack : inventory.getArmorContents()) {
+            CustomEnchantment.applyForTool(
+                player,
+                itemStack,
+                (ench, level) -> {
+                    consumer.accept(() -> {
+                        if (!player.isOnline()) {
+                            return false;
+                        }
+
+                        if (ench.onFastScan(player, level, true)) {
+                            EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                        }
+
+                        return true;
+                    });
+
+                    return ench.onScan(player, level, true);
+                }
+            );
+        }
+
+        CustomEnchantment.applyForTool(
+            player,
+            inventory.getItemInMainHand(),
+            (ench, level) -> {
+                consumer.accept(() -> {
                     if (!player.isOnline()) {
                         return false;
                     }
-                    if (ench.onFastScan(player, level, true)) {
+
+                    if (ench.onFastScanHands(player, level, true)) {
                         EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
                     }
+
                     return true;
                 });
-                return ench.onScan(player, level, true);
-            });
-        }
-        CustomEnchantment.applyForTool(player, player.getInventory().getItemInMainHand(), (ench, level) -> {
-            consoomer.accept(() -> {
-                if (!player.isOnline()) {
-                    return false;
-                }
-                if (ench.onFastScanHands(player, level, true)) {
-                    EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
-                }
-                return true;
-            });
-            return ench.onScanHands(player, level, true);
-        });
-        CustomEnchantment.applyForTool(player, player.getInventory().getItemInOffHand(), (ench, level) -> {
-            consoomer.accept(() -> {
-                if (!player.isOnline()) {
-                    return false;
-                }
-                if (ench.onFastScanHands(player, level, false)) {
-                    EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
-                }
-                return true;
-            });
-            return ench.onScanHands(player, level, false);
-        });
+
+                return ench.onScanHands(player, level, true);
+            }
+        );
+
+        CustomEnchantment.applyForTool(
+            player,
+            inventory.getItemInOffHand(),
+            (ench, level) -> {
+                consumer.accept(() -> {
+                    if (!player.isOnline()) {
+                        return false;
+                    }
+
+                    if (ench.onFastScanHands(player, level, false)) {
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                    }
+
+                    return true;
+                });
+
+                return ench.onScanHands(player, level, false);
+            }
+        );
 
         long currentTime = System.currentTimeMillis();
         if (player.hasMetadata("ze.speed") && (player.getMetadata("ze.speed").get(0).asLong() < currentTime - 1000)) {

@@ -71,8 +71,6 @@ public class Zenchantments extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        WatcherEnchant.speedPlayers(true);
-
         for (Location location : FrozenStep.frozenLocs.keySet()) {
             location.getBlock().setType(WATER);
         }
