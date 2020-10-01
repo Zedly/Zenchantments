@@ -118,7 +118,7 @@ public class Utilities {
         return 0;
     }
 
-    // Returns the item stack direction the player's main or off hand, determinted by 'handUsed'
+    // Returns the item stack direction the player's main or off hand, determined by 'handUsed'
     public static ItemStack usedStack(Player player, boolean handUsed) {
         return handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
     }
@@ -238,7 +238,7 @@ public class Utilities {
         }
     }
 
-    // Returns the roman number string representation of the given english number
+    // Returns the Roman number string representation of the given English number
     public static String getRomanString(int number) {
         switch (number) {
             case 0:
@@ -267,7 +267,7 @@ public class Utilities {
         }
     }
 
-    // Returns the roman number string representation of the given english number, capped at the int 'limit'
+    // Returns the Roman number string representation of the given English number, capped at the int 'limit'
     public static String getRomanString(int number, int limit) {
         if (number > limit) {
             return getRomanString(limit);
@@ -308,7 +308,7 @@ public class Utilities {
         return getCenter(block.getLocation(), centerVertical);
     }
 
-    // Returns the nearby entities at any loction within the given range
+    // Returns the nearby entities at any location within the given range
     // Returns a direction integer, 0-8, for the given player's pitch and yaw
     public static BlockFace getDirection(Player player) {
         float yaw = player.getLocation().getYaw();
