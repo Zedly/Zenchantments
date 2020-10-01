@@ -1,6 +1,7 @@
 package zedly.zenchantments;
 
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,57 +10,65 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-import java.util.Set;
+import java.util.Map;
 
 // This is the watcher used by the EnchantArrow class. Each method checks for certain events
 // and conditions and will call the relevant methods defined in the AdvancedArrow interface
-//      
 public class WatcherArrow implements Listener {
-
     // Called when an arrow hits a block
     @EventHandler
-    public boolean impact(ProjectileHitEvent evt) {
-        if (EnchantedArrow.advancedProjectiles.containsKey(evt.getEntity())) {
-            Set<EnchantedArrow> ar = EnchantedArrow.advancedProjectiles.get(evt.getEntity());
-            for (EnchantedArrow a : ar) {
-                a.onImpact();
-            }
+    public void impact(ProjectileHitEvent event) {
+        if (!(event.getEntity() instanceof Arrow)) {
+            return;
         }
-        return true;
+
+        Arrow entity = (Arrow) event.getEntity();
+
+        if (!EnchantedArrow.advancedProjectiles.containsKey(entity)) {
+            return;
+        }
+
+        for (EnchantedArrow arrow : EnchantedArrow.advancedProjectiles.get(entity)) {
+            arrow.onImpact();
+        }
     }
 
     // Called when an arrow hits an entity
     @EventHandler
-    public boolean entityHit(EntityDamageByEntityEvent evt) {
-        if (evt.getDamager() instanceof Arrow) {
-            if (EnchantedArrow.advancedProjectiles.containsKey(evt.getDamager())) {
-                Set<EnchantedArrow> arrows = EnchantedArrow.advancedProjectiles.get(evt.getDamager());
-                for (EnchantedArrow arrow : arrows) {
-                    if (evt.getEntity() instanceof LivingEntity) {
-                        if (!arrow.onImpact(evt)) {
-                            evt.setDamage(0);
-                        }
-                    }
-                    EnchantedArrow.advancedProjectiles.remove(evt.getDamager());
-                    if (evt.getEntity() instanceof LivingEntity
-                            && evt.getDamage() >= ((LivingEntity) evt.getEntity()).getHealth()) {
-                        EnchantedArrow.killedEntities.put(evt.getEntity(), arrow);
-                    }
+    public void entityHit(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Arrow)) {
+            return;
+        }
+
+        Arrow damager = (Arrow) event.getDamager();
+
+        if (!EnchantedArrow.advancedProjectiles.containsKey(damager)) {
+            return;
+        }
+
+        for (EnchantedArrow arrow : EnchantedArrow.advancedProjectiles.remove(damager)) {
+            if (event.getEntity() instanceof LivingEntity) {
+                if (!arrow.onImpact(event)) {
+                    event.setDamage(0);
                 }
             }
+
+            if (event.getEntity() instanceof LivingEntity
+                && event.getDamage() >= ((LivingEntity) event.getEntity()).getHealth()
+            ) {
+                EnchantedArrow.killedEntities.put(event.getEntity(), arrow);
+            }
         }
-        return true;
     }
 
     // Called when an arrow kills an entity; the advanced arrow is removed after this event
     @EventHandler
-    public boolean entityDeath(EntityDeathEvent evt) {
-        if (EnchantedArrow.killedEntities.containsKey(evt.getEntity())) {
-            EnchantedArrow arrow = EnchantedArrow.killedEntities.get(evt.getEntity());
-            arrow.onKill(evt);
-            EnchantedArrow.killedEntities.remove(evt.getEntity());
-        }
-        return true;
-    }
+    public void entityDeath(EntityDeathEvent event) {
+        Entity entity = event.getEntity();
+        Map<Entity, EnchantedArrow> killedEntities = EnchantedArrow.killedEntities;
 
+        if (killedEntities.containsKey(entity)) {
+            killedEntities.remove(entity).onKill(event);
+        }
+    }
 }
