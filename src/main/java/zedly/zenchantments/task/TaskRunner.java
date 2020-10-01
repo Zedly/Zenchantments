@@ -1,9 +1,9 @@
-package zedly.zenchantments;
+package zedly.zenchantments.task;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.bukkit.Bukkit;
-import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Zenchantments;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,7 +28,7 @@ public class TaskRunner implements Runnable {
      *
      * @param freq The frequency of annotation that we'll be running.
      */
-    TaskRunner(Frequency freq) {
+    public TaskRunner(Frequency freq) {
         this.logger = Bukkit.getLogger();
 
         tasks = new HashSet<>();

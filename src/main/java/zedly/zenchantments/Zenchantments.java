@@ -10,7 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import zedly.zenchantments.enchantments.*;
-import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.task.Frequency;
+import zedly.zenchantments.task.TaskRunner;
 
 import java.io.File;
 

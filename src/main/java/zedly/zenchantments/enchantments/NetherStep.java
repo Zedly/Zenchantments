@@ -4,8 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.task.EffectTask;
+import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 

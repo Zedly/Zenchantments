@@ -1,7 +1,4 @@
-package zedly.zenchantments.annotations;
-
-import zedly.zenchantments.TaskRunner;
-import zedly.zenchantments.enums.Frequency;
+package zedly.zenchantments.task;
 
 import java.lang.annotation.*;
 

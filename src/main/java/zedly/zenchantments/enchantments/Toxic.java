@@ -9,10 +9,10 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.CustomEnchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.annotations.EffectTask;
+import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.ToxicArrow;
-import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 

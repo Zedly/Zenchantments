@@ -18,9 +18,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.enums.Frequency;
 import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.task.EffectTask;
+import zedly.zenchantments.task.Frequency;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;

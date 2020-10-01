@@ -1,7 +1,4 @@
-package zedly.zenchantments.enums;
-
-import zedly.zenchantments.TaskRunner;
-import zedly.zenchantments.annotations.EffectTask;
+package zedly.zenchantments.task;
 
 /**
  * Frequencies for {@link EffectTask}
