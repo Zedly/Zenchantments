@@ -2,7 +2,7 @@ package zedly.zenchantments.task;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.Zenchantments;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,8 +15,8 @@ import java.util.logging.Level;
  * A runnable class that will execute all events of the specified frequency.
  */
 public class TaskRunner implements Runnable {
-    private final Zenchantments plugin;
-    private final Set<Method>   tasks;
+    private final ZenchantmentsPlugin plugin;
+    private final Set<Method>         tasks;
 
     /**
      * Initializes this EventRunner by collecting all methods with an
@@ -24,7 +24,7 @@ public class TaskRunner implements Runnable {
      *
      * @param frequency The frequency of annotation that we'll be running.
      */
-    public TaskRunner(Zenchantments plugin, Frequency frequency) {
+    public TaskRunner(ZenchantmentsPlugin plugin, Frequency frequency) {
         this.plugin = plugin;
         this.tasks = new HashSet<>();
 

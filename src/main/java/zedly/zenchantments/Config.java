@@ -148,7 +148,7 @@ public class Config {
 
     public static Config getWorldConfig(World world) {
         try {
-            InputStream stream = Zenchantments.class.getResourceAsStream("/defaultconfig.yml");
+            InputStream stream = ZenchantmentsPlugin.class.getResourceAsStream("/defaultconfig.yml");
             File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
             if (!file.exists()) {
                 try {

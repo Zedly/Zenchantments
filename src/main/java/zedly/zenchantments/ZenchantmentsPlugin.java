@@ -19,7 +19,7 @@ import static org.bukkit.Material.LAVA;
 import static org.bukkit.Material.WATER;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
-public class Zenchantments extends JavaPlugin {
+public class ZenchantmentsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         Storage.zenchantments = this;

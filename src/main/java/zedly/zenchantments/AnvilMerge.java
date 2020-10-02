@@ -25,9 +25,9 @@ import static org.bukkit.event.EventPriority.MONITOR;
 //      the max number of enchantments per tool, and the enchantment's max level. It shuffles the results every time
 //      so that the player can find the combination they desire when there are conflicting or too many enchantment
 public class AnvilMerge implements Listener {
-    private final Zenchantments plugin;
+    private final ZenchantmentsPlugin plugin;
 
-    public AnvilMerge(Zenchantments plugin) {
+    public AnvilMerge(ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 

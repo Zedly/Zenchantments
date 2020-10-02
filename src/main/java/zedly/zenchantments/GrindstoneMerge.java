@@ -15,9 +15,9 @@ import static org.bukkit.event.EventPriority.MONITOR;
  * @author Dennis
  */
 public class GrindstoneMerge implements Listener {
-    private final Zenchantments plugin;
+    private final ZenchantmentsPlugin plugin;
 
-    public GrindstoneMerge(Zenchantments plugin) {
+    public GrindstoneMerge(ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 

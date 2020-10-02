@@ -11,7 +11,7 @@ import java.util.*;
 public class Storage {
 
     // Instance of the Zenchantments plugin to be used by the rest of the classes
-    public static Zenchantments zenchantments;
+    public static ZenchantmentsPlugin zenchantments;
 
     // Absolute path to the plugin jar
     public static String pluginPath;

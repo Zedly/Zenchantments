@@ -1,5 +1,5 @@
 name: Zenchantments
-main: zedly.zenchantments.Zenchantments
+main: zedly.zenchantments.ZenchantmentsPlugin
 api-version: 1.14
 version: 1.6.2
 commands:
