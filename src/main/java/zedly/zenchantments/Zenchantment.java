@@ -47,7 +47,6 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
 
     public abstract Builder<? extends Zenchantment> defaults();
 
-    //region Getters and Setters
     @Override
     public int getId() {
         return this.id;
@@ -97,47 +96,6 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     public Hand getHandUse() {
         return handUse;
     }
-
-    void setMaxLevel(int maxLevel) {
-        this.maxLevel = maxLevel;
-    }
-
-    void setLoreName(String loreName) {
-        this.loreName = loreName;
-    }
-
-    void setProbability(float probability) {
-        this.probability = probability;
-    }
-
-    void setEnchantable(Tool[] enchantable) {
-        this.enchantable = enchantable;
-    }
-
-    void setConflicting(Class<?>[] conflicting) {
-        this.conflicting = conflicting;
-    }
-
-    void setDescription(String description) {
-        this.description = description;
-    }
-
-    void setCooldown(int cooldown) {
-        this.cooldown = cooldown;
-    }
-
-    void setPower(double power) {
-        this.power = power;
-    }
-
-    void setHandUse(Hand handUse) {
-        this.handUse = handUse;
-    }
-
-    void setId(int id) {
-        this.id = id;
-    }
-    //endregion
 
     //region Enchantment Events
     public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
