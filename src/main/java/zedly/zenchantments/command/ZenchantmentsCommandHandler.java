@@ -21,6 +21,7 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
         this.commandMap = ImmutableMap.of(
             "help", new HelpCommand(plugin),
             "list", new ListCommand(plugin),
+            "info", new InfoCommand(plugin),
             "reload", new ReloadCommand(plugin)
         );
     }
