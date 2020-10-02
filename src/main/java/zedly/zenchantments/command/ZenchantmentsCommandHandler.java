@@ -21,6 +21,7 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
         this.commandMap = new ImmutableMap.Builder<String, ZenchantmentsCommand>()
             .put("disable", new DisableCommand(plugin))
             .put("enable", new EnableCommand(plugin))
+            .put("give", new GiveCommand(plugin))
             .put("help", new HelpCommand(plugin))
             .put("list", new ListCommand(plugin))
             .put("info", new InfoCommand(plugin))
