@@ -5,12 +5,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.List;
 
-import static zedly.zenchantments.enums.Tool.AXE;
+import static zedly.zenchantments.Tool.AXE;
 
 public class Lumber extends Zenchantment {
 

@@ -6,10 +6,10 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.FuseArrow;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
-import static zedly.zenchantments.enums.Tool.BOW;
+import static zedly.zenchantments.Tool.BOW;
 
 public class Fuse extends Zenchantment {
 

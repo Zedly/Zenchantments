@@ -17,8 +17,6 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enchantments.*;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
 
 import java.util.*;
 import java.util.function.BiPredicate;

@@ -8,15 +8,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.*;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.enums.Tool.PICKAXE;
-import static zedly.zenchantments.enums.Tool.SHOVEL;
+import static zedly.zenchantments.Tool.PICKAXE;
+import static zedly.zenchantments.Tool.SHOVEL;
 
 public class Shred extends Zenchantment {
 

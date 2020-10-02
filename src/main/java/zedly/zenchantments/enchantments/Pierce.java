@@ -12,14 +12,14 @@ import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.compatibility.EnumStorage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.*;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.enums.Tool.PICKAXE;
+import static zedly.zenchantments.Tool.PICKAXE;
 
 public class Pierce extends Zenchantment {
 

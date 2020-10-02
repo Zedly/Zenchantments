@@ -10,12 +10,12 @@ import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.enchanted.ReaperArrow;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import static org.bukkit.potion.PotionEffectType.BLINDNESS;
-import static zedly.zenchantments.enums.Tool.BOW;
-import static zedly.zenchantments.enums.Tool.SWORD;
+import static zedly.zenchantments.Tool.BOW;
+import static zedly.zenchantments.Tool.SWORD;
 
 public class Reaper extends Zenchantment {
 

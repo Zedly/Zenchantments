@@ -8,12 +8,12 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.enums.Tool.SHEAR;
+import static zedly.zenchantments.Tool.SHEAR;
 
 public class Mow extends Zenchantment {
 

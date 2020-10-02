@@ -4,15 +4,15 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.Utilities.selfRemovingArea;
-import static zedly.zenchantments.enums.Tool.BOOTS;
+import static zedly.zenchantments.Tool.BOOTS;
 
 public class FrozenStep extends Zenchantment {
 

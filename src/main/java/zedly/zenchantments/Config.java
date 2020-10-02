@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import zedly.zenchantments.enums.Tool;
 
 import java.io.File;
 import java.io.FileOutputStream;

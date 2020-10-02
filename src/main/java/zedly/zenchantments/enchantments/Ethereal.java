@@ -4,12 +4,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.Map;
 
-import static zedly.zenchantments.enums.Tool.ALL;
+import static zedly.zenchantments.Tool.ALL;
 
 public class Ethereal extends Zenchantment {
 

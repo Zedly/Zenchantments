@@ -8,10 +8,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
-import static zedly.zenchantments.enums.Tool.SWORD;
+import static zedly.zenchantments.Tool.SWORD;
 
 public class Conversion extends Zenchantment {
 

@@ -8,13 +8,13 @@ import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.TracerArrow;
 import zedly.zenchantments.task.Frequency;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static zedly.zenchantments.enums.Tool.BOW;
+import static zedly.zenchantments.Tool.BOW;
 
 public class Tracer extends Zenchantment {
 

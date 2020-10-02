@@ -8,12 +8,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
-import static zedly.zenchantments.enums.Tool.CHESTPLATE;
+import static zedly.zenchantments.Tool.CHESTPLATE;
 
 public class BlazesCurse extends Zenchantment {
 

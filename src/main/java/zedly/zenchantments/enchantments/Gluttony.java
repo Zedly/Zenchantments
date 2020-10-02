@@ -5,11 +5,11 @@ import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.enums.Tool.HELMET;
+import static zedly.zenchantments.Tool.HELMET;
 
 public class Gluttony extends Zenchantment {
 

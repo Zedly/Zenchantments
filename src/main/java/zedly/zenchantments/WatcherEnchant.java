@@ -18,7 +18,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.enums.Tool;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
@@ -32,7 +31,7 @@ import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
-import static zedly.zenchantments.enums.Tool.BOW;
+import static zedly.zenchantments.Tool.BOW;
 
 // This is the watcher used by the CustomEnchantment class. Each method checks the enchantments on relevant items,
 //      ensures that the item is not an enchantment book, and calls each enchantment's method if the player can

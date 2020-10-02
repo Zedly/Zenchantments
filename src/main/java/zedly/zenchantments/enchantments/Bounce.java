@@ -2,11 +2,11 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import static org.bukkit.Material.SLIME_BLOCK;
-import static zedly.zenchantments.enums.Tool.BOOTS;
+import static zedly.zenchantments.Tool.BOOTS;
 
 public class Bounce extends Zenchantment {
 

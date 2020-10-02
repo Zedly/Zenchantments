@@ -5,15 +5,15 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
 
-import static zedly.zenchantments.enums.Tool.*;
+import static zedly.zenchantments.Tool.*;
 
 public class Grab extends Zenchantment {
 

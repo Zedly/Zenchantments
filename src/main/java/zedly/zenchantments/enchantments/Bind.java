@@ -7,13 +7,13 @@ import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static zedly.zenchantments.enums.Tool.ALL;
+import static zedly.zenchantments.Tool.ALL;
 
 public class Bind extends Zenchantment {
 

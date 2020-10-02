@@ -3,11 +3,11 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import static org.bukkit.entity.EntityType.DROPPED_ITEM;
-import static zedly.zenchantments.enums.Tool.LEGGINGS;
+import static zedly.zenchantments.Tool.LEGGINGS;
 
 public class Magnetism extends Zenchantment {
 

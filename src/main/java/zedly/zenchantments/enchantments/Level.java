@@ -9,10 +9,10 @@ import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.enchanted.LevelArrow;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
-import static zedly.zenchantments.enums.Tool.*;
+import static zedly.zenchantments.Tool.*;
 
 public class Level extends Zenchantment {
 

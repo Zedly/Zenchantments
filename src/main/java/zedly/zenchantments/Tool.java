@@ -1,4 +1,4 @@
-package zedly.zenchantments.enums;
+package zedly.zenchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;

@@ -3,10 +3,10 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
-import static zedly.zenchantments.enums.Tool.ROD;
+import static zedly.zenchantments.Tool.ROD;
 
 public class LongCast extends Zenchantment {
 

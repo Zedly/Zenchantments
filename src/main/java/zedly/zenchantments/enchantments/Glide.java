@@ -8,14 +8,14 @@ import org.bukkit.util.Vector;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.bukkit.Material.AIR;
-import static zedly.zenchantments.enums.Tool.LEGGINGS;
+import static zedly.zenchantments.Tool.LEGGINGS;
 
 public class Glide extends Zenchantment {
 

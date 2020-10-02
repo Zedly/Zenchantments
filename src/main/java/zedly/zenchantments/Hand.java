@@ -1,4 +1,4 @@
-package zedly.zenchantments.enums;
+package zedly.zenchantments;
 
 public enum Hand {
     NONE, BOTH, LEFT, RIGHT

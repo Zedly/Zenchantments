@@ -14,14 +14,14 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
 
 import java.util.*;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
-import static zedly.zenchantments.enums.Tool.PICKAXE;
+import static zedly.zenchantments.Tool.PICKAXE;
 
 public class Anthropomorphism extends Zenchantment {
     // The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
