@@ -22,7 +22,7 @@ public class GrindstoneMerge implements Listener {
     }
 
     @EventHandler(priority = MONITOR)
-    public void onClicks(final InventoryClickEvent event) {
+    private void onClick(final InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.GRINDSTONE) {
             return;
         }
