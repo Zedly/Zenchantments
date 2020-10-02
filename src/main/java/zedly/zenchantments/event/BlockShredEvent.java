@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.event;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
