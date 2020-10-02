@@ -1,7 +1,6 @@
 package zedly.zenchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -26,6 +25,12 @@ import static org.bukkit.event.EventPriority.MONITOR;
 //      the max number of enchantments per tool, and the enchantment's max level. It shuffles the results every time
 //      so that the player can find the combination they desire when there are conflicting or too many enchantment
 public class AnvilMerge implements Listener {
+    private final Zenchantments plugin;
+
+    public AnvilMerge(Zenchantments plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler(priority = MONITOR)
     private void onClick(final InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.ANVIL || !event.getClick().isLeftClick()) {
@@ -75,7 +80,7 @@ public class AnvilMerge implements Listener {
             }
         }
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
             ItemStack stack = this.doMerge(item0, item1, anvilInv.getItem(2), config);
 
             if (stack != null) {
