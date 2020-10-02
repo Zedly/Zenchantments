@@ -4,16 +4,19 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import zedly.zenchantments.command.ZenchantmentsCommandHandler;
 import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
 import java.io.File;
+import java.util.Objects;
 
 import static org.bukkit.Material.LAVA;
 import static org.bukkit.Material.WATER;
@@ -39,7 +42,10 @@ public class ZenchantmentsPlugin extends JavaPlugin {
 
         this.loadConfigs();
 
-        this.getCommand("ench").setTabCompleter(new CommandProcessor.TabCompletion());
+        ZenchantmentsCommandHandler commandHandler = new ZenchantmentsCommandHandler(this);
+        PluginCommand enchCommand = Objects.requireNonNull(this.getCommand("ench"));
+        enchCommand.setExecutor(commandHandler);
+        enchCommand.setTabCompleter(commandHandler);
 
         this.getServer().getPluginManager().registerEvents(new AnvilMerge(this), this);
         this.getServer().getPluginManager().registerEvents(new GrindstoneMerge(this), this);
@@ -100,10 +106,6 @@ public class ZenchantmentsPlugin extends JavaPlugin {
                 player.removeMetadata("ze.haste", this);
             }
         }
-    }
-
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return CommandProcessor.onCommand(sender, command, label, args);
     }
 
     public void loadConfigs() {
