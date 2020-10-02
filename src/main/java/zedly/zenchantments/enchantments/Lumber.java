@@ -37,11 +37,11 @@ public class Lumber extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		if (!evt.getPlayer().isSneaking()) {
+	public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
+		if (!event.getPlayer().isSneaking()) {
 			return false;
 		}
-		Block startBlock = evt.getBlock();
+		Block startBlock = event.getBlock();
 		if (!Storage.COMPATIBILITY_ADAPTER.TrunkBlocks().contains(startBlock.getType())) {
 			return false;
 		}
@@ -49,7 +49,7 @@ public class Lumber extends Zenchantment {
 			Storage.COMPATIBILITY_ADAPTER.TrunkBlocks(), Storage.COMPATIBILITY_ADAPTER.LumberWhitelist(),
 			true, false);
 		for (Block b : blocks) {
-			ADAPTER.breakBlockNMS(b, evt.getPlayer());
+			ADAPTER.breakBlockNMS(b, event.getPlayer());
 		}
 		return !blocks.isEmpty();
 	}

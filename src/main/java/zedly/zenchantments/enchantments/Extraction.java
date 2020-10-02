@@ -34,23 +34,23 @@ public class Extraction extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, final int level, boolean usedHand) {
-		if (evt.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+	public boolean onBlockBreak(BlockBreakEvent event, final int level, boolean usedHand) {
+		if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			return false;
 		}
-		if (evt.getBlock().getType() == GOLD_ORE || evt.getBlock().getType() == IRON_ORE) {
-			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+		if (event.getBlock().getType() == GOLD_ORE || event.getBlock().getType() == IRON_ORE) {
+			Utilities.damageTool(event.getPlayer(), 1, usedHand);
 			for (int x = 0; x < Storage.rnd.nextInt((int) Math.round(power * level + 1)) + 1; x++) {
-				evt.getBlock().getWorld().dropItemNaturally(evt.getBlock().getLocation(),
-					new ItemStack(evt.getBlock().getType() == GOLD_ORE ?
+				event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(),
+					new ItemStack(event.getBlock().getType() == GOLD_ORE ?
 						GOLD_INGOT : IRON_INGOT));
 			}
-			ExperienceOrb o = (ExperienceOrb) evt.getBlock().getWorld()
-			                                     .spawnEntity(evt.getBlock().getLocation(), EXPERIENCE_ORB);
+			ExperienceOrb o = (ExperienceOrb) event.getBlock().getWorld()
+			                                     .spawnEntity(event.getBlock().getLocation(), EXPERIENCE_ORB);
 			o.setExperience(
-				evt.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
-			evt.getBlock().setType(AIR);
-			Utilities.display(evt.getBlock().getLocation(), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
+				event.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
+			event.getBlock().setType(AIR);
+			Utilities.display(event.getBlock().getLocation(), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
 			return true;
 		}
 		return false;

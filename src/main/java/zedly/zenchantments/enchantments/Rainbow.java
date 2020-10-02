@@ -34,34 +34,34 @@ public class Rainbow extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
+	public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
 		Material dropMaterial;
-		if (Storage.COMPATIBILITY_ADAPTER.SmallFlowers().contains(evt.getBlock().getType())) {
+		if (Storage.COMPATIBILITY_ADAPTER.SmallFlowers().contains(event.getBlock().getType())) {
 			dropMaterial = Storage.COMPATIBILITY_ADAPTER.SmallFlowers().getRandom();
-		} else if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(evt.getBlock().getType())) {
+		} else if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(event.getBlock().getType())) {
 			dropMaterial = Storage.COMPATIBILITY_ADAPTER.LargeFlowers().getRandom();
 		} else {
 			return false;
 		}
-		evt.setCancelled(true);
-		if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(evt.getBlock().getRelative(DOWN).getType())) {
-			evt.getBlock().getRelative(DOWN).setType(AIR);
+		event.setCancelled(true);
+		if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(event.getBlock().getRelative(DOWN).getType())) {
+			event.getBlock().getRelative(DOWN).setType(AIR);
 		}
-		evt.getBlock().setType(AIR);
-		Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-		evt.getPlayer().getWorld().dropItem(Utilities.getCenter(evt.getBlock()), new ItemStack(dropMaterial, 1));
+		event.getBlock().setType(AIR);
+		Utilities.damageTool(event.getPlayer(), 1, usedHand);
+		event.getPlayer().getWorld().dropItem(Utilities.getCenter(event.getBlock()), new ItemStack(dropMaterial, 1));
 		return true;
 	}
 
 	@Override
-	public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
-		Sheep sheep = (Sheep) evt.getEntity();
+	public boolean onShear(PlayerShearEntityEvent event, int level, boolean usedHand) {
+		Sheep sheep = (Sheep) event.getEntity();
 		if (!sheep.isSheared()) {
 			int count = Storage.rnd.nextInt(3) + 1;
-			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-			evt.setCancelled(true);
+			Utilities.damageTool(event.getPlayer(), 1, usedHand);
+			event.setCancelled(true);
 			sheep.setSheared(true);
-			evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(),
+			event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(),
 				new ItemStack(Storage.COMPATIBILITY_ADAPTER.Wools().getRandom(), count));
 		}
 		return true;

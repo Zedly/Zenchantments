@@ -31,8 +31,8 @@ public class Arborist extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		Block blk = evt.getBlock();
+	public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
+		Block blk = event.getBlock();
 		Material mat = blk.getType();
 		if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(mat)) {
 			// Crudely get the index in the array of materials
@@ -44,20 +44,20 @@ public class Arborist extends Zenchantment {
 
 			if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
 				if (Storage.rnd.nextInt(3) % 3 == 0) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), stk);
+					event.getBlock().getWorld()
+					   .dropItemNaturally(event.getBlock().getLocation(), stk);
 				}
 				if (Storage.rnd.nextInt(3) % 3 == 0) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(STICK, 1));
+					event.getBlock().getWorld()
+					   .dropItemNaturally(event.getBlock().getLocation(), new ItemStack(STICK, 1));
 				}
 				if (Storage.rnd.nextInt(3) % 3 == 0) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(APPLE, 1));
+					event.getBlock().getWorld()
+					   .dropItemNaturally(event.getBlock().getLocation(), new ItemStack(APPLE, 1));
 				}
 				if (Storage.rnd.nextInt(65) == 25) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(GOLDEN_APPLE, 1));
+					event.getBlock().getWorld()
+					   .dropItemNaturally(event.getBlock().getLocation(), new ItemStack(GOLDEN_APPLE, 1));
 				}
 				return true;
 			}

@@ -34,11 +34,11 @@ public class Bind extends Zenchantment {
 	}
 
 	@Override
-	public boolean onPlayerDeath(final PlayerDeathEvent evt, int level, boolean usedHand) {
-		if (evt.getKeepInventory()) {
+	public boolean onPlayerDeath(final PlayerDeathEvent event, int level, boolean usedHand) {
+		if (event.getKeepInventory()) {
 			return false;
 		}
-		final Player player = evt.getEntity();
+		final Player player = event.getEntity();
 		Config config = Config.get(player.getWorld());
 		final ItemStack[] contents = player.getInventory().getContents().clone();
 		final List<ItemStack> removed = new ArrayList<>();
@@ -47,12 +47,12 @@ public class Bind extends Zenchantment {
 				contents[i] = null;
 			} else {
 				removed.add(contents[i]);
-				evt.getDrops().remove(contents[i]);
+				event.getDrops().remove(contents[i]);
 			}
 		}
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			if (evt.getKeepInventory()) {
-				evt.getDrops().addAll(removed);
+			if (event.getKeepInventory()) {
+				event.getDrops().addAll(removed);
 			} else {
 				player.getInventory().setContents(contents);
 			}

@@ -27,10 +27,10 @@ public class ShortCast extends Zenchantment {
 	}
 
 	@Override
-	public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
-		if (evt.getEntity().getType() == EntityType.FISHING_HOOK) {
-			evt.getEntity()
-			   .setVelocity(evt.getEntity().getVelocity().normalize().multiply((.8f / (level * power))));
+	public boolean onProjectileLaunch(ProjectileLaunchEvent event, int level, boolean usedHand) {
+		if (event.getEntity().getType() == EntityType.FISHING_HOOK) {
+			event.getEntity()
+			   .setVelocity(event.getEntity().getVelocity().normalize().multiply((.8f / (level * power))));
 		}
 		return true;
 	}

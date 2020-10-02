@@ -37,18 +37,18 @@ public class Terraformer extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		if (evt.getPlayer().isSneaking()) {
-			if (evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-				Block start = evt.getClickedBlock().getRelative(evt.getBlockFace());
+	public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+		if (event.getPlayer().isSneaking()) {
+			if (event.getAction().equals(RIGHT_CLICK_BLOCK)) {
+				Block start = event.getClickedBlock().getRelative(event.getBlockFace());
 				Material mat = AIR;
 
 				for (int i = 0; i < 9; i++) {
-					if (evt.getPlayer().getInventory().getItem(i) != null) {
-						if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
+					if (event.getPlayer().getInventory().getItem(i) != null) {
+						if (event.getPlayer().getInventory().getItem(i).getType().isBlock() &&
 							Storage.COMPATIBILITY_ADAPTER.TerraformerMaterials().contains(
-								evt.getPlayer().getInventory().getItem(i).getType())) {
-							mat = evt.getPlayer().getInventory().getItem(i).getType();
+								event.getPlayer().getInventory().getItem(i).getType())) {
+							mat = event.getPlayer().getInventory().getItem(i).getType();
 							break;
 						}
 					}
@@ -57,11 +57,11 @@ public class Terraformer extends Zenchantment {
 				for (Block b : Utilities.bfs(start, MAX_BLOCKS, false, 5.f, SEARCH_FACES,
 					Storage.COMPATIBILITY_ADAPTER.Airs(), new EnumStorage<>(new Material[]{}), false, true)) {
 					if (b.getType().equals(AIR)) {
-						if (Utilities.hasItem(evt.getPlayer(), mat, 1)) {
-							if (Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, null)) {
-								Utilities.removeItem(evt.getPlayer(), mat, 1);
+						if (Utilities.hasItem(event.getPlayer(), mat, 1)) {
+							if (Storage.COMPATIBILITY_ADAPTER.placeBlock(b, event.getPlayer(), mat, null)) {
+								Utilities.removeItem(event.getPlayer(), mat, 1);
 								if (Storage.rnd.nextInt(10) == 5) {
-									Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+									Utilities.damageTool(event.getPlayer(), 1, usedHand);
 								}
 							}
 						}

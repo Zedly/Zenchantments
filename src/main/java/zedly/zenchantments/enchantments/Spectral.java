@@ -322,13 +322,13 @@ public class Spectral extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteractInteractable(PlayerInteractEvent evt, int level, boolean usedHand) {
-        return doEvent(evt, level, usedHand);
+    public boolean onBlockInteractInteractable(PlayerInteractEvent event, int level, boolean usedHand) {
+        return doEvent(event, level, usedHand);
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        return doEvent(evt, level, usedHand);
+    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+        return doEvent(event, level, usedHand);
     }
 
 }

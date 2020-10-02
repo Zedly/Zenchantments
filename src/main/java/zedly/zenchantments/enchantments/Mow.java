@@ -56,15 +56,15 @@ public class Mow extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		if (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
-			return shear(evt, level, usedHand);
+	public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+		if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
+			return shear(event, level, usedHand);
 		}
 		return false;
 	}
 
 	@Override
-	public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
-		return shear(evt, level, usedHand);
+	public boolean onShear(PlayerShearEntityEvent event, int level, boolean usedHand) {
+		return shear(event, level, usedHand);
 	}
 }

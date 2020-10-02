@@ -46,12 +46,12 @@ public class Pierce extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		Player player = evt.getPlayer();
-		if (!evt.getPlayer().hasMetadata("ze.pierce.mode")) {
+	public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+		Player player = event.getPlayer();
+		if (!event.getPlayer().hasMetadata("ze.pierce.mode")) {
 			player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
 		}
-		if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
+		if (player.isSneaking() && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)) {
 			int b = player.getMetadata("ze.pierce.mode").get(0).asInt();
 			b = b == 5 ? 1 : b + 1;
 			player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, b));
@@ -77,20 +77,20 @@ public class Pierce extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
+	public boolean onBlockBreak(final BlockBreakEvent event, int level, boolean usedHand) {
 		//1 = normal; 2 = wide; 3 = deep; 4 = tall; 5 = ore
-		Player player = evt.getPlayer();
-		if (!evt.getPlayer().hasMetadata("ze.pierce.mode")) {
+		Player player = event.getPlayer();
+		if (!event.getPlayer().hasMetadata("ze.pierce.mode")) {
 			player.setMetadata("ze.pierce.mode", new FixedMetadataValue(Storage.zenchantments, 1));
 		}
 		final int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
 		Set<Block> total = new HashSet<>();
-		final Location blkLoc = evt.getBlock().getLocation();
+		final Location blkLoc = event.getBlock().getLocation();
 		if (mode != 1 && mode != 5) {
 			int add = -1;
 			boolean b = false;
 			int[][] ints = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-			switch (Utilities.getCardinalDirection(evt.getPlayer().getLocation().getYaw(), 0)) {
+			switch (Utilities.getCardinalDirection(event.getPlayer().getLocation().getYaw(), 0)) {
 				case SOUTH:
 					ints = new int[][]{{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
 					add = 1;
@@ -117,9 +117,9 @@ public class Pierce extends Zenchantment {
 				}
 			}
 			if (mode == 4) {
-				if (evt.getPlayer().getLocation().getPitch() > 65) {
+				if (event.getPlayer().getLocation().getPitch() > 65) {
 					blkLoc.setY(blkLoc.getY() - 1);
-				} else if (evt.getPlayer().getLocation().getPitch() < -65) {
+				} else if (event.getPlayer().getLocation().getPitch() < -65) {
 					blkLoc.setY(blkLoc.getY() + 1);
 				}
 			}
@@ -131,9 +131,9 @@ public class Pierce extends Zenchantment {
 				}
 			}
 		} else if (mode == 5) {
-			if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(evt.getBlock().getType())) {
-				total.addAll(Utilities.bfs(evt.getBlock(), MAX_BLOCKS, false, Float.MAX_VALUE, SEARCH_FACES,
-					new EnumStorage<>(new Material[]{evt.getBlock().getType()}),
+			if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(event.getBlock().getType())) {
+				total.addAll(Utilities.bfs(event.getBlock(), MAX_BLOCKS, false, Float.MAX_VALUE, SEARCH_FACES,
+					new EnumStorage<>(new Material[]{event.getBlock().getType()}),
 					new EnumStorage<>(new Material[]{}), false, true));
 
 			} else {
@@ -142,7 +142,7 @@ public class Pierce extends Zenchantment {
 		}
 		for (Block b : total) {
 			if (ADAPTER.isBlockSafeToBreak(b)) {
-				ADAPTER.breakBlockNMS(b, evt.getPlayer());
+				ADAPTER.breakBlockNMS(b, event.getPlayer());
 			}
 		}
 		return true;

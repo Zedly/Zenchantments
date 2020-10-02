@@ -31,8 +31,8 @@ public class PotionResistance extends Zenchantment {
 	}
 
 	@Override
-	public boolean onPotionSplash(PotionSplashEvent evt, int level, boolean usedHand) {
-		for (LivingEntity ent : evt.getAffectedEntities()) {
+	public boolean onPotionSplash(PotionSplashEvent event, int level, boolean usedHand) {
+		for (LivingEntity ent : event.getAffectedEntities()) {
 			if (ent instanceof Player) {
 				int effect = 0;
 				for (ItemStack stk : ((Player) ent).getInventory().getArmorContents()) {
@@ -43,7 +43,7 @@ public class PotionResistance extends Zenchantment {
 						}
 					}
 				}
-				evt.setIntensity(ent, evt.getIntensity(ent) / ((effect * power + 1.3) / 2));
+				event.setIntensity(ent, event.getIntensity(ent) / ((effect * power + 1.3) / 2));
 			}
 		}
 		return true;

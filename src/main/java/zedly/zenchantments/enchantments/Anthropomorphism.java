@@ -142,11 +142,11 @@ public class Anthropomorphism extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        Player player = evt.getPlayer();
+    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+        Player player = event.getPlayer();
         ItemStack hand = Utilities.usedStack(player, usedHand);
 
-        if (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
             if (player.isSneaking()) {
                 if (!anthVortex.contains(player)) {
                     anthVortex.add(player);
@@ -172,7 +172,7 @@ public class Anthropomorphism extends Zenchantment {
                 }
             }
             return false;
-        } else if ((evt.getAction() == LEFT_CLICK_AIR || evt.getAction() == LEFT_CLICK_BLOCK)
+        } else if ((event.getAction() == LEFT_CLICK_AIR || event.getAction() == LEFT_CLICK_BLOCK)
                 || hand.getType() == AIR) {
             anthVortex.remove(player);
             List<FallingBlock> toRemove = new ArrayList<>();

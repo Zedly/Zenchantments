@@ -30,10 +30,10 @@ public class GoldRush extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		if (evt.getBlock().getType() == SAND && Storage.rnd.nextInt(100) >= (100 - (level * power * 3))) {
-			evt.getBlock().getWorld()
-			   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(GOLD_NUGGET));
+	public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
+		if (event.getBlock().getType() == SAND && Storage.rnd.nextInt(100) >= (100 - (level * power * 3))) {
+			event.getBlock().getWorld()
+			   .dropItemNaturally(event.getBlock().getLocation(), new ItemStack(GOLD_NUGGET));
 			return true;
 		}
 		return false;

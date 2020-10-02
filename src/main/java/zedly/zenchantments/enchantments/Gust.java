@@ -34,18 +34,18 @@ public class Gust extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final boolean usedHand) {
-		final Player player = evt.getPlayer();
-		if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-			if (player.getHealth() > 2 && (evt.getClickedBlock() == null ||
-				evt.getClickedBlock().getLocation().distance(player.getLocation()) > 2)) {
+	public boolean onBlockInteract(final PlayerInteractEvent event, int level, final boolean usedHand) {
+		final Player player = event.getPlayer();
+		if (event.getAction().equals(RIGHT_CLICK_AIR) || event.getAction().equals(RIGHT_CLICK_BLOCK)) {
+			if (player.getHealth() > 2 && (event.getClickedBlock() == null ||
+				event.getClickedBlock().getLocation().distance(player.getLocation()) > 2)) {
 				final Block blk = player.getTargetBlock(null, 10);
 				player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector())
 				                      .multiply(.25 * power));
 				player.setFallDistance(-40);
 				ADAPTER.damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-					Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+					Utilities.damageTool(event.getPlayer(), 1, usedHand);
 				}, 1);
 				return true;
 			}

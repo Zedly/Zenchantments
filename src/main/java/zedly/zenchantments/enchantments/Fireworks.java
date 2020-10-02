@@ -30,9 +30,9 @@ public class Fireworks extends Zenchantment {
 	}
 
 	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		FireworkArrow arrow = new FireworkArrow((Arrow) evt.getProjectile(), level);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+	public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+		FireworkArrow arrow = new FireworkArrow((Arrow) event.getProjectile(), level);
+		EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
 		return true;
 	}
 

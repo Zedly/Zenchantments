@@ -40,16 +40,16 @@ public class Stream extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		if (evt.getItem() == null || evt.getItem().getType() != Material.ELYTRA) {
+	public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+		if (event.getItem() == null || event.getItem().getType() != Material.ELYTRA) {
 			return false;
 		}
-		Player player = evt.getPlayer();
+		Player player = event.getPlayer();
 
-		if (!evt.getPlayer().hasMetadata("ze.stream.mode")) {
+		if (!event.getPlayer().hasMetadata("ze.stream.mode")) {
 			player.setMetadata("ze.stream.mode", new FixedMetadataValue(Storage.zenchantments, 0));
 		}
-		if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
+		if (player.isSneaking() && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)) {
 			int b = player.getMetadata("ze.stream.mode").get(0).asInt();
 			b = b == 4 ? 0 : b + 1;
 			player.setMetadata("ze.stream.mode", new FixedMetadataValue(Storage.zenchantments, b));
@@ -70,7 +70,7 @@ public class Stream extends Zenchantment {
 					player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Hearts");
 					break;
 			}
-			evt.setCancelled(true);
+			event.setCancelled(true);
 
 			// Prevent auto-equipping
 			if ((player.getInventory().getChestplate() == null ||

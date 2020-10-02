@@ -32,9 +32,9 @@ public class Conversion extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			final Player player = evt.getPlayer();
+	public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			final Player player = event.getPlayer();
 			if (player.isSneaking()) {
 				if (player.getLevel() > 1) {
 					if (player.getHealth() < 20) {

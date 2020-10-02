@@ -28,24 +28,24 @@ public class Combustion extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
+	public boolean onBeingHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
 		Entity ent;
-		if (evt.getDamager().getType() == EntityType.ARROW) {
-			Arrow arrow = (Arrow) evt.getDamager();
+		if (event.getDamager().getType() == EntityType.ARROW) {
+			Arrow arrow = (Arrow) event.getDamager();
 			if (arrow.getShooter() instanceof LivingEntity) {
 				ent = (Entity) arrow.getShooter();
 			} else {
 				return false;
 			}
 		} else {
-			ent = evt.getDamager();
+			ent = event.getDamager();
 		}
-		return ADAPTER.igniteEntity(ent, (Player) evt.getEntity(), (int) (50 * level * power));
+		return ADAPTER.igniteEntity(ent, (Player) event.getEntity(), (int) (50 * level * power));
 	}
 
-	public boolean onCombust(EntityCombustByEntityEvent evt, int level, boolean usedHand) {
-		if (ADAPTER.isZombie(evt.getCombuster())) {
-			evt.setDuration(0);
+	public boolean onCombust(EntityCombustByEntityEvent event, int level, boolean usedHand) {
+		if (ADAPTER.isZombie(event.getCombuster())) {
+			event.setDuration(0);
 		}
 		return false;
 	}

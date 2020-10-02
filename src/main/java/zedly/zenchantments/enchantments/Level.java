@@ -33,28 +33,28 @@ public class Level extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
+    public boolean onEntityKill(EntityDeathEvent event, int level, boolean usedHand) {
         if (Storage.rnd.nextBoolean()) {
-            evt.setDroppedExp((int) (evt.getDroppedExp() * (1.3 + (level * power * .5))));
+            event.setDroppedExp((int) (event.getDroppedExp() * (1.3 + (level * power * .5))));
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
+    public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
         if (Storage.rnd.nextBoolean()) {
-            evt.setExpToDrop((int) (evt.getExpToDrop() * (1.3 + (level * power * .5))));
+            event.setExpToDrop((int) (event.getExpToDrop() * (1.3 + (level * power * .5))));
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
+    public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
         if (Storage.rnd.nextBoolean()) {
-            LevelArrow arrow = new LevelArrow((Arrow) evt.getProjectile(), level, power);
-            EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+            LevelArrow arrow = new LevelArrow((Arrow) event.getProjectile(), level, power);
+            EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
             return true;
         }
         return false;

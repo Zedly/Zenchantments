@@ -40,13 +40,13 @@ public class Vortex extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityKill(final EntityDeathEvent evt, int level, boolean usedHand) {
-        final Block deathBlock = evt.getEntity().getLocation().getBlock();
-        vortexLocs.put(deathBlock, evt.getEntity().getKiller());
+    public boolean onEntityKill(final EntityDeathEvent event, int level, boolean usedHand) {
+        final Block deathBlock = event.getEntity().getLocation().getBlock();
+        vortexLocs.put(deathBlock, event.getEntity().getKiller());
         
-        int i = evt.getDroppedExp();
-        evt.setDroppedExp(0);
-        Storage.COMPATIBILITY_ADAPTER.collectXP(evt.getEntity().getKiller(), i);
+        int i = event.getDroppedExp();
+        event.setDroppedExp(0);
+        Storage.COMPATIBILITY_ADAPTER.collectXP(event.getEntity().getKiller(), i);
         
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
             vortexLocs.remove(deathBlock);
@@ -55,9 +55,9 @@ public class Vortex extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        VortexArrow arrow = new VortexArrow((Arrow) evt.getProjectile());
-        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+    public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+        VortexArrow arrow = new VortexArrow((Arrow) event.getProjectile());
+        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 

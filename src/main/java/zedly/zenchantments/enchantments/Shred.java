@@ -38,14 +38,14 @@ public class Shred extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-        if (!Storage.COMPATIBILITY_ADAPTER.ShredPicks().contains(evt.getBlock().getType())
-                && !Storage.COMPATIBILITY_ADAPTER.ShredShovels().contains(evt.getBlock().getType())) {
+    public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
+        if (!Storage.COMPATIBILITY_ADAPTER.ShredPicks().contains(event.getBlock().getType())
+                && !Storage.COMPATIBILITY_ADAPTER.ShredShovels().contains(event.getBlock().getType())) {
             return false;
         }
-        ItemStack hand = Utilities.usedStack(evt.getPlayer(), usedHand);
-        blocks(evt.getBlock(), evt.getBlock(), new int[]{level + 3, level + 3, level + 3}, 0,
-                4.6 + (level * .22), new HashSet<>(), evt.getPlayer(), Config.get(evt.getBlock().getWorld()),
+        ItemStack hand = Utilities.usedStack(event.getPlayer(), usedHand);
+        blocks(event.getBlock(), event.getBlock(), new int[]{level + 3, level + 3, level + 3}, 0,
+                4.6 + (level * .22), new HashSet<>(), event.getPlayer(), Config.get(event.getBlock().getWorld()),
                 hand.getType(), usedHand);
         return true;
     }

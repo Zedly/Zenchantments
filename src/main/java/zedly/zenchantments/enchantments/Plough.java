@@ -33,9 +33,9 @@ public class Plough extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		if (evt.getAction() == RIGHT_CLICK_BLOCK) {
-			Location loc = evt.getClickedBlock().getLocation();
+	public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+		if (event.getAction() == RIGHT_CLICK_BLOCK) {
+			Location loc = event.getClickedBlock().getLocation();
 			int radiusXZ = (int) Math.round(power * level + 2);
 			int radiusY = 1;
 			for (int x = -(radiusXZ); x <= radiusXZ; x++) {
@@ -47,10 +47,10 @@ public class Plough extends Zenchantment {
 								|| block.getRelative(x, y, z).getType() == GRASS_BLOCK
 								|| block.getRelative(x, y, z).getType() == MYCELIUM))
 								&& Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(x, y + 1, z).getType())) {
-								ADAPTER.placeBlock(block.getRelative(x, y, z), evt.getPlayer(), Material.FARMLAND,
+								ADAPTER.placeBlock(block.getRelative(x, y, z), event.getPlayer(), Material.FARMLAND,
 									null);
 								if (Storage.rnd.nextBoolean()) {
-									Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+									Utilities.damageTool(event.getPlayer(), 1, usedHand);
 								}
 							}
 						}

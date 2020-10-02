@@ -35,11 +35,11 @@ public class Harvest extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if (evt.getAction() != RIGHT_CLICK_BLOCK) {
+    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
-        Location loc = evt.getClickedBlock().getLocation();
+        Location loc = event.getClickedBlock().getLocation();
         int radiusXZ = (int) Math.round(power * level + 2);
         int radiusY = 1;
         boolean success = false;
@@ -69,14 +69,14 @@ public class Harvest extends Zenchantment {
                         if (harvestReady) {
                             boolean blockAltered;
                             if (block.getType() == Material.SWEET_BERRY_BUSH) {
-                                blockAltered = Storage.COMPATIBILITY_ADAPTER.pickBerries(block, evt.getPlayer());
+                                blockAltered = Storage.COMPATIBILITY_ADAPTER.pickBerries(block, event.getPlayer());
                             } else {
-                                blockAltered = ADAPTER.breakBlockNMS(block, evt.getPlayer());
+                                blockAltered = ADAPTER.breakBlockNMS(block, event.getPlayer());
                             }
 
                             if (blockAltered) {
-                                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-                                Grab.grabLocs.put(block, evt.getPlayer());
+                                Utilities.damageTool(event.getPlayer(), 1, usedHand);
+                                Grab.grabLocs.put(block, event.getPlayer());
                                 Bukkit.getServer().getScheduler()
                                         .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                                             Grab.grabLocs.remove(block);

@@ -41,9 +41,9 @@ public class Decapitation extends Zenchantment {
 			Material.ZOMBIE_HEAD, Material.CREEPER_HEAD};
 
 	@Override
-	public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
+	public boolean onEntityKill(EntityDeathEvent event, int level, boolean usedHand) {
 
-		short id = (short) ArrayUtils.indexOf(entities, evt.getEntityType());
+		short id = (short) ArrayUtils.indexOf(entities, event.getEntityType());
 		if (id == -1) {
 			return false;
 		}
@@ -52,13 +52,13 @@ public class Decapitation extends Zenchantment {
 			if (Storage.rnd.nextInt(Math.max((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * power)), 1)) == 0) {
 
 				SkullMeta meta = (SkullMeta) stk.getItemMeta();
-				meta.setOwningPlayer(Bukkit.getOfflinePlayer(evt.getEntity().getUniqueId()));
+				meta.setOwningPlayer(Bukkit.getOfflinePlayer(event.getEntity().getUniqueId()));
 				stk.setItemMeta(meta);
-				evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(), stk);
+				event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), stk);
 				return true;
 			}
 		} else if (Storage.rnd.nextInt(Math.max((int) Math.round(BASE_MOB_DROP_CHANCE / (level * power)), 1)) == 0) {
-			evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(), stk);
+			event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), stk);
 			return true;
 		}
 		return false;

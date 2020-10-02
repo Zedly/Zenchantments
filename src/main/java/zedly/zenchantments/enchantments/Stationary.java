@@ -34,23 +34,23 @@ public class Stationary extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-        if (!(evt.getEntity() instanceof LivingEntity)
-                || ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
-            LivingEntity ent = (LivingEntity) evt.getEntity();
-            if (evt.getDamage() < ent.getHealth()) {
-                evt.setCancelled(true);
-                Utilities.damageTool(((Player) evt.getDamager()), 1, usedHand);
-                ent.damage(evt.getDamage());
+    public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+        if (!(event.getEntity() instanceof LivingEntity)
+                || ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)) {
+            LivingEntity ent = (LivingEntity) event.getEntity();
+            if (event.getDamage() < ent.getHealth()) {
+                event.setCancelled(true);
+                Utilities.damageTool(((Player) event.getDamager()), 1, usedHand);
+                ent.damage(event.getDamage());
             }
         }
         return true;
     }
 
     @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        StationaryArrow arrow = new StationaryArrow((Arrow) evt.getProjectile());
-        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+    public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+        StationaryArrow arrow = new StationaryArrow((Arrow) event.getProjectile());
+        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 

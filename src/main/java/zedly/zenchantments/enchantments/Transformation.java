@@ -36,39 +36,39 @@ public class Transformation extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-        if (evt.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+    public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+        if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return false;
         }
-        if (evt.getEntity() instanceof Tameable) {
-            if (((Tameable) evt.getEntity()).isTamed()) {
+        if (event.getEntity() instanceof Tameable) {
+            if (((Tameable) event.getEntity()).isTamed()) {
                 return false;
             }
         }
-        if (!(evt.getEntity() instanceof LivingEntity)) {
+        if (!(event.getEntity() instanceof LivingEntity)) {
             return true;
         }
 
-        LivingEntity le = (LivingEntity) evt.getEntity();
+        LivingEntity le = (LivingEntity) event.getEntity();
         if (hasValuableItems(le)) {
             return true;
         }
 
-        if (ADAPTER.attackEntity(le, (Player) evt.getDamager(), 0)) {
+        if (ADAPTER.attackEntity(le, (Player) event.getDamager(), 0)) {
             if (Storage.rnd.nextInt(100) < (level * power * 8)) {
                 LivingEntity newEnt = Storage.COMPATIBILITY_ADAPTER.TransformationCycle(le,
                         Storage.rnd);
                 if (newEnt != null) {
-                    if (evt.getDamage() > (le).getHealth()) {
-                        evt.setCancelled(true);
+                    if (event.getDamage() > (le).getHealth()) {
+                        event.setCancelled(true);
                     }
-                    Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.HEART, 70, .1f,
+                    Utilities.display(Utilities.getCenter(event.getEntity().getLocation()), Particle.HEART, 70, .1f,
                             .5f, 2, .5f);
 
                     double originalHealth = (le).getHealth();
                     newEnt.setHealth(Math.max(1,
                             Math.min(originalHealth, newEnt.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
-                    evt.getEntity().remove();
+                    event.getEntity().remove();
                 }
             }
         }

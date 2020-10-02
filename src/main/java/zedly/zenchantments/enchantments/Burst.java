@@ -41,11 +41,11 @@ public class Burst extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-        final Player player = evt.getPlayer();
+    public boolean onBlockInteract(final PlayerInteractEvent event, int level, boolean usedHand) {
+        final Player player = event.getPlayer();
         final ItemStack hand = Utilities.usedStack(player, usedHand);
         boolean result = false;
-        if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
+        if (event.getAction().equals(RIGHT_CLICK_AIR) || event.getAction().equals(RIGHT_CLICK_BLOCK)) {
             for (int i = 0; i <= (int) Math.round((power * level) + 1); i++) {
                 if ((hand.containsEnchantment(Enchantment.ARROW_INFINITE) && Utilities.hasItem(player, Material.ARROW, 1))
                         || Utilities.removeItem(player, Material.ARROW, 1)) {

@@ -42,9 +42,9 @@ public class Singularity extends Zenchantment {
 	}
 
 	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		SingularityArrow arrow = new SingularityArrow((Arrow) evt.getProjectile(), level);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+	public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+		SingularityArrow arrow = new SingularityArrow((Arrow) event.getProjectile(), level);
+		EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
 		return true;
 	}
 

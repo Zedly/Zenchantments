@@ -37,16 +37,16 @@ public class Reveal extends Zenchantment {
             .handUse(Hand.NONE);
     }
     @Override
-    public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-        Player player = evt.getPlayer();
-        if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (evt.getPlayer().isSneaking()) {
+    public boolean onBlockInteract(final PlayerInteractEvent event, int level, boolean usedHand) {
+        Player player = event.getPlayer();
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (event.getPlayer().isSneaking()) {
                 int radius = (int) Math.max(2, Math.round((2 + level) * power));
                 int found = 0;
                 for (int x = -radius; x <= radius; x++) {
                     for (int y = -radius; y <= radius; y++) {
                         for (int z = -radius; z <= radius; z++) {
-                            Block blk = evt.getPlayer().getLocation().getBlock().getRelative(x, y, z);
+                            Block blk = event.getPlayer().getLocation().getBlock().getRelative(x, y, z);
                             if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(blk.getType())) {
                                 boolean exposed = false;
                                 for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
@@ -84,7 +84,7 @@ public class Reveal extends Zenchantment {
                         }
                     }
                 }
-                Utilities.damageTool(evt.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+                Utilities.damageTool(event.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
 
                 return true;
             }

@@ -27,10 +27,10 @@ public class LongCast extends Zenchantment {
 	}
 
 	@Override
-	public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
-		if (evt.getEntity().getType() == EntityType.FISHING_HOOK) {
-			evt.getEntity().setVelocity(
-				evt.getEntity().getVelocity().normalize().multiply(Math.min(1.9 + (power * level - 1.2), 2.7)));
+	public boolean onProjectileLaunch(ProjectileLaunchEvent event, int level, boolean usedHand) {
+		if (event.getEntity().getType() == EntityType.FISHING_HOOK) {
+			event.getEntity().setVelocity(
+				event.getEntity().getVelocity().normalize().multiply(Math.min(1.9 + (power * level - 1.2), 2.7)));
 		}
 		return true;
 	}

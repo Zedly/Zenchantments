@@ -32,15 +32,15 @@ public class Weight extends Zenchantment {
     }
 
     @Override
-    public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-        Player player = (Player) evt.getEntity();
+    public boolean onBeingHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+        Player player = (Player) event.getEntity();
         
         // Cancel event to prevent knockback, damage the player anyway
         // There might be a much better way to do this
-        if (evt.getDamage() < player.getHealth()) {
-            evt.setCancelled(true);
-            player.damage(evt.getDamage());
-            player.setVelocity(player.getLocation().subtract(evt.getDamager().getLocation()).toVector()
+        if (event.getDamage() < player.getHealth()) {
+            event.setCancelled(true);
+            player.damage(event.getDamage());
+            player.setVelocity(player.getLocation().subtract(event.getDamager().getLocation()).toVector()
                     .multiply((float) (1 / (level * power + 1.5))));
             ItemStack[] s = player.getInventory().getArmorContents();
             for (int i = 0; i < 4; i++) {

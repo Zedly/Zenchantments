@@ -40,16 +40,16 @@ public class MysteryFish extends Zenchantment {
 	}
 
 	@Override
-	public boolean onPlayerFish(final PlayerFishEvent evt, int level, boolean usedHand) {
+	public boolean onPlayerFish(final PlayerFishEvent event, int level, boolean usedHand) {
 		if (Storage.rnd.nextInt(10) < level * power) {
-			if (evt.getCaught() != null) {
-				Location location = evt.getCaught().getLocation();
+			if (event.getCaught() != null) {
+				Location location = event.getCaught().getLocation();
 				final Entity ent;
 				if (Storage.rnd.nextBoolean()) {
-					ent = evt.getPlayer().getWorld().spawnEntity(location, SQUID);
+					ent = event.getPlayer().getWorld().spawnEntity(location, SQUID);
 				} else {
 					Entity g = Storage.COMPATIBILITY_ADAPTER.spawnGuardian(location, Storage.rnd.nextBoolean());
-					guardianMove.put(g, evt.getPlayer());
+					guardianMove.put(g, event.getPlayer());
 					ent = g;
 				}
 			}

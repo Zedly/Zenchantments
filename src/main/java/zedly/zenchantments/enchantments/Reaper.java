@@ -36,20 +36,20 @@ public class Reaper extends Zenchantment {
 	}
 
 	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		ReaperArrow arrow = new ReaperArrow((Arrow) evt.getProjectile(), level, power);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+	public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+		ReaperArrow arrow = new ReaperArrow((Arrow) event.getProjectile(), level, power);
+		EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
 		return true;
 	}
 
 	@Override
-	public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-		if (evt.getEntity() instanceof LivingEntity &&
-			ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
+	public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+		if (event.getEntity() instanceof LivingEntity &&
+			ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)) {
 			int pow = (int) Math.round(level * power);
 			int dur = (int) Math.round(10 + level * 20 * power);
-			Utilities.addPotion((LivingEntity) evt.getEntity(), PotionEffectType.WITHER, dur, pow);
-			Utilities.addPotion((LivingEntity) evt.getEntity(), BLINDNESS, dur, pow);
+			Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.WITHER, dur, pow);
+			Utilities.addPotion((LivingEntity) event.getEntity(), BLINDNESS, dur, pow);
 		}
 		return true;
 	}

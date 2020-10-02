@@ -30,10 +30,10 @@ public class IceAspect extends Zenchantment {
 	}
 
 	@Override
-	public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-		Utilities.addPotion((LivingEntity) evt.getEntity(), SLOW,
+	public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+		Utilities.addPotion((LivingEntity) event.getEntity(), SLOW,
 			(int) Math.round(40 + level * power * 40), (int) Math.round(power * level * 2));
-		Utilities.display(Utilities.getCenter(evt.getEntity().getLocation()), Particle.CLOUD, 10, .1f, 1f, 2f, 1f);
+		Utilities.display(Utilities.getCenter(event.getEntity().getLocation()), Particle.CLOUD, 10, .1f, 1f, 2f, 1f);
 		return true;
 	}
 }

@@ -29,10 +29,10 @@ public class Saturation extends Zenchantment {
 	}
 
 	@Override
-	public boolean onHungerChange(FoodLevelChangeEvent evt, int level, boolean usedHand) {
-		if (evt.getFoodLevel() < ((Player) evt.getEntity()).getFoodLevel() &&
+	public boolean onHungerChange(FoodLevelChangeEvent event, int level, boolean usedHand) {
+		if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel() &&
 			Storage.rnd.nextInt(10) > 10 - 2 * level * power) {
-			evt.setCancelled(true);
+			event.setCancelled(true);
 		}
 		return true;
 	}

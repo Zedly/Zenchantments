@@ -36,14 +36,14 @@ public class Switch extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-        if (evt.getAction() == Action.RIGHT_CLICK_BLOCK && evt.getPlayer().isSneaking()) {
+    public boolean onBlockInteract(final PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().isSneaking()) {
             // Make sure clicked block is okay to break
-            if (!ADAPTER.isBlockSafeToBreak(evt.getClickedBlock())) {
+            if (!ADAPTER.isBlockSafeToBreak(event.getClickedBlock())) {
                 return false;
             }
 
-            Player player = evt.getPlayer();
+            Player player = event.getPlayer();
             int c = -1;
             ItemStack switchItem = null;
             for (int i = 0; i < 9; i++) { // Find a suitable block in hotbar
@@ -63,14 +63,14 @@ public class Switch extends Zenchantment {
             }
 
             // Block has been selected, attempt breaking
-            if (!ADAPTER.breakBlockNMS(evt.getClickedBlock(), evt.getPlayer())) {
+            if (!ADAPTER.breakBlockNMS(event.getClickedBlock(), event.getPlayer())) {
                 return false;
             }
 
             // Breaking succeeded, begin invasive operations
-            Block clickedBlock = evt.getClickedBlock();
-            Grab.grabLocs.put(clickedBlock, evt.getPlayer());
-            evt.setCancelled(true);
+            Block clickedBlock = event.getClickedBlock();
+            Grab.grabLocs.put(clickedBlock, event.getPlayer());
+            event.setCancelled(true);
 
             Material mat = switchItem.getType();
 
@@ -81,7 +81,7 @@ public class Switch extends Zenchantment {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
                 ADAPTER.placeBlock(clickedBlock, player, mat, null); // TODO blockData
             }, 1);
-            Utilities.removeItem(evt.getPlayer(), mat, 1);
+            Utilities.removeItem(event.getPlayer(), mat, 1);
             return true;
         }
         return false;

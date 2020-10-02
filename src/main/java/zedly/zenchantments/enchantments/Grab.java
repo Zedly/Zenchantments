@@ -36,9 +36,9 @@ public class Grab extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
-		grabLocs.put(evt.getBlock(), evt.getPlayer());
-		final Block block = evt.getBlock();
+	public boolean onBlockBreak(final BlockBreakEvent event, int level, boolean usedHand) {
+		grabLocs.put(event.getBlock(), event.getPlayer());
+		final Block block = event.getBlock();
 		//ADAPTER.breakBlockNMS(evt.getBlock(), evt.getPlayer());
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
 			grabLocs.remove(block);

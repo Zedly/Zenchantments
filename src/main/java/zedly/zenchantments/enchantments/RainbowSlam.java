@@ -40,13 +40,13 @@ public class RainbowSlam extends Zenchantment {
 	}
 
 	@Override
-	public boolean onEntityInteract(final PlayerInteractEntityEvent evt, final int level, boolean usedHand) {
-		if (!(evt.getRightClicked() instanceof LivingEntity) ||
-			!ADAPTER.attackEntity((LivingEntity) evt.getRightClicked(), evt.getPlayer(), 0)) {
+	public boolean onEntityInteract(final PlayerInteractEntityEvent event, final int level, boolean usedHand) {
+		if (!(event.getRightClicked() instanceof LivingEntity) ||
+			!ADAPTER.attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)) {
 			return false;
 		}
-		Utilities.damageTool(evt.getPlayer(), 9, usedHand);
-		final LivingEntity ent = (LivingEntity) evt.getRightClicked();
+		Utilities.damageTool(event.getPlayer(), 9, usedHand);
+		final LivingEntity ent = (LivingEntity) event.getRightClicked();
 		final Location l = ent.getLocation().clone();
 		ent.teleport(l);
 		for (int i = 0; i < 30; i++) {
@@ -82,12 +82,12 @@ public class RainbowSlam extends Zenchantment {
 				if (ent.isOnGround() && !applied.get()) {
 					applied.set(true);
 					rainbowSlamNoFallEntities.remove(ent);
-					ADAPTER.attackEntity(ent, evt.getPlayer(), level * power);
+					ADAPTER.attackEntity(ent, event.getPlayer(), level * power);
 					for (int c = 0; c < 1000; c++) {
 						// Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math
 						// .toRadians(c))).multiply(.75);
 						ent.getWorld().spawnParticle(Particle.BLOCK_DUST, Utilities.getCenter(l), 10,
-							evt.getPlayer().getLocation().getBlock().getBlockData());
+							event.getPlayer().getLocation().getBlock().getBlockData());
 					}
 				}
 			}, 35 + (i * 5));

@@ -31,19 +31,19 @@ public class Stock extends Zenchantment {
 	}
 
 	@Override
-	public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-		final ItemStack stk = evt.getPlayer().getInventory().getItemInMainHand().clone();
+	public boolean onBlockInteract(final PlayerInteractEvent event, int level, boolean usedHand) {
+		final ItemStack stk = event.getPlayer().getInventory().getItemInMainHand().clone();
 		if (stk == null || stk.getType() == AIR) {
 			return false;
 		}
-		final Player player = evt.getPlayer();
+		final Player player = event.getPlayer();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
 			int current = -1;
-			ItemStack newHandItem = evt.getPlayer().getInventory().getItemInMainHand();
+			ItemStack newHandItem = event.getPlayer().getInventory().getItemInMainHand();
 			if (newHandItem != null && newHandItem.getType() != AIR) {
 				return;
 			}
-			for (int i = 0; i < evt.getPlayer().getInventory().getContents().length; i++) {
+			for (int i = 0; i < event.getPlayer().getInventory().getContents().length; i++) {
 				ItemStack s = player.getInventory().getContents()[i];
 				if (s != null && s.getType().equals(stk.getType())) {
 					current = i;
@@ -51,9 +51,9 @@ public class Stock extends Zenchantment {
 				}
 			}
 			if (current != -1) {
-				evt.getPlayer().getInventory()
-				   .setItemInMainHand(evt.getPlayer().getInventory().getContents()[current]);
-				evt.getPlayer().getInventory().setItem(current, new ItemStack(AIR));
+				event.getPlayer().getInventory()
+				   .setItemInMainHand(event.getPlayer().getInventory().getContents()[current]);
+				event.getPlayer().getInventory().setItem(current, new ItemStack(AIR));
 			}
 		}, 1);
 		return false;

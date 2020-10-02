@@ -32,9 +32,9 @@ public class Potion extends Zenchantment {
 	}
 
 	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		PotionArrow arrow = new PotionArrow((Arrow) evt.getProjectile(), level, power);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+	public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+		PotionArrow arrow = new PotionArrow((Arrow) event.getProjectile(), level, power);
+		EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
 		return true;
 	}
 }

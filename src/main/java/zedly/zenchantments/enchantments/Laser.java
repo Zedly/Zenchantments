@@ -72,19 +72,19 @@ public class Laser extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityInteract(PlayerInteractEntityEvent evt, int level, boolean usedHand) {
-        if (usedHand && !evt.getPlayer().isSneaking()) {
-            shoot(evt.getPlayer(), level, usedHand);
+    public boolean onEntityInteract(PlayerInteractEntityEvent event, int level, boolean usedHand) {
+        if (usedHand && !event.getPlayer().isSneaking()) {
+            shoot(event.getPlayer(), level, usedHand);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-        if (usedHand && !evt.getPlayer().isSneaking()
-                && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
-            shoot(evt.getPlayer(), level, usedHand);
+    public boolean onBlockInteract(final PlayerInteractEvent event, int level, boolean usedHand) {
+        if (usedHand && !event.getPlayer().isSneaking()
+                && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)) {
+            shoot(event.getPlayer(), level, usedHand);
             return true;
         }
         return false;

@@ -36,22 +36,22 @@ public class BlazesCurse extends Zenchantment {
 	}
 
 	@Override
-	public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
-		if (evt.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR ||
-			evt.getCause() == EntityDamageEvent.DamageCause.LAVA ||
-			evt.getCause() == EntityDamageEvent.DamageCause.FIRE ||
-			evt.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
-			evt.setCancelled(true);
+	public boolean onEntityDamage(EntityDamageEvent event, int level, boolean usedHand) {
+		if (event.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR ||
+			event.getCause() == EntityDamageEvent.DamageCause.LAVA ||
+			event.getCause() == EntityDamageEvent.DamageCause.FIRE ||
+			event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
+			event.setCancelled(true);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-		if (evt.getDamager().getType() == EntityType.FIREBALL
-			|| evt.getDamager().getType() == EntityType.SMALL_FIREBALL) {
-			evt.setDamage(0);
+	public boolean onBeingHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+		if (event.getDamager().getType() == EntityType.FIREBALL
+			|| event.getDamager().getType() == EntityType.SMALL_FIREBALL) {
+			event.setDamage(0);
 			return true;
 		}
 		return false;

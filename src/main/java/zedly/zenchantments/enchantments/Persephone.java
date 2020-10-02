@@ -33,13 +33,13 @@ public class Persephone extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if (evt.getAction() == RIGHT_CLICK_BLOCK) {
-            Player player = evt.getPlayer();
-            Location loc = evt.getClickedBlock().getLocation();
+    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() == RIGHT_CLICK_BLOCK) {
+            Player player = event.getPlayer();
+            Location loc = event.getClickedBlock().getLocation();
             int radiusXZ = (int) Math.round(power * level + 2);
 
-            if (Storage.COMPATIBILITY_ADAPTER.PersephoneCrops().contains(evt.getClickedBlock().getType())) {
+            if (Storage.COMPATIBILITY_ADAPTER.PersephoneCrops().contains(event.getClickedBlock().getType())) {
                 Block block = loc.getBlock();
                 for (int x = -radiusXZ; x <= radiusXZ; x++) {
                     for (int y = -2; y <= 0; y++) {
@@ -49,21 +49,21 @@ public class Persephone extends Zenchantment {
                                     < radiusXZ * radiusXZ) {
                                 if (block.getRelative(x, y, z).getType() == FARMLAND
                                         && Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(x, y + 1, z).getType())) {
-                                    if (evt.getPlayer().getInventory().contains(CARROT)) {
+                                    if (event.getPlayer().getInventory().contains(CARROT)) {
                                         if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS,
                                                 null)) {
                                             Utilities.removeItem(player, CARROT, 1);
                                         }
-                                    } else if (evt.getPlayer().getInventory().contains(POTATO)) {
+                                    } else if (event.getPlayer().getInventory().contains(POTATO)) {
                                         if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, POTATOES,
                                                 null)) {
                                             Utilities.removeItem(player, POTATO, 1);
                                         }
-                                    } else if (evt.getPlayer().getInventory().contains(WHEAT_SEEDS)) {
+                                    } else if (event.getPlayer().getInventory().contains(WHEAT_SEEDS)) {
                                         if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, null)) {
                                             Utilities.removeItem(player, WHEAT_SEEDS, 1);
                                         }
-                                    } else if (evt.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
+                                    } else if (event.getPlayer().getInventory().contains(BEETROOT_SEEDS)) {
                                         if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOTS,
                                                 null)) {
                                             Utilities.removeItem(player, BEETROOT_SEEDS, 1);
@@ -71,7 +71,7 @@ public class Persephone extends Zenchantment {
                                     }
                                 } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
                                         && Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(x, y + 1, z).getType())) {
-                                    if (evt.getPlayer().getInventory().contains(NETHER_WART)) {
+                                    if (event.getPlayer().getInventory().contains(NETHER_WART)) {
                                         if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART,
                                                 null)) {
                                             Utilities.removeItem(player, NETHER_WART, 1);
@@ -81,7 +81,7 @@ public class Persephone extends Zenchantment {
                                     continue;
                                 }
                                 if (Storage.rnd.nextBoolean()) {
-                                    Utilities.damageTool(evt.getPlayer(), 1, usedHand);
+                                    Utilities.damageTool(event.getPlayer(), 1, usedHand);
                                 }
                             }
                         }

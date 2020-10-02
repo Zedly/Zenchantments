@@ -34,13 +34,13 @@ public class Germination extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if (evt.getAction() != RIGHT_CLICK_BLOCK) {
+    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
-        Player player = evt.getPlayer();
-        Location loc = evt.getClickedBlock().getLocation();
-        Block clickedBlock = evt.getClickedBlock();
+        Player player = event.getPlayer();
+        Location loc = event.getClickedBlock().getLocation();
+        Block clickedBlock = event.getClickedBlock();
         int radiusXZ = (int) Math.round(power * level + 2);
         int radiusY = 2;
         boolean applied = false;
