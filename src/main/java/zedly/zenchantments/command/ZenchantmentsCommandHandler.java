@@ -19,6 +19,7 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
     public ZenchantmentsCommandHandler(ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
         this.commandMap = ImmutableMap.of(
+            "disable", new DisableCommand(plugin),
             "help", new HelpCommand(plugin),
             "list", new ListCommand(plugin),
             "info", new InfoCommand(plugin),
