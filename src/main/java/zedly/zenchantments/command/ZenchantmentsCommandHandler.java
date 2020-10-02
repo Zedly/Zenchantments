@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ZenchantmentsCommandHandler implements CommandExecutor, TabCompleter {
-    private final ZenchantmentsPlugin               plugin;
+    private final EnchantCommand                    enchantCommand;
     private final Map<String, ZenchantmentsCommand> commandMap;
 
     public ZenchantmentsCommandHandler(ZenchantmentsPlugin plugin) {
-        this.plugin = plugin;
+        this.enchantCommand = new EnchantCommand(plugin);
         this.commandMap = new ImmutableMap.Builder<String, ZenchantmentsCommand>()
             .put("disable", new DisableCommand(plugin))
             .put("enable", new EnableCommand(plugin))
@@ -36,14 +36,7 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
             subcommand = args[0].toLowerCase();
         }
 
-        ZenchantmentsCommand zenchantmentsCommand = this.commandMap.get(subcommand);
-
-        if (zenchantmentsCommand == null) {
-            sender.sendMessage("Unknown command! Type /" + label + " help for assistance.");
-        } else {
-            zenchantmentsCommand.execute(sender, ArrayUtils.subarray(args, 1, args.length));
-        }
-
+        this.commandMap.getOrDefault(subcommand, this.enchantCommand).execute(sender, ArrayUtils.subarray(args, 1, args.length));
         return true;
     }
 
