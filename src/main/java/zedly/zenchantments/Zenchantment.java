@@ -33,17 +33,17 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
     protected              int                  id;
 
-    protected int     maxLevel;
-    protected String  loreName;
-    protected float   probability;
-    protected Tool[]  enchantable;
-    protected Class[] conflicting;
-    protected String  description;
-    protected int     cooldown;
-    protected double  power;
-    protected Hand    handUse;
-    private   boolean used;
-    protected boolean isCursed;
+    protected int        maxLevel;
+    protected String     loreName;
+    protected float      probability;
+    protected Tool[]     enchantable;
+    protected Class<?>[] conflicting;
+    protected String     description;
+    protected int        cooldown;
+    protected double     power;
+    protected Hand       handUse;
+    private   boolean    used;
+    protected boolean    isCursed;
 
     public abstract Builder<? extends Zenchantment> defaults();
 
@@ -80,11 +80,11 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
         this.enchantable = enchantable;
     }
 
-    Class[] getConflicting() {
+    Class<?>[] getConflicting() {
         return conflicting;
     }
 
-    void setConflicting(Class[] conflicting) {
+    void setConflicting(Class<?>[] conflicting) {
         this.conflicting = conflicting;
     }
 
@@ -121,7 +121,7 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
     }
 
     int getId() {
-        return id;
+        return this.id;
     }
 
     void setId(int id) {
@@ -586,97 +586,96 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
     }
 
     protected static final class Builder<T extends Zenchantment> {
+        private final T zenchantment;
 
-        private final T customEnchantment;
-
-        public Builder(Supplier<T> sup, int id) {
-            customEnchantment = sup.get();
-            customEnchantment.setId(id);
+        public Builder(Supplier<T> supplier, int id) {
+            this.zenchantment = supplier.get();
+            this.zenchantment.id = id;
         }
 
         public Builder<T> maxLevel(int maxLevel) {
-            customEnchantment.setMaxLevel(maxLevel);
+            this.zenchantment.maxLevel = maxLevel;
             return this;
         }
 
         public int maxLevel() {
-            return customEnchantment.getMaxLevel();
+            return this.zenchantment.maxLevel;
         }
 
         public Builder<T> loreName(String loreName) {
-            customEnchantment.setLoreName(loreName);
+            this.zenchantment.loreName = loreName;
             return this;
         }
 
         public String loreName() {
-            return customEnchantment.getLoreName();
+            return this.zenchantment.loreName;
         }
 
         public Builder<T> probability(float probability) {
-            customEnchantment.setProbability(probability);
+            this.zenchantment.probability = probability;
             return this;
         }
 
         public float probability() {
-            return customEnchantment.getProbability();
+            return this.zenchantment.probability;
         }
 
         public Builder<T> enchantable(Tool[] enchantable) {
-            customEnchantment.setEnchantable(enchantable);
+            this.zenchantment.enchantable = enchantable;
             return this;
         }
 
         public Tool[] enchantable() {
-            return customEnchantment.getEnchantable();
+            return this.zenchantment.enchantable;
         }
 
-        public Builder<T> conflicting(Class[] conflicting) {
-            customEnchantment.setConflicting(conflicting);
+        public Builder<T> conflicting(Class<?>[] conflicting) {
+            zenchantment.conflicting = conflicting;
             return this;
         }
 
-        public Class[] conflicting() {
-            return customEnchantment.getConflicting();
+        public Class<?>[] conflicting() {
+            return this.zenchantment.conflicting;
         }
 
         public Builder<T> description(String description) {
-            customEnchantment.setDescription(description);
+            this.zenchantment.description = description;
             return this;
         }
 
         public String description() {
-            return customEnchantment.getDescription();
+            return this.zenchantment.description;
         }
 
         public Builder<T> cooldown(int cooldown) {
-            customEnchantment.setCooldown(cooldown);
+            this.zenchantment.cooldown = cooldown;
             return this;
         }
 
         public int cooldown() {
-            return customEnchantment.getCooldown();
+            return this.zenchantment.cooldown;
         }
 
         public Builder<T> power(double power) {
-            customEnchantment.setPower(power);
+            this.zenchantment.power = power;
             return this;
         }
 
         public double power() {
-            return customEnchantment.getPower();
+            return zenchantment.power;
         }
 
         public Builder<T> handUse(Hand handUse) {
-            customEnchantment.setHandUse(handUse);
+            this.zenchantment.handUse = handUse;
             return this;
         }
 
         public Hand handUse() {
-            return customEnchantment.getHandUse();
+            return this.zenchantment.handUse;
         }
 
         public T build() {
-            return customEnchantment;
+            return this.zenchantment;
         }
     }
 }
