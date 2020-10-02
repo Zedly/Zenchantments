@@ -1,7 +1,6 @@
 package zedly.zenchantments.task;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import org.bukkit.Bukkit;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Zenchantments;
 
@@ -11,14 +10,13 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A runnable class that will execute all events of the specified frequency.
  */
 public class TaskRunner implements Runnable {
-    private final Set<Method> tasks;
-    private final Logger      logger;
+    private final Zenchantments plugin;
+    private final Set<Method>   tasks;
 
     /**
      * Initializes this EventRunner by collecting all methods with an
@@ -26,17 +24,17 @@ public class TaskRunner implements Runnable {
      *
      * @param frequency The frequency of annotation that we'll be running.
      */
-    public TaskRunner(Frequency frequency) {
-        this.logger = Bukkit.getLogger();
+    public TaskRunner(Zenchantments plugin, Frequency frequency) {
+        this.plugin = plugin;
         this.tasks = new HashSet<>();
 
-        new FastClasspathScanner(Zenchantments.class.getPackage().getName())
+        new FastClasspathScanner(plugin.getClass().getPackage().getName())
             .overrideClasspath(Storage.pluginPath)
             .matchClassesWithMethodAnnotation(
                 EffectTask.class,
                 (clazz, method) -> {
                     if (!Modifier.isStatic(method.getModifiers())) {
-                        this.logger.warning(
+                        this.plugin.getLogger().warning(
                             "EffectTask on non-static method '" + method.getName() + "' in class '" + clazz.getName() + "'."
                         );
                     }
@@ -66,7 +64,7 @@ public class TaskRunner implements Runnable {
             try {
                 method.invoke(null);
             } catch (IllegalAccessException | InvocationTargetException ex) {
-                this.logger.log(
+                this.plugin.getLogger().log(
                     Level.SEVERE,
                     "Could not invoke event '" + method.getName() + "' due to " + ex.getCause(),
                     ex

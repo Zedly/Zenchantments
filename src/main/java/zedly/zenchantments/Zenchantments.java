@@ -47,7 +47,12 @@ public class Zenchantments extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new Watcher(), this);
 
         for (Frequency frequency : Frequency.values()) {
-            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskRunner(frequency), 1, frequency.period);
+            this.getServer().getScheduler().scheduleSyncRepeatingTask(
+                this,
+                new TaskRunner(this, frequency),
+                1,
+                frequency.period
+            );
         }
 
         if (this.getConfig().getBoolean("forceUpdateDescriptions", false)) {
