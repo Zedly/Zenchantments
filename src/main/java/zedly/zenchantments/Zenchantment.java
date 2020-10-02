@@ -48,64 +48,68 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
     public abstract Builder<? extends Zenchantment> defaults();
 
     //region Getters and Setters
-    int getMaxLevel() {
-        return maxLevel;
+    public int getMaxLevel() {
+        return this.maxLevel;
+    }
+
+    public String getLoreName() {
+        return this.loreName;
+    }
+
+    public float getProbability() {
+        return this.probability;
+    }
+
+    public Tool[] getEnchantable() {
+        return this.enchantable;
+    }
+
+    public Class<?>[] getConflicting() {
+        return this.conflicting;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public int getCooldown() {
+        return this.cooldown;
+    }
+
+    public double getPower() {
+        return this.power;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     void setMaxLevel(int maxLevel) {
         this.maxLevel = maxLevel;
     }
 
-    String getLoreName() {
-        return loreName;
-    }
-
     void setLoreName(String loreName) {
         this.loreName = loreName;
-    }
-
-    float getProbability() {
-        return probability;
     }
 
     void setProbability(float probability) {
         this.probability = probability;
     }
 
-    Tool[] getEnchantable() {
-        return enchantable;
-    }
-
     void setEnchantable(Tool[] enchantable) {
         this.enchantable = enchantable;
-    }
-
-    Class<?>[] getConflicting() {
-        return conflicting;
     }
 
     void setConflicting(Class<?>[] conflicting) {
         this.conflicting = conflicting;
     }
 
-    String getDescription() {
-        return description;
-    }
-
     void setDescription(String description) {
         this.description = description;
     }
 
-    int getCooldown() {
-        return cooldown;
-    }
-
     void setCooldown(int cooldown) {
         this.cooldown = cooldown;
-    }
-
-    double getPower() {
-        return power;
     }
 
     void setPower(double power) {
@@ -118,10 +122,6 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
 
     void setHandUse(Hand handUse) {
         this.handUse = handUse;
-    }
-
-    int getId() {
-        return this.id;
     }
 
     void setId(int id) {
