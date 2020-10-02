@@ -2,27 +2,29 @@ package zedly.zenchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import zedly.zenchantments.api.Zenchantments;
 import zedly.zenchantments.command.ZenchantmentsCommandHandler;
 import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.bukkit.Material.LAVA;
 import static org.bukkit.Material.WATER;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
-public class ZenchantmentsPlugin extends JavaPlugin {
+public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @Override
     public void onEnable() {
         Storage.zenchantments = this;
@@ -106,6 +108,11 @@ public class ZenchantmentsPlugin extends JavaPlugin {
                 player.removeMetadata("ze.haste", this);
             }
         }
+    }
+
+    @Override
+    public Set<zedly.zenchantments.api.Zenchantment> getZenchantmentsForWorld(World world) {
+        return Collections.emptySet();
     }
 
     public void loadConfigs() {

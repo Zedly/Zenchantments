@@ -12,11 +12,11 @@ public interface Zenchantment {
 
     int getMaxLevel();
 
-    float getProbability();
-
     int getCooldown();
 
     double getPower();
+
+    float getProbability();
 
     Tool[] getEnchantable();
 

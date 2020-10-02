@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
 
-public abstract class Zenchantment implements Comparable<Zenchantment> {
+public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantment {
     private static final Pattern ENCH_LORE_PATTERN = Pattern.compile("§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)");
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
@@ -48,40 +48,54 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
     public abstract Builder<? extends Zenchantment> defaults();
 
     //region Getters and Setters
-    public int getMaxLevel() {
-        return this.maxLevel;
+    @Override
+    public int getId() {
+        return this.id;
     }
 
+    @Override
     public String getLoreName() {
         return this.loreName;
     }
 
-    public float getProbability() {
-        return this.probability;
-    }
-
-    public Tool[] getEnchantable() {
-        return this.enchantable;
-    }
-
-    public Class<?>[] getConflicting() {
-        return this.conflicting;
-    }
-
+    @Override
     public String getDescription() {
         return this.description;
     }
 
+    @Override
+    public int getMaxLevel() {
+        return this.maxLevel;
+    }
+
+    @Override
     public int getCooldown() {
         return this.cooldown;
     }
 
+    @Override
     public double getPower() {
         return this.power;
     }
 
-    public int getId() {
-        return this.id;
+    @Override
+    public float getProbability() {
+        return this.probability;
+    }
+
+    @Override
+    public Tool[] getEnchantable() {
+        return this.enchantable;
+    }
+
+    @Override
+    public Class<?>[] getConflicting() {
+        return this.conflicting;
+    }
+
+    @Override
+    public Hand getHandUse() {
+        return handUse;
     }
 
     void setMaxLevel(int maxLevel) {
@@ -114,10 +128,6 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
 
     void setPower(double power) {
         this.power = power;
-    }
-
-    Hand getHandUse() {
-        return handUse;
     }
 
     void setHandUse(Hand handUse) {
@@ -210,11 +220,6 @@ public abstract class Zenchantment implements Comparable<Zenchantment> {
         return false;
     }
     //endregion
-
-    @Override
-    public int compareTo(Zenchantment zenchantment) {
-        return this.loreName.compareTo(zenchantment.loreName);
-    }
 
     public static void applyForTool(Player player, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
         getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
