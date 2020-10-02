@@ -7,9 +7,6 @@ These include target-tracing arrows, lumber axes, block-breaking lasers, and muc
 These custom enchantments are obtained through the normal enchantment process and act like regular enchantments,
 capable of being combined and merged. The plugin requires no client-side mods or resource packs.
 A comprehensive configuration file enables fine-tuning of individual enchantments to tailor them to every server's gameplay.
-~~The plugin also adds several new arrows, which can be crafted through special recipes.
-These can do things like encase a target in spiderwebs, strike lightning onto the ground, and launch grenades.~~
-Elemental Arrows have been removed.
 
 ## Download
 
