@@ -1,6 +1,5 @@
 package zedly.zenchantments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -16,26 +15,26 @@ import static org.bukkit.event.EventPriority.MONITOR;
  * @author Dennis
  */
 public class GrindstoneMerge implements Listener {
-    private static final GrindstoneMerge INSTANCE = new GrindstoneMerge();
+    private final Zenchantments plugin;
 
-    public static GrindstoneMerge instance() {
-        return INSTANCE;
+    public GrindstoneMerge(Zenchantments plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = MONITOR)
-    public void onClicks(final InventoryClickEvent evt) {
-        if (evt.getInventory().getType() != InventoryType.GRINDSTONE) {
+    public void onClicks(final InventoryClickEvent event) {
+        if (event.getInventory().getType() != InventoryType.GRINDSTONE) {
             return;
         }
 
-        GrindstoneInventory inventory = (GrindstoneInventory) evt.getInventory();
-        World world = evt.getViewers().get(0).getWorld();
+        GrindstoneInventory inventory = (GrindstoneInventory) event.getInventory();
+        World world = event.getViewers().get(0).getWorld();
 
-        if (evt.getSlot() == 2) {
+        if (event.getSlot() == 2) {
             this.removeOutputEnchants(inventory, world);
         } else {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(
-                Storage.zenchantments,
+            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(
+                this.plugin,
                 () -> this.removeOutputEnchants(inventory, world),
                 0
             );

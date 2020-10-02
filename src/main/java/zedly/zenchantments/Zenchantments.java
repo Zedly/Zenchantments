@@ -42,7 +42,7 @@ public class Zenchantments extends JavaPlugin {
         this.getCommand("ench").setTabCompleter(new CommandProcessor.TabCompletion());
 
         this.getServer().getPluginManager().registerEvents(new AnvilMerge(), this);
-        this.getServer().getPluginManager().registerEvents(GrindstoneMerge.instance(), this);
+        this.getServer().getPluginManager().registerEvents(new GrindstoneMerge(this), this);
         this.getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);
         this.getServer().getPluginManager().registerEvents(new Watcher(), this);
 
