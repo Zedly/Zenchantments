@@ -79,9 +79,9 @@ public class UpdateConfig {
 				Zenchantment e = enchantments.get(s);
 
 				values.put("Probability", 0.0);
-				String tools = e.enchantable[0].getID();
+				String tools = e.enchantable[0].getId();
 				for (int i = 1; i < e.enchantable.length; i++) {
-					tools += ", " + e.enchantable[i].getID();
+					tools += ", " + e.enchantable[i].getId();
 				}
 				values.put("Tools", tools);
 				values.put("Name", e.loreName);
