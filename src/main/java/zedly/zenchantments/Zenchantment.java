@@ -31,7 +31,7 @@ import static org.bukkit.Material.ENCHANTED_BOOK;
 
 // CustomEnchantment is the defualt structure for any enchantment. Each enchantment below it will extend this class
 //      and will override any methods as neccecary in its behavior
-public abstract class CustomEnchantment implements Comparable<CustomEnchantment> {
+public abstract class Zenchantment implements Comparable<Zenchantment> {
 
     private static final Pattern ENCH_LORE_PATTERN = Pattern.compile("§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)");
 
@@ -53,7 +53,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     // Indicates that an enchantment has already been applied to an event, avoiding infinite regress
     protected boolean isCursed;
 
-    public abstract Builder<? extends CustomEnchantment> defaults();
+    public abstract Builder<? extends Zenchantment> defaults();
 
     //region Enchanment Events
     public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
@@ -219,13 +219,13 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     }
 
     @Override
-    public int compareTo(CustomEnchantment o) {
+    public int compareTo(Zenchantment o) {
         return this.getLoreName().compareTo(o.getLoreName());
     }
 
     //endregion
-    public static void applyForTool(Player player, ItemStack tool, BiPredicate<CustomEnchantment, Integer> action) {
-        getEnchants(tool, player.getWorld()).forEach((CustomEnchantment ench, Integer level) -> {
+    public static void applyForTool(Player player, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
+        getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
             if (!ench.used && Utilities.canUse(player, ench.id)) {
                 try {
                     ench.used = true;
@@ -248,12 +248,12 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
                     boolean hasEnch = false;
                     ItemMeta meta = stk.getItemMeta();
                     List<String> lore = new ArrayList<>();
-                    CustomEnchantment lastEnch = null;
+                    Zenchantment lastEnch = null;
 
                     List<String> tempLore = new LinkedList<>();
                     for (String str : meta.getLore()) {
 
-                        CustomEnchantment ench = null;
+                        Zenchantment ench = null;
                         int level = 0;
                         if (str.startsWith(ChatColor.GRAY + "")) {
                             String stripString = ChatColor.stripColor(str);
@@ -312,32 +312,32 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     }
 
     // Returns a mapping of custom enchantments and their level on a given tool
-    public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world,
-            List<String> outExtraLore) {
+    public static LinkedHashMap<Zenchantment, Integer> getEnchants(ItemStack stk, World world,
+                                                                   List<String> outExtraLore) {
         return getEnchants(stk, false, world, outExtraLore);
     }
 
     // Returns a mapping of custom enchantments and their level on a given tool
-    public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
-            World world) {
+    public static LinkedHashMap<Zenchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+                                                                   World world) {
         return getEnchants(stk, acceptBooks, world, null);
     }
 
     // Returns a mapping of custom enchantments and their level on a given tool
-    public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, World world) {
+    public static LinkedHashMap<Zenchantment, Integer> getEnchants(ItemStack stk, World world) {
         return getEnchants(stk, false, world, null);
     }
 
-    public static LinkedHashMap<CustomEnchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
-            World world,
-            List<String> outExtraLore) {
-        Map<CustomEnchantment, Integer> map = new LinkedHashMap<>();
+    public static LinkedHashMap<Zenchantment, Integer> getEnchants(ItemStack stk, boolean acceptBooks,
+                                                                   World world,
+                                                                   List<String> outExtraLore) {
+        Map<Zenchantment, Integer> map = new LinkedHashMap<>();
         if (stk != null && (acceptBooks || stk.getType() != Material.ENCHANTED_BOOK)) {
             if (stk.hasItemMeta()) {
                 if (stk.getItemMeta().hasLore()) {
                     List<String> lore = stk.getItemMeta().getLore();
                     for (String raw : lore) {
-                        Map.Entry<CustomEnchantment, Integer> ench = getEnchant(raw, world);
+                        Map.Entry<Zenchantment, Integer> ench = getEnchant(raw, world);
                         if (ench != null) {
                             map.put(ench.getKey(), ench.getValue());
                         } else {
@@ -349,10 +349,10 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
                 }
             }
         }
-        LinkedHashMap<CustomEnchantment, Integer> finalMap = new LinkedHashMap<>();
+        LinkedHashMap<Zenchantment, Integer> finalMap = new LinkedHashMap<>();
         for (int id : new int[]{Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID}) {
-            CustomEnchantment e = null;
-            for (CustomEnchantment en : Config.allEnchants) {
+            Zenchantment e = null;
+            for (Zenchantment en : Config.allEnchants) {
                 if (en.getId() == id) {
                     e = en;
                 }
@@ -367,7 +367,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     }
 
     // Returns the custom enchantment from the lore name
-    private static Map.Entry<CustomEnchantment, Integer> getEnchant(String raw, World world) {
+    private static Map.Entry<Zenchantment, Integer> getEnchant(String raw, World world) {
         Matcher m = ENCH_LORE_PATTERN.matcher(raw);
         if (!m.find()) {
             return null;
@@ -377,7 +377,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         enchName = ChatColor.stripColor(enchName);
         int enchLvl = m.group(2) == null || m.group(2).equals("") ? 1 : Utilities.getNumber(m.group(2));
 
-        CustomEnchantment ench = Config.get(world).enchantFromString(enchName);
+        Zenchantment ench = Config.get(world).enchantFromString(enchName);
         if (ench == null) {
             return null;
         }
@@ -467,7 +467,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         setEnchantment(stk, this, level, world);
     }
 
-    public static void setEnchantment(ItemStack stk, CustomEnchantment ench, int level, World world) {
+    public static void setEnchantment(ItemStack stk, Zenchantment ench, int level, World world) {
         if (stk == null) {
             return;
         }
@@ -477,7 +477,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         boolean customEnch = false;
         if (meta.hasLore()) {
             for (String loreStr : meta.getLore()) {
-                Map.Entry<CustomEnchantment, Integer> enchEntry = getEnchant(loreStr, world);
+                Map.Entry<Zenchantment, Integer> enchEntry = getEnchant(loreStr, world);
                 if (enchEntry == null && !isDescription(loreStr)) {
                     normalLore.add(loreStr);
                 } else if (enchEntry != null && enchEntry.getKey() != ench) {
@@ -560,7 +560,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         stk.setItemMeta(isBook ? bookMeta : itemMeta);
     }
 
-    protected static final class Builder<T extends CustomEnchantment> {
+    protected static final class Builder<T extends Zenchantment> {
 
         private final T customEnchantment;
 

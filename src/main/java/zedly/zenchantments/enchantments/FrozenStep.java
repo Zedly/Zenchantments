@@ -1,12 +1,9 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Levelled;
-import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -17,7 +14,7 @@ import static org.bukkit.Material.*;
 import static zedly.zenchantments.Utilities.selfRemovingArea;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
-public class FrozenStep extends CustomEnchantment {
+public class FrozenStep extends Zenchantment {
 
 	// Blocks spawned from the Water Walker enchantment
 	public static final Map<Location, Long> frozenLocs = new HashMap<>();

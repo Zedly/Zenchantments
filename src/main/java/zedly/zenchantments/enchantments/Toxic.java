@@ -6,7 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.task.EffectTask;
@@ -25,7 +25,7 @@ import static org.bukkit.potion.PotionEffectType.HUNGER;
 import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Toxic extends CustomEnchantment {
+public class Toxic extends Zenchantment {
 
 	// Players that have been affected by the Toxic enchantment who cannot currently eat
 	public static final Map<Player, Integer> hungerPlayers = new HashMap<>();

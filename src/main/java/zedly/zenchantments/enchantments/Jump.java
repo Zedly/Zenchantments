@@ -1,7 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -9,7 +9,7 @@ import zedly.zenchantments.enums.Tool;
 import static org.bukkit.potion.PotionEffectType.JUMP;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
-public class Jump extends CustomEnchantment {
+public class Jump extends Zenchantment {
 
 	public static final int ID = 30;
 

@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.enchanted.LevelArrow;
@@ -14,7 +14,7 @@ import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.*;
 
-public class Level extends CustomEnchantment {
+public class Level extends Zenchantment {
 
     public static final int ID = 32;
 

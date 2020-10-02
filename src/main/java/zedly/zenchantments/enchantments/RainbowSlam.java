@@ -7,7 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class RainbowSlam extends CustomEnchantment {
+public class RainbowSlam extends Zenchantment {
 
 	// Entities affected by Rainbow Slam, protected against fall damage in order to deal damage as the attacker
 	public static final Set<Entity> rainbowSlamNoFallEntities = new HashSet<>();

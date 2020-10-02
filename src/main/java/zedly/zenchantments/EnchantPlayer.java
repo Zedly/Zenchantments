@@ -63,14 +63,14 @@ public class EnchantPlayer {
 
 	// Disables all enchantments for the player
 	public void disableAll() {
-		for (CustomEnchantment enchant : Config.get(player.getWorld()).getEnchants()) {
+		for (Zenchantment enchant : Config.get(player.getWorld()).getEnchants()) {
 			player.setMetadata("ze." + enchant.getId(), new FixedMetadataValue(Storage.zenchantments, true));
 		}
 	}
 
 	// Enables all enchantments for the player
 	public void enableAll() {
-		for (CustomEnchantment enchant : Config.get(player.getWorld()).getEnchants()) {
+		for (Zenchantment enchant : Config.get(player.getWorld()).getEnchants()) {
 			player.setMetadata("ze." + enchant.getId(), new FixedMetadataValue(Storage.zenchantments, false));
 		}
 	}

@@ -1,23 +1,21 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+
 import org.bukkit.entity.Player;
 
 import static zedly.zenchantments.enums.Tool.*;
 
-public class Grab extends CustomEnchantment {
+public class Grab extends Zenchantment {
 
 	// Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
 	public static final Map<Block, Player> grabLocs     = new HashMap<>();

@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.compatibility.EnumStorage;
@@ -22,7 +22,7 @@ import org.bukkit.entity.Item;
 
 import static zedly.zenchantments.enums.Tool.*;
 
-public class Fire extends CustomEnchantment {
+public class Fire extends Zenchantment {
 
     private static final int MAX_BLOCKS = 256;
 

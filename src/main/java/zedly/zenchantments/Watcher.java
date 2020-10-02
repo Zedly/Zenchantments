@@ -51,7 +51,7 @@ public class Watcher implements Listener {
         ItemStack item = event.getItem();
         Laser laser = null;
 
-        for (CustomEnchantment enchantment : config.getEnchants()) {
+        for (Zenchantment enchantment : config.getEnchants()) {
             if (enchantment.getClass().equals(Laser.class)) {
                 laser = (Laser) enchantment;
             }
@@ -61,13 +61,13 @@ public class Watcher implements Listener {
             return;
         }
 
-        if (!CustomEnchantment.getEnchants(item, config.getWorld()).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
+        if (!Zenchantment.getEnchants(item, config.getWorld()).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
             return;
         }
 
         event.setCancelled(true);
 
-        int level = CustomEnchantment.getEnchants(item, config.getWorld()).get(laser);
+        int level = Zenchantment.getEnchants(item, config.getWorld()).get(laser);
         int range = 6 + (int) Math.round(level * laser.power * 3);
 
         Block block = event.getBlock();
@@ -212,14 +212,14 @@ public class Watcher implements Listener {
         if (event.getMessage().startsWith("/enchant ")) {
             Player player = event.getPlayer();
             PlayerInventory inventory = player.getInventory();
-            boolean customEnch = !CustomEnchantment.getEnchants(
+            boolean customEnch = !Zenchantment.getEnchants(
                 inventory.getItemInMainHand(),
                 player.getWorld()
             ).isEmpty();
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(
                 Storage.zenchantments,
-                () -> CustomEnchantment.setGlow(inventory.getItemInMainHand(), customEnch, player.getWorld()),
+                () -> Zenchantment.setGlow(inventory.getItemInMainHand(), customEnch, player.getWorld()),
                 0
             );
         }
@@ -238,23 +238,23 @@ public class Watcher implements Listener {
         }
 
         Config config = Config.get(event.getEnchantBlock().getWorld());
-        Map<CustomEnchantment, Integer> existingEnchants = CustomEnchantment.getEnchants(
+        Map<Zenchantment, Integer> existingEnchants = Zenchantment.getEnchants(
             event.getItem(),
             event.getEnchantBlock().getWorld()
         );
-        Map<CustomEnchantment, Integer> addedEnchants = new HashMap<>();
+        Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
         ItemStack itemStack = event.getItem();
 
         for (int i = 1; i <= config.getMaxEnchants() - existingEnchants.size(); i++) {
             float totalChance = 0;
-            List<CustomEnchantment> mainPool = new ArrayList<>(config.getEnchants());
-            Set<CustomEnchantment> validPool = new HashSet<>();
+            List<Zenchantment> mainPool = new ArrayList<>(config.getEnchants());
+            Set<Zenchantment> validPool = new HashSet<>();
 
             Collections.shuffle(mainPool);
 
-            for (CustomEnchantment enchantment : mainPool) {
+            for (Zenchantment enchantment : mainPool) {
                 boolean conflicts = false;
-                for (CustomEnchantment addedEnchant : addedEnchants.keySet()) {
+                for (Zenchantment addedEnchant : addedEnchants.keySet()) {
                     if (ArrayUtils.contains(enchantment.conflicting, addedEnchant.getClass())
                         || addedEnchants.containsKey(enchantment)
                         || addedEnchant.probability <= 0
@@ -274,7 +274,7 @@ public class Watcher implements Listener {
 
             double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), i);
             float running = 0;
-            for (CustomEnchantment ench : validPool) {
+            for (Zenchantment ench : validPool) {
                 running += ench.probability;
                 if (running > decision) {
                     int level = Utilities.getEnchantLevel(ench.maxLevel, event.getExpLevelCost());
@@ -284,7 +284,7 @@ public class Watcher implements Listener {
             }
         }
 
-        for (Map.Entry<CustomEnchantment, Integer> entry : addedEnchants.entrySet()) {
+        for (Map.Entry<Zenchantment, Integer> entry : addedEnchants.entrySet()) {
             entry.getKey().setEnchantment(itemStack, entry.getValue(), config.getWorld());
         }
 
@@ -302,7 +302,7 @@ public class Watcher implements Listener {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(
             Storage.zenchantments,
-            () -> CustomEnchantment.setGlow(itemStack, !addedEnchants.isEmpty(), config.getWorld()),
+            () -> Zenchantment.setGlow(itemStack, !addedEnchants.isEmpty(), config.getWorld()),
             0
         );
     }
@@ -329,7 +329,7 @@ public class Watcher implements Listener {
         }
 
         Player player = (Player) event.getWhoClicked();
-        for (CustomEnchantment enchantment : CustomEnchantment.getEnchants(event.getCurrentItem(), player.getWorld()).keySet()) {
+        for (Zenchantment enchantment : Zenchantment.getEnchants(event.getCurrentItem(), player.getWorld()).keySet()) {
             if (enchantment.getClass().equals(Jump.class) || enchantment.getClass().equals(Meador.class)) {
                 player.removePotionEffect(PotionEffectType.JUMP);
             }

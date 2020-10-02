@@ -8,7 +8,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
@@ -18,7 +18,7 @@ import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
-public class Spread extends CustomEnchantment {
+public class Spread extends Zenchantment {
 
 	public static final int ID = 57;
 

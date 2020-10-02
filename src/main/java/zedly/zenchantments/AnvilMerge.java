@@ -106,13 +106,13 @@ public class AnvilMerge implements Listener {
         }
 
         List<String> normalLeftLore = new ArrayList<>();
-        Map<CustomEnchantment, Integer> leftEnchantments = CustomEnchantment.getEnchants(
+        Map<Zenchantment, Integer> leftEnchantments = Zenchantment.getEnchants(
             leftItem,
             true,
             config.getWorld(),
             normalLeftLore
         );
-        Map<CustomEnchantment, Integer> rightEnchantments = CustomEnchantment.getEnchants(
+        Map<Zenchantment, Integer> rightEnchantments = Zenchantment.getEnchants(
             rightItem,
             true,
             config.getWorld()
@@ -131,13 +131,13 @@ public class AnvilMerge implements Listener {
         int leftUnbreakingLevel = leftEnch.getOrDefault(Enchantment.DURABILITY, -1);
         int rightUnbreakingLevel = rightEnch.getOrDefault(Enchantment.DURABILITY, -1);
 
-        for (CustomEnchantment enchantment : leftEnchantments.keySet()) {
+        for (Zenchantment enchantment : leftEnchantments.keySet()) {
             if (enchantment.getId() == Unrepairable.ID) {
                 return new ItemStack(Material.AIR);
             }
         }
 
-        for (CustomEnchantment enchantment : rightEnchantments.keySet()) {
+        for (Zenchantment enchantment : rightEnchantments.keySet()) {
             if (enchantment.getId() == Unrepairable.ID) {
                 return new ItemStack(Material.AIR);
             }
@@ -150,11 +150,11 @@ public class AnvilMerge implements Listener {
         EnchantmentPool pool = new EnchantmentPool(oldOutItem, config.getMaxEnchants());
         pool.addAll(leftEnchantments);
 
-        List<Entry<CustomEnchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());
+        List<Entry<Zenchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());
         Collections.shuffle(rightEnchantmentList);
         pool.addAll(rightEnchantmentList);
 
-        Map<CustomEnchantment, Integer> outEnchantments = pool.getEnchantmentMap();
+        Map<Zenchantment, Integer> outEnchantments = pool.getEnchantmentMap();
 
         ItemStack newOutItem = new ItemStack(oldOutItem);
 
@@ -163,7 +163,7 @@ public class AnvilMerge implements Listener {
         meta.setLore(null);
         newOutItem.setItemMeta(meta);
 
-        for (Entry<CustomEnchantment, Integer> enchantEntry : outEnchantments.entrySet()) {
+        for (Entry<Zenchantment, Integer> enchantEntry : outEnchantments.entrySet()) {
             enchantEntry.getKey().setEnchantment(newOutItem, enchantEntry.getValue(), config.getWorld());
         }
 
@@ -187,14 +187,14 @@ public class AnvilMerge implements Listener {
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
 
-        CustomEnchantment.setGlow(newOutItem, !outEnchantments.isEmpty(), config.getWorld());
+        Zenchantment.setGlow(newOutItem, !outEnchantments.isEmpty(), config.getWorld());
 
         return newOutItem;
     }
 
     private static class EnchantmentPool {
-        private final Map<CustomEnchantment, Integer> enchantPool = new HashMap<>();
-        private final ItemStack                       itemStack;
+        private final Map<Zenchantment, Integer> enchantPool = new HashMap<>();
+        private final ItemStack                  itemStack;
         private final int                             maxCapacity;
 
         public EnchantmentPool(ItemStack itemStack, int maxCapacity) {
@@ -202,24 +202,24 @@ public class AnvilMerge implements Listener {
             this.maxCapacity = maxCapacity;
         }
 
-        public void addAll(Map<CustomEnchantment, Integer> enchantsToAdd) {
+        public void addAll(Map<Zenchantment, Integer> enchantsToAdd) {
             this.addAll(enchantsToAdd.entrySet());
         }
 
-        public void addAll(Collection<Entry<CustomEnchantment, Integer>> enchantsToAdd) {
-            for (Entry<CustomEnchantment, Integer> enchantEntry : enchantsToAdd) {
+        public void addAll(Collection<Entry<Zenchantment, Integer>> enchantsToAdd) {
+            for (Entry<Zenchantment, Integer> enchantEntry : enchantsToAdd) {
                 this.addEnchant(enchantEntry);
             }
         }
 
-        private void addEnchant(Entry<CustomEnchantment, Integer> enchantEntry) {
-            CustomEnchantment ench = enchantEntry.getKey();
+        private void addEnchant(Entry<Zenchantment, Integer> enchantEntry) {
+            Zenchantment ench = enchantEntry.getKey();
 
             if (this.itemStack.getType() != Material.ENCHANTED_BOOK && !ench.validMaterial(this.itemStack)) {
                 return;
             }
 
-            for (CustomEnchantment enchantment : this.enchantPool.keySet()) {
+            for (Zenchantment enchantment : this.enchantPool.keySet()) {
                 if (ArrayUtils.contains(ench.conflicting, enchantment.getClass())) {
                     return;
                 }
@@ -238,7 +238,7 @@ public class AnvilMerge implements Listener {
             }
         }
 
-        public Map<CustomEnchantment, Integer> getEnchantmentMap() {
+        public Map<Zenchantment, Integer> getEnchantmentMap() {
             return this.enchantPool;
         }
     }

@@ -2,13 +2,13 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.ROD;
 
-public class ShortCast extends CustomEnchantment {
+public class ShortCast extends Zenchantment {
 
 	public static final int ID = 51;
 

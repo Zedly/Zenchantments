@@ -1,11 +1,10 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -14,7 +13,7 @@ import zedly.zenchantments.enums.Tool;
 import static org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
-public class Weight extends CustomEnchantment {
+public class Weight extends Zenchantment {
 
     public static final int ID = 67;
 

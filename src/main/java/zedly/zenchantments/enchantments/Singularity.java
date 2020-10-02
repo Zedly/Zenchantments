@@ -6,7 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.arrows.EnchantedArrow;
@@ -21,7 +21,7 @@ import java.util.Map;
 import static org.bukkit.GameMode.CREATIVE;
 import static zedly.zenchantments.enums.Tool.BOW;
 
-public class Singularity extends CustomEnchantment {
+public class Singularity extends Zenchantment {
 
 	// Locations of black holes from the singularity enchantment and whether or not they are attracting or repelling
 	public static final Map<Location, Boolean> blackholes = new HashMap<>();

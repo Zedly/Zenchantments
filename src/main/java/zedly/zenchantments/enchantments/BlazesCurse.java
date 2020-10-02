@@ -6,7 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -15,7 +15,7 @@ import static org.bukkit.Material.*;
 import static org.bukkit.block.BlockFace.DOWN;
 import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
-public class BlazesCurse extends CustomEnchantment {
+public class BlazesCurse extends Zenchantment {
 
 	private static final float   submergeDamage = 1.5f;
 	private static final float   rainDamage     = .5f;

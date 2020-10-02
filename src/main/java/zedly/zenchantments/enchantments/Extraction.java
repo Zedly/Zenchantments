@@ -5,7 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -15,7 +15,7 @@ import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
-public class Extraction extends CustomEnchantment {
+public class Extraction extends Zenchantment {
 
 	public static final int ID = 12;
 

@@ -1,14 +1,14 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static org.bukkit.Material.SLIME_BLOCK;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
-public class Bounce extends CustomEnchantment {
+public class Bounce extends Zenchantment {
 
 	public static final int ID = 7;
 

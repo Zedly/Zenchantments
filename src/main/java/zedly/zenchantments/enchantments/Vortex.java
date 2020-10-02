@@ -1,13 +1,12 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.VortexArrow;
@@ -20,7 +19,7 @@ import java.util.Map;
 import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Vortex extends CustomEnchantment {
+public class Vortex extends Zenchantment {
 
     // Locations where Vortex has been used on a block and are waiting for the Watcher to handle their teleportation
     public static final Map<Block, Player> vortexLocs = new HashMap<>();

@@ -2,7 +2,7 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static zedly.zenchantments.enums.Tool.AXE;
 
-public class Lumber extends CustomEnchantment {
+public class Lumber extends Zenchantment {
 
 	private static final int MAX_BLOCKS = 200;
 

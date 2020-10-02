@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.task.EffectTask;
@@ -23,7 +23,7 @@ import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
-public class Anthropomorphism extends CustomEnchantment {
+public class Anthropomorphism extends Zenchantment {
     // The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
 
     public static final Map<FallingBlock, Pair<Double, Vector>> attackBlocks = new HashMap<>();

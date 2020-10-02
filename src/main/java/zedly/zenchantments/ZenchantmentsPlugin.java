@@ -118,8 +118,8 @@ public class ZenchantmentsPlugin extends JavaPlugin {
         for (Player player : this.getServer().getOnlinePlayers()) {
             PlayerInventory inventory = player.getInventory();
             for (ItemStack itemStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
-                CustomEnchantment.setEnchantment(itemStack, null, 0, player.getWorld());
-                CustomEnchantment.updateToNewFormat(itemStack, player.getWorld());
+                Zenchantment.setEnchantment(itemStack, null, 0, player.getWorld());
+                Zenchantment.updateToNewFormat(itemStack, player.getWorld());
             }
         }
     }

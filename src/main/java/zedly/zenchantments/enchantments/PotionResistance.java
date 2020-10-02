@@ -4,7 +4,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static zedly.zenchantments.enums.Tool.*;
 
-public class PotionResistance extends CustomEnchantment {
+public class PotionResistance extends Zenchantment {
 
 	public static final int ID = 45;
 
@@ -36,8 +36,8 @@ public class PotionResistance extends CustomEnchantment {
 			if (ent instanceof Player) {
 				int effect = 0;
 				for (ItemStack stk : ((Player) ent).getInventory().getArmorContents()) {
-					Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(stk, ent.getWorld());
-					for (CustomEnchantment e : map.keySet()) {
+					Map<Zenchantment, Integer> map = Zenchantment.getEnchants(stk, ent.getWorld());
+					for (Zenchantment e : map.keySet()) {
 						if (e.equals(this)) {
 							effect += map.get(e);
 						}

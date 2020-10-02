@@ -3,13 +3,13 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
-public class Combustion extends CustomEnchantment {
+public class Combustion extends Zenchantment {
 
 	public static final int ID = 9;
 

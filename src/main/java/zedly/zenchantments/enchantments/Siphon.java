@@ -6,7 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.SiphonArrow;
 import zedly.zenchantments.enums.Hand;
@@ -15,7 +15,7 @@ import zedly.zenchantments.enums.Tool;
 import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Siphon extends CustomEnchantment {
+public class Siphon extends Zenchantment {
 
     public static final int ID = 53;
 

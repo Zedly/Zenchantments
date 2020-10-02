@@ -52,7 +52,7 @@ public class CommandProcessor {
                         }
                         // TODO: Fix out of bounds error below
                     } else if (args.length > 3) {
-                        CustomEnchantment ench = config.enchantFromString(args[args.length - 2]);
+                        Zenchantment ench = config.enchantFromString(args[args.length - 2]);
                         Enchantment vEnch = Enchantment.getByName(args[args.length - 2]);
                         Material mat = Material.matchMaterial(args[2]);
 
@@ -70,7 +70,7 @@ public class CommandProcessor {
                                 results.add(i + "");
                             }
                         } else {
-                            for (Map.Entry<String, CustomEnchantment> e : config.getSimpleMappings()) {
+                            for (Map.Entry<String, Zenchantment> e : config.getSimpleMappings()) {
                                 if (e.getKey().startsWith(args[args.length - 1]) && (stack.getType() == BOOK
                                         || stack.getType() == ENCHANTED_BOOK
                                         || e.getValue().validMaterial(mat))) {
@@ -97,7 +97,7 @@ public class CommandProcessor {
                 default:
 
                     if (args.length == 1) {
-                        for (Map.Entry<String, CustomEnchantment> ench : config.getSimpleMappings()) {
+                        for (Map.Entry<String, Zenchantment> ench : config.getSimpleMappings()) {
                             if (ench.getKey().startsWith(args[0]) && (stack.getType() == BOOK
                                     || stack.getType() == ENCHANTED_BOOK || ench.getValue().validMaterial(
                                     stack.getType())
@@ -106,7 +106,7 @@ public class CommandProcessor {
                             }
                         }
                     } else if (args.length == 2) {
-                        CustomEnchantment ench = config.enchantFromString(args[0]);
+                        Zenchantment ench = config.enchantFromString(args[0]);
                         if (ench != null) {
                             for (int i = 1; i <= ench.getMaxLevel(); i++) {
                                 results.add(i + "");
@@ -120,8 +120,8 @@ public class CommandProcessor {
     }
 
     // Adds or removes the given enchantment of the given level to the item stack
-    static ItemStack addEnchantments(Config config, Player player, CustomEnchantment enchantment, ItemStack stack,
-            String levelStr, boolean isHeld) {
+    static ItemStack addEnchantments(Config config, Player player, Zenchantment enchantment, ItemStack stack,
+                                     String levelStr, boolean isHeld) {
         if (config == null) {
             return stack;
         }
@@ -220,7 +220,7 @@ public class CommandProcessor {
                 return true;
             }
 
-            Map<CustomEnchantment, Integer> enchantsToAdd = new HashMap<>();
+            Map<Zenchantment, Integer> enchantsToAdd = new HashMap<>();
             Map<Enchantment, Integer> vanillaEnchantsToAdd = new HashMap<>();
             ItemStack stk = new ItemStack(mat);
 
@@ -231,7 +231,7 @@ public class CommandProcessor {
                     level = Math.max(1, scanner.nextInt());
                 }
 
-                CustomEnchantment ench = config.enchantFromString(enchantName);
+                Zenchantment ench = config.enchantFromString(enchantName);
                 Enchantment vEnch = Enchantment.getByName(enchantName);
 
                 if (ench != null) {
@@ -257,7 +257,7 @@ public class CommandProcessor {
                     = new StringBuilder(Storage.logo + "Gave " + ChatColor.DARK_AQUA + recipient.getName()
                             + ChatColor.AQUA + " the enchantments ");
 
-            for (Map.Entry<CustomEnchantment, Integer> ench : enchantsToAdd.entrySet()) {
+            for (Map.Entry<Zenchantment, Integer> ench : enchantsToAdd.entrySet()) {
                 ench.getKey().setEnchantment(stk, ench.getValue(), config.getWorld());
                 msgBldr.append(ChatColor.stripColor(ench.getKey().getLoreName()));
                 msgBldr.append(", ");
@@ -288,7 +288,7 @@ public class CommandProcessor {
         }
         player.sendMessage(Storage.logo + "Enchantment Types:");
 
-        for (CustomEnchantment ench : new TreeSet<>(config.getEnchants())) {
+        for (Zenchantment ench : new TreeSet<>(config.getEnchants())) {
             if (ench.validMaterial(stack)) {
                 player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + ench.getLoreName());
             }
@@ -303,14 +303,14 @@ public class CommandProcessor {
             return true;
         }
         if (args.length > 1) {
-            CustomEnchantment ench = config.enchantFromString(args[1]);
+            Zenchantment ench = config.enchantFromString(args[1]);
             if (ench != null) {
                 player.sendMessage(Storage.logo + ench.loreName + ": "
                         + (player.isDisabled(ench.getId()) ? ChatColor.RED + "**Disabled** " : "")
                         + ChatColor.AQUA + ench.description);
             }
         } else {
-            Set<CustomEnchantment> enchs = CustomEnchantment.getEnchants(
+            Set<Zenchantment> enchs = Zenchantment.getEnchants(
                     player.getPlayer().getInventory().getItemInMainHand(), true, config.getWorld()).keySet();
             if (enchs.isEmpty()) {
                 player.sendMessage(Storage.logo + "There are no custom enchantments on this tool!");
@@ -318,7 +318,7 @@ public class CommandProcessor {
                 player.sendMessage(Storage.logo + "Enchantment Info:");
             }
 
-            for (CustomEnchantment ench : enchs) {
+            for (Zenchantment ench : enchs) {
                 player.sendMessage(ChatColor.DARK_AQUA + ench.loreName + ": "
                         + (player.isDisabled(ench.getId()) ? ChatColor.RED + "**Disabled** " : "")
                         + ChatColor.AQUA + ench.description);
@@ -334,7 +334,7 @@ public class CommandProcessor {
             return true;
         }
         if (args.length > 1) {
-            CustomEnchantment ench = config.enchantFromString(args[1]);
+            Zenchantment ench = config.enchantFromString(args[1]);
             if (ench != null) {
                 player.disable(ench.getId());
                 player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA
@@ -360,7 +360,7 @@ public class CommandProcessor {
             return true;
         }
         if (args.length > 1) {
-            CustomEnchantment ench = config.enchantFromString(args[1]);
+            Zenchantment ench = config.enchantFromString(args[1]);
             if (ench != null) {
                 player.enable(ench.getId());
                 player.sendMessage(Storage.logo + "The enchantment " + ChatColor.DARK_AQUA
@@ -386,7 +386,7 @@ public class CommandProcessor {
             return true;
         }
 
-        CustomEnchantment ench = config.enchantFromString(label);
+        Zenchantment ench = config.enchantFromString(label);
         if (ench != null) {
             player.getPlayer().getInventory().setItemInMainHand(
                     addEnchantments(Config.get(player.getPlayer().getWorld()),

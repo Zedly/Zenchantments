@@ -1,13 +1,12 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -18,7 +17,7 @@ import java.util.Map;
 
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
-public class Reveal extends CustomEnchantment {
+public class Reveal extends Zenchantment {
 
 	// Blocks made to glow by the Reveal enchantment
 	public static final Map<Block, Integer> glowingBlocks = new HashMap<>();

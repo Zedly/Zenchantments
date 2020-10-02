@@ -2,14 +2,14 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
-public class Speed extends CustomEnchantment {
+public class Speed extends Zenchantment {
 
 	public static final int ID = 55;
 

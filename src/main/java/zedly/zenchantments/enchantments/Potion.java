@@ -4,7 +4,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.PotionArrow;
 import zedly.zenchantments.enums.Hand;
@@ -12,7 +12,7 @@ import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
-public class Potion extends CustomEnchantment {
+public class Potion extends Zenchantment {
 
 	public static final int ID = 44;
 	PotionEffectType[] potions;

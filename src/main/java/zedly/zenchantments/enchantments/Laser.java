@@ -10,7 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.EnchantPlayer;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -21,7 +21,7 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import static zedly.zenchantments.enums.Tool.AXE;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 
-public class Laser extends CustomEnchantment {
+public class Laser extends Zenchantment {
 
     // Time at which a later enchantment was fired; this is used to prevent double firing when clicking an entity
     // public static final Map<Player, Long> laserTimes = new HashMap<>();

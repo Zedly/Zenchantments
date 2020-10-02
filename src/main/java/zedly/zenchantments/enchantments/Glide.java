@@ -5,7 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.bukkit.Material.AIR;
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
-public class Glide extends CustomEnchantment {
+public class Glide extends Zenchantment {
 
     // The players using glide and their most recent Y coordinate
     public static final Map<Player, Double> sneakGlide = new HashMap<>();
@@ -73,7 +73,7 @@ public class Glide extends CustomEnchantment {
             ItemStack[] s = player.getInventory().getArmorContents();
             for (int i = 0; i < 4; i++) {
                 if (s[i] != null) {
-                    Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(s[i], player.getWorld());
+                    Map<Zenchantment, Integer> map = Zenchantment.getEnchants(s[i], player.getWorld());
                     if (map.containsKey(this)) {
                         Utilities.addUnbreaking(player, s[i], 1);
                     }

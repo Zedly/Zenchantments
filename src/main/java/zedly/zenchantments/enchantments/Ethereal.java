@@ -2,7 +2,7 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static zedly.zenchantments.enums.Tool.ALL;
 
-public class Ethereal extends CustomEnchantment {
+public class Ethereal extends Zenchantment {
 
 	public static final int ID = 70;
 
@@ -48,7 +48,7 @@ public class Ethereal extends CustomEnchantment {
 	public boolean onScan(Player player, int level, boolean usedHand) {
 		for (ItemStack s : player.getInventory().getArmorContents()) {
 			if (s != null) {
-				Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(s, player.getWorld());
+				Map<Zenchantment, Integer> map = Zenchantment.getEnchants(s, player.getWorld());
 				if (map.containsKey(zedly.zenchantments.enchantments.Ethereal.this)) {
 					Utilities.setDamage(s, 0);
 				}

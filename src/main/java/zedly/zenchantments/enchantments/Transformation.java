@@ -8,17 +8,16 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
-import static org.bukkit.Material.AIR;
 import org.bukkit.entity.EntityType;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Transformation extends CustomEnchantment {
+public class Transformation extends Zenchantment {
 
     public static final int ID = 64;
 

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.enchanted.ReaperArrow;
@@ -17,7 +17,7 @@ import static org.bukkit.potion.PotionEffectType.BLINDNESS;
 import static zedly.zenchantments.enums.Tool.BOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Reaper extends CustomEnchantment {
+public class Reaper extends Zenchantment {
 
 	public static final int ID = 49;
 

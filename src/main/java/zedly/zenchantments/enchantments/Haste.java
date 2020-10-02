@@ -2,7 +2,7 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -11,7 +11,7 @@ import zedly.zenchantments.enums.Tool;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.enums.Tool.*;
 
-public class Haste extends CustomEnchantment {
+public class Haste extends Zenchantment {
 
 	public static final int ID = 27;
 

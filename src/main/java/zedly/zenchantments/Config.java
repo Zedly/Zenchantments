@@ -19,13 +19,13 @@ import java.util.*;
 //      to automatically update the config files if they are old
 public class Config {
 
-    public static final Map<World, Config> CONFIGS = new HashMap<>(); // Map of all world configs on the current server
-    public static final HashSet<CustomEnchantment> allEnchants = new HashSet<>();
+    public static final Map<World, Config>    CONFIGS     = new HashMap<>(); // Map of all world configs on the current server
+    public static final HashSet<Zenchantment> allEnchants = new HashSet<>();
 
-    private final Set<CustomEnchantment> worldEnchants;     // Set of active Custom Enchantments
-    private final Map<String, CustomEnchantment> nameToEnch;
-    private final Map<Integer, CustomEnchantment> idToEnch;
-    private final double enchantRarity;                        // Overall rarity of obtaining enchantments
+    private final Set<Zenchantment>          worldEnchants;     // Set of active Custom Enchantments
+    private final Map<String, Zenchantment>  nameToEnch;
+    private final Map<Integer, Zenchantment> idToEnch;
+    private final double                     enchantRarity;                        // Overall rarity of obtaining enchantments
     private final int maxEnchants;                             // Max number of Custom Enchantments on a tool
     private final int shredDrops;                              // The setting (all, block, none) for shred drops
     private final boolean explosionBlockBreak;                 // Determines whether enchantment explosions cause world damage
@@ -37,10 +37,10 @@ public class Config {
     private final ChatColor curseColor;
 
     // Constructs a new config object
-    public Config(Set<CustomEnchantment> worldEnchants, double enchantRarity,
-            int maxEnchants, int shredDrops, boolean explosionBlockBreak,
-            boolean descriptionLore, ChatColor descriptionColor, ChatColor enchantmentColor,
-            ChatColor curseColor, boolean enchantGlow, World world) {
+    public Config(Set<Zenchantment> worldEnchants, double enchantRarity,
+                  int maxEnchants, int shredDrops, boolean explosionBlockBreak,
+                  boolean descriptionLore, ChatColor descriptionColor, ChatColor enchantmentColor,
+                  ChatColor curseColor, boolean enchantGlow, World world) {
         this.worldEnchants = worldEnchants;
         this.enchantRarity = enchantRarity;
         this.maxEnchants = maxEnchants;
@@ -51,12 +51,12 @@ public class Config {
         this.world = world;
 
         this.nameToEnch = new HashMap<>();
-        for (CustomEnchantment ench : this.worldEnchants) {
+        for (Zenchantment ench : this.worldEnchants) {
             nameToEnch.put(ChatColor.stripColor(ench.getLoreName().toLowerCase().replace(" ", "")), ench);
         }
 
         this.idToEnch = new HashMap<>();
-        for (CustomEnchantment ench : this.worldEnchants) {
+        for (Zenchantment ench : this.worldEnchants) {
             idToEnch.put(ench.getId(), ench);
         }
 
@@ -68,7 +68,7 @@ public class Config {
     }
 
     // Returns a mapping of enchantment names to custom enchantment objects
-    public Set<CustomEnchantment> getEnchants() {
+    public Set<Zenchantment> getEnchants() {
         return worldEnchants;
     }
 
@@ -122,7 +122,7 @@ public class Config {
         return world;
     }
 
-    public CustomEnchantment enchantFromString(String enchName) {
+    public Zenchantment enchantFromString(String enchName) {
         return nameToEnch.get(ChatColor.stripColor(enchName.toLowerCase()));
     }
 
@@ -130,11 +130,11 @@ public class Config {
         return new ArrayList<>(nameToEnch.keySet());
     }
 
-    public Set<Map.Entry<String, CustomEnchantment>> getSimpleMappings() {
+    public Set<Map.Entry<String, Zenchantment>> getSimpleMappings() {
         return nameToEnch.entrySet();
     }
 
-    public CustomEnchantment enchantFromID(int id) {
+    public Zenchantment enchantFromID(int id) {
         return idToEnch.get(id);
     }
 
@@ -214,7 +214,7 @@ public class Config {
                     shredDrops = 0;
             }
             //Load CustomEnchantment Classes
-            Set<CustomEnchantment> enchantments = new HashSet<>();
+            Set<Zenchantment> enchantments = new HashSet<>();
             Map<String, LinkedHashMap<String, Object>> configInfo = new HashMap<>();
             for (Map<String, LinkedHashMap<String, Object>> part
                     : (List<Map<String, LinkedHashMap<String, Object>>>) yamlConfig.get("enchantments")) {
@@ -223,15 +223,15 @@ public class Config {
                 }
             }
 
-            List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+            List<Class<? extends Zenchantment>> customEnchantments = new ArrayList<>();
 
-            new FastClasspathScanner(CustomEnchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
-                    .matchSubclassesOf(CustomEnchantment.class, customEnchantments::add).scan();
+            new FastClasspathScanner(Zenchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
+                    .matchSubclassesOf(Zenchantment.class, customEnchantments::add).scan();
 
-            for (Class<? extends CustomEnchantment> cl : customEnchantments) {
+            for (Class<? extends Zenchantment> cl : customEnchantments) {
                 try {
 
-                    CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();
+                    Zenchantment.Builder<? extends Zenchantment> ench = cl.newInstance().defaults();
                     if (configInfo.containsKey(ench.loreName())) {
                         LinkedHashMap<String, Object> data = configInfo.get(ench.loreName());
                         ench.probability((float) (double) data.get("Probability"));

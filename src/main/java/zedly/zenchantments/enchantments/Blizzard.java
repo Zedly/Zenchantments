@@ -3,7 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.BlizzardArrow;
 import zedly.zenchantments.enums.Hand;
@@ -11,7 +11,7 @@ import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
-public class Blizzard extends CustomEnchantment {
+public class Blizzard extends Zenchantment {
 
 	public static final int ID = 6;
 

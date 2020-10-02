@@ -2,14 +2,14 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
-public class Saturation extends CustomEnchantment {
+public class Saturation extends Zenchantment {
 
 	public static final int ID = 50;
 

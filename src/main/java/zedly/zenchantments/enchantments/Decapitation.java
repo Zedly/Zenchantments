@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -15,7 +15,7 @@ import zedly.zenchantments.enums.Tool;
 import static org.bukkit.entity.EntityType.*;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Decapitation extends CustomEnchantment {
+public class Decapitation extends Zenchantment {
 
 	private static final int BASE_PLAYER_DROP_CHANCE = 150;
 	private static final int BASE_MOB_DROP_CHANCE    = 150;

@@ -1,12 +1,12 @@
 package zedly.zenchantments.enchantments;
 
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.ALL;
 
-public class Unrepairable extends CustomEnchantment {
+public class Unrepairable extends Zenchantment {
 
 	public static final int ID = 73;
 

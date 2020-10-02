@@ -3,7 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -11,7 +11,7 @@ import zedly.zenchantments.enums.Tool;
 import static org.bukkit.potion.PotionEffectType.SLOW;
 import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class IceAspect extends CustomEnchantment {
+public class IceAspect extends Zenchantment {
 
 	public static final int ID = 29;
 

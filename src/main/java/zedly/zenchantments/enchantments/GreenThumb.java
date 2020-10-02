@@ -6,7 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.enums.Hand;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.LEGGINGS;
 
-public class GreenThumb extends CustomEnchantment {
+public class GreenThumb extends Zenchantment {
 
 	public static final int ID = 24;
 
@@ -82,8 +82,8 @@ public class GreenThumb extends CustomEnchantment {
 								ItemStack[] s = player.getInventory().getArmorContents();
 								for (int i = 0; i < 4; i++) {
 									if (s[i] != null) {
-										Map<CustomEnchantment, Integer> map =
-											CustomEnchantment.getEnchants(s[i], player.getWorld());
+										Map<Zenchantment, Integer> map =
+											Zenchantment.getEnchants(s[i], player.getWorld());
 										if (map.containsKey(this)) {
 											Utilities.addUnbreaking(player, s[i], 1);
 										}

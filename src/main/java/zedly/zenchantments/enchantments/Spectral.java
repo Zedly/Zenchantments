@@ -7,7 +7,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.*;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
@@ -20,7 +20,7 @@ import java.util.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import static zedly.zenchantments.enums.Tool.SHOVEL;
 
-public class Spectral extends CustomEnchantment {
+public class Spectral extends Zenchantment {
 
     private static final int MAX_BLOCKS = 1024;
 

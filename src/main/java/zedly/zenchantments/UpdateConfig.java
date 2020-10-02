@@ -49,17 +49,17 @@ public class UpdateConfig {
 		}
 
 
-		Map<String, CustomEnchantment> enchantments = new HashMap<>();
-		List<Class<? extends CustomEnchantment>> customEnchantments = new ArrayList<>();
+		Map<String, Zenchantment> enchantments = new HashMap<>();
+		List<Class<? extends Zenchantment>> customEnchantments = new ArrayList<>();
 
-		new FastClasspathScanner(CustomEnchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
-			.matchSubclassesOf(CustomEnchantment.class, customEnchantments::add)
+		new FastClasspathScanner(Zenchantment.class.getPackage().getName()).overrideClasspath(Storage.pluginPath)
+			.matchSubclassesOf(Zenchantment.class, customEnchantments::add)
 			.scan();
 
 
-		for (Class<? extends CustomEnchantment> cl : customEnchantments) {
+		for (Class<? extends Zenchantment> cl : customEnchantments) {
 			try {
-				CustomEnchantment.Builder<? extends CustomEnchantment> ench = cl.newInstance().defaults();
+				Zenchantment.Builder<? extends Zenchantment> ench = cl.newInstance().defaults();
 				enchantments.put(ench.loreName(), ench.build());
 			} catch (IllegalAccessException | ClassCastException | InstantiationException ex) {
 				System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
@@ -76,7 +76,7 @@ public class UpdateConfig {
 			if (!names.contains(s)) {
 				Map<String, LinkedHashMap<String, Object>> ench = new HashMap<>();
 				LinkedHashMap<String, Object> values = new LinkedHashMap<>();
-				CustomEnchantment e = enchantments.get(s);
+				Zenchantment e = enchantments.get(s);
 
 				values.put("Probability", 0.0);
 				String tools = e.enchantable[0].getID();

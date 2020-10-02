@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.enums.Hand;
 import zedly.zenchantments.enums.Tool;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static zedly.zenchantments.enums.Tool.ALL;
 
-public class Bind extends CustomEnchantment {
+public class Bind extends Zenchantment {
 
 	public static final int ID = 4;
 
@@ -43,7 +43,7 @@ public class Bind extends CustomEnchantment {
 		final ItemStack[] contents = player.getInventory().getContents().clone();
 		final List<ItemStack> removed = new ArrayList<>();
 		for (int i = 0; i < contents.length; i++) {
-			if (!CustomEnchantment.getEnchants(contents[i], config.getWorld()).containsKey(this)) {
+			if (!Zenchantment.getEnchants(contents[i], config.getWorld()).containsKey(this)) {
 				contents[i] = null;
 			} else {
 				removed.add(contents[i]);

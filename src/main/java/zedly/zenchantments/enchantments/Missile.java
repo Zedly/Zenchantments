@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.admin.MissileArrow;
@@ -13,7 +13,7 @@ import zedly.zenchantments.enums.Tool;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
-public class Missile extends CustomEnchantment {
+public class Missile extends Zenchantment {
 
 	public static final int ID = 71;
 

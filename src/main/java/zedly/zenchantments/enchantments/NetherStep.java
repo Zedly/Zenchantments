@@ -3,7 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.enums.Hand;
@@ -17,7 +17,7 @@ import static org.bukkit.Material.*;
 import static zedly.zenchantments.Utilities.selfRemovingArea;
 import static zedly.zenchantments.enums.Tool.BOOTS;
 
-public class NetherStep extends CustomEnchantment {
+public class NetherStep extends Zenchantment {
 
 	// Blocks spawned from the NatherStep enchantment
 	public static final Map<Location, Long> netherstepLocs = new HashMap<>();

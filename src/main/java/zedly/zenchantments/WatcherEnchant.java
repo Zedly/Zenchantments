@@ -58,7 +58,7 @@ public class WatcherEnchant implements Listener {
         Player player = event.getPlayer();
         boolean usedHand = Utilities.isMainHand(HAND);
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onBlockBreak(event, level, usedHand)
@@ -73,7 +73,7 @@ public class WatcherEnchant implements Listener {
         Player player = event.getPlayer();
         boolean usedHand = Utilities.isMainHand(HAND);
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onBlockBreak(event, level, usedHand)
@@ -88,7 +88,7 @@ public class WatcherEnchant implements Listener {
             Player player = event.getPlayer();
             boolean isMainHand = Utilities.isMainHand(event.getHand());
             for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
-                CustomEnchantment.applyForTool(
+                Zenchantment.applyForTool(
                     player,
                     usedStack,
                     (ench, level) -> ench.onBlockInteract(event, level, isMainHand)
@@ -105,7 +105,7 @@ public class WatcherEnchant implements Listener {
             Player player = event.getPlayer();
             boolean isMainHand = Utilities.isMainHand(event.getHand());
             for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
-                CustomEnchantment.applyForTool(
+                Zenchantment.applyForTool(
                     player,
                     usedStack,
                     (ench, level) -> ench.onBlockInteractInteractable(event, level, isMainHand)
@@ -125,7 +125,7 @@ public class WatcherEnchant implements Listener {
         Player player = event.getPlayer();
         boolean usedHand = Utilities.isMainHand(HAND);
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onEntityInteract(event, level, usedHand)
@@ -146,7 +146,7 @@ public class WatcherEnchant implements Listener {
             ? EquipmentSlot.OFF_HAND
             : EquipmentSlot.HAND;
         boolean usedHand = Utilities.isMainHand(slot);
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onEntityKill(event, level, usedHand)
@@ -164,7 +164,7 @@ public class WatcherEnchant implements Listener {
             boolean usedHand = Utilities.isMainHand(HAND);
             if (event.getEntity() instanceof LivingEntity) {
                 for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, usedHand)) {
-                    CustomEnchantment.applyForTool(
+                    Zenchantment.applyForTool(
                         player,
                         usedStack,
                         (ench, level) -> ench.onEntityHit(event, level, usedHand)
@@ -177,7 +177,7 @@ public class WatcherEnchant implements Listener {
             Player player = (Player) event.getEntity();
             // Only check main hand for some reason.
             for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
-                CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> ench.onBeingHit(event, level, true));
+                Zenchantment.applyForTool(player, usedStack, (ench, level) -> ench.onBeingHit(event, level, true));
             }
         }
     }
@@ -190,7 +190,7 @@ public class WatcherEnchant implements Listener {
 
         Player player = (Player) event.getEntity();
         for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, false)) {
-            CustomEnchantment.applyForTool(
+            Zenchantment.applyForTool(
                 player,
                 usedStack,
                 (ench, level) -> ench.onEntityDamage(event, level, false)
@@ -208,7 +208,7 @@ public class WatcherEnchant implements Listener {
             main != Tool.ROD && off == Tool.ROD ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onPlayerFish(event, level, true)
@@ -223,7 +223,7 @@ public class WatcherEnchant implements Listener {
 
         Player player = (Player) event.getEntity();
         for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
-            CustomEnchantment.applyForTool(player, usedStack, (ench, level) -> ench.onHungerChange(event, level, true));
+            Zenchantment.applyForTool(player, usedStack, (ench, level) -> ench.onHungerChange(event, level, true));
         }
     }
 
@@ -241,7 +241,7 @@ public class WatcherEnchant implements Listener {
             main != Tool.SHEAR && off == Tool.SHEAR ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onShear(event, level, true)
@@ -262,7 +262,7 @@ public class WatcherEnchant implements Listener {
             main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onEntityShootBow(event, level, true)
@@ -283,7 +283,7 @@ public class WatcherEnchant implements Listener {
                 // Only apply one enchantment, which in practice is Potion Resistance.
                 // This will always skip execution of the Lambda and return false after a Lambda returned true once
                 // Yes, I am bored
-                CustomEnchantment.applyForTool(
+                Zenchantment.applyForTool(
                     player,
                     usedStack,
                     (ench, level) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, false), false)
@@ -308,7 +308,7 @@ public class WatcherEnchant implements Listener {
             main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             Utilities.usedStack(player, usedHand),
             (ench, level) -> ench.onProjectileLaunch(event, level, usedHand)
@@ -321,7 +321,7 @@ public class WatcherEnchant implements Listener {
         PlayerInventory inventory = player.getInventory();
 
         for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
-            CustomEnchantment.applyForTool(
+            Zenchantment.applyForTool(
                 player,
                 usedStack,
                 (ench, level) -> ench.onPlayerDeath(event, level, true)
@@ -339,7 +339,7 @@ public class WatcherEnchant implements Listener {
         PlayerInventory inventory = player.getInventory();
 
         for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
-            CustomEnchantment.applyForTool(
+            Zenchantment.applyForTool(
                 player,
                 usedStack,
                 (ench, level) -> ench.onCombust(event, level, true)
@@ -362,7 +362,7 @@ public class WatcherEnchant implements Listener {
     private static void feedEnchCache(Player player, Consumer<Supplier<Boolean>> consumer) {
         PlayerInventory inventory = player.getInventory();
         for (ItemStack itemStack : inventory.getArmorContents()) {
-            CustomEnchantment.applyForTool(
+            Zenchantment.applyForTool(
                 player,
                 itemStack,
                 (ench, level) -> {
@@ -383,7 +383,7 @@ public class WatcherEnchant implements Listener {
             );
         }
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             inventory.getItemInMainHand(),
             (ench, level) -> {
@@ -403,7 +403,7 @@ public class WatcherEnchant implements Listener {
             }
         );
 
-        CustomEnchantment.applyForTool(
+        Zenchantment.applyForTool(
             player,
             inventory.getItemInOffHand(),
             (ench, level) -> {

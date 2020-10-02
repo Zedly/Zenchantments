@@ -18,7 +18,7 @@ import static org.bukkit.Material.*;
 import static zedly.zenchantments.enums.Tool.PICKAXE;
 import static zedly.zenchantments.enums.Tool.SHOVEL;
 
-public class Shred extends CustomEnchantment {
+public class Shred extends Zenchantment {
 
     public static final int ID = 52;
 

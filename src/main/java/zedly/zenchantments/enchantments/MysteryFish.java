@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerFishEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
@@ -19,7 +19,7 @@ import java.util.Map;
 import static org.bukkit.entity.EntityType.SQUID;
 import static zedly.zenchantments.enums.Tool.ROD;
 
-public class MysteryFish extends CustomEnchantment {
+public class MysteryFish extends Zenchantment {
 
 	// Guardians from the Mystery Fish enchantment and the player they should move towards
 	public static final Map<Entity, Player> guardianMove = new HashMap<>();

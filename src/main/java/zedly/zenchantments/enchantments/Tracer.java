@@ -3,7 +3,7 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.enchanted.TracerArrow;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static zedly.zenchantments.enums.Tool.BOW;
 
-public class Tracer extends CustomEnchantment {
+public class Tracer extends Zenchantment {
 
 	// Map of tracer arrows to their expected accuracy
 	public static final Map<Arrow, Integer> tracer = new HashMap<>();
