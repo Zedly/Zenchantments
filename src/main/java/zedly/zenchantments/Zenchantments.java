@@ -51,7 +51,7 @@ public class Zenchantments extends JavaPlugin {
                 this,
                 new TaskRunner(this, frequency),
                 1,
-                frequency.period
+                frequency.getPeriod()
             );
         }
 
