@@ -90,14 +90,14 @@ public class ZenchantmentsPlugin extends JavaPlugin {
 
         for (Player player : this.getServer().getOnlinePlayers()) {
             if (player.hasMetadata("ze.speed")) {
-                player.removeMetadata("ze.speed", Storage.zenchantments);
+                player.removeMetadata("ze.speed", this);
                 player.setFlySpeed(0.1f);
                 player.setWalkSpeed(0.2f);
             }
 
             if (player.hasMetadata("ze.haste")) {
                 player.removePotionEffect(FAST_DIGGING);
-                player.removeMetadata("ze.haste", Storage.zenchantments);
+                player.removeMetadata("ze.haste", this);
             }
         }
     }
