@@ -1,6 +1,7 @@
 package zedly.zenchantments.command;
 
 import org.bukkit.command.CommandSender;
+import zedly.zenchantments.Storage;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Collections;
@@ -13,7 +14,13 @@ public class ReloadCommand extends ZenchantmentsCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("zenchantments.command.reload")) {
+            sender.sendMessage(Storage.logo + "You do not have permission to do this!");
+            return;
+        }
 
+        this.plugin.loadConfigs();
+        sender.sendMessage(Storage.logo + "Reloaded Zenchantments.");
     }
 
     @Override
