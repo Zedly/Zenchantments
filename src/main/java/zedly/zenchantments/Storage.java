@@ -8,6 +8,7 @@ import zedly.zenchantments.compatibility.NMS_1_16_R1;
 
 import java.util.*;
 
+@Deprecated
 public class Storage {
 
     // Instance of the Zenchantments plugin to be used by the rest of the classes
