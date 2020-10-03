@@ -8,17 +8,13 @@ import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 // This is used to manage players on the server. It allows for easy access in enabling/disabling enchantments
 //      and for adding cooldowns for different enchantments as they are used
 public class PlayerData {
-    public static final Set<PlayerData> PLAYERS = new HashSet<>();   // Collection of all players on the server
-
+    private final Map<Integer, Integer> enchantCooldown = new HashMap<>(); // Enchantment names mapped to their remaining cooldown
     private final ZenchantmentsPlugin   plugin;
-    private final Map<Integer, Integer> enchantCooldown; // Enchantment names mapped to their remaining cooldown
 
     private Player player;          // Reference to the actual player object
 
@@ -26,8 +22,6 @@ public class PlayerData {
     public PlayerData(ZenchantmentsPlugin plugin, Player player) {
         this.plugin = plugin;
         this.player = player;
-        this.enchantCooldown = new HashMap<>();
-        PLAYERS.add(this);
     }
 
     public void setPlayer(Player player) {
@@ -84,13 +78,8 @@ public class PlayerData {
     }
 
     // Returns the EnchantPlayer object associated with the given Player
+    @Deprecated
     public static PlayerData matchPlayer(Player player) {
-        for (PlayerData players : PLAYERS) {
-            if (players.player.equals(player)) {
-                return players;
-            }
-        }
-
-        return new PlayerData(null, player);
+        return null;
     }
 }

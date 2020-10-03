@@ -30,7 +30,7 @@ public class InfoCommand extends ZenchantmentsCommand {
         }
 
         Config config = Config.get(player.getWorld());
-        PlayerData playerData = PlayerData.matchPlayer(player);
+        PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
 
         if (args.length > 0) {
             Zenchantment zenchantment = config.enchantFromString(args[0]);

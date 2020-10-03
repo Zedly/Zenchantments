@@ -3,7 +3,10 @@ package zedly.zenchantments.command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.*;
+import zedly.zenchantments.Config;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.player.PlayerData;
 
 import java.util.Collections;
@@ -39,7 +42,7 @@ public class DisableCommand extends ZenchantmentsCommand {
             return;
         }
 
-        PlayerData playerData = PlayerData.matchPlayer(player);
+        PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
         Zenchantment zenchantment = Config.get(player.getWorld()).enchantFromString(args[0]);
 
         if (zenchantment != null) {
