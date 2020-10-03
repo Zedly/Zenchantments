@@ -16,6 +16,7 @@ import zedly.zenchantments.event.listener.GeneralListener;
 import zedly.zenchantments.event.listener.ZenchantmentListener;
 import zedly.zenchantments.event.listener.merge.AnvilMergeListener;
 import zedly.zenchantments.event.listener.merge.GrindstoneMergeListener;
+import zedly.zenchantments.player.PlayerDataProvider;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
@@ -29,6 +30,8 @@ import static org.bukkit.Material.WATER;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
 public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
+    private final PlayerDataProvider playerDataProvider = new PlayerDataProvider(this);
+
     @Override
     public void onEnable() {
         Storage.zenchantments = this;
@@ -117,6 +120,10 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @Override
     public Set<zedly.zenchantments.api.Zenchantment> getZenchantmentsForWorld(World world) {
         return Collections.emptySet();
+    }
+
+    public PlayerDataProvider getPlayerDataProvider() {
+        return this.playerDataProvider;
     }
 
     public void loadConfigs() {

@@ -5,6 +5,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,14 +17,21 @@ import java.util.Set;
 public class PlayerData {
     public static final Set<PlayerData> PLAYERS = new HashSet<>();   // Collection of all players on the server
 
-    private final Player                player;          // Reference to the actual player object
+    private final ZenchantmentsPlugin   plugin;
     private final Map<Integer, Integer> enchantCooldown; // Enchantment names mapped to their remaining cooldown
 
+    private Player player;          // Reference to the actual player object
+
     // Creates a new enchant player objects and reads the player config file for their information
-    public PlayerData(Player player) {
+    public PlayerData(ZenchantmentsPlugin plugin, Player player) {
+        this.plugin = plugin;
         this.player = player;
         this.enchantCooldown = new HashMap<>();
         PLAYERS.add(this);
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     // Decrements the players cooldowns by one tick
@@ -83,6 +91,6 @@ public class PlayerData {
             }
         }
 
-        return new PlayerData(player);
+        return new PlayerData(null, player);
     }
 }
