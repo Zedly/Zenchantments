@@ -12,6 +12,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import zedly.zenchantments.api.Zenchantments;
 import zedly.zenchantments.command.ZenchantmentsCommandHandler;
 import zedly.zenchantments.enchantments.*;
+import zedly.zenchantments.event.listener.GeneralListener;
+import zedly.zenchantments.event.listener.ZenchantmentListener;
+import zedly.zenchantments.event.listener.merge.AnvilMergeListener;
+import zedly.zenchantments.event.listener.merge.GrindstoneMergeListener;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
@@ -49,10 +53,10 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         enchCommand.setExecutor(commandHandler);
         enchCommand.setTabCompleter(commandHandler);
 
-        this.getServer().getPluginManager().registerEvents(new AnvilMerge(this), this);
-        this.getServer().getPluginManager().registerEvents(new GrindstoneMerge(this), this);
-        this.getServer().getPluginManager().registerEvents(WatcherEnchant.instance(), this);
-        this.getServer().getPluginManager().registerEvents(new Watcher(), this);
+        this.getServer().getPluginManager().registerEvents(new GeneralListener(), this);
+        this.getServer().getPluginManager().registerEvents(ZenchantmentListener.instance(), this);
+        this.getServer().getPluginManager().registerEvents(new AnvilMergeListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new GrindstoneMergeListener(this), this);
 
         for (Frequency frequency : Frequency.values()) {
             this.getServer().getScheduler().scheduleSyncRepeatingTask(
@@ -72,7 +76,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
-                    searchFaces[i++] = new int[]{x, y, z};
+                    searchFaces[i++] = new int[] {x, y, z};
                 }
             }
         }

@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.event.listener.merge;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
@@ -13,6 +13,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import zedly.zenchantments.Config;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.enchantments.Unrepairable;
 
 import java.util.*;
@@ -24,10 +27,10 @@ import static org.bukkit.event.EventPriority.MONITOR;
 // This class manages the combination of enchantments in an anvil. It takes into account conflicting enchantments, 
 //      the max number of enchantments per tool, and the enchantment's max level. It shuffles the results every time
 //      so that the player can find the combination they desire when there are conflicting or too many enchantment
-public class AnvilMerge implements Listener {
+public class AnvilMergeListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
-    public AnvilMerge(ZenchantmentsPlugin plugin) {
+    public AnvilMergeListener(ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -220,7 +223,7 @@ public class AnvilMerge implements Listener {
             }
 
             for (Zenchantment enchantment : this.enchantPool.keySet()) {
-                if (ArrayUtils.contains(ench.conflicting, enchantment.getClass())) {
+                if (ArrayUtils.contains(ench.getConflicting(), enchantment.getClass())) {
                     return;
                 }
             }
@@ -228,7 +231,7 @@ public class AnvilMerge implements Listener {
             if (this.enchantPool.containsKey(ench)) {
                 int leftLevel = this.enchantPool.get(ench);
                 int rightLevel = enchantEntry.getValue();
-                if (leftLevel == rightLevel && leftLevel < ench.maxLevel) {
+                if (leftLevel == rightLevel && leftLevel < ench.getMaxLevel()) {
                     this.enchantPool.put(ench, leftLevel + 1);
                 } else if (rightLevel > leftLevel) {
                     this.enchantPool.put(ench, rightLevel);

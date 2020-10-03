@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.event.listener.merge;
 
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -8,16 +8,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.ItemStack;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import static org.bukkit.event.EventPriority.MONITOR;
 
 /**
  * @author Dennis
  */
-public class GrindstoneMerge implements Listener {
+public class GrindstoneMergeListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
-    public GrindstoneMerge(ZenchantmentsPlugin plugin) {
+    public GrindstoneMergeListener(ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 

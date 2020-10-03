@@ -11,6 +11,7 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.event.BlockShredEvent;
+import zedly.zenchantments.event.listener.ZenchantmentListener;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -74,7 +75,7 @@ public class Shred extends Zenchantment {
                     } else if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(relativeBlock.getType())) {
                         relativeBlock.setType(STONE);
                     }
-                    WatcherEnchant.instance().onBlockShred(relativeEvent);
+                    ZenchantmentListener.instance().onBlockShred(relativeEvent);
                     if (relativeEvent.isCancelled()) {
                         return;
                     }

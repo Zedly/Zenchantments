@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.event.listener;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -28,6 +28,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
+import zedly.zenchantments.Config;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Utilities;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.enchantments.*;
 
 import java.util.*;
@@ -38,7 +42,7 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 // This contains extraneous watcher methods that are not relevant to arrows or enchantments
-public class Watcher implements Listener {
+public class GeneralListener implements Listener {
     // Fires a laser effect from dispensers if a tool with the Laser enchantment is dispensed
     @EventHandler
     public void onBlockDispense(BlockDispenseEvent event) {
@@ -68,7 +72,7 @@ public class Watcher implements Listener {
         event.setCancelled(true);
 
         int level = Zenchantment.getEnchants(item, config.getWorld()).get(laser);
-        int range = 6 + (int) Math.round(level * laser.power * 3);
+        int range = 6 + (int) Math.round(level * laser.getPower() * 3);
 
         Block block = event.getBlock();
         Block relativeBlock = block.getRelative(((Directional) block.getState().getData()).getFacing(), range);
@@ -255,9 +259,9 @@ public class Watcher implements Listener {
             for (Zenchantment enchantment : mainPool) {
                 boolean conflicts = false;
                 for (Zenchantment addedEnchant : addedEnchants.keySet()) {
-                    if (ArrayUtils.contains(enchantment.conflicting, addedEnchant.getClass())
+                    if (ArrayUtils.contains(enchantment.getConflicting(), addedEnchant.getClass())
                         || addedEnchants.containsKey(enchantment)
-                        || addedEnchant.probability <= 0
+                        || addedEnchant.getProbability() <= 0
                     ) {
                         conflicts = true;
                         break;
@@ -268,16 +272,16 @@ public class Watcher implements Listener {
                     && (event.getItem().getType() == BOOK || enchantment.validMaterial(event.getItem().getType()))
                 ) {
                     validPool.add(enchantment);
-                    totalChance += enchantment.probability;
+                    totalChance += enchantment.getProbability();
                 }
             }
 
             double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), i);
             float running = 0;
             for (Zenchantment ench : validPool) {
-                running += ench.probability;
+                running += ench.getProbability();
                 if (running > decision) {
-                    int level = Utilities.getEnchantLevel(ench.maxLevel, event.getExpLevelCost());
+                    int level = Utilities.getEnchantLevel(ench.getMaxLevel(), event.getExpLevelCost());
                     addedEnchants.put(ench, level);
                     break;
                 }

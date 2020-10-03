@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.event.listener;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -18,6 +18,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
+import zedly.zenchantments.*;
 import zedly.zenchantments.event.BlockShredEvent;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
@@ -38,15 +39,15 @@ import static zedly.zenchantments.Tool.BOW;
 //      ensures that the item is not an enchantment book, and calls each enchantment's method if the player can
 //      perform a certain action and the cooldown time is 0. It will add the given enchantment's cooldown to the player
 //      if the action performed is successful, determined by each enchantment in their respective classes.
-public class WatcherEnchant implements Listener {
-    private static final WatcherEnchant             INSTANCE = new WatcherEnchant();
-    private static final HighFrequencyRunnableCache CACHE    = new HighFrequencyRunnableCache(WatcherEnchant::feedEnchCache, 5);
+public class ZenchantmentListener implements Listener {
+    private static final ZenchantmentListener       INSTANCE = new ZenchantmentListener();
+    private static final HighFrequencyRunnableCache CACHE    = new HighFrequencyRunnableCache(ZenchantmentListener::feedEnchCache, 5);
 
-    public static WatcherEnchant instance() {
+    public static ZenchantmentListener instance() {
         return INSTANCE;
     }
 
-    private WatcherEnchant() {
+    private ZenchantmentListener() {
     }
 
     @EventHandler
@@ -116,7 +117,7 @@ public class WatcherEnchant implements Listener {
 
     @EventHandler
     public void onEntityInteract(PlayerInteractEntityEvent event) {
-        EntityType[] badEntities = new EntityType[]{HORSE, EntityType.ARMOR_STAND, EntityType.ITEM_FRAME, VILLAGER};
+        EntityType[] badEntities = new EntityType[] {HORSE, EntityType.ARMOR_STAND, EntityType.ITEM_FRAME, VILLAGER};
 
         if (ArrayUtils.contains(badEntities, event.getRightClicked().getType())) {
             return;
@@ -372,7 +373,7 @@ public class WatcherEnchant implements Listener {
                         }
 
                         if (ench.onFastScan(player, level, true)) {
-                            EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                            EnchantPlayer.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
                         }
 
                         return true;
@@ -393,7 +394,7 @@ public class WatcherEnchant implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, true)) {
-                        EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
                     }
 
                     return true;
@@ -413,7 +414,7 @@ public class WatcherEnchant implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, false)) {
-                        EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                        EnchantPlayer.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
                     }
 
                     return true;
