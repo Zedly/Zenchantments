@@ -31,8 +31,8 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     private static final Pattern ENCH_LORE_PATTERN = Pattern.compile("§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)");
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
-    protected              int                  id;
 
+    protected int        id;
     protected int        maxLevel;
     protected String     loreName;
     protected float      probability;
@@ -180,7 +180,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     //endregion
 
     public static void applyForTool(Player player, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
-        getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
+        Zenchantment.getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
             if (!ench.used && Utilities.canUse(player, ench.id)) {
                 try {
                     ench.used = true;
@@ -269,7 +269,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         itemStack.setItemMeta(meta);
 
         if (hasEnch) {
-            setGlow(itemStack, true, world);
+            Zenchantment.setGlow(itemStack, true, world);
         }
 
         return itemStack;
@@ -281,7 +281,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         World world,
         List<String> outExtraLore
     ) {
-        return getEnchants(itemStack, false, world, outExtraLore);
+        return Zenchantment.getEnchants(itemStack, false, world, outExtraLore);
     }
 
     // Returns a mapping of custom enchantments and their level on a given tool
@@ -290,12 +290,12 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         boolean acceptBooks,
         World world
     ) {
-        return getEnchants(itemStack, acceptBooks, world, null);
+        return Zenchantment.getEnchants(itemStack, acceptBooks, world, null);
     }
 
     // Returns a mapping of custom enchantments and their level on a given tool
     public static Map<Zenchantment, Integer> getEnchants(ItemStack itemStack, World world) {
-        return getEnchants(itemStack, false, world, null);
+        return Zenchantment.getEnchants(itemStack, false, world, null);
     }
 
     public static Map<Zenchantment, Integer> getEnchants(
@@ -324,7 +324,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
 
         Map<Zenchantment, Integer> finalMap = new LinkedHashMap<>();
 
-        for (int id : new int[]{Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID}) {
+        for (int id : new int[] {Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID}) {
             Zenchantment zenchantment = null;
 
             for (Zenchantment ench : Config.allEnchants) {
@@ -451,7 +451,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     }
 
     public void setEnchantment(ItemStack stack, int level, World world) {
-        setEnchantment(stack, this, level, world);
+        Zenchantment.setEnchantment(stack, this, level, world);
     }
 
     public static void setEnchantment(ItemStack stack, Zenchantment ench, int level, World world) {
@@ -464,8 +464,8 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         boolean isCustomEnchantment = false;
         if (meta.hasLore()) {
             for (String loreStr : meta.getLore()) {
-                Map.Entry<Zenchantment, Integer> enchEntry = getEnchant(loreStr, world);
-                if (enchEntry == null && !isDescription(loreStr)) {
+                Map.Entry<Zenchantment, Integer> enchEntry = Zenchantment.getEnchant(loreStr, world);
+                if (enchEntry == null && !Zenchantment.isDescription(loreStr)) {
                     normalLore.add(loreStr);
                 } else if (enchEntry != null && enchEntry.getKey() != ench) {
                     isCustomEnchantment = true;
@@ -489,7 +489,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
             stack.setType(ENCHANTED_BOOK);
         }
 
-        setGlow(stack, isCustomEnchantment, world);
+        Zenchantment.setGlow(stack, isCustomEnchantment, world);
     }
 
     public static void setGlow(ItemStack stack, boolean isCustomEnchantment, World world) {
