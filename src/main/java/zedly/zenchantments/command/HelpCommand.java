@@ -2,7 +2,6 @@ package zedly.zenchantments.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Collections;
@@ -15,7 +14,7 @@ public class HelpCommand extends ZenchantmentsCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(Storage.logo);
+        sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX);
         sender.sendMessage(
             ChatColor.DARK_AQUA
                 + "- ench info <?enchantment>: "

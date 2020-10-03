@@ -1,12 +1,11 @@
 package zedly.zenchantments;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.compatibility.NMS_1_16_R1;
 
-import java.util.*;
+import java.util.Random;
 
 @Deprecated
 public class Storage {
@@ -16,10 +15,6 @@ public class Storage {
 
     // Absolute path to the plugin jar
     public static String pluginPath;
-
-    // The plugin Logo to be used in chat commands
-    public static final String logo = ChatColor.BLUE + "[" + ChatColor.DARK_AQUA + "Zenchantments"
-            + ChatColor.BLUE + "] " + ChatColor.AQUA;
 
     // Current Zenchantments version
     public static String version = "";
@@ -48,7 +43,7 @@ public class Storage {
                 break;
             default:
                 System.out.println(
-                        "No compatible adapter available, falling back to Bukkit. Not everything will work!");
+                    "No compatible adapter available, falling back to Bukkit. Not everything will work!");
                 COMPATIBILITY_ADAPTER = zedly.zenchantments.compatibility.CompatibilityAdapter.getInstance();
                 break;
         }

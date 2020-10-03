@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.Config;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -20,18 +19,18 @@ public class ListCommand extends ZenchantmentsCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Storage.logo + "You must be a player to do this!");
+            sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
             return;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.list")) {
-            player.sendMessage(Storage.logo + "You do not have permission to do this!");
+            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
         }
 
-        player.sendMessage(Storage.logo + "Enchantment Types:");
+        player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "Enchantment Types:");
 
         // TODO: Find a more efficient way of displaying the enchantments in alphabetical order.
         for (Zenchantment zenchantment : new TreeSet<>(Config.get(player.getWorld()).getEnchants())) {

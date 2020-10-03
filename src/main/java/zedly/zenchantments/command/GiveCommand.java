@@ -8,7 +8,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -22,13 +21,13 @@ public class GiveCommand extends ZenchantmentsCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!sender.hasPermission("zenchantments.command.give")) {
-            sender.sendMessage(Storage.logo + "You do not have permission to do this!");
+            sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
         }
 
         if (args.length < 3) {
             sender.sendMessage(
-                Storage.logo
+                ZenchantmentsCommand.MESSAGE_PREFIX
                     + ChatColor.DARK_AQUA
                     + "Usage: "
                     + ChatColor.AQUA
@@ -55,7 +54,7 @@ public class GiveCommand extends ZenchantmentsCommand {
 
         if (recipient == null) {
             sender.sendMessage(
-                Storage.logo
+                ZenchantmentsCommand.MESSAGE_PREFIX
                     + "The player "
                     + ChatColor.DARK_AQUA
                     + playerName
@@ -74,7 +73,7 @@ public class GiveCommand extends ZenchantmentsCommand {
 
         if (material == null) {
             sender.sendMessage(
-                Storage.logo
+                ZenchantmentsCommand.MESSAGE_PREFIX
                     + "The material "
                     + ChatColor.DARK_AQUA
                     + args[1].toUpperCase()
@@ -103,7 +102,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                     zenchantmentsToAdd.put(zenchantment, level);
                 } else {
                     sender.sendMessage(
-                        Storage.logo
+                        ZenchantmentsCommand.MESSAGE_PREFIX
                             + "The enchantment "
                             + ChatColor.DARK_AQUA
                             + zenchantment.getName()
@@ -116,7 +115,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                     enchantmentsToAdd.put(enchantment, level);
                 } else {
                     sender.sendMessage(
-                        Storage.logo
+                        ZenchantmentsCommand.MESSAGE_PREFIX
                             + "The enchantment "
                             + ChatColor.DARK_AQUA
                             + enchantment.getName()
@@ -126,18 +125,18 @@ public class GiveCommand extends ZenchantmentsCommand {
                 }
             } else {
                 sender.sendMessage(
-                    Storage.logo +
-                        "The enchantment "
+                    ZenchantmentsCommand.MESSAGE_PREFIX
+                        + "The enchantment "
                         + ChatColor.DARK_AQUA
-                        + enchantName +
-                        ChatColor.AQUA +
-                        " does not exist!"
+                        + enchantName
+                        + ChatColor.AQUA
+                        + " does not exist!"
                 );
             }
         }
 
         StringBuilder message = new StringBuilder(
-            Storage.logo
+            ZenchantmentsCommand.MESSAGE_PREFIX
                 + "Gave "
                 + ChatColor.DARK_AQUA
                 + recipient.getName()

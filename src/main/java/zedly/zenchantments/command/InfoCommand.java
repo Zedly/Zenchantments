@@ -3,7 +3,9 @@ package zedly.zenchantments.command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.*;
+import zedly.zenchantments.Config;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.player.PlayerData;
 
 import java.util.Collections;
@@ -18,14 +20,14 @@ public class InfoCommand extends ZenchantmentsCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Storage.logo + "You must be a player to do this!");
+            sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
             return;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.info")) {
-            player.sendMessage(Storage.logo + "You do not have permission to do this!");
+            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
         }
 
@@ -36,7 +38,7 @@ public class InfoCommand extends ZenchantmentsCommand {
             Zenchantment zenchantment = config.enchantFromString(args[0]);
             if (zenchantment != null) {
                 player.sendMessage(
-                    Storage.logo
+                    ZenchantmentsCommand.MESSAGE_PREFIX
                         + zenchantment.getName()
                         + ": "
                         + (playerData.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
@@ -53,11 +55,11 @@ public class InfoCommand extends ZenchantmentsCommand {
         ).keySet();
 
         if (zenchantments.isEmpty()) {
-            player.sendMessage(Storage.logo + "There are no zenchantments on this tool!");
+            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "There are no zenchantments on this tool!");
             return;
         }
 
-        player.sendMessage(Storage.logo + "Enchantment Info:");
+        player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "Enchantment Info:");
         for (Zenchantment zenchantment : zenchantments) {
             player.sendMessage(
                 ChatColor.DARK_AQUA

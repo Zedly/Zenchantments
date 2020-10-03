@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.Config;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -22,14 +21,14 @@ public class EnchantCommand extends ZenchantmentsCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Storage.logo + "You must be a player to do this!");
+            sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
             return;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.enchant")) {
-            player.sendMessage(Storage.logo + "You do not have permission to do this!");
+            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
         }
 
@@ -37,7 +36,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         Zenchantment zenchantment = config.enchantFromString(args[0]);
 
         if (zenchantment == null) {
-            player.sendMessage(Storage.logo + "That enchantment does not exist!");
+            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "That enchantment does not exist!");
             return;
         }
 
@@ -71,7 +70,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         // Check if the player is holding an item
         if (itemStack.getType() == AIR) {
             if (player != null) {
-                player.sendMessage(Storage.logo + "You need to be holding an item!");
+                player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You need to be holding an item!");
             }
             return itemStack;
         }
@@ -83,7 +82,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         ) {
             if (player != null) {
                 player.sendMessage(
-                    Storage.logo
+                    ZenchantmentsCommand.MESSAGE_PREFIX
                         + "The enchantment "
                         + ChatColor.DARK_AQUA
                         + enchantment.getName()
@@ -107,7 +106,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         if (level != 0) {
             if (player != null) {
                 player.sendMessage(
-                    Storage.logo
+                    ZenchantmentsCommand.MESSAGE_PREFIX
                         + "The enchantment "
                         + ChatColor.DARK_AQUA
                         + enchantment.getName()
@@ -118,7 +117,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         } else {
             if (player != null) {
                 player.sendMessage(
-                    Storage.logo
+                    ZenchantmentsCommand.MESSAGE_PREFIX
                         + "The enchantment "
                         + ChatColor.DARK_AQUA
                         + enchantment.getName()
