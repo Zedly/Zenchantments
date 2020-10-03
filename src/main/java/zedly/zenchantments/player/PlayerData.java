@@ -3,22 +3,18 @@ package zedly.zenchantments.player;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import zedly.zenchantments.Config;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
 
-// This is used to manage players on the server. It allows for easy access in enabling/disabling enchantments
-//      and for adding cooldowns for different enchantments as they are used
 public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
-    private final Map<Integer, Integer> enchantCooldown = new HashMap<>(); // Enchantment names mapped to their remaining cooldown
+    private final Map<Integer, Integer> enchantCooldown = new HashMap<>();
     private final ZenchantmentsPlugin   plugin;
 
-    private Player player;          // Reference to the actual player object
+    private Player player;
 
-    // Creates a new enchant player objects and reads the player config file for their information
     public PlayerData(ZenchantmentsPlugin plugin, Player player) {
         this.plugin = plugin;
         this.player = player;
@@ -57,27 +53,23 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         this.player = player;
     }
 
-    // Decrements the players cooldowns by one tick
     public void tick() {
         this.enchantCooldown.replaceAll((e, v) -> Math.max(enchantCooldown.get(e) - 1, 0));
     }
 
-    // Returns true if the given enchantment name is disabled for the player, otherwise false
-    public boolean isDisabled(int enchantmentId) {
-        if (this.player.hasMetadata("ze." + enchantmentId)) {
-            return this.player.getMetadata("ze." + enchantmentId).get(0).asBoolean();
-        } else {
-            this.player.setMetadata("ze." + enchantmentId, new FixedMetadataValue(Storage.zenchantments, false));
-            return false;
+    public void setCooldown(int zenchantmentId, int ticks) {
+        this.enchantCooldown.put(zenchantmentId, ticks);
+    }
+
+    public boolean isDisabled(int zenchantmentId) {
+        if (this.player.hasMetadata("ze." + zenchantmentId)) {
+            return this.player.getMetadata("ze." + zenchantmentId).get(0).asBoolean();
         }
+
+        this.player.setMetadata("ze." + zenchantmentId, new FixedMetadataValue(this.plugin, false));
+        return false;
     }
 
-    // Sets the given enchantment cooldown to the given amount of ticks
-    public void setCooldown(int enchantmentId, int ticks) {
-        this.enchantCooldown.put(enchantmentId, ticks);
-    }
-
-    // Returns the EnchantPlayer object associated with the given Player
     @Deprecated
     public static PlayerData matchPlayer(Player player) {
         return null;
