@@ -11,6 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import zedly.zenchantments.api.Zenchantments;
 import zedly.zenchantments.command.ZenchantmentsCommandHandler;
+import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.*;
@@ -32,8 +33,9 @@ import static org.bukkit.Material.WATER;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
 public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
-    private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
+    private final GlobalConfiguration        globalConfiguration        = new GlobalConfiguration(this);
     private final WorldConfigurationProvider worldConfigurationProvider = new WorldConfigurationProvider(this);
+    private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
 
     @Override
     public void onEnable() {
@@ -120,13 +122,17 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         }
     }
 
-    @Override
-    public PlayerDataProvider getPlayerDataProvider() {
-        return this.playerDataProvider;
+    public GlobalConfiguration getGlobalConfiguration() {
+        return this.globalConfiguration;
     }
 
     public WorldConfigurationProvider getWorldConfigurationProvider() {
         return this.worldConfigurationProvider;
+    }
+
+    @Override
+    public PlayerDataProvider getPlayerDataProvider() {
+        return this.playerDataProvider;
     }
 
     @Override
