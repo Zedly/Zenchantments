@@ -23,7 +23,7 @@ public class Extraction extends Zenchantment {
 	public Builder<Extraction> defaults() {
 		return new Builder<>(Extraction::new, ID)
 			.maxLevel(3)
-			.loreName("Extraction")
+			.name("Extraction")
 			.probability(0)
 			.enchantable(new Tool[]{PICKAXE})
 			.conflicting(new Class[]{Switch.class})

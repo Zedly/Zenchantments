@@ -20,7 +20,7 @@ public class Stock extends Zenchantment {
 	public Builder<Stock> defaults() {
 		return new Builder<>(Stock::new, ID)
 			.maxLevel(1)
-			.loreName("Stock")
+			.name("Stock")
 			.probability(0)
 			.enchantable(new Tool[]{CHESTPLATE})
 			.conflicting(new Class[]{})

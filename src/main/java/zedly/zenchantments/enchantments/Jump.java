@@ -17,7 +17,7 @@ public class Jump extends Zenchantment {
 	public Builder<Jump> defaults() {
 		return new Builder<>(Jump::new, ID)
 			.maxLevel(4)
-			.loreName("Jump")
+			.name("Jump")
 			.probability(0)
 			.enchantable(new Tool[]{BOOTS})
 			.conflicting(new Class[]{})

@@ -23,7 +23,7 @@ public class Siphon extends Zenchantment {
     public Builder<Siphon> defaults() {
         return new Builder<>(Siphon::new, ID)
                 .maxLevel(4)
-                .loreName("Siphon")
+                .name("Siphon")
                 .probability(0)
                 .enchantable(new Tool[]{BOW, SWORD})
                 .conflicting(new Class[]{})

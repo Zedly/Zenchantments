@@ -35,7 +35,7 @@ public class Toxic extends Zenchantment {
 	public Builder<Toxic> defaults() {
 		return new Builder<>(Toxic::new, ID)
 			.maxLevel(4)
-			.loreName("Toxic")
+			.name("Toxic")
 			.probability(0)
 			.enchantable(new Tool[]{BOW, SWORD})
 			.conflicting(new Class[]{})

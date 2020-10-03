@@ -17,7 +17,7 @@ public class Saturation extends Zenchantment {
 	public Builder<Saturation> defaults() {
 		return new Builder<>(Saturation::new, ID)
 			.maxLevel(3)
-			.loreName("Saturation")
+			.name("Saturation")
 			.probability(0)
 			.enchantable(new Tool[]{LEGGINGS})
 			.conflicting(new Class[]{})

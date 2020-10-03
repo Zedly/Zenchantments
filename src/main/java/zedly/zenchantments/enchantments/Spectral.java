@@ -32,7 +32,7 @@ public class Spectral extends Zenchantment {
     public Builder<Spectral> defaults() {
         return new Builder<>(Spectral::new, ID)
                 .maxLevel(1)
-                .loreName("Spectral")
+                .name("Spectral")
                 .probability(0)
                 .enchantable(new Tool[]{SHOVEL})
                 .conflicting(new Class[]{})

@@ -28,7 +28,7 @@ public class Shred extends Zenchantment {
     public Builder<Shred> defaults() {
         return new Builder<>(Shred::new, ID)
                 .maxLevel(5)
-                .loreName("Shred")
+                .name("Shred")
                 .probability(0)
                 .enchantable(new Tool[]{SHOVEL, PICKAXE})
                 .conflicting(new Class[]{Pierce.class, Switch.class})

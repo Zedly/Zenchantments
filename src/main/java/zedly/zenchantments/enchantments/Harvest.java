@@ -24,7 +24,7 @@ public class Harvest extends Zenchantment {
     public Builder<Harvest> defaults() {
         return new Builder<>(Harvest::new, ID)
                 .maxLevel(3)
-                .loreName("Harvest")
+                .name("Harvest")
                 .probability(0)
                 .enchantable(new Tool[]{HOE})
                 .conflicting(new Class[]{})

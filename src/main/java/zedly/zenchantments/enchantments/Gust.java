@@ -23,7 +23,7 @@ public class Gust extends Zenchantment {
 	public Builder<Gust> defaults() {
 		return new Builder<>(Gust::new, ID)
 			.maxLevel(1)
-			.loreName("Gust")
+			.name("Gust")
 			.probability(0)
 			.enchantable(new Tool[]{SWORD})
 			.conflicting(new Class[]{Force.class, RainbowSlam.class})

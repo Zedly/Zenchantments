@@ -23,7 +23,7 @@ public class Germination extends Zenchantment {
     public Builder<Germination> defaults() {
         return new Builder<>(Germination::new, ID)
                 .maxLevel(3)
-                .loreName("Germination")
+                .name("Germination")
                 .probability(0)
                 .enchantable(new Tool[]{HOE})
                 .conflicting(new Class[]{})

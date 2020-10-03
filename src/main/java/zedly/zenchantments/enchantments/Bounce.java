@@ -16,7 +16,7 @@ public class Bounce extends Zenchantment {
 	public Builder<Bounce> defaults() {
 		return new Builder<>(Bounce::new, ID)
 			.maxLevel(5)
-			.loreName("Bounce")
+			.name("Bounce")
 			.probability(0)
 			.enchantable(new Tool[]{BOOTS})
 			.conflicting(new Class[]{})

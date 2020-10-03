@@ -19,7 +19,7 @@ public class Apocalypse extends Zenchantment {
 	public Builder<Apocalypse> defaults() {
 		return new Builder<>(Apocalypse::new, ID)
 			.maxLevel(1)
-			.loreName("Apocalypse")
+			.name("Apocalypse")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

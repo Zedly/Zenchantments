@@ -27,7 +27,7 @@ public class Reveal extends Zenchantment {
     public Builder<Reveal> defaults() {
         return new Builder<>(Reveal::new, ID)
             .maxLevel(4)
-            .loreName("Reveal")
+            .name("Reveal")
             .probability(0)
             .enchantable(new Tool[]{PICKAXE})
             .conflicting(new Class[]{Switch.class, Pierce.class, Spectral.class})

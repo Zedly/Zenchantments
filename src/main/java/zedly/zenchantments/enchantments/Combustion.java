@@ -17,7 +17,7 @@ public class Combustion extends Zenchantment {
 	public Builder<Combustion> defaults() {
 		return new Builder<>(Combustion::new, ID)
 			.maxLevel(4)
-			.loreName("Combustion")
+			.name("Combustion")
 			.probability(0)
 			.enchantable(new Tool[]{CHESTPLATE})
 			.conflicting(new Class[]{})

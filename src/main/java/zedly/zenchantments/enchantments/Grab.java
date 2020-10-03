@@ -25,7 +25,7 @@ public class Grab extends Zenchantment {
 	public Builder<Grab> defaults() {
 		return new Builder<>(Grab::new, ID)
 			.maxLevel(1)
-			.loreName("Grab")
+			.name("Grab")
 			.probability(0)
 			.enchantable(new Tool[]{PICKAXE, SHOVEL, AXE})
 			.conflicting(new Class[]{})

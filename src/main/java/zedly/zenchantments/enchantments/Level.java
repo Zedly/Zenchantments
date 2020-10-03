@@ -22,7 +22,7 @@ public class Level extends Zenchantment {
     public Builder<Level> defaults() {
         return new Builder<>(Level::new, ID)
                 .maxLevel(3)
-                .loreName("Level")
+                .name("Level")
                 .probability(0)
                 .enchantable(new Tool[]{PICKAXE, SWORD, BOW})
                 .conflicting(new Class[]{})

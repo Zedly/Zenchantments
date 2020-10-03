@@ -25,7 +25,7 @@ public class Transformation extends Zenchantment {
     public Builder<Transformation> defaults() {
         return new Builder<>(Transformation::new, ID)
                 .maxLevel(3)
-                .loreName("Transformation")
+                .name("Transformation")
                 .probability(0)
                 .enchantable(new Tool[]{SWORD})
                 .conflicting(new Class[]{})

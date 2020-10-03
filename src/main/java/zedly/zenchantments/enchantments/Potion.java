@@ -21,7 +21,7 @@ public class Potion extends Zenchantment {
 	public Builder<Potion> defaults() {
 		return new Builder<>(Potion::new, ID)
 			.maxLevel(3)
-			.loreName("Potion")
+			.name("Potion")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

@@ -51,7 +51,7 @@ public class EnableCommand extends ZenchantmentsCommand {
                 Storage.logo
                     + "The zenchantment "
                     + ChatColor.DARK_AQUA
-                    + zenchantment.getLoreName()
+                    + zenchantment.getName()
                     + ChatColor.AQUA
                     + " has been"
                     + ChatColor.GREEN

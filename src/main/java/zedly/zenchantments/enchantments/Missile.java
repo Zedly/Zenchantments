@@ -21,7 +21,7 @@ public class Missile extends Zenchantment {
 	public Builder<Missile> defaults() {
 		return new Builder<>(Missile::new, ID)
 			.maxLevel(1)
-			.loreName("Missile")
+			.name("Missile")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

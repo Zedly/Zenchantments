@@ -22,7 +22,7 @@ public class Persephone extends Zenchantment {
     public Builder<Persephone> defaults() {
         return new Builder<>(Persephone::new, ID)
                 .maxLevel(3)
-                .loreName("Persephone")
+                .name("Persephone")
                 .probability(0)
                 .enchantable(new Tool[]{HOE})
                 .conflicting(new Class[]{})

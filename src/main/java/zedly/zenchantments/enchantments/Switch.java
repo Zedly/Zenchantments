@@ -24,7 +24,7 @@ public class Switch extends Zenchantment {
     public Builder<Switch> defaults() {
         return new Builder<>(Switch::new, ID)
                 .maxLevel(1)
-                .loreName("Switch")
+                .name("Switch")
                 .probability(0)
                 .enchantable(new Tool[]{PICKAXE})
                 .conflicting(new Class[]{Shred.class, Anthropomorphism.class, Fire.class, Extraction.class, Pierce.class,

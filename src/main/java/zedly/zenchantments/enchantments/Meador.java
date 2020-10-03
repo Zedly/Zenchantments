@@ -19,7 +19,7 @@ public class Meador extends Zenchantment {
 	public Builder<Meador> defaults() {
 		return new Builder<>(Meador::new, ID)
 			.maxLevel(1)
-			.loreName("Meador")
+			.name("Meador")
 			.probability(0)
 			.enchantable(new Tool[]{BOOTS})
 			.conflicting(new Class[]{Weight.class, Speed.class, Jump.class})

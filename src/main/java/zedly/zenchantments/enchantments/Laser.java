@@ -31,7 +31,7 @@ public class Laser extends Zenchantment {
     public Builder<Laser> defaults() {
         return new Builder<>(Laser::new, ID)
                 .maxLevel(3)
-                .loreName("Laser")
+                .name("Laser")
                 .probability(0)
                 .enchantable(new Tool[]{PICKAXE, AXE})
                 .conflicting(new Class[]{})

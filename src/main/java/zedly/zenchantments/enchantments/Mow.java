@@ -23,7 +23,7 @@ public class Mow extends Zenchantment {
 	public Builder<Mow> defaults() {
 		return new Builder<>(Mow::new, ID)
 			.maxLevel(3)
-			.loreName("Mow")
+			.name("Mow")
 			.probability(0)
 			.enchantable(new Tool[]{SHEAR})
 			.conflicting(new Class[]{})

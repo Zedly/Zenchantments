@@ -29,7 +29,7 @@ public class MysteryFish extends Zenchantment {
 	public Builder<MysteryFish> defaults() {
 		return new Builder<>(MysteryFish::new, ID)
 			.maxLevel(3)
-			.loreName("Mystery Fish")
+			.name("Mystery Fish")
 			.probability(0)
 			.enchantable(new Tool[]{ROD})
 			.conflicting(new Class[]{})

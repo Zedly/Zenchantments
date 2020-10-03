@@ -24,7 +24,7 @@ public class Lumber extends Zenchantment {
 	public Builder<Lumber> defaults() {
 		return new Builder<>(Lumber::new, ID)
 			.maxLevel(1)
-			.loreName("Lumber")
+			.name("Lumber")
 			.probability(0)
 			.enchantable(new Tool[]{AXE})
 			.conflicting(new Class[]{})

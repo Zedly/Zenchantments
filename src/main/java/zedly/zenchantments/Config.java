@@ -51,7 +51,7 @@ public class Config {
 
         this.nameToEnch = new HashMap<>();
         for (Zenchantment ench : this.worldEnchants) {
-            nameToEnch.put(ChatColor.stripColor(ench.getLoreName().toLowerCase().replace(" ", "")), ench);
+            nameToEnch.put(ChatColor.stripColor(ench.getName().toLowerCase().replace(" ", "")), ench);
         }
 
         this.idToEnch = new HashMap<>();
@@ -231,10 +231,10 @@ public class Config {
                 try {
 
                     Zenchantment.Builder<? extends Zenchantment> ench = cl.newInstance().defaults();
-                    if (configInfo.containsKey(ench.loreName())) {
-                        LinkedHashMap<String, Object> data = configInfo.get(ench.loreName());
+                    if (configInfo.containsKey(ench.name())) {
+                        LinkedHashMap<String, Object> data = configInfo.get(ench.name());
                         ench.probability((float) (double) data.get("Probability"));
-                        ench.loreName((String) data.get("Name"));
+                        ench.name((String) data.get("Name"));
                         ench.cooldown((int) data.get("Cooldown"));
 
                         if (data.get("Max Level") != null) {

@@ -21,7 +21,7 @@ public class Conversion extends Zenchantment {
 	public Builder<Conversion> defaults() {
 		return new Builder<>(Conversion::new, ID)
 			.maxLevel(4)
-			.loreName("Conversion")
+			.name("Conversion")
 			.probability(0)
 			.enchantable(new Tool[]{SWORD})
 			.conflicting(new Class[]{})

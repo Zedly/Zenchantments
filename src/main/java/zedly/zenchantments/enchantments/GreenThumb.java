@@ -25,7 +25,7 @@ public class GreenThumb extends Zenchantment {
 	public Builder<GreenThumb> defaults() {
 		return new Builder<>(GreenThumb::new, ID)
 			.maxLevel(3)
-			.loreName("Green Thumb")
+			.name("Green Thumb")
 			.probability(0)
 			.enchantable(new Tool[]{LEGGINGS})
 			.conflicting(new Class[]{})

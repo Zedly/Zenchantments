@@ -21,7 +21,7 @@ public interface Zenchantment {
      *
      * @return A {@link String} representing the name of this {@link Zenchantment}.
      */
-    String getLoreName();
+    String getName();
 
     /**
      * Gets the description of this {@link Zenchantment}.

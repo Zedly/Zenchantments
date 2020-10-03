@@ -40,7 +40,7 @@ public class Anthropomorphism extends Zenchantment {
     public Builder<Anthropomorphism> defaults() {
         return new Builder<>(Anthropomorphism::new, ID)
                 .maxLevel(1)
-                .loreName("Anthropomorphism")
+                .name("Anthropomorphism")
                 .probability(0)
                 .enchantable(new Tool[]{PICKAXE})
                 .conflicting(new Class[]{Pierce.class, Switch.class})

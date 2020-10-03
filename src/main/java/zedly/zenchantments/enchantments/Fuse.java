@@ -19,7 +19,7 @@ public class Fuse extends Zenchantment {
 	public Builder<Fuse> defaults() {
 		return new Builder<>(Fuse::new, ID)
 			.maxLevel(1)
-			.loreName("Fuse")
+			.name("Fuse")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

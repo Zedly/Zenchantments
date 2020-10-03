@@ -26,7 +26,7 @@ public class Tracer extends Zenchantment {
 	public Builder<Tracer> defaults() {
 		return new Builder<>(Tracer::new, ID)
 			.maxLevel(4)
-			.loreName("Tracer")
+			.name("Tracer")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

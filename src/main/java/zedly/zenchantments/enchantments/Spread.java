@@ -26,7 +26,7 @@ public class Spread extends Zenchantment {
 	public Builder<Spread> defaults() {
 		return new Builder<>(Spread::new, ID)
 			.maxLevel(5)
-			.loreName("Spread")
+			.name("Spread")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{Burst.class})

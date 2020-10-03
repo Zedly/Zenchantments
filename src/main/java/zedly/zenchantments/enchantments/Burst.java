@@ -30,7 +30,7 @@ public class Burst extends Zenchantment {
     public Builder<Burst> defaults() {
         return new Builder<>(Burst::new, ID)
                 .maxLevel(3)
-                .loreName("Burst")
+                .name("Burst")
                 .probability(0)
                 .enchantable(new Tool[]{BOW})
                 .conflicting(new Class[]{Spread.class})

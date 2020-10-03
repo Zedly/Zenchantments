@@ -19,7 +19,7 @@ public class GoldRush extends Zenchantment {
 	public Builder<GoldRush> defaults() {
 		return new Builder<>(GoldRush::new, ID)
 			.maxLevel(3)
-			.loreName("Gold Rush")
+			.name("Gold Rush")
 			.probability(0)
 			.enchantable(new Tool[]{SHOVEL})
 			.conflicting(new Class[]{})

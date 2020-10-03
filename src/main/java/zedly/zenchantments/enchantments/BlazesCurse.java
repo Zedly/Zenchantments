@@ -25,7 +25,7 @@ public class BlazesCurse extends Zenchantment {
 	public Builder<BlazesCurse> defaults() {
 		return new Builder<>(BlazesCurse::new, ID)
 			.maxLevel(1)
-			.loreName("Blaze's Curse")
+			.name("Blaze's Curse")
 			.probability(0)
 			.enchantable(new Tool[]{CHESTPLATE})
 			.conflicting(new Class[]{})

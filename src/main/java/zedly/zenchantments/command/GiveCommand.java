@@ -106,7 +106,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                         Storage.logo
                             + "The enchantment "
                             + ChatColor.DARK_AQUA
-                            + zenchantment.getLoreName()
+                            + zenchantment.getName()
                             + ChatColor.AQUA
                             + " cannot be given with this item."
                     );
@@ -147,7 +147,7 @@ public class GiveCommand extends ZenchantmentsCommand {
 
         for (Map.Entry<Zenchantment, Integer> zenchantment : zenchantmentsToAdd.entrySet()) {
             zenchantment.getKey().setEnchantment(itemStack, zenchantment.getValue(), config.getWorld());
-            message.append(ChatColor.stripColor(zenchantment.getKey().getLoreName())).append(", ");
+            message.append(ChatColor.stripColor(zenchantment.getKey().getName())).append(", ");
         }
 
         for (Map.Entry<Enchantment, Integer> enchantment : enchantmentsToAdd.entrySet()) {

@@ -19,7 +19,7 @@ public class QuickShot extends Zenchantment {
 	public Builder<QuickShot> defaults() {
 		return new Builder<>(QuickShot::new, ID)
 			.maxLevel(1)
-			.loreName("Quick Shot")
+			.name("Quick Shot")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

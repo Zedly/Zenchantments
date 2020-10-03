@@ -24,7 +24,7 @@ public class FrozenStep extends Zenchantment {
 	public Builder<FrozenStep> defaults() {
 		return new Builder<>(FrozenStep::new, ID)
 			.maxLevel(3)
-			.loreName("Frozen Step")
+			.name("Frozen Step")
 			.probability(0)
 			.enchantable(new Tool[]{BOOTS})
 			.conflicting(new Class[]{NetherStep.class})

@@ -26,7 +26,7 @@ public class Terraformer extends Zenchantment {
 	public Builder<Terraformer> defaults() {
 		return new Builder<>(Terraformer::new, ID)
 			.maxLevel(1)
-			.loreName("Terraformer")
+			.name("Terraformer")
 			.probability(0)
 			.enchantable(new Tool[]{SHOVEL})
 			.conflicting(new Class[]{})

@@ -25,7 +25,7 @@ public class Reaper extends Zenchantment {
 	public Builder<Reaper> defaults() {
 		return new Builder<>(Reaper::new, ID)
 			.maxLevel(4)
-			.loreName("Reaper")
+			.name("Reaper")
 			.probability(0)
 			.enchantable(new Tool[]{BOW, SWORD})
 			.conflicting(new Class[]{})

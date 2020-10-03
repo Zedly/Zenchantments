@@ -19,7 +19,7 @@ public class Fireworks extends Zenchantment {
 	public Builder<Fireworks> defaults() {
 		return new Builder<>(Fireworks::new, ID)
 			.maxLevel(4)
-			.loreName("Fireworks")
+			.name("Fireworks")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

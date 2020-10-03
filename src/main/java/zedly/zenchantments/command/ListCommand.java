@@ -36,7 +36,7 @@ public class ListCommand extends ZenchantmentsCommand {
         // TODO: Find a more efficient way of displaying the enchantments in alphabetical order.
         for (Zenchantment zenchantment : new TreeSet<>(Config.get(player.getWorld()).getEnchants())) {
             if (zenchantment.validMaterial(player.getInventory().getItemInMainHand())) {
-                player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + zenchantment.getLoreName());
+                player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + zenchantment.getName());
             }
         }
     }

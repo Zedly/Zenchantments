@@ -19,7 +19,7 @@ public class Firestorm extends Zenchantment {
 	public Builder<Firestorm> defaults() {
 		return new Builder<>(Firestorm::new, ID)
 			.maxLevel(3)
-			.loreName("Firestorm")
+			.name("Firestorm")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{Blizzard.class})

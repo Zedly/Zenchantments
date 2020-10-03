@@ -20,7 +20,7 @@ public class Arborist extends Zenchantment {
 	public Builder<Arborist> defaults() {
 		return new Builder<>(Arborist::new, ID)
 			.maxLevel(3)
-			.loreName("Arborist")
+			.name("Arborist")
 			.probability(0)
 			.enchantable(new Tool[]{AXE})
 			.conflicting(new Class[]{})

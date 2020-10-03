@@ -29,7 +29,7 @@ public class RainbowSlam extends Zenchantment {
 	public Builder<RainbowSlam> defaults() {
 		return new Builder<>(RainbowSlam::new, ID)
 			.maxLevel(4)
-			.loreName("Rainbow Slam")
+			.name("Rainbow Slam")
 			.probability(0)
 			.enchantable(new Tool[]{SWORD})
 			.conflicting(new Class[]{Force.class, Gust.class})

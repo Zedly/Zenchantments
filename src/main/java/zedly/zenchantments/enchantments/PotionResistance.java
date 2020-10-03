@@ -20,7 +20,7 @@ public class PotionResistance extends Zenchantment {
 	public Builder<PotionResistance> defaults() {
 		return new Builder<>(PotionResistance::new, ID)
 			.maxLevel(4)
-			.loreName("Potion Resistance")
+			.name("Potion Resistance")
 			.probability(0)
 			.enchantable(new Tool[]{HELMET, CHESTPLATE, LEGGINGS, BOOTS})
 			.conflicting(new Class[]{})

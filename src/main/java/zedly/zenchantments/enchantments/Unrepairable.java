@@ -14,7 +14,7 @@ public class Unrepairable extends Zenchantment {
 	public Builder<Unrepairable> defaults() {
 		return new Builder<>(Unrepairable::new, ID)
 			.maxLevel(1)
-			.loreName("Unrepairable")
+			.name("Unrepairable")
 			.probability(0)
 			.enchantable(new Tool[]{ALL})
 			.conflicting(new Class[]{})

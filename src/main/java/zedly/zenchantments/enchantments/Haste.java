@@ -19,7 +19,7 @@ public class Haste extends Zenchantment {
 	public Builder<Haste> defaults() {
 		return new Builder<>(Haste::new, ID)
 			.maxLevel(4)
-			.loreName("Haste")
+			.name("Haste")
 			.probability(0)
 			.enchantable(new Tool[]{PICKAXE, AXE, SHOVEL})
 			.conflicting(new Class[]{})

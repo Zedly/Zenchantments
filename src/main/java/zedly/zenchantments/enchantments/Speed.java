@@ -17,7 +17,7 @@ public class Speed extends Zenchantment {
 	public Builder<Speed> defaults() {
 		return new Builder<>(Speed::new, ID)
 			.maxLevel(4)
-			.loreName("Speed")
+			.name("Speed")
 			.probability(0)
 			.enchantable(new Tool[]{BOOTS})
 			.conflicting(new Class[]{Meador.class, Weight.class})

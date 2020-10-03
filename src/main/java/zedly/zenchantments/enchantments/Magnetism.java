@@ -17,7 +17,7 @@ public class Magnetism extends Zenchantment {
 	public Builder<Magnetism> defaults() {
 		return new Builder<>(Magnetism::new, ID)
 			.maxLevel(3)
-			.loreName("Magnetism")
+			.name("Magnetism")
 			.probability(0)
 			.enchantable(new Tool[]{LEGGINGS})
 			.conflicting(new Class[]{})

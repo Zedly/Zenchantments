@@ -19,7 +19,7 @@ public class IceAspect extends Zenchantment {
 	public Builder<IceAspect> defaults() {
 		return new Builder<>(IceAspect::new, ID)
 			.maxLevel(2)
-			.loreName("Ice Aspect")
+			.name("Ice Aspect")
 			.probability(0)
 			.enchantable(new Tool[]{SWORD})
 			.conflicting(new Class[]{})

@@ -19,7 +19,7 @@ public class Ethereal extends Zenchantment {
 	public Builder<Ethereal> defaults() {
 		return new Builder<>(Ethereal::new, ID)
 			.maxLevel(1)
-			.loreName("Ethereal")
+			.name("Ethereal")
 			.probability(0)
 			.enchantable(new Tool[]{ALL})
 			.conflicting(new Class[]{})

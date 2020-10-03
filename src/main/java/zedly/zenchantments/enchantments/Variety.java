@@ -20,7 +20,7 @@ public class Variety extends Zenchantment {
 	public Builder<Variety> defaults() {
 		return new Builder<>(Variety::new, ID)
 			.maxLevel(1)
-			.loreName("Variety")
+			.name("Variety")
 			.probability(0)
 			.enchantable(new Tool[]{AXE})
 			.conflicting(new Class[]{Fire.class})

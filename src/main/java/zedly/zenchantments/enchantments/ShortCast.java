@@ -16,7 +16,7 @@ public class ShortCast extends Zenchantment {
 	public Builder<ShortCast> defaults() {
 		return new Builder<>(ShortCast::new, ID)
 			.maxLevel(2)
-			.loreName("Short Cast")
+			.name("Short Cast")
 			.probability(0)
 			.enchantable(new Tool[]{ROD})
 			.conflicting(new Class[]{LongCast.class})

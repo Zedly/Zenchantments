@@ -39,7 +39,7 @@ public class Fire extends Zenchantment {
     public Builder<Fire> defaults() {
         return new Builder<>(Fire::new, ID)
                 .maxLevel(1)
-                .loreName("Fire")
+                .name("Fire")
                 .probability(0)
                 .enchantable(new Tool[]{PICKAXE, AXE, SHOVEL})
                 .conflicting(new Class[]{Switch.class, Variety.class})

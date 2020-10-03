@@ -23,7 +23,7 @@ public class Rainbow extends Zenchantment {
 	public Builder<Rainbow> defaults() {
 		return new Builder<>(Rainbow::new, ID)
 			.maxLevel(1)
-			.loreName("Rainbow")
+			.name("Rainbow")
 			.probability(0)
 			.enchantable(new Tool[]{SHEAR})
 			.conflicting(new Class[]{})

@@ -35,7 +35,7 @@ public class Pierce extends Zenchantment {
 	public Builder<Pierce> defaults() {
 		return new Builder<>(Pierce::new, ID)
 			.maxLevel(1)
-			.loreName("Pierce")
+			.name("Pierce")
 			.probability(0)
 			.enchantable(new Tool[]{PICKAXE})
 			.conflicting(new Class[]{Anthropomorphism.class, Switch.class, Shred.class})

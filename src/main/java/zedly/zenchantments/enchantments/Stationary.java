@@ -23,7 +23,7 @@ public class Stationary extends Zenchantment {
     public Builder<Stationary> defaults() {
         return new Builder<>(Stationary::new, ID)
                 .maxLevel(1)
-                .loreName("Stationary")
+                .name("Stationary")
                 .probability(0)
                 .enchantable(new Tool[]{BOW, SWORD})
                 .conflicting(new Class[]{})

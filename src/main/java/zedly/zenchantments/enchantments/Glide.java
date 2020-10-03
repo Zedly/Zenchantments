@@ -27,7 +27,7 @@ public class Glide extends Zenchantment {
     public Builder<Glide> defaults() {
         return new Builder<>(Glide::new, ID)
                 .maxLevel(3)
-                .loreName("Glide")
+                .name("Glide")
                 .probability(0)
                 .enchantable(new Tool[]{LEGGINGS})
                 .conflicting(new Class[]{})

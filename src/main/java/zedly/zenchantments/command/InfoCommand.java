@@ -37,7 +37,7 @@ public class InfoCommand extends ZenchantmentsCommand {
             if (zenchantment != null) {
                 player.sendMessage(
                     Storage.logo
-                        + zenchantment.getLoreName()
+                        + zenchantment.getName()
                         + ": "
                         + (playerData.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
                         + ChatColor.AQUA + zenchantment.getDescription()
@@ -61,7 +61,7 @@ public class InfoCommand extends ZenchantmentsCommand {
         for (Zenchantment zenchantment : zenchantments) {
             player.sendMessage(
                 ChatColor.DARK_AQUA
-                    + zenchantment.getLoreName()
+                    + zenchantment.getName()
                     + ": "
                     + (playerData.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
                     + ChatColor.AQUA

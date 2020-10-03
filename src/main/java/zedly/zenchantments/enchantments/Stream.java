@@ -29,7 +29,7 @@ public class Stream extends Zenchantment {
 	public Builder<Stream> defaults() {
 		return new Builder<>(Stream::new, ID)
 			.maxLevel(1)
-			.loreName("Stream")
+			.name("Stream")
 			.probability(0)
 			.enchantable(new Tool[]{WINGS})
 			.conflicting(new Class[]{})

@@ -29,7 +29,7 @@ public class Vortex extends Zenchantment {
     public Builder<Vortex> defaults() {
         return new Builder<>(Vortex::new, ID)
                 .maxLevel(1)
-                .loreName("Vortex")
+                .name("Vortex")
                 .probability(0)
                 .enchantable(new Tool[]{BOW, SWORD})
                 .conflicting(new Class[]{})

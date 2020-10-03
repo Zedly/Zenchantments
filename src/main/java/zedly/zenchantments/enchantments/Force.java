@@ -30,7 +30,7 @@ public class Force extends Zenchantment {
 	public Builder<Force> defaults() {
 		return new Builder<>(Force::new, ID)
 			.maxLevel(3)
-			.loreName("Force")
+			.name("Force")
 			.probability(0)
 			.enchantable(new Tool[]{SWORD})
 			.conflicting(new Class[]{RainbowSlam.class, Gust.class})

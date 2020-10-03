@@ -25,7 +25,7 @@ public class Decapitation extends Zenchantment {
 	public Builder<Decapitation> defaults() {
 		return new Builder<>(Decapitation::new, ID)
 			.maxLevel(4)
-			.loreName("Decapitation")
+			.name("Decapitation")
 			.probability(0)
 			.enchantable(new Tool[]{SWORD})
 			.conflicting(new Class[]{})

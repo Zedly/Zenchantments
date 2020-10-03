@@ -31,7 +31,7 @@ public class Singularity extends Zenchantment {
 	public Builder<Singularity> defaults() {
 		return new Builder<>(Singularity::new, ID)
 			.maxLevel(1)
-			.loreName("Singularity")
+			.name("Singularity")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{})

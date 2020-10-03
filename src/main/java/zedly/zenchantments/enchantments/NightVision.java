@@ -17,7 +17,7 @@ public class NightVision extends Zenchantment {
 	public Builder<NightVision> defaults() {
 		return new Builder<>(NightVision::new, ID)
 			.maxLevel(1)
-			.loreName("Night Vision")
+			.name("Night Vision")
 			.probability(0)
 			.enchantable(new Tool[]{HELMET})
 			.conflicting(new Class[]{})

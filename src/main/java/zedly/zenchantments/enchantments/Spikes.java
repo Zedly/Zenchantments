@@ -17,7 +17,7 @@ public class Spikes extends Zenchantment {
 	public Builder<Spikes> defaults() {
 		return new Builder<>(Spikes::new, ID)
 			.maxLevel(3)
-			.loreName("Spikes")
+			.name("Spikes")
 			.probability(0)
 			.enchantable(new Tool[]{BOOTS})
 			.conflicting(new Class[]{})

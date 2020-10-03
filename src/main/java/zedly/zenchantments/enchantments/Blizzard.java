@@ -19,7 +19,7 @@ public class Blizzard extends Zenchantment {
 	public Builder<Blizzard> defaults() {
 		return new Builder<>(Blizzard::new, ID)
 			.maxLevel(3)
-			.loreName("Blizzard")
+			.name("Blizzard")
 			.probability(0)
 			.enchantable(new Tool[]{BOW})
 			.conflicting(new Class[]{Firestorm.class})

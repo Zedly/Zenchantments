@@ -21,7 +21,7 @@ public class Weight extends Zenchantment {
     public Builder<Weight> defaults() {
         return new Builder<>(Weight::new, ID)
                 .maxLevel(4)
-                .loreName("Weight")
+                .name("Weight")
                 .probability(0)
                 .enchantable(new Tool[]{BOOTS})
                 .conflicting(new Class[]{Meador.class, Speed.class})

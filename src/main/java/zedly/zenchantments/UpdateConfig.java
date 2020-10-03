@@ -60,7 +60,7 @@ public class UpdateConfig {
 		for (Class<? extends Zenchantment> cl : customEnchantments) {
 			try {
 				Zenchantment.Builder<? extends Zenchantment> ench = cl.newInstance().defaults();
-				enchantments.put(ench.loreName(), ench.build());
+				enchantments.put(ench.name(), ench.build());
 			} catch (IllegalAccessException | ClassCastException | InstantiationException ex) {
 				System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
 			}
@@ -84,11 +84,11 @@ public class UpdateConfig {
 					tools += ", " + e.enchantable[i].getId();
 				}
 				values.put("Tools", tools);
-				values.put("Name", e.loreName);
+				values.put("Name", e.name);
 				values.put("Max Level", e.maxLevel);
 				values.put("Cooldown", e.cooldown);
 				values.put("Power", e.power);
-				ench.put(e.loreName, values);
+				ench.put(e.name, values);
 				configData.add(ench);
 			}
 		}

@@ -22,7 +22,7 @@ public class Plough extends Zenchantment {
 	public Builder<Plough> defaults() {
 		return new Builder<>(Plough::new, ID)
 			.maxLevel(3)
-			.loreName("Plough")
+			.name("Plough")
 			.probability(0)
 			.enchantable(new Tool[]{HOE})
 			.conflicting(new Class[]{})

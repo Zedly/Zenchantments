@@ -23,7 +23,7 @@ public class Bind extends Zenchantment {
 	public Builder<Bind> defaults() {
 		return new Builder<>(Bind::new, ID)
 			.maxLevel(1)
-			.loreName("Bind")
+			.name("Bind")
 			.probability(0)
 			.enchantable(new Tool[]{ALL})
 			.conflicting(new Class[]{})

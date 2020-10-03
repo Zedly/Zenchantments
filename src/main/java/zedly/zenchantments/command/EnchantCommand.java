@@ -86,7 +86,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
                     Storage.logo
                         + "The enchantment "
                         + ChatColor.DARK_AQUA
-                        + enchantment.getLoreName()
+                        + enchantment.getName()
                         + ChatColor.AQUA +
                         " cannot be added to this item."
                 );
@@ -110,7 +110,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
                     Storage.logo
                         + "The enchantment "
                         + ChatColor.DARK_AQUA
-                        + enchantment.getLoreName()
+                        + enchantment.getName()
                         + ChatColor.AQUA +
                         " has been added."
                 );
@@ -121,7 +121,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
                     Storage.logo
                         + "The enchantment "
                         + ChatColor.DARK_AQUA
-                        + enchantment.getLoreName()
+                        + enchantment.getName()
                         + ChatColor.AQUA
                         + " has been removed."
                 );

@@ -18,7 +18,7 @@ public class SonicShock extends Zenchantment {
 	public Builder<SonicShock> defaults() {
 		return new Builder<>(SonicShock::new, ID)
 			.maxLevel(3)
-			.loreName("Sonic Shock")
+			.name("Sonic Shock")
 			.probability(0)
 			.enchantable(new Tool[]{WINGS})
 			.conflicting(new Class[]{})

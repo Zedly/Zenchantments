@@ -19,7 +19,7 @@ public class Gluttony extends Zenchantment {
 	public Builder<Gluttony> defaults() {
 		return new Builder<>(Gluttony::new, ID)
 			.maxLevel(1)
-			.loreName("Gluttony")
+			.name("Gluttony")
 			.probability(0)
 			.enchantable(new Tool[]{HELMET})
 			.conflicting(new Class[]{})

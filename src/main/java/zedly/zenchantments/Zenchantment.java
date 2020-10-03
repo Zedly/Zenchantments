@@ -35,7 +35,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
 
     protected int        id;
     protected int        maxLevel;
-    protected String     loreName;
+    protected String     name;
     protected float      probability;
     protected Tool[]     enchantable;
     protected Class<?>[] conflicting;
@@ -54,8 +54,8 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     }
 
     @Override
-    public String getLoreName() {
-        return this.loreName;
+    public String getName() {
+        return this.name;
     }
 
     @Override
@@ -369,6 +369,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
      * Determines if the material provided is enchantable with this enchantment.
      *
      * @param material The material to test.
+     *
      * @return true iff the material can be enchanted with this enchantment.
      */
     // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
@@ -386,6 +387,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
      * enchantment.
      *
      * @param itemStack The stack of material to test.
+     *
      * @return true iff the stack of material can be enchanted with this
      * enchantment.
      */
@@ -397,7 +399,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         Config config = Config.get(world);
         String levelString = Utilities.getRomanString(level);
         return (this.isCursed ? config.getCurseColor() : config.getEnchantmentColor())
-            + this.loreName
+            + this.name
             + (this.maxLevel == 1 ? " " : " " + levelString);
     }
 
@@ -566,13 +568,13 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
             return this.zenchantment.maxLevel;
         }
 
-        public Builder<T> loreName(String loreName) {
-            this.zenchantment.loreName = loreName;
+        public Builder<T> name(String name) {
+            this.zenchantment.name = name;
             return this;
         }
 
-        public String loreName() {
-            return this.zenchantment.loreName;
+        public String name() {
+            return this.zenchantment.name;
         }
 
         public Builder<T> probability(float probability) {
