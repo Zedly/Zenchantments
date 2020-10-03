@@ -118,12 +118,13 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     }
 
     @Override
-    public Set<zedly.zenchantments.api.Zenchantment> getZenchantmentsForWorld(World world) {
-        return Collections.emptySet();
-    }
-
     public PlayerDataProvider getPlayerDataProvider() {
         return this.playerDataProvider;
+    }
+
+    @Override
+    public Set<zedly.zenchantments.api.Zenchantment> getZenchantmentsForWorld(World world) {
+        return Collections.emptySet();
     }
 
     public void loadConfigs() {

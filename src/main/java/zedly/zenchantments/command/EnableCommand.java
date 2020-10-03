@@ -46,7 +46,7 @@ public class EnableCommand extends ZenchantmentsCommand {
         Zenchantment zenchantment = Config.get(player.getWorld()).enchantFromString(args[0]);
 
         if (zenchantment != null) {
-            playerData.enable(zenchantment.getId());
+            playerData.enableZenchantment(zenchantment.getId());
             player.sendMessage(
                 Storage.logo
                     + "The zenchantment "
@@ -58,7 +58,7 @@ public class EnableCommand extends ZenchantmentsCommand {
                     + " enabled."
             );
         } else if (args[0].equalsIgnoreCase("all")) {
-            playerData.enableAll();
+            playerData.enableAllZenchantments();
             player.sendMessage(
                 Storage.logo
                     + ChatColor.DARK_AQUA

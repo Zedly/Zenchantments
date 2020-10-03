@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerDataProvider {
+public class PlayerDataProvider implements zedly.zenchantments.api.player.PlayerDataProvider {
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
     private final ZenchantmentsPlugin   plugin;
 
@@ -15,6 +15,7 @@ public class PlayerDataProvider {
         this.plugin = plugin;
     }
 
+    @Override
     public PlayerData getDataForPlayer(Player player) {
         PlayerData playerData = this.playerDataMap.get(player.getUniqueId());
 
@@ -31,5 +32,10 @@ public class PlayerDataProvider {
         }
 
         return playerData;
+    }
+
+    @Override
+    public void resetDataForPlayer(Player player) {
+        this.playerDataMap.put(player.getUniqueId(), new PlayerData(this.plugin, player));
     }
 }

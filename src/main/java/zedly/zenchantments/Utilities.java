@@ -372,7 +372,7 @@ public class Utilities {
             return false;
         }
 
-        if (PlayerData.matchPlayer(player).getCooldown(enchantmentId) != 0) {
+        if (PlayerData.matchPlayer(player).getCooldownForZenchantment(enchantmentId) != 0) {
             return false;
         }
 
