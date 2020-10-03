@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Config;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Hand;
@@ -39,7 +39,7 @@ public class Bind extends Zenchantment {
 			return false;
 		}
 		final Player player = event.getEntity();
-		Config config = Config.get(player.getWorld());
+		WorldConfiguration config = WorldConfiguration.get(player.getWorld());
 		final ItemStack[] contents = player.getInventory().getContents().clone();
 		final List<ItemStack> removed = new ArrayList<>();
 		for (int i = 0; i < contents.length; i++) {

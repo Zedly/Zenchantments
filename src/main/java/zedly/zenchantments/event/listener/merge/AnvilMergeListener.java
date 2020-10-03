@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import zedly.zenchantments.Config;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.enchantments.Unrepairable;
@@ -60,7 +60,7 @@ public class AnvilMergeListener implements Listener {
             return;
         }
 
-        Config config = Config.get(evt.getViewers().get(0).getWorld());
+        WorldConfiguration config = WorldConfiguration.get(evt.getViewers().get(0).getWorld());
         AnvilInventory anvilInv = evt.getInventory();
 
         ItemStack item0 = anvilInv.getItem(0);
@@ -92,7 +92,7 @@ public class AnvilMergeListener implements Listener {
         }, 0);
     }
 
-    private ItemStack doMerge(ItemStack leftItem, ItemStack rightItem, ItemStack oldOutItem, Config config) {
+    private ItemStack doMerge(ItemStack leftItem, ItemStack rightItem, ItemStack oldOutItem, WorldConfiguration config) {
         if (leftItem == null || rightItem == null || oldOutItem == null) {
             return null;
         }

@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.configuration;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.apache.commons.io.IOUtils;
@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import zedly.zenchantments.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,10 +17,10 @@ import java.util.*;
 
 // This class manages indivudual world configs, loading them each from the config file. It will start the process
 //      to automatically update the config files if they are old
-public class Config {
+public class WorldConfiguration {
 
-    public static final Map<World, Config>    CONFIGS     = new HashMap<>(); // Map of all world configs on the current server
-    public static final HashSet<Zenchantment> allEnchants = new HashSet<>();
+    public static final Map<World, WorldConfiguration> CONFIGS     = new HashMap<>(); // Map of all world configs on the current server
+    public static final HashSet<Zenchantment>          allEnchants = new HashSet<>();
 
     private final Set<Zenchantment>          worldEnchants;     // Set of active Custom Enchantments
     private final Map<String, Zenchantment>  nameToEnch;
@@ -36,10 +37,10 @@ public class Config {
     private final ChatColor curseColor;
 
     // Constructs a new config object
-    public Config(Set<Zenchantment> worldEnchants, double enchantRarity,
-                  int maxEnchants, int shredDrops, boolean explosionBlockBreak,
-                  boolean descriptionLore, ChatColor descriptionColor, ChatColor enchantmentColor,
-                  ChatColor curseColor, boolean enchantGlow, World world) {
+    public WorldConfiguration(Set<Zenchantment> worldEnchants, double enchantRarity,
+                              int maxEnchants, int shredDrops, boolean explosionBlockBreak,
+                              boolean descriptionLore, ChatColor descriptionColor, ChatColor enchantmentColor,
+                              ChatColor curseColor, boolean enchantGlow, World world) {
         this.worldEnchants = worldEnchants;
         this.enchantRarity = enchantRarity;
         this.maxEnchants = maxEnchants;
@@ -141,11 +142,11 @@ public class Config {
     public static void loadConfigs() {
         CONFIGS.clear();
         for (World world : Bukkit.getWorlds()) {
-            Config.CONFIGS.put(world, getWorldConfig(world));
+            WorldConfiguration.CONFIGS.put(world, getWorldConfig(world));
         }
     }
 
-    public static Config getWorldConfig(World world) {
+    public static WorldConfiguration getWorldConfig(World world) {
         try {
             InputStream stream = ZenchantmentsPlugin.class.getResourceAsStream("/defaultconfig.yml");
             File file = new File(Storage.zenchantments.getDataFolder(), world.getName() + ".yml");
@@ -256,7 +257,7 @@ public class Config {
                     System.err.println("Error parsing config for enchantment " + cl.getName() + ", skipping");
                 }
             }
-            return new Config(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
+            return new WorldConfiguration(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
                     descriptionLore, descriptionColor, enchantColor, curseColor, enchantGlow, world);
         } catch (IOException | InvalidConfigurationException ex) {
             System.err.println("Error parsing config for world " + world.getName() + ", skipping");
@@ -265,9 +266,9 @@ public class Config {
     }
 
     // Returns the config object associated with the given world
-    public static Config get(World world) {
+    public static WorldConfiguration get(World world) {
         if (CONFIGS.get(world) == null) {
-            Config.CONFIGS.put(world, getWorldConfig(world));
+            WorldConfiguration.CONFIGS.put(world, getWorldConfig(world));
         }
         return CONFIGS.get(world);
     }

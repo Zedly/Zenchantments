@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.player.PlayerData;
 
@@ -233,7 +234,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
                         } catch (Exception e) {
                             enchant = "";
                         }
-                        ench = Config.get(world).enchantFromString(enchant);
+                        ench = WorldConfiguration.get(world).enchantFromString(enchant);
                     }
                 }
             }
@@ -328,7 +329,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         for (int id : new int[] {Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID}) {
             Zenchantment zenchantment = null;
 
-            for (Zenchantment ench : Config.allEnchants) {
+            for (Zenchantment ench : WorldConfiguration.allEnchants) {
                 if (ench.id == id) {
                     zenchantment = ench;
                     break;
@@ -357,7 +358,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         String enchantmentName = ChatColor.stripColor(m.group(1));
         int level = m.group(2) == null || m.group(2).equals("") ? 1 : Utilities.getNumber(m.group(2));
 
-        Zenchantment zenchantment = Config.get(world).enchantFromString(enchantmentName);
+        Zenchantment zenchantment = WorldConfiguration.get(world).enchantFromString(enchantmentName);
         if (zenchantment == null) {
             return null;
         }
@@ -396,7 +397,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     }
 
     public String getShown(int level, World world) {
-        Config config = Config.get(world);
+        WorldConfiguration config = WorldConfiguration.get(world);
         String levelString = Utilities.getRomanString(level);
         return (this.isCursed ? config.getCurseColor() : config.getEnchantmentColor())
             + this.name
@@ -404,7 +405,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     }
 
     public List<String> getDescription(World world) {
-        Config config = Config.get(world);
+        WorldConfiguration config = WorldConfiguration.get(world);
         List<String> desc = new LinkedList<>();
 
         if (config.descriptionLore()) {
@@ -496,7 +497,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
     }
 
     public static void setGlow(ItemStack stack, boolean isCustomEnchantment, World world) {
-        if (Config.get(world) == null || !Config.get(world).enchantGlow()) {
+        if (WorldConfiguration.get(world) == null || !WorldConfiguration.get(world).enchantGlow()) {
             return;
         }
 
@@ -551,7 +552,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
         stack.setItemMeta(isBook ? bookMeta : itemMeta);
     }
 
-    protected static final class Builder<T extends Zenchantment> {
+    public static final class Builder<T extends Zenchantment> {
         private final T zenchantment;
 
         public Builder(Supplier<T> supplier, int id) {

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import zedly.zenchantments.*;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.event.BlockShredEvent;
 import zedly.zenchantments.event.listener.ZenchantmentListener;
 
@@ -46,14 +47,14 @@ public class Shred extends Zenchantment {
         }
         ItemStack hand = Utilities.usedStack(event.getPlayer(), usedHand);
         blocks(event.getBlock(), event.getBlock(), new int[]{level + 3, level + 3, level + 3}, 0,
-                4.6 + (level * .22), new HashSet<>(), event.getPlayer(), Config.get(event.getBlock().getWorld()),
+                4.6 + (level * .22), new HashSet<>(), event.getPlayer(), WorldConfiguration.get(event.getBlock().getWorld()),
                 hand.getType(), usedHand);
         return true;
     }
 
     public void blocks(Block centerBlock, final Block relativeBlock, int[] coords, int time, double size,
-            Set<Block> used,
-            final Player player, final Config config, final Material itemType, boolean usedHand) {
+                       Set<Block> used,
+                       final Player player, final WorldConfiguration config, final Material itemType, boolean usedHand) {
 
         if (!Storage.COMPATIBILITY_ADAPTER.Airs().contains(relativeBlock.getType()) && !used.contains(relativeBlock)) {
             final Material originalType = relativeBlock.getType();

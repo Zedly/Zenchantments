@@ -2,7 +2,7 @@ package zedly.zenchantments.player;
 
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.Config;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -27,7 +27,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
 
     @Override
     public void enableAllZenchantments() {
-        for (Zenchantment zenchantment : Config.get(this.player.getWorld()).getEnchants()) {
+        for (Zenchantment zenchantment : WorldConfiguration.get(this.player.getWorld()).getEnchants()) {
             this.player.setMetadata("ze." + zenchantment.getId(), new FixedMetadataValue(this.plugin, false));
         }
     }
@@ -39,7 +39,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
 
     @Override
     public void disableAllZenchantments() {
-        for (Zenchantment zenchantment : Config.get(player.getWorld()).getEnchants()) {
+        for (Zenchantment zenchantment : WorldConfiguration.get(player.getWorld()).getEnchants()) {
             this.player.setMetadata("ze." + zenchantment.getId(), new FixedMetadataValue(this.plugin, true));
         }
     }

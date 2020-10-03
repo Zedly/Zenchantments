@@ -3,7 +3,7 @@ package zedly.zenchantments.command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.Config;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.player.PlayerData;
@@ -42,7 +42,7 @@ public class EnableCommand extends ZenchantmentsCommand {
         }
 
         PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
-        Zenchantment zenchantment = Config.get(player.getWorld()).enchantFromString(args[0]);
+        Zenchantment zenchantment = WorldConfiguration.get(player.getWorld()).enchantFromString(args[0]);
 
         if (zenchantment != null) {
             playerData.enableZenchantment(zenchantment.getId());

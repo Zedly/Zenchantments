@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.Config;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.Zenchantment;
@@ -46,7 +46,7 @@ public class GeneralListener implements Listener {
     // Fires a laser effect from dispensers if a tool with the Laser enchantment is dispensed
     @EventHandler
     public void onBlockDispense(BlockDispenseEvent event) {
-        Config config = Config.get(event.getBlock().getWorld());
+        WorldConfiguration config = WorldConfiguration.get(event.getBlock().getWorld());
 
         if (event.getBlock().getType() != DISPENSER) {
             return;
@@ -241,7 +241,7 @@ public class GeneralListener implements Listener {
             return;
         }
 
-        Config config = Config.get(event.getEnchantBlock().getWorld());
+        WorldConfiguration config = WorldConfiguration.get(event.getEnchantBlock().getWorld());
         Map<Zenchantment, Integer> existingEnchants = Zenchantment.getEnchants(
             event.getItem(),
             event.getEnchantBlock().getWorld()

@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Config;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -32,7 +32,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             return;
         }
 
-        Config config = Config.get(player.getWorld());
+        WorldConfiguration config = WorldConfiguration.get(player.getWorld());
         Zenchantment zenchantment = config.enchantFromString(args[0]);
 
         if (zenchantment == null) {
@@ -57,7 +57,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
     }
 
     private ItemStack addEnchantments(
-        Config config,
+        WorldConfiguration config,
         Player player,
         Zenchantment enchantment,
         ItemStack itemStack,

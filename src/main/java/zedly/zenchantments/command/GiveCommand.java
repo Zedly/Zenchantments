@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Config;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -69,7 +69,7 @@ public class GiveCommand extends ZenchantmentsCommand {
             material = Material.matchMaterial(scanner.next());
         }
 
-        Config config = Config.get(recipient.getWorld());
+        WorldConfiguration config = WorldConfiguration.get(recipient.getWorld());
 
         if (material == null) {
             sender.sendMessage(
