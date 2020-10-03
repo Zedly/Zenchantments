@@ -1,7 +1,10 @@
-package zedly.zenchantments;
+package zedly.zenchantments.player;
 
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import zedly.zenchantments.Config;
+import zedly.zenchantments.Storage;
+import zedly.zenchantments.Zenchantment;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,14 +13,14 @@ import java.util.Set;
 
 // This is used to manage players on the server. It allows for easy access in enabling/disabling enchantments
 //      and for adding cooldowns for different enchantments as they are used
-public class EnchantPlayer {
-    public static final Set<EnchantPlayer> PLAYERS = new HashSet<>();   // Collection of all players on the server
+public class PlayerData {
+    public static final Set<PlayerData> PLAYERS = new HashSet<>();   // Collection of all players on the server
 
     private final Player                player;          // Reference to the actual player object
     private final Map<Integer, Integer> enchantCooldown; // Enchantment names mapped to their remaining cooldown
 
     // Creates a new enchant player objects and reads the player config file for their information
-    public EnchantPlayer(Player player) {
+    public PlayerData(Player player) {
         this.player = player;
         this.enchantCooldown = new HashMap<>();
         PLAYERS.add(this);
@@ -72,29 +75,14 @@ public class EnchantPlayer {
         }
     }
 
-    // Returns the Player object associated with the EnchantPlayer
-    public Player getPlayer() {
-        return this.player;
-    }
-
     // Returns the EnchantPlayer object associated with the given Player
-    public static EnchantPlayer matchPlayer(Player player) {
-        for (EnchantPlayer players : PLAYERS) {
+    public static PlayerData matchPlayer(Player player) {
+        for (PlayerData players : PLAYERS) {
             if (players.player.equals(player)) {
                 return players;
             }
         }
 
-        return new EnchantPlayer(player);
-    }
-
-    // Sends the EnchantPlayer the given message
-    public void sendMessage(String message) {
-        player.sendMessage(message);
-    }
-
-    // Returns true if the EnchantPlayer has the given permission, otherwise false
-    public boolean hasPermission(String permission) {
-        return player.hasPermission(permission);
+        return new PlayerData(player);
     }
 }

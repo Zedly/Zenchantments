@@ -20,6 +20,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.*;
 import zedly.zenchantments.event.BlockShredEvent;
+import zedly.zenchantments.player.PlayerData;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
@@ -352,7 +353,7 @@ public class ZenchantmentListener implements Listener {
     @EffectTask(Frequency.HIGH)
     public static void scanPlayers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            EnchantPlayer.matchPlayer(player).tick();
+            PlayerData.matchPlayer(player).tick();
         }
 
         // Sweeping scan over the player list for armor enchants
@@ -373,7 +374,7 @@ public class ZenchantmentListener implements Listener {
                         }
 
                         if (ench.onFastScan(player, level, true)) {
-                            EnchantPlayer.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
+                            PlayerData.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
                         }
 
                         return true;
@@ -394,7 +395,7 @@ public class ZenchantmentListener implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, true)) {
-                        EnchantPlayer.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
+                        PlayerData.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
                     }
 
                     return true;
@@ -414,7 +415,7 @@ public class ZenchantmentListener implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, false)) {
-                        EnchantPlayer.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
+                        PlayerData.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
                     }
 
                     return true;

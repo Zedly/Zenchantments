@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.EnchantPlayer;
+import zedly.zenchantments.player.PlayerData;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
@@ -42,7 +42,7 @@ public class Laser extends Zenchantment {
     }
 
     public void shoot(Player player, int level, boolean usedHand) {
-        EnchantPlayer.matchPlayer(player).setCooldown(Lumber.ID, 5); // Avoid recursing into Lumber enchant
+        PlayerData.matchPlayer(player).setCooldown(Lumber.ID, 5); // Avoid recursing into Lumber enchant
         Block blk = player.getTargetBlock(null, 6
                 + (int) Math.round(level * power * 3));
         Location playLoc = player.getLocation();

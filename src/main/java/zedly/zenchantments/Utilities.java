@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import zedly.zenchantments.compatibility.EnumStorage;
+import zedly.zenchantments.player.PlayerData;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -371,11 +372,11 @@ public class Utilities {
             return false;
         }
 
-        if (EnchantPlayer.matchPlayer(player).getCooldown(enchantmentId) != 0) {
+        if (PlayerData.matchPlayer(player).getCooldown(enchantmentId) != 0) {
             return false;
         }
 
-        return !EnchantPlayer.matchPlayer(player).isDisabled(enchantmentId);
+        return !PlayerData.matchPlayer(player).isDisabled(enchantmentId);
     }
 
     // Adds a potion effect of given length and intensity to the given entity.

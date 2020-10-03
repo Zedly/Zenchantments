@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.*;
+import zedly.zenchantments.player.PlayerData;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ public class InfoCommand extends ZenchantmentsCommand {
         }
 
         Config config = Config.get(player.getWorld());
-        EnchantPlayer enchantPlayer = EnchantPlayer.matchPlayer(player);
+        PlayerData playerData = PlayerData.matchPlayer(player);
 
         if (args.length > 0) {
             Zenchantment zenchantment = config.enchantFromString(args[0]);
@@ -38,7 +39,7 @@ public class InfoCommand extends ZenchantmentsCommand {
                     Storage.logo
                         + zenchantment.getLoreName()
                         + ": "
-                        + (enchantPlayer.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
+                        + (playerData.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
                         + ChatColor.AQUA + zenchantment.getDescription()
                 );
             }
@@ -62,7 +63,7 @@ public class InfoCommand extends ZenchantmentsCommand {
                 ChatColor.DARK_AQUA
                     + zenchantment.getLoreName()
                     + ": "
-                    + (enchantPlayer.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
+                    + (playerData.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
                     + ChatColor.AQUA
                     + zenchantment.getDescription()
             );

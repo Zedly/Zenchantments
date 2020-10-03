@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.enchantments.*;
+import zedly.zenchantments.player.PlayerData;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -185,7 +186,7 @@ public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantme
                 try {
                     ench.used = true;
                     if (action.test(ench, level)) {
-                        EnchantPlayer.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
+                        PlayerData.matchPlayer(player).setCooldown(ench.id, ench.cooldown);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();

@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import zedly.zenchantments.*;
+import zedly.zenchantments.player.PlayerData;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,11 +39,11 @@ public class EnableCommand extends ZenchantmentsCommand {
             return;
         }
 
-        EnchantPlayer enchantPlayer = EnchantPlayer.matchPlayer(player);
+        PlayerData playerData = PlayerData.matchPlayer(player);
         Zenchantment zenchantment = Config.get(player.getWorld()).enchantFromString(args[0]);
 
         if (zenchantment != null) {
-            enchantPlayer.enable(zenchantment.getId());
+            playerData.enable(zenchantment.getId());
             player.sendMessage(
                 Storage.logo
                     + "The zenchantment "
@@ -54,7 +55,7 @@ public class EnableCommand extends ZenchantmentsCommand {
                     + " enabled."
             );
         } else if (args[0].equalsIgnoreCase("all")) {
-            enchantPlayer.enableAll();
+            playerData.enableAll();
             player.sendMessage(
                 Storage.logo
                     + ChatColor.DARK_AQUA
