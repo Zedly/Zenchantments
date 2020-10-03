@@ -195,7 +195,7 @@ public class AnvilMerge implements Listener {
     private static class EnchantmentPool {
         private final Map<Zenchantment, Integer> enchantPool = new HashMap<>();
         private final ItemStack                  itemStack;
-        private final int                             maxCapacity;
+        private final int                        maxCapacity;
 
         public EnchantmentPool(ItemStack itemStack, int maxCapacity) {
             this.itemStack = itemStack;

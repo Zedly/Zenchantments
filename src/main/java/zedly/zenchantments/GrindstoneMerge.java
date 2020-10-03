@@ -42,7 +42,7 @@ public class GrindstoneMerge implements Listener {
     }
 
     private void removeOutputEnchants(GrindstoneInventory inventory, World world) {
-        final ItemStack itemStack = inventory.getItem(2);
+        ItemStack itemStack = inventory.getItem(2);
 
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return;

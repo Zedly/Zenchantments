@@ -47,7 +47,7 @@ public class HighFrequencyRunnableCache implements Runnable {
             this.players.clear();
             this.players.addAll(Bukkit.getOnlinePlayers());
 
-            ArrayList<Supplier<Boolean>> cache2 = cache0;
+            ArrayList<Supplier<Boolean>> cache2 = this.cache0;
 
             this.cache0 = cache1;
             this.cache1 = cache2;

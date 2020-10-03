@@ -51,16 +51,16 @@ public class Utilities {
                 : player.getInventory().getItemInOffHand();
             for (int i = 0; i < damage; i++) {
                 if (ThreadLocalRandom.current().nextInt(100) <= (100 / (heldItem.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
-                    setDamage(heldItem, getDamage(heldItem) + 1);
+                    Utilities.setDamage(heldItem, Utilities.getDamage(heldItem) + 1);
                 }
             }
             if (handUsed) {
                 player.getInventory().setItemInMainHand(
-                    getDamage(heldItem) > heldItem.getType().getMaxDurability() ? new ItemStack(AIR) : heldItem
+                    Utilities.getDamage(heldItem) > heldItem.getType().getMaxDurability() ? new ItemStack(AIR) : heldItem
                 );
             } else {
                 player.getInventory().setItemInOffHand(
-                    getDamage(heldItem) > heldItem.getType().getMaxDurability() ? new ItemStack(AIR) : heldItem
+                    Utilities.getDamage(heldItem) > heldItem.getType().getMaxDurability() ? new ItemStack(AIR) : heldItem
                 );
             }
         }
@@ -95,7 +95,7 @@ public class Utilities {
         if (!player.getGameMode().equals(CREATIVE)) {
             for (int i = 0; i < damage; i++) {
                 if (ThreadLocalRandom.current().nextInt(100) <= (100 / (itemStack.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
-                    setDamage(itemStack, getDamage(itemStack) + 1);
+                    Utilities.setDamage(itemStack, getDamage(itemStack) + 1);
                 }
             }
         }
@@ -134,12 +134,12 @@ public class Utilities {
 
     // Removes an item stack of the given description from the players inventory
     public static boolean removeItem(Player player, Material material) {
-        return removeItem(player, material, 1);
+        return Utilities.removeItem(player, material, 1);
     }
 
     // Removes an item stack of the given description from the players inventory
     public static boolean removeItem(Player player, ItemStack itemStack) {
-        return removeItem(player, itemStack.getType(), itemStack.getAmount());
+        return Utilities.removeItem(player, itemStack.getType(), itemStack.getAmount());
     }
 
     // Removes a certain number of an item stack of the given description from the players inventory and returns true
@@ -179,6 +179,7 @@ public class Utilities {
         if (player.getGameMode().equals(CREATIVE)) {
             return true;
         }
+
         Inventory inv = player.getInventory();
 
         for (int i = 0; i < inv.getSize(); i++) {
@@ -270,54 +271,49 @@ public class Utilities {
     // Returns the Roman number string representation of the given English number, capped at the int 'limit'
     public static String getRomanString(int number, int limit) {
         if (number > limit) {
-            return getRomanString(limit);
+            return Utilities.getRomanString(limit);
         } else {
-            return getRomanString(number);
+            return Utilities.getRomanString(number);
         }
     }
 
     // Returns the exact center of a block of a given location
     public static Location getCenter(Location location) {
-        return getCenter(location, false);
+        return Utilities.getCenter(location, false);
     }
 
     // Returns the exact center of a block of a given location
     public static Location getCenter(Location location, boolean centerVertical) {
-        double x = location.getX() + 0.5;
-        double y = location.getY();
-        double z = location.getZ() + 0.5;
-
-        if (centerVertical) {
-            y = (int) y + .5;
-        }
-
-        Location lo = location.clone();
-        lo.setX(x);
-        lo.setY(y);
-        lo.setZ(z);
-        return lo;
+        Location centered = location.clone();
+        centered.setX(location.getX() + 0.5);
+        centered.setY(centerVertical ? location.getY() + 0.5 : location.getY());
+        centered.setZ(location.getZ() + 0.5);
+        return centered;
     }
 
     // Returns the exact center of a block of a given block
     public static Location getCenter(Block block) {
-        return getCenter(block.getLocation());
+        return Utilities.getCenter(block.getLocation());
     }
 
     // Returns the exact center of a block of a given block
     public static Location getCenter(Block block, boolean centerVertical) {
-        return getCenter(block.getLocation(), centerVertical);
+        return Utilities.getCenter(block.getLocation(), centerVertical);
     }
 
     // Returns the nearby entities at any location within the given range
     // Returns a direction integer, 0-8, for the given player's pitch and yaw
     public static BlockFace getDirection(Player player) {
         float yaw = player.getLocation().getYaw();
-        BlockFace direction = BlockFace.SELF;
+
         if (yaw < 0) {
             yaw += 360;
         }
+
         yaw %= 360;
         double i = (yaw + 8) / 18;
+        BlockFace direction = BlockFace.SELF;
+
         if (i >= 19 || i < 1) {
             direction = BlockFace.SOUTH;
         } else if (i < 3) {
@@ -335,17 +331,20 @@ public class Utilities {
         } else if (i < 18) {
             direction = BlockFace.SOUTH_EAST;
         }
+
         return direction;
     }
 
     // Returns a more simple direction integer, 0-6, for the given player's pitch and yaw
     public static BlockFace getCardinalDirection(float yaw, float pitch) {
-        BlockFace direction;
         if (yaw < 0) {
             yaw += 360;
         }
+
         yaw %= 360;
         double i = (yaw + 8) / 18;
+        BlockFace direction;
+
         if (i >= 18 || i < 3) {
             direction = BlockFace.SOUTH;
         } else if (i < 8) {
@@ -355,11 +354,13 @@ public class Utilities {
         } else {
             direction = BlockFace.EAST;
         }
+
         if (pitch < -50) {
             direction = BlockFace.UP;
         } else if (pitch > 50) {
             direction = BlockFace.DOWN;
         }
+
         return direction;
     }
 
@@ -557,7 +558,7 @@ public class Utilities {
     ) {
         // Ensure the search list is in the whitelist
         if (!flipValidSearch) {
-            validSearch = new EnumStorage<>(new Material[]{}, validSearch, validFind);
+            validSearch = new EnumStorage<>(new Material[] {}, validSearch, validFind);
         }
 
         // BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large
