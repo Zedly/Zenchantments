@@ -1,10 +1,11 @@
 package zedly.zenchantments.player;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,10 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
 
     @Override
     public void enableAllZenchantments() {
-        for (Zenchantment zenchantment : WorldConfiguration.get(this.player.getWorld()).getEnchants()) {
+        World world = this.player.getWorld();
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+
+        for (Zenchantment zenchantment : config.getEnchants()) {
             this.player.setMetadata("ze." + zenchantment.getId(), new FixedMetadataValue(this.plugin, false));
         }
     }
@@ -39,7 +43,10 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
 
     @Override
     public void disableAllZenchantments() {
-        for (Zenchantment zenchantment : WorldConfiguration.get(player.getWorld()).getEnchants()) {
+        World world = this.player.getWorld();
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+
+        for (Zenchantment zenchantment : config.getEnchants()) {
             this.player.setMetadata("ze." + zenchantment.getId(), new FixedMetadataValue(this.plugin, true));
         }
     }
