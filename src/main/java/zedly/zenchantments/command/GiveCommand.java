@@ -3,6 +3,7 @@ package zedly.zenchantments.command;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -71,7 +72,8 @@ public class GiveCommand extends ZenchantmentsCommand {
             material = Material.matchMaterial(scanner.next());
         }
 
-        WorldConfiguration config = WorldConfiguration.get(recipient.getWorld());
+        World world = recipient.getWorld();
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
         if (material == null) {
             sender.sendMessage(
@@ -147,7 +149,7 @@ public class GiveCommand extends ZenchantmentsCommand {
         );
 
         for (Map.Entry<Zenchantment, Integer> zenchantment : zenchantmentsToAdd.entrySet()) {
-            zenchantment.getKey().setEnchantment(itemStack, zenchantment.getValue(), config.getWorld());
+            zenchantment.getKey().setEnchantment(itemStack, zenchantment.getValue(), world);
             message.append(ChatColor.stripColor(zenchantment.getKey().getName())).append(", ");
         }
 

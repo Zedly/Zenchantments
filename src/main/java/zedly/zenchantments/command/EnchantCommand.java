@@ -1,6 +1,7 @@
 package zedly.zenchantments.command;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +35,11 @@ public class EnchantCommand extends ZenchantmentsCommand {
             return;
         }
 
-        WorldConfiguration config = WorldConfiguration.get(player.getWorld());
-        Zenchantment zenchantment = config.enchantFromString(args[0]);
+        World world = player.getWorld();
+        Zenchantment zenchantment = this.plugin
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(world)
+            .enchantFromString(args[0]);
 
         if (zenchantment == null) {
             player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "That enchantment does not exist!");
@@ -45,7 +48,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
 
         player.getInventory().setItemInMainHand(
             this.addEnchantments(
-                config,
+                world,
                 player,
                 zenchantment,
                 player.getInventory().getItemInMainHand(),
@@ -63,7 +66,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
     @NotNull
     @Contract(value = "_, _, _, _, _ -> param4", mutates = "param4")
     private ItemStack addEnchantments(
-        @NotNull WorldConfiguration config,
+        @NotNull World world,
         @NotNull Player player,
         @NotNull Zenchantment enchantment,
         @NotNull ItemStack itemStack,
@@ -99,7 +102,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             level = 1;
         }
 
-        enchantment.setEnchantment(itemStack, level, config.getWorld());
+        enchantment.setEnchantment(itemStack, level, world);
 
         if (level != 0) {
             player.sendMessage(

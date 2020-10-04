@@ -1,6 +1,7 @@
 package zedly.zenchantments.command;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +34,8 @@ public class InfoCommand extends ZenchantmentsCommand {
             return;
         }
 
-        WorldConfiguration config = WorldConfiguration.get(player.getWorld());
+        World world = player.getWorld();
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
         PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
 
         if (args.length > 0) {
@@ -53,7 +55,7 @@ public class InfoCommand extends ZenchantmentsCommand {
         Set<Zenchantment> zenchantments = Zenchantment.getEnchants(
             player.getInventory().getItemInMainHand(),
             true,
-            config.getWorld()
+            world
         ).keySet();
 
         if (zenchantments.isEmpty()) {

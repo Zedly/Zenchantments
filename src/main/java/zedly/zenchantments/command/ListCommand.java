@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class ListCommand extends ZenchantmentsCommand {
@@ -34,8 +34,13 @@ public class ListCommand extends ZenchantmentsCommand {
 
         player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "Enchantment Types:");
 
+        Set<Zenchantment> zenchantments = this.plugin
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(player.getWorld())
+            .getEnchants();
+
         // TODO: Find a more efficient way of displaying the enchantments in alphabetical order.
-        for (Zenchantment zenchantment : new TreeSet<>(WorldConfiguration.get(player.getWorld()).getEnchants())) {
+        for (Zenchantment zenchantment : new TreeSet<>(zenchantments)) {
             if (zenchantment.validMaterial(player.getInventory().getItemInMainHand())) {
                 player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + zenchantment.getName());
             }

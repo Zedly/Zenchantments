@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.player.PlayerData;
 
 import java.util.Collections;
@@ -44,7 +43,10 @@ public class DisableCommand extends ZenchantmentsCommand {
         }
 
         PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
-        Zenchantment zenchantment = WorldConfiguration.get(player.getWorld()).enchantFromString(args[0]);
+        Zenchantment zenchantment = this.plugin
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(player.getWorld())
+            .enchantFromString(args[0]);
 
         if (zenchantment != null) {
             playerData.disableZenchantment(zenchantment.getId());
