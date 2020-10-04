@@ -1,8 +1,6 @@
 package zedly.zenchantments;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -29,25 +27,31 @@ import java.util.regex.Pattern;
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
 
-public abstract class Zenchantment implements zedly.zenchantments.api.Zenchantment {
+public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zenchantment {
     private static final Pattern ENCH_LORE_PATTERN = Pattern.compile("§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)");
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
-    protected int        id;
-    protected int        maxLevel;
-    protected String     name;
-    protected float      probability;
-    protected Tool[]     enchantable;
-    protected Class<?>[] conflicting;
-    protected String     description;
-    protected int        cooldown;
-    protected double     power;
-    protected Hand       handUse;
-    private   boolean    used;
-    protected boolean    isCursed;
+    private final NamespacedKey key;
+    protected     int           id;
+    protected     int           maxLevel;
+    protected     String        name;
+    protected     float         probability;
+    protected     Tool[]        enchantable;
+    protected     Class<?>[]    conflicting;
+    protected     String        description;
+    protected     int           cooldown;
+    protected     double        power;
+    protected     Hand          handUse;
+    private       boolean       used;
+    protected     boolean       isCursed;
 
     public abstract Builder<? extends Zenchantment> defaults();
+
+    @Override
+    public NamespacedKey getKey() {
+        return this.key;
+    }
 
     @Override
     public int getId() {
