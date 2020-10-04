@@ -146,7 +146,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
             PlayerInventory inventory = player.getInventory();
             for (ItemStack itemStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
                 Zenchantment.setEnchantment(itemStack, null, 0, player.getWorld());
-                Zenchantment.updateToNewFormat(itemStack, player.getWorld());
             }
         }
     }
