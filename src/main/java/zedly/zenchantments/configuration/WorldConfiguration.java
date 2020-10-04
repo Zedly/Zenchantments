@@ -17,7 +17,7 @@ import java.util.*;
 
 // This class manages indivudual world configs, loading them each from the config file. It will start the process
 //      to automatically update the config files if they are old
-public class WorldConfiguration {
+public class WorldConfiguration implements zedly.zenchantments.api.configuration.WorldConfiguration {
 
     public static final Map<World, WorldConfiguration> CONFIGS     = new HashMap<>(); // Map of all world configs on the current server
     public static final HashSet<Zenchantment>          allEnchants = new HashSet<>();

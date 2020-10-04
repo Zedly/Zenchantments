@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class WorldConfigurationProvider {
+public class WorldConfigurationProvider implements zedly.zenchantments.api.configuration.WorldConfigurationProvider {
     private final Map<UUID, WorldConfiguration> configMap = new HashMap<>();
     private final ZenchantmentsPlugin           plugin;
 
@@ -15,6 +15,7 @@ public class WorldConfigurationProvider {
         this.plugin = plugin;
     }
 
+    @Override
     public WorldConfiguration getConfigurationForWorld(World world) {
         WorldConfiguration config = this.configMap.get(world.getUID());
 
@@ -24,5 +25,10 @@ public class WorldConfigurationProvider {
         }
 
         return config;
+    }
+
+    @Override
+    public void resetConfigurationForWorld(World world) {
+
     }
 }

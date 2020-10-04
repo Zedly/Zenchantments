@@ -122,10 +122,12 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         }
     }
 
+    @Override
     public GlobalConfiguration getGlobalConfiguration() {
         return this.globalConfiguration;
     }
 
+    @Override
     public WorldConfigurationProvider getWorldConfigurationProvider() {
         return this.worldConfigurationProvider;
     }
