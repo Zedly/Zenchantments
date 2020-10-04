@@ -2,7 +2,6 @@ package zedly.zenchantments;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,9 +21,7 @@ import zedly.zenchantments.player.PlayerDataProvider;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
-import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
 
 import static org.bukkit.Material.LAVA;
 import static org.bukkit.Material.WATER;
@@ -134,11 +131,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @Override
     public PlayerDataProvider getPlayerDataProvider() {
         return this.playerDataProvider;
-    }
-
-    @Override
-    public Set<zedly.zenchantments.api.Zenchantment> getZenchantmentsForWorld(World world) {
-        return Collections.emptySet();
     }
 
     private void updateDescriptions() {
