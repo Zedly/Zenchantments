@@ -28,10 +28,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.configuration.WorldConfiguration;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.enchantments.*;
 
 import java.util.*;
@@ -43,6 +45,12 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 // This contains extraneous watcher methods that are not relevant to arrows or enchantments
 public class GeneralListener implements Listener {
+    private final ZenchantmentsPlugin plugin;
+
+    public GeneralListener(@NotNull ZenchantmentsPlugin plugin) {
+        this.plugin = plugin;
+    }
+
     // Fires a laser effect from dispensers if a tool with the Laser enchantment is dispensed
     @EventHandler
     public void onBlockDispense(BlockDispenseEvent event) {
