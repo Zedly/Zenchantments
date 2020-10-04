@@ -18,7 +18,9 @@ public class ReloadCommand extends ZenchantmentsCommand {
             return;
         }
 
-        this.plugin.loadConfigs();
+        this.plugin.getGlobalConfiguration().loadGlobalConfiguration();
+        this.plugin.getWorldConfigurationProvider().loadWorldConfigurations();
+
         sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "Reloaded Zenchantments.");
     }
 

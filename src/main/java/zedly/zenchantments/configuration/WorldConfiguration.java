@@ -138,14 +138,6 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
         return idToEnch.get(id);
     }
 
-    // Loads, parses, and auto updates the config file, creating a new config for each map 
-    public static void loadConfigs() {
-        CONFIGS.clear();
-        for (World world : Bukkit.getWorlds()) {
-            WorldConfiguration.CONFIGS.put(world, getWorldConfig(world));
-        }
-    }
-
     public static WorldConfiguration getWorldConfig(World world) {
         try {
             InputStream stream = ZenchantmentsPlugin.class.getResourceAsStream("/defaultconfig.yml");

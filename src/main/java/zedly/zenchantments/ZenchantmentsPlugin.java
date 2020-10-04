@@ -12,7 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import zedly.zenchantments.api.Zenchantments;
 import zedly.zenchantments.command.ZenchantmentsCommandHandler;
 import zedly.zenchantments.configuration.GlobalConfiguration;
-import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.event.listener.GeneralListener;
@@ -23,7 +22,6 @@ import zedly.zenchantments.player.PlayerDataProvider;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -54,7 +52,8 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
             .getDescription()
             .getVersion();
 
-        this.loadConfigs();
+        this.globalConfiguration.loadGlobalConfiguration();
+        this.worldConfigurationProvider.loadWorldConfigurations();
 
         ZenchantmentsCommandHandler commandHandler = new ZenchantmentsCommandHandler(this);
         PluginCommand enchCommand = Objects.requireNonNull(this.getCommand("ench"));
@@ -140,14 +139,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @Override
     public Set<zedly.zenchantments.api.Zenchantment> getZenchantmentsForWorld(World world) {
         return Collections.emptySet();
-    }
-
-    public void loadConfigs() {
-        if (new File("plugins/Zenchantments/").mkdir()) {
-            this.getLogger().info("Created folder for configuration.");
-        }
-
-        WorldConfiguration.loadConfigs();
     }
 
     private void updateDescriptions() {

@@ -8,4 +8,8 @@ public class GlobalConfiguration implements zedly.zenchantments.api.configuratio
     public GlobalConfiguration(ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
+
+    public void loadGlobalConfiguration() {
+
+    }
 }

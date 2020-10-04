@@ -17,18 +17,26 @@ public class WorldConfigurationProvider implements zedly.zenchantments.api.confi
 
     @Override
     public WorldConfiguration getConfigurationForWorld(World world) {
-        WorldConfiguration config = this.configMap.get(world.getUID());
+        return this.configMap.computeIfAbsent(world.getUID(), this::loadConfiguration);
+    }
 
-        if (config == null) {
-            config = null; // TODO: Replace with actual WorldConfiguration constructor.
-            this.configMap.put(world.getUID(), config);
-        }
-
-        return config;
+    @Override
+    public WorldConfiguration loadConfigurationForWorld(World world) {
+        WorldConfiguration newConfiguration = this.loadConfiguration(world.getUID());
+        this.configMap.put(world.getUID(), newConfiguration);
+        return newConfiguration;
     }
 
     @Override
     public void resetConfigurationForWorld(World world) {
+        // TODO: Load default config, set as configuration for given world.
+    }
 
+    public void loadWorldConfigurations() {
+        this.plugin.getServer().getWorlds().forEach(this::loadConfigurationForWorld);
+    }
+
+    private WorldConfiguration loadConfiguration(UUID worldId) {
+        return null; // TODO: Load configuration from disk.
     }
 }
