@@ -13,9 +13,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import zedly.zenchantments.configuration.WorldConfiguration;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.enchantments.Unrepairable;
 
 import java.util.*;
@@ -30,12 +33,12 @@ import static org.bukkit.event.EventPriority.MONITOR;
 public class AnvilMergeListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
-    public AnvilMergeListener(ZenchantmentsPlugin plugin) {
+    public AnvilMergeListener(@NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler(priority = MONITOR)
-    private void onClick(final InventoryClickEvent event) {
+    private void onClick(@NotNull InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.ANVIL || !event.getClick().isLeftClick()) {
             return;
         }
@@ -55,13 +58,13 @@ public class AnvilMergeListener implements Listener {
     }
 
     @EventHandler(priority = MONITOR)
-    private void onClick(final PrepareAnvilEvent evt) {
-        if (evt.getViewers().size() < 1) {
+    private void onClick(@NotNull PrepareAnvilEvent event) {
+        if (event.getViewers().size() < 1) {
             return;
         }
 
-        WorldConfiguration config = WorldConfiguration.get(evt.getViewers().get(0).getWorld());
-        AnvilInventory anvilInv = evt.getInventory();
+        WorldConfiguration config = WorldConfiguration.get(event.getViewers().get(0).getWorld());
+        AnvilInventory anvilInv = event.getInventory();
 
         ItemStack item0 = anvilInv.getItem(0);
         if (item0 != null && item0.getType() == ENCHANTED_BOOK) {
@@ -92,7 +95,14 @@ public class AnvilMergeListener implements Listener {
         }, 0);
     }
 
-    private ItemStack doMerge(ItemStack leftItem, ItemStack rightItem, ItemStack oldOutItem, WorldConfiguration config) {
+    @Nullable
+    @Contract("null, _, _, _ -> null; _, null, _, _ -> null; _, _, null, _ -> null")
+    private ItemStack doMerge(
+        @Nullable ItemStack leftItem,
+        @Nullable ItemStack rightItem,
+        @Nullable ItemStack oldOutItem,
+        @NotNull WorldConfiguration config
+    ) {
         if (leftItem == null || rightItem == null || oldOutItem == null) {
             return null;
         }
@@ -200,22 +210,22 @@ public class AnvilMergeListener implements Listener {
         private final ItemStack                  itemStack;
         private final int                        maxCapacity;
 
-        public EnchantmentPool(ItemStack itemStack, int maxCapacity) {
+        public EnchantmentPool(@NotNull ItemStack itemStack, int maxCapacity) {
             this.itemStack = itemStack;
             this.maxCapacity = maxCapacity;
         }
 
-        public void addAll(Map<Zenchantment, Integer> enchantsToAdd) {
+        public void addAll(@NotNull Map<Zenchantment, Integer> enchantsToAdd) {
             this.addAll(enchantsToAdd.entrySet());
         }
 
-        public void addAll(Collection<Entry<Zenchantment, Integer>> enchantsToAdd) {
+        public void addAll(@NotNull Collection<Entry<Zenchantment, Integer>> enchantsToAdd) {
             for (Entry<Zenchantment, Integer> enchantEntry : enchantsToAdd) {
                 this.addEnchant(enchantEntry);
             }
         }
 
-        private void addEnchant(Entry<Zenchantment, Integer> enchantEntry) {
+        private void addEnchant(@NotNull Entry<Zenchantment, Integer> enchantEntry) {
             Zenchantment ench = enchantEntry.getKey();
 
             if (this.itemStack.getType() != Material.ENCHANTED_BOOK && !ench.validMaterial(this.itemStack)) {
@@ -241,6 +251,7 @@ public class AnvilMergeListener implements Listener {
             }
         }
 
+        @NotNull
         public Map<Zenchantment, Integer> getEnchantmentMap() {
             return this.enchantPool;
         }

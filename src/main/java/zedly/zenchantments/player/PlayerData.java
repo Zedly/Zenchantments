@@ -3,6 +3,8 @@ package zedly.zenchantments.player;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
@@ -16,7 +18,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
 
     private Player player;
 
-    public PlayerData(ZenchantmentsPlugin plugin, Player player) {
+    public PlayerData(@NotNull ZenchantmentsPlugin plugin, @NotNull Player player) {
         this.plugin = plugin;
         this.player = player;
     }
@@ -56,7 +58,8 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         return this.enchantCooldown.getOrDefault(zenchantmentId, 0);
     }
 
-    public void setPlayer(Player player) {
+    @Contract(mutates = "this")
+    public void setPlayer(@NotNull Player player) {
         this.player = player;
     }
 

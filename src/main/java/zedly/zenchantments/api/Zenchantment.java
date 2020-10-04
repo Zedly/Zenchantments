@@ -1,5 +1,6 @@
 package zedly.zenchantments.api;
 
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 
@@ -21,6 +22,7 @@ public interface Zenchantment {
      *
      * @return A {@link String} representing the name of this {@link Zenchantment}.
      */
+    @NotNull
     String getName();
 
     /**
@@ -30,6 +32,7 @@ public interface Zenchantment {
      *
      * @return A {@link String} representing the description of this {@link Zenchantment}.
      */
+    @NotNull
     String getDescription();
 
     /**
@@ -69,6 +72,7 @@ public interface Zenchantment {
      *
      * @return An array of {@link Tool Tools} that can receive and work with this {@link Zenchantment}.
      */
+    @NotNull
     Tool[] getEnchantable();
 
     /**
@@ -77,6 +81,7 @@ public interface Zenchantment {
      *
      * @return An array of {@link Class Classes} of {@link Zenchantments} that conflict with this {@link Zenchantment}.
      */
+    @NotNull
     Class<?>[] getConflicting();
 
     /**
@@ -84,5 +89,6 @@ public interface Zenchantment {
      *
      * @return A {@link Hand} value representing the hands that this {@link Zenchantment} has actions for.
      */
+    @NotNull
     Hand getHandUse();
 }

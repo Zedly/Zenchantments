@@ -1,6 +1,8 @@
 package zedly.zenchantments.player;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
@@ -11,12 +13,14 @@ public class PlayerDataProvider implements zedly.zenchantments.api.player.Player
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
     private final ZenchantmentsPlugin   plugin;
 
-    public PlayerDataProvider(ZenchantmentsPlugin plugin) {
+    public PlayerDataProvider(@NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public PlayerData getDataForPlayer(Player player) {
+    @NotNull
+    @Contract(mutates = "this")
+    public PlayerData getDataForPlayer(@NotNull Player player) {
         PlayerData playerData = this.playerDataMap.get(player.getUniqueId());
 
         if (playerData == null) {
@@ -35,7 +39,8 @@ public class PlayerDataProvider implements zedly.zenchantments.api.player.Player
     }
 
     @Override
-    public void resetDataForPlayer(Player player) {
+    @Contract(mutates = "this")
+    public void resetDataForPlayer(@NotNull Player player) {
         this.playerDataMap.put(player.getUniqueId(), new PlayerData(this.plugin, player));
     }
 }

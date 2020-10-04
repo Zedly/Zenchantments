@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -19,12 +20,12 @@ import static org.bukkit.event.EventPriority.MONITOR;
 public class GrindstoneMergeListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
-    public GrindstoneMergeListener(ZenchantmentsPlugin plugin) {
+    public GrindstoneMergeListener(@NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler(priority = MONITOR)
-    private void onClick(final InventoryClickEvent event) {
+    private void onClick(@NotNull InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.GRINDSTONE) {
             return;
         }
@@ -43,7 +44,7 @@ public class GrindstoneMergeListener implements Listener {
         }
     }
 
-    private void removeOutputEnchants(GrindstoneInventory inventory, World world) {
+    private void removeOutputEnchants(@NotNull GrindstoneInventory inventory, @NotNull World world) {
         ItemStack itemStack = inventory.getItem(2);
 
         if (itemStack == null || itemStack.getType() == Material.AIR) {

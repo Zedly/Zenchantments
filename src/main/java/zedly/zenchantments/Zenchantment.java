@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.enchantments.*;
@@ -49,6 +50,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     public abstract Builder<? extends Zenchantment> defaults();
 
     @Override
+    @NotNull
     public NamespacedKey getKey() {
         return this.key;
     }
@@ -59,11 +61,13 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     @Override
+    @NotNull
     public String getName() {
         return this.name;
     }
 
     @Override
+    @NotNull
     public String getDescription() {
         return this.description;
     }
@@ -99,6 +103,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     @Override
+    @NotNull
     public Hand getHandUse() {
         return handUse;
     }

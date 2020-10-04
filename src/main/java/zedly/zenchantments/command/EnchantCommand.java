@@ -4,9 +4,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.configuration.WorldConfiguration;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,12 +17,12 @@ import java.util.List;
 import static org.bukkit.Material.*;
 
 public class EnchantCommand extends ZenchantmentsCommand {
-    public EnchantCommand(ZenchantmentsPlugin plugin) {
+    public EnchantCommand(@NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
             return;
@@ -52,26 +55,23 @@ public class EnchantCommand extends ZenchantmentsCommand {
     }
 
     @Override
-    public List<String> getTabCompleteOptions(CommandSender sender, String[] args) {
+    @Nullable
+    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
         return Collections.emptyList();
     }
 
+    @NotNull
+    @Contract(value = "_, _, _, _, _ -> param4", mutates = "param4")
     private ItemStack addEnchantments(
-        WorldConfiguration config,
-        Player player,
-        Zenchantment enchantment,
-        ItemStack itemStack,
-        String levelString
+        @NotNull WorldConfiguration config,
+        @NotNull Player player,
+        @NotNull Zenchantment enchantment,
+        @NotNull ItemStack itemStack,
+        @NotNull String levelString
     ) {
-        if (config == null) {
-            return itemStack;
-        }
-
         // Check if the player is holding an item
         if (itemStack.getType() == AIR) {
-            if (player != null) {
-                player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You need to be holding an item!");
-            }
+            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You need to be holding an item!");
             return itemStack;
         }
 
@@ -80,16 +80,14 @@ public class EnchantCommand extends ZenchantmentsCommand {
             && itemStack.getType() != BOOK
             && itemStack.getType() != ENCHANTED_BOOK
         ) {
-            if (player != null) {
-                player.sendMessage(
-                    ZenchantmentsCommand.MESSAGE_PREFIX
-                        + "The enchantment "
-                        + ChatColor.DARK_AQUA
-                        + enchantment.getName()
-                        + ChatColor.AQUA +
-                        " cannot be added to this item."
-                );
-            }
+            player.sendMessage(
+                ZenchantmentsCommand.MESSAGE_PREFIX
+                    + "The enchantment "
+                    + ChatColor.DARK_AQUA
+                    + enchantment.getName()
+                    + ChatColor.AQUA +
+                    " cannot be added to this item."
+            );
             return itemStack;
         }
 
@@ -104,27 +102,23 @@ public class EnchantCommand extends ZenchantmentsCommand {
         enchantment.setEnchantment(itemStack, level, config.getWorld());
 
         if (level != 0) {
-            if (player != null) {
-                player.sendMessage(
-                    ZenchantmentsCommand.MESSAGE_PREFIX
-                        + "The enchantment "
-                        + ChatColor.DARK_AQUA
-                        + enchantment.getName()
-                        + ChatColor.AQUA +
-                        " has been added."
-                );
-            }
+            player.sendMessage(
+                ZenchantmentsCommand.MESSAGE_PREFIX
+                    + "The enchantment "
+                    + ChatColor.DARK_AQUA
+                    + enchantment.getName()
+                    + ChatColor.AQUA +
+                    " has been added."
+            );
         } else {
-            if (player != null) {
-                player.sendMessage(
-                    ZenchantmentsCommand.MESSAGE_PREFIX
-                        + "The enchantment "
-                        + ChatColor.DARK_AQUA
-                        + enchantment.getName()
-                        + ChatColor.AQUA
-                        + " has been removed."
-                );
-            }
+            player.sendMessage(
+                ZenchantmentsCommand.MESSAGE_PREFIX
+                    + "The enchantment "
+                    + ChatColor.DARK_AQUA
+                    + enchantment.getName()
+                    + ChatColor.AQUA
+                    + " has been removed."
+            );
         }
 
         return itemStack;

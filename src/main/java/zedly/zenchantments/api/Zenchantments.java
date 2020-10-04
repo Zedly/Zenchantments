@@ -1,5 +1,6 @@
 package zedly.zenchantments.api;
 
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.api.configuration.GlobalConfiguration;
 import zedly.zenchantments.api.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.api.player.PlayerDataProvider;
@@ -13,6 +14,7 @@ public interface Zenchantments {
      *
      * @return The {@link GlobalConfiguration} of this {@link Zenchantments} instance.
      */
+    @NotNull
     GlobalConfiguration getGlobalConfiguration();
 
     /**
@@ -20,6 +22,7 @@ public interface Zenchantments {
      *
      * @return The {@link WorldConfigurationProvider} of this {@link Zenchantments} instance.
      */
+    @NotNull
     WorldConfigurationProvider getWorldConfigurationProvider();
 
     /**
@@ -27,5 +30,6 @@ public interface Zenchantments {
      *
      * @return The {@link PlayerDataProvider} of this {@link Zenchantments} instance.
      */
+    @NotNull
     PlayerDataProvider getPlayerDataProvider();
 }

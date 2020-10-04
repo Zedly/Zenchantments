@@ -2,18 +2,20 @@ package zedly.zenchantments.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Collections;
 import java.util.List;
 
 public class HelpCommand extends ZenchantmentsCommand {
-    public HelpCommand(ZenchantmentsPlugin plugin) {
+    public HelpCommand(@NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
         sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX);
         sender.sendMessage(
             ChatColor.DARK_AQUA
@@ -54,7 +56,8 @@ public class HelpCommand extends ZenchantmentsCommand {
     }
 
     @Override
-    public List<String> getTabCompleteOptions(CommandSender sender, String[] args) {
+    @Nullable
+    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
         return Collections.emptyList();
     }
 }

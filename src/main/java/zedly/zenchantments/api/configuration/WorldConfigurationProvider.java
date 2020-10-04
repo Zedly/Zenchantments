@@ -1,11 +1,14 @@
 package zedly.zenchantments.api.configuration;
 
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 public interface WorldConfigurationProvider {
-    WorldConfiguration getConfigurationForWorld(World world);
+    @NotNull
+    WorldConfiguration getConfigurationForWorld(@NotNull World world);
 
-    WorldConfiguration loadConfigurationForWorld(World world);
+    @NotNull
+    WorldConfiguration loadConfigurationForWorld(@NotNull World world);
 
-    void resetConfigurationForWorld(World world);
+    void resetConfigurationForWorld(@NotNull World world);
 }

@@ -6,6 +6,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Collections;
@@ -16,7 +18,7 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
     private final EnchantCommand                    enchantCommand;
     private final Map<String, ZenchantmentsCommand> commandMap;
 
-    public ZenchantmentsCommandHandler(ZenchantmentsPlugin plugin) {
+    public ZenchantmentsCommandHandler(@NotNull ZenchantmentsPlugin plugin) {
         this.enchantCommand = new EnchantCommand(plugin);
         this.commandMap = new ImmutableMap.Builder<String, ZenchantmentsCommand>()
             .put("disable", new DisableCommand(plugin))
@@ -30,7 +32,12 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(
+        @NotNull CommandSender sender,
+        @NotNull Command command,
+        @NotNull String label,
+        @NotNull String[] args
+    ) {
         String subcommand = "help";
         if (args.length > 0) {
             subcommand = args[0].toLowerCase();
@@ -41,7 +48,13 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+    @Nullable
+    public List<String> onTabComplete(
+        @NotNull CommandSender sender,
+        @NotNull Command command,
+        @NotNull String label,
+        @NotNull String[] args
+    ) {
         if (args.length == 0) {
             return Collections.emptyList();
         }

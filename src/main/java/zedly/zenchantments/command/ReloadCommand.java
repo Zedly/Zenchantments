@@ -1,18 +1,20 @@
 package zedly.zenchantments.command;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Collections;
 import java.util.List;
 
 public class ReloadCommand extends ZenchantmentsCommand {
-    public ReloadCommand(ZenchantmentsPlugin plugin) {
+    public ReloadCommand(@NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
         if (!sender.hasPermission("zenchantments.command.reload")) {
             sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
@@ -25,7 +27,8 @@ public class ReloadCommand extends ZenchantmentsCommand {
     }
 
     @Override
-    public List<String> getTabCompleteOptions(CommandSender sender, String[] args) {
+    @Nullable
+    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
         return Collections.emptyList();
     }
 }

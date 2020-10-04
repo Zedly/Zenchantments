@@ -3,9 +3,11 @@ package zedly.zenchantments.command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.configuration.WorldConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.player.PlayerData;
 
 import java.util.Collections;
@@ -13,12 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 public class InfoCommand extends ZenchantmentsCommand {
-    public InfoCommand(ZenchantmentsPlugin plugin) {
+    public InfoCommand(@NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
             return;
@@ -73,7 +75,8 @@ public class InfoCommand extends ZenchantmentsCommand {
     }
 
     @Override
-    public List<String> getTabCompleteOptions(CommandSender sender, String[] args) {
+    @Nullable
+    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
         return Collections.emptyList();
     }
 }

@@ -1,9 +1,14 @@
 package zedly.zenchantments.api.player;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public interface PlayerDataProvider {
-    PlayerData getDataForPlayer(Player player);
+    @NotNull
+    @Contract(mutates = "this")
+    PlayerData getDataForPlayer(@NotNull Player player);
 
-    void resetDataForPlayer(Player player);
+    @Contract(mutates = "this")
+    void resetDataForPlayer(@NotNull Player player);
 }

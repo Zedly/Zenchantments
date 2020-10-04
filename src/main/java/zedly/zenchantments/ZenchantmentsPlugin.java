@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.api.Zenchantments;
 import zedly.zenchantments.command.ZenchantmentsCommandHandler;
 import zedly.zenchantments.configuration.GlobalConfiguration;
@@ -119,16 +120,19 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     }
 
     @Override
+    @NotNull
     public GlobalConfiguration getGlobalConfiguration() {
         return this.globalConfiguration;
     }
 
     @Override
+    @NotNull
     public WorldConfigurationProvider getWorldConfigurationProvider() {
         return this.worldConfigurationProvider;
     }
 
     @Override
+    @NotNull
     public PlayerDataProvider getPlayerDataProvider() {
         return this.playerDataProvider;
     }
