@@ -1,10 +1,10 @@
 package zedly.zenchantments.event.listener;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
@@ -43,7 +43,6 @@ import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-// This contains extraneous watcher methods that are not relevant to arrows or enchantments
 public class GeneralListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
@@ -51,10 +50,10 @@ public class GeneralListener implements Listener {
         this.plugin = plugin;
     }
 
-    // Fires a laser effect from dispensers if a tool with the Laser enchantment is dispensed
     @EventHandler
-    public void onBlockDispense(BlockDispenseEvent event) {
-        WorldConfiguration config = WorldConfiguration.get(event.getBlock().getWorld());
+    public void onBlockDispense(@NotNull BlockDispenseEvent event) {
+        World world = event.getBlock().getWorld();
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
         if (event.getBlock().getType() != DISPENSER) {
             return;
@@ -73,13 +72,13 @@ public class GeneralListener implements Listener {
             return;
         }
 
-        if (!Zenchantment.getEnchants(item, config.getWorld()).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
+        if (!Zenchantment.getEnchants(item, world).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
             return;
         }
 
         event.setCancelled(true);
 
-        int level = Zenchantment.getEnchants(item, config.getWorld()).get(laser);
+        int level = Zenchantment.getEnchants(item, world).get(laser);
         int range = 6 + (int) Math.round(level * laser.getPower() * 3);
 
         Block block = event.getBlock();
@@ -105,7 +104,7 @@ public class GeneralListener implements Listener {
                 if (entity.getLocation().distance(location) < 0.75 && entity instanceof LivingEntity) {
                     int damageAmount = 1 + (level * 2);
                     EntityDamageEvent damageEvent = new EntityDamageEvent(entity, DamageCause.FIRE, damageAmount);
-                    Bukkit.getPluginManager().callEvent(damageEvent);
+                    this.plugin.getServer().getPluginManager().callEvent(damageEvent);
                     entity.setLastDamageCause(damageEvent);
 
                     if (!event.isCancelled()) {
@@ -116,9 +115,8 @@ public class GeneralListener implements Listener {
         }
     }
 
-    // Prevents falling block entities from Anthropomorphism from becoming solid blocks or disappearing
     @EventHandler
-    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+    public void onEntityChangeBlock(@NotNull EntityChangeBlockEvent event) {
         if (!(event.getEntity() instanceof FallingBlock)) {
             return;
         }
@@ -129,31 +127,27 @@ public class GeneralListener implements Listener {
         }
     }
 
-    // Prevents mobs affected by Rainbow Slam from being hurt by generic "FALL" event. Damage is instead dealt via an
-    // EDBEe in order to make protections and money drops work
     @EventHandler
-    public void onEntityFall(EntityDamageEvent event) {
+    public void onEntityFall(@NotNull EntityDamageEvent event) {
         if (event.getCause() == DamageCause.FALL && RainbowSlam.rainbowSlamNoFallEntities.contains(event.getEntity())) {
             event.setCancelled(true);
         }
     }
 
-    // Teleports item stacks to a certain location as they are created from breaking a block or killing an entity if
-    //      a Grab or Vortex enchantment was used
     @EventHandler
-    public void onItemSpawn(ItemSpawnEvent event) {
+    public void onItemSpawn(@NotNull ItemSpawnEvent event) {
         if (Fire.cancelledItemDrops.contains(event.getLocation().getBlock())) {
             event.setCancelled(true);
             return;
         }
 
-        Location loc = event.getEntity().getLocation();
+        Location location = event.getEntity().getLocation();
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
             for (Block block : Grab.grabLocs.keySet()) {
-                if (block.getLocation().getBlockX() != loc.getBlockX()
-                    || block.getLocation().getBlockY() != loc.getBlockY()
-                    || block.getLocation().getBlockZ() != loc.getBlockZ()
+                if (block.getLocation().getBlockX() != location.getBlockX()
+                    || block.getLocation().getBlockY() != location.getBlockY()
+                    || block.getLocation().getBlockZ() != location.getBlockZ()
                 ) {
                     continue;
                 }
@@ -170,11 +164,11 @@ public class GeneralListener implements Listener {
             }
 
             for (Block block : Vortex.vortexLocs.keySet()) {
-                if (!block.getLocation().getWorld().equals(loc.getWorld())) {
+                if (!block.getLocation().getWorld().equals(location.getWorld())) {
                     continue;
                 }
 
-                if (!(block.getLocation().distance(loc) < 2)) {
+                if (!(block.getLocation().distance(location) < 2)) {
                     continue;
                 }
 
@@ -191,25 +185,23 @@ public class GeneralListener implements Listener {
         }, 1);
     }
 
-    // Prevents players from harvesting materials from the Water Walker and Fire Walker trails
     @EventHandler
-    public void onIceOrLavaBreak(BlockBreakEvent event) {
+    public void onIceOrLavaBreak(@NotNull BlockBreakEvent event) {
         Location location = event.getBlock().getLocation();
         if (FrozenStep.frozenLocs.containsKey(location) || NetherStep.netherstepLocs.containsKey(location)) {
             event.setCancelled(true);
         }
     }
 
-    // Makes glowing shulkers on an ore block disappear if it is uncovered
     @EventHandler
-    public void onOreUncover(BlockBreakEvent event) {
+    public void onOreUncover(@NotNull BlockBreakEvent event) {
         for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
             if (!Reveal.glowingBlocks.containsKey(event.getBlock().getRelative(face))) {
                 continue;
             }
 
             int entityId = 2000000000 + (event.getBlock().getRelative(face).hashCode()) % 10000000;
-            for (Player player : Bukkit.getOnlinePlayers()) {
+            for (Player player : this.plugin.getServer().getOnlinePlayers()) {
                 if (player.getWorld().equals(event.getBlock().getWorld())) {
                     Storage.COMPATIBILITY_ADAPTER.hideShulker(entityId, player);
                 }
@@ -220,27 +212,27 @@ public class GeneralListener implements Listener {
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
-        if (event.getMessage().startsWith("/enchant ")) {
-            Player player = event.getPlayer();
-            PlayerInventory inventory = player.getInventory();
-            boolean customEnch = !Zenchantment.getEnchants(
-                inventory.getItemInMainHand(),
-                player.getWorld()
-            ).isEmpty();
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(
-                Storage.zenchantments,
-                () -> Zenchantment.setGlow(inventory.getItemInMainHand(), customEnch, player.getWorld()),
-                0
-            );
+    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
+        if (!event.getMessage().startsWith("/enchant ")) {
+            return;
         }
+
+        Player player = event.getPlayer();
+        PlayerInventory inventory = player.getInventory();
+        boolean customEnch = !Zenchantment.getEnchants(
+            inventory.getItemInMainHand(),
+            player.getWorld()
+        ).isEmpty();
+
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(
+            this.plugin,
+            () -> Zenchantment.setGlow(inventory.getItemInMainHand(), customEnch, player.getWorld()),
+            0
+        );
     }
 
-    // Randomly adds CustomEnchantments to an item based off the overall probability, enchantments' relative
-    //      probability, and the level at which the item is being enchanted if the player has permission
     @EventHandler
-    public void onEnchantItem(EnchantItemEvent event) {
+    public void onEnchantItem(@NotNull EnchantItemEvent event) {
         if (!event.getEnchanter().hasPermission("zenchantments.enchant.get")) {
             return;
         }
@@ -249,13 +241,11 @@ public class GeneralListener implements Listener {
             return;
         }
 
-        WorldConfiguration config = WorldConfiguration.get(event.getEnchantBlock().getWorld());
-        Map<Zenchantment, Integer> existingEnchants = Zenchantment.getEnchants(
-            event.getItem(),
-            event.getEnchantBlock().getWorld()
-        );
+        ItemStack item = event.getItem();
+        World world = event.getEnchantBlock().getWorld();
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        Map<Zenchantment, Integer> existingEnchants = Zenchantment.getEnchants(item, world);
         Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
-        ItemStack itemStack = event.getItem();
 
         for (int i = 1; i <= config.getMaxEnchants() - existingEnchants.size(); i++) {
             float totalChance = 0;
@@ -277,7 +267,7 @@ public class GeneralListener implements Listener {
                 }
 
                 if (!conflicts
-                    && (event.getItem().getType() == BOOK || enchantment.validMaterial(event.getItem().getType()))
+                    && (event.getItem().getType() == BOOK || enchantment.validMaterial(item.getType()))
                 ) {
                     validPool.add(enchantment);
                     totalChance += enchantment.getProbability();
@@ -286,42 +276,41 @@ public class GeneralListener implements Listener {
 
             double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), i);
             float running = 0;
-            for (Zenchantment ench : validPool) {
-                running += ench.getProbability();
+            for (Zenchantment zenchantment : validPool) {
+                running += zenchantment.getProbability();
                 if (running > decision) {
-                    int level = Utilities.getEnchantLevel(ench.getMaxLevel(), event.getExpLevelCost());
-                    addedEnchants.put(ench, level);
+                    int level = Utilities.getEnchantLevel(zenchantment.getMaxLevel(), event.getExpLevelCost());
+                    addedEnchants.put(zenchantment, level);
                     break;
                 }
             }
         }
 
         for (Map.Entry<Zenchantment, Integer> entry : addedEnchants.entrySet()) {
-            entry.getKey().setEnchantment(itemStack, entry.getValue(), config.getWorld());
+            entry.getKey().setEnchantment(item, entry.getValue(), world);
         }
 
         if (event.getItem().getType() == ENCHANTED_BOOK) {
-            List<String> finalLore = itemStack.getItemMeta().getLore();
-            Inventory inv = event.getInventory();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                ItemStack book = inv.getItem(0);
+            List<String> finalLore = item.getItemMeta().getLore();
+            Inventory inventory = event.getInventory();
+            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+                ItemStack book = inventory.getItem(0);
                 ItemMeta bookMeta = book.getItemMeta();
                 bookMeta.setLore(finalLore);
                 book.setItemMeta(bookMeta);
-                inv.setItem(0, book);
+                inventory.setItem(0, book);
             }, 0);
         }
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(
-            Storage.zenchantments,
-            () -> Zenchantment.setGlow(itemStack, !addedEnchants.isEmpty(), config.getWorld()),
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(
+            this.plugin,
+            () -> Zenchantment.setGlow(item, !addedEnchants.isEmpty(), world),
             0
         );
     }
 
-    // Removes certain potion effects given by enchantments when the enchanted items are removed
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(@NotNull InventoryClickEvent event) {
         if (event.getSlotType() != SlotType.ARMOR) {
             return;
         }
@@ -356,9 +345,8 @@ public class GeneralListener implements Listener {
         }
     }
 
-    // Prevents players from being able to eat if they are stored within the 'hungerPlayers' set in Storage
     @EventHandler
-    public void onEat(PlayerInteractEvent event) {
+    public void onEat(@NotNull PlayerInteractEvent event) {
         if (event.getPlayer().getInventory().getItemInMainHand().getType().isEdible()
             && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)
             && Toxic.hungerPlayers.containsKey(event.getPlayer())
@@ -367,9 +355,8 @@ public class GeneralListener implements Listener {
         }
     }
 
-    // Prevents arrows with the 'ze.arrow' metadata from being able to be picked up by removing them
     @EventHandler
-    public void onArrowPickup(PlayerPickupArrowEvent event) {
+    public void onArrowPickup(@NotNull PlayerPickupArrowEvent event) {
         Item item = event.getItem();
         if (item.hasMetadata("ze.arrow")) {
             item.remove();
