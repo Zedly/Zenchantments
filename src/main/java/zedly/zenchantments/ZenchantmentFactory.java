@@ -8,6 +8,7 @@ import zedly.zenchantments.enchantments.Arborist;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ZenchantmentFactory {
     private static final Map<Class<? extends Zenchantment>, Constructor<? extends Zenchantment>> CONSTRUCTOR_MAP
@@ -34,7 +35,7 @@ public class ZenchantmentFactory {
     @NotNull
     public <T extends Zenchantment> T createZenchantment(
         @NotNull Class<T> zenchantmentClass,
-        @NotNull Tool[] enchantable,
+        @NotNull Set<Tool> enchantable,
         int maxLevel,
         int cooldown,
         double probability,

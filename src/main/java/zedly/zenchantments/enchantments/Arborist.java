@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -8,22 +9,23 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
 
 public class Arborist extends Zenchantment {
-    private static final String     KEY         = "arborist";
-    private static final String     NAME        = "Arborist";
-    private static final String     DESCRIPTION = "Drops more apples, sticks, and saplings when used on leaves";
-    private static final Class<?>[] CONFLICTING = new Class<?>[0];
-    private static final Hand       HAND_USE    = Hand.LEFT;
+    private static final String                             KEY         = "arborist";
+    private static final String                             NAME        = "Arborist";
+    private static final String                             DESCRIPTION = "Drops more apples, sticks, and saplings when used on leaves";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
     private final NamespacedKey key;
 
     public Arborist(
         @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Tool[] enchantable,
+        @NotNull Set<Tool> enchantable,
         int maxLevel,
         int cooldown,
         double probability,
@@ -53,7 +55,7 @@ public class Arborist extends Zenchantment {
 
     @Override
     @NotNull
-    public Class<?>[] getConflicting() {
+    public Set<Class<? extends Zenchantment>> getConflicting() {
         return Arborist.CONFLICTING;
     }
 

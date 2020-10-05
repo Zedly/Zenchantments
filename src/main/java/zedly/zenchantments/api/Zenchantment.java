@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 
+import java.util.Set;
+
 /**
  * Represents a zenchantment.
  */
@@ -72,19 +74,19 @@ public interface Zenchantment extends Keyed {
     /**
      * Gets the {@link Tool Tools} that can receive and work with this {@link Zenchantment}.
      *
-     * @return An array of {@link Tool Tools} that can receive and work with this {@link Zenchantment}.
+     * @return A {@link Set} of {@link Tool Tools} that can receive and work with this {@link Zenchantment}.
      */
     @NotNull
-    Tool[] getEnchantable();
+    Set<Tool> getEnchantable();
 
     /**
      * Gets the {@link Class Classes} of {@link Zenchantment Zenchantments} that conflict with this
      * {@link Zenchantment}.
      *
-     * @return An array of {@link Class Classes} of {@link Zenchantments} that conflict with this {@link Zenchantment}.
+     * @return A {@link Set} of {@link Class Classes} of {@link Zenchantments} that conflict with this {@link Zenchantment}.
      */
     @NotNull
-    Class<?>[] getConflicting();
+    Set<? extends Class<? extends Zenchantment>> getConflicting();
 
     /**
      * Gets the hands that this {@link Zenchantment} has actions for.

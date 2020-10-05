@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -12,18 +13,20 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.arrows.admin.ApocalypseArrow;
 
+import java.util.Set;
+
 public class Apocalypse extends Zenchantment {
-    private static final String     KEY         = "apocalypse";
-    private static final String     NAME        = "Apocalypse";
-    private static final String     DESCRIPTION = "Unleashes hell";
-    private static final Class<?>[] CONFLICTING = new Class<?>[0];
-    private static final Hand       HAND_USE    = Hand.RIGHT;
+    private static final String                             KEY         = "apocalypse";
+    private static final String                             NAME        = "Apocalypse";
+    private static final String                             DESCRIPTION = "Unleashes hell";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
 
     public Apocalypse(
         @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Tool[] enchantable,
+        @NotNull Set<Tool> enchantable,
         int maxLevel,
         int cooldown,
         double probability,
@@ -52,7 +55,8 @@ public class Apocalypse extends Zenchantment {
     }
 
     @Override
-    public Class<?>[] getConflicting() {
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
         return Apocalypse.CONFLICTING;
     }
 

@@ -1,6 +1,5 @@
 package zedly.zenchantments.event.listener.merge;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -238,7 +237,7 @@ public class AnvilMergeListener implements Listener {
             }
 
             for (Zenchantment enchantment : this.enchantmentPool.keySet()) {
-                if (ArrayUtils.contains(ench.getConflicting(), enchantment.getClass())) {
+                if (ench.getConflicting().contains(enchantment.getClass())) {
                     return;
                 }
             }

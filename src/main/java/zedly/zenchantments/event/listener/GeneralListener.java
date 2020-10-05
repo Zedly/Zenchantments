@@ -1,6 +1,5 @@
 package zedly.zenchantments.event.listener;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -257,7 +256,7 @@ public class GeneralListener implements Listener {
             for (Zenchantment enchantment : mainPool) {
                 boolean conflicts = false;
                 for (Zenchantment addedEnchant : addedEnchants.keySet()) {
-                    if (ArrayUtils.contains(enchantment.getConflicting(), addedEnchant.getClass())
+                    if (enchantment.getConflicting().contains(addedEnchant.getClass())
                         || addedEnchants.containsKey(enchantment)
                         || addedEnchant.getProbability() <= 0
                     ) {

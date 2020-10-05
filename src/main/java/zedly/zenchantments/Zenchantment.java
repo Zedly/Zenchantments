@@ -1,6 +1,9 @@
 package zedly.zenchantments;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Keyed;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -34,7 +37,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
     private final ZenchantmentsPlugin plugin;
-    private final Tool[]              enchantable;
+    private final Set<Tool>           enchantable;
     private final int                 maxLevel;
     private final int                 cooldown;
     private final double              power;
@@ -45,7 +48,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     public Zenchantment(
         @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Tool[] enchantable,
+        @NotNull Set<Tool> enchantable,
         int maxLevel,
         int cooldown,
         double power,
@@ -60,32 +63,14 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     @Override
-    @NotNull
-    public abstract NamespacedKey getKey();
-
-    @Override
-    @NotNull
-    public abstract String getName();
-
-    @Override
-    @NotNull
-    public abstract String getDescription();
-
-    @Override
-    public abstract Class<?>[] getConflicting();
-
-    @Override
-    @NotNull
-    public abstract Hand getHandUse();
-
-    @Override
     @Deprecated
     public int getId() {
         return 0;
     }
 
     @Override
-    public Tool[] getEnchantable() {
+    @NotNull
+    public Set<Tool> getEnchantable() {
         return this.enchantable;
     }
 
@@ -493,7 +478,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         @Contract(value = "_, _, _, _, _, _ -> new", pure = true)
         T construct(
             @NotNull ZenchantmentsPlugin plugin,
-            @NotNull Tool[] enchantable,
+            @NotNull Set<Tool> enchantable,
             int maxLevel,
             int cooldown,
             double power,

@@ -1,5 +1,6 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -25,11 +26,11 @@ public class Anthropomorphism extends Zenchantment {
     private static final List<Entity>                            VORTEX        = new ArrayList<>();
     private static final Material[]                              MATERIALS     = new Material[] {STONE, GRAVEL, DIRT, GRASS_BLOCK};
 
-    private static final String     KEY         = "anthropomorphism";
-    private static final String     NAME        = "Anthropomorphism";
-    private static final String     DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
-    private static final Class<?>[] CONFLICTING = new Class<?>[] {Pierce.class, Switch.class};
-    private static final Hand       HAND_USE    = Hand.BOTH;
+    private static final String                             KEY         = "anthropomorphism";
+    private static final String                             NAME        = "Anthropomorphism";
+    private static final String                             DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
+    private static final Hand                               HAND_USE    = Hand.BOTH;
 
     private static boolean fallBool = false;
 
@@ -37,7 +38,7 @@ public class Anthropomorphism extends Zenchantment {
 
     public Anthropomorphism(
         @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Tool[] enchantable,
+        @NotNull Set<Tool> enchantable,
         int maxLevel,
         int cooldown,
         double probability,
@@ -66,7 +67,8 @@ public class Anthropomorphism extends Zenchantment {
     }
 
     @Override
-    public Class<?>[] getConflicting() {
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
         return Anthropomorphism.CONFLICTING;
     }
 
