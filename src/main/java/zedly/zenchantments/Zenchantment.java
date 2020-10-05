@@ -33,19 +33,46 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
-    private final NamespacedKey key;
-    protected     int           id;
-    protected     int           maxLevel;
-    protected     String        name;
-    protected     float         probability;
-    protected     Tool[]        enchantable;
-    protected     Class<?>[]    conflicting;
-    protected     String        description;
-    protected     int           cooldown;
-    protected     double        power;
-    protected     Hand          handUse;
-    private       boolean       used;
-    protected     boolean       isCursed;
+    private final ZenchantmentsPlugin plugin;
+    private final NamespacedKey       key;
+    private final String              name;
+    private final String              description;
+    private final int                 maxLevel;
+    private final int                 cooldown;
+    private final double              power;
+    private final float               probability;
+    private final Tool[]              enchantable;
+    private final Class<?>[]          conflicting;
+    private final Hand                handUse;
+
+    private boolean used;
+    private boolean cursed;
+
+    public Zenchantment(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull NamespacedKey key,
+        @NotNull String name,
+        @NotNull String description,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability,
+        @NotNull Tool[] enchantable,
+        @NotNull Class<?>[] conflicting,
+        @NotNull Hand handUse
+    ) {
+        this.plugin = plugin;
+        this.key = key;
+        this.name = name;
+        this.description = description;
+        this.maxLevel = maxLevel;
+        this.cooldown = cooldown;
+        this.power = power;
+        this.probability = probability;
+        this.enchantable = enchantable;
+        this.conflicting = conflicting;
+        this.handUse = handUse;
+    }
 
     public abstract Builder<? extends Zenchantment> defaults();
 
@@ -58,7 +85,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     @Override
     @Deprecated
     public int getId() {
-        return this.id;
+        return 0;
     }
 
     @Override
@@ -329,7 +356,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     public String getShown(int level, World world) {
         WorldConfiguration config = WorldConfiguration.get(world);
         String levelString = Utilities.getRomanString(level);
-        return (this.isCursed ? config.getCurseColor() : config.getEnchantmentColor())
+        return (this.cursed ? config.getCurseColor() : config.getEnchantmentColor())
             + this.name
             + (this.maxLevel == 1 ? " " : " " + levelString);
     }
