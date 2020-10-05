@@ -1,62 +1,99 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.configuration.WorldConfiguration;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static zedly.zenchantments.Tool.ALL;
+import java.util.Set;
 
 public class Bind extends Zenchantment {
+    public static final String KEY = "bind";
 
-	public static final int ID = 4;
+    private static final String                             NAME        = "Bind";
+    private static final String                             DESCRIPTION = "Keeps items with the enchantment in your inventory after death";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public Builder<Bind> defaults() {
-		return new Builder<>(Bind::new, ID)
-			.maxLevel(1)
-			.name("Bind")
-			.probability(0)
-			.enchantable(new Tool[]{ALL})
-			.conflicting(new Class[]{})
-			.description("Keeps items with this enchantment in your inventory after death")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onPlayerDeath(final PlayerDeathEvent event, int level, boolean usedHand) {
-		if (event.getKeepInventory()) {
-			return false;
-		}
-		final Player player = event.getEntity();
-		WorldConfiguration config = WorldConfiguration.get(player.getWorld());
-		final ItemStack[] contents = player.getInventory().getContents().clone();
-		final List<ItemStack> removed = new ArrayList<>();
-		for (int i = 0; i < contents.length; i++) {
-			if (!Zenchantment.getEnchants(contents[i], config.getWorld()).containsKey(this)) {
-				contents[i] = null;
-			} else {
-				removed.add(contents[i]);
-				event.getDrops().remove(contents[i]);
-			}
-		}
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			if (event.getKeepInventory()) {
-				event.getDrops().addAll(removed);
-			} else {
-				player.getInventory().setContents(contents);
-			}
-		}, 1);
-		return true;
-	}
+    public Bind(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, Bind.KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Bind.NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return Bind.DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return Bind.CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return Bind.HAND_USE;
+    }
+
+    @Override
+    public boolean onPlayerDeath(@NotNull PlayerDeathEvent event, int level, boolean usedHand) {
+        if (event.getKeepInventory()) {
+            return false;
+        }
+
+        Player player = event.getEntity();
+        final ItemStack[] contents = player.getInventory().getContents().clone();
+        final List<ItemStack> removed = new ArrayList<>();
+
+        for (int i = 0; i < contents.length; i++) {
+            if (!Zenchantment.getEnchants(contents[i], player.getWorld()).containsKey(this)) {
+                contents[i] = null;
+            } else {
+                removed.add(contents[i]);
+                event.getDrops().remove(contents[i]);
+            }
+        }
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+            if (event.getKeepInventory()) {
+                event.getDrops().addAll(removed);
+            } else {
+                player.getInventory().setContents(contents);
+            }
+        }, 1);
+
+        return true;
+    }
 }

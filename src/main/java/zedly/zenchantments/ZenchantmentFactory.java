@@ -2,9 +2,7 @@ package zedly.zenchantments;
 
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment.Constructor;
-import zedly.zenchantments.enchantments.Anthropomorphism;
-import zedly.zenchantments.enchantments.Apocalypse;
-import zedly.zenchantments.enchantments.Arborist;
+import zedly.zenchantments.enchantments.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +18,12 @@ public class ZenchantmentFactory {
         ZenchantmentFactory.addConstructor(Anthropomorphism.class, Anthropomorphism::new);
         ZenchantmentFactory.addConstructor(Apocalypse.class, Apocalypse::new);
         ZenchantmentFactory.addConstructor(Arborist.class, Arborist::new);
+        ZenchantmentFactory.addConstructor(Bind.class, Bind::new);
+        ZenchantmentFactory.addConstructor(BlazesCurse.class, BlazesCurse::new);
+        ZenchantmentFactory.addConstructor(Blizzard.class, Blizzard::new);
+        ZenchantmentFactory.addConstructor(Bounce.class, Bounce::new);
+        ZenchantmentFactory.addConstructor(Burst.class, Burst::new);
+        ZenchantmentFactory.addConstructor(Combustion.class, Combustion::new);
     }
 
     public ZenchantmentFactory(@NotNull ZenchantmentsPlugin plugin) {
