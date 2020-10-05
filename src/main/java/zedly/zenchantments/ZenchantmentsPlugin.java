@@ -59,7 +59,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         enchCommand.setTabCompleter(commandHandler);
 
         this.getServer().getPluginManager().registerEvents(new GeneralListener(this), this);
-        this.getServer().getPluginManager().registerEvents(ZenchantmentListener.instance(), this);
+        this.getServer().getPluginManager().registerEvents(new ZenchantmentListener(this), this);
         this.getServer().getPluginManager().registerEvents(new AnvilMergeListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GrindstoneMergeListener(this), this);
 

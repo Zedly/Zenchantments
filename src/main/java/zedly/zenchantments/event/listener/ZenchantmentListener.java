@@ -18,6 +18,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.event.BlockShredEvent;
 import zedly.zenchantments.player.PlayerData;
@@ -36,19 +37,13 @@ import static org.bukkit.inventory.EquipmentSlot.HAND;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.Tool.BOW;
 
-// This is the watcher used by the CustomEnchantment class. Each method checks the enchantments on relevant items,
-//      ensures that the item is not an enchantment book, and calls each enchantment's method if the player can
-//      perform a certain action and the cooldown time is 0. It will add the given enchantment's cooldown to the player
-//      if the action performed is successful, determined by each enchantment in their respective classes.
 public class ZenchantmentListener implements Listener {
-    private static final ZenchantmentListener       INSTANCE = new ZenchantmentListener();
-    private static final HighFrequencyRunnableCache CACHE    = new HighFrequencyRunnableCache(ZenchantmentListener::feedEnchCache, 5);
+    private static final HighFrequencyRunnableCache CACHE = new HighFrequencyRunnableCache(ZenchantmentListener::feedEnchCache, 5);
 
-    public static ZenchantmentListener instance() {
-        return INSTANCE;
-    }
+    private final ZenchantmentsPlugin plugin;
 
-    private ZenchantmentListener() {
+    public ZenchantmentListener(@NotNull ZenchantmentsPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
