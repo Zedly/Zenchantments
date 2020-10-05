@@ -55,7 +55,7 @@ public class Fire extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Fire.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -67,25 +67,25 @@ public class Fire extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Fire.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Fire.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Fire.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Fire.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

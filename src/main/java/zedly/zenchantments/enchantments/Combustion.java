@@ -32,7 +32,7 @@ public class Combustion extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Combustion.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -44,25 +44,25 @@ public class Combustion extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Combustion.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Combustion.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Combustion.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Combustion.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

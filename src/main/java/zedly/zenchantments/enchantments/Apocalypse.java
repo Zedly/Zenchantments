@@ -32,7 +32,7 @@ public class Apocalypse extends Zenchantment {
         float power
     ) {
         super(plugin, enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(plugin, Apocalypse.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -44,25 +44,25 @@ public class Apocalypse extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Apocalypse.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Apocalypse.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Apocalypse.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Apocalypse.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

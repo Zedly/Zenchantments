@@ -56,7 +56,7 @@ public class Decapitation extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Decapitation.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -68,25 +68,25 @@ public class Decapitation extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Decapitation.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Decapitation.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Decapitation.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Decapitation.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

@@ -21,17 +21,18 @@ import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
 
 public class Anthropomorphism extends Zenchantment {
-    public static final  Map<FallingBlock, Pair<Double, Vector>> ATTACK_BLOCKS = new HashMap<>();
-    public static final  Map<FallingBlock, Entity>               IDLE_BLOCKS   = new HashMap<>();
-    private static final List<Entity>                            VORTEX        = new ArrayList<>();
-    private static final Material[]                              MATERIALS     = new Material[] {STONE, GRAVEL, DIRT, GRASS_BLOCK};
-
     public static final String KEY = "anthropomorphism";
+
+    public static final Map<FallingBlock, Pair<Double, Vector>> ATTACK_BLOCKS = new HashMap<>();
+    public static final Map<FallingBlock, Entity>               IDLE_BLOCKS   = new HashMap<>();
 
     private static final String                             NAME        = "Anthropomorphism";
     private static final String                             DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
     private static final Hand                               HAND_USE    = Hand.BOTH;
+
+    private static final List<Entity> VORTEX    = new ArrayList<>();
+    private static final Material[]   MATERIALS = new Material[] {STONE, GRAVEL, DIRT, GRASS_BLOCK};
 
     private static boolean fallBool = false;
 
@@ -46,7 +47,7 @@ public class Anthropomorphism extends Zenchantment {
         float power
     ) {
         super(plugin, enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(plugin, Anthropomorphism.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -58,25 +59,25 @@ public class Anthropomorphism extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Anthropomorphism.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Anthropomorphism.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Anthropomorphism.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Anthropomorphism.HAND_USE;
+        return HAND_USE;
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)

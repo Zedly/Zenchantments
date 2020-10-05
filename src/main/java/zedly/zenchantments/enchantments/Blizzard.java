@@ -32,7 +32,7 @@ public class Blizzard extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Blizzard.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -44,25 +44,25 @@ public class Blizzard extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Blizzard.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Blizzard.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Blizzard.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Blizzard.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class Gluttony extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Gluttony.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -43,25 +43,25 @@ public class Gluttony extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Gluttony.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Gluttony.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Gluttony.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Gluttony.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

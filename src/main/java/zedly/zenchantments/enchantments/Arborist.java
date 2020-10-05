@@ -33,7 +33,7 @@ public class Arborist extends Zenchantment {
         float power
     ) {
         super(plugin, enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(plugin, Arborist.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -45,25 +45,25 @@ public class Arborist extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Arborist.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Arborist.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Arborist.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Arborist.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

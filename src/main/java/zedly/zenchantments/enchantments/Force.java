@@ -44,7 +44,7 @@ public class Force extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Force.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -56,38 +56,38 @@ public class Force extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Force.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Force.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Force.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Force.HAND_USE;
+        return HAND_USE;
     }
 
     @Override
     public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
         Player player = event.getPlayer();
 
-        if (!event.getPlayer().hasMetadata("ze.force.direction")) {
-            player.setMetadata("ze.force.direction", new FixedMetadataValue(this.getPlugin(), true));
+        if (!event.getPlayer().hasMetadata("ze.direction")) {
+            player.setMetadata("ze.direction", new FixedMetadataValue(this.getPlugin(), true));
         }
 
         if (player.isSneaking() && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)) {
-            boolean mode = !player.getMetadata("ze.force.direction").get(0).asBoolean();
-            player.setMetadata("ze.force.direction", new FixedMetadataValue(this.getPlugin(), mode));
+            boolean mode = !player.getMetadata("ze.direction").get(0).asBoolean();
+            player.setMetadata("ze.direction", new FixedMetadataValue(this.getPlugin(), mode));
             player.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + (mode ? "Push Mode" : "Pull Mode"));
             return false;
         }
@@ -116,7 +116,7 @@ public class Force extends Zenchantment {
         for (Entity entity : nearbyEntities) {
             Location playerLocation = player.getLocation();
             Location entityLocation = entity.getLocation();
-            Location total = player.getMetadata("ze.force.direction").get(0).asBoolean()
+            Location total = player.getMetadata("ze.direction").get(0).asBoolean()
                 ? entityLocation.subtract(playerLocation)
                 : playerLocation.subtract(entityLocation);
             Vector vector = new Vector(

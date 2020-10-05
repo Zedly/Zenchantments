@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
 import java.util.Set;
+
+import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class Conversion extends Zenchantment {
     public static final String KEY = "conversion";
@@ -30,7 +32,7 @@ public class Conversion extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Conversion.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -42,30 +44,30 @@ public class Conversion extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Conversion.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Conversion.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Conversion.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Conversion.HAND_USE;
+        return HAND_USE;
     }
 
     @Override
     public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() != RIGHT_CLICK_AIR && event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
 

@@ -36,7 +36,7 @@ public class Extraction extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Extraction.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -48,25 +48,25 @@ public class Extraction extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Extraction.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Extraction.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Extraction.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Extraction.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

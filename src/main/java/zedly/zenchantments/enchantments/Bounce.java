@@ -33,7 +33,7 @@ public class Bounce extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Bounce.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -45,25 +45,25 @@ public class Bounce extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Bounce.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Bounce.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Bounce.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Bounce.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

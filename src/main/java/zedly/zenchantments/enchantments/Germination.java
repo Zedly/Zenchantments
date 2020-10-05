@@ -35,7 +35,7 @@ public class Germination extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Germination.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -47,25 +47,25 @@ public class Germination extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Germination.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Germination.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Germination.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Germination.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

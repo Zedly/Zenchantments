@@ -42,7 +42,7 @@ public class BlazesCurse extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, BlazesCurse.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -54,25 +54,25 @@ public class BlazesCurse extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return BlazesCurse.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return BlazesCurse.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return BlazesCurse.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return BlazesCurse.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

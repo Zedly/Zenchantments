@@ -36,7 +36,7 @@ public class GoldRush extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, GoldRush.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -48,25 +48,25 @@ public class GoldRush extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return GoldRush.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return GoldRush.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return GoldRush.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return GoldRush.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class Bind extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Bind.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -46,25 +46,25 @@ public class Bind extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Bind.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Bind.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Bind.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Bind.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

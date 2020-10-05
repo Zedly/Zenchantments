@@ -38,7 +38,7 @@ public class Burst extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Burst.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -50,25 +50,25 @@ public class Burst extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Burst.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Burst.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Burst.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Burst.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

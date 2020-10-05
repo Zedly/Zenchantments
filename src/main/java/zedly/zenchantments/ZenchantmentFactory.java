@@ -48,7 +48,7 @@ public class ZenchantmentFactory {
     @NotNull
     @SuppressWarnings("unchecked")
     public static <T extends Zenchantment> Constructor<T> getConstructor(@NotNull Class<T> zenchantmentClass) {
-        return (Constructor<T>) ZenchantmentFactory.CONSTRUCTOR_MAP.get(zenchantmentClass);
+        return (Constructor<T>) CONSTRUCTOR_MAP.get(zenchantmentClass);
     }
 
     @NotNull
@@ -78,6 +78,6 @@ public class ZenchantmentFactory {
         @NotNull Class<T> zenchantmentClass,
         @NotNull Constructor<T> constructor
     ) {
-        ZenchantmentFactory.CONSTRUCTOR_MAP.put(zenchantmentClass, constructor);
+        CONSTRUCTOR_MAP.put(zenchantmentClass, constructor);
     }
 }

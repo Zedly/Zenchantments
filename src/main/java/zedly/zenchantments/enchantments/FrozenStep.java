@@ -36,7 +36,7 @@ public class FrozenStep extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, FrozenStep.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -48,25 +48,25 @@ public class FrozenStep extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return FrozenStep.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return FrozenStep.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return FrozenStep.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return FrozenStep.HAND_USE;
+        return HAND_USE;
     }
 
     public boolean onScan(@NotNull Player player, int level, boolean usedHand) {

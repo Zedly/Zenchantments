@@ -32,7 +32,7 @@ public class Fireworks extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Fireworks.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -44,25 +44,25 @@ public class Fireworks extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Fireworks.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Fireworks.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Fireworks.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Fireworks.HAND_USE;
+        return HAND_USE;
     }
 
     @Override

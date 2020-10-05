@@ -36,7 +36,7 @@ public class Grab extends Zenchantment {
         float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, Grab.KEY);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
@@ -48,25 +48,25 @@ public class Grab extends Zenchantment {
     @Override
     @NotNull
     public String getName() {
-        return Grab.NAME;
+        return NAME;
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return Grab.DESCRIPTION;
+        return DESCRIPTION;
     }
 
     @Override
     @NotNull
     public Set<Class<? extends Zenchantment>> getConflicting() {
-        return Grab.CONFLICTING;
+        return CONFLICTING;
     }
 
     @Override
     @NotNull
     public Hand getHandUse() {
-        return Grab.HAND_USE;
+        return HAND_USE;
     }
 
     @Override
