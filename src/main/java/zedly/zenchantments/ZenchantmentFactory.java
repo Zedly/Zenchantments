@@ -24,6 +24,9 @@ public class ZenchantmentFactory {
         ZenchantmentFactory.addConstructor(Bounce.class, Bounce::new);
         ZenchantmentFactory.addConstructor(Burst.class, Burst::new);
         ZenchantmentFactory.addConstructor(Combustion.class, Combustion::new);
+        ZenchantmentFactory.addConstructor(Conversion.class, Conversion::new);
+        ZenchantmentFactory.addConstructor(Decapitation.class, Decapitation::new);
+        ZenchantmentFactory.addConstructor(Ethereal.class, Ethereal::new);
     }
 
     public ZenchantmentFactory(@NotNull ZenchantmentsPlugin plugin) {
