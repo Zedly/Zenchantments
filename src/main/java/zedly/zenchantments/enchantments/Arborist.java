@@ -15,7 +15,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.*;
 
 public class Arborist extends Zenchantment {
-    private static final String                             KEY         = "arborist";
+    public static final String KEY = "arborist";
+
     private static final String                             NAME        = "Arborist";
     private static final String                             DESCRIPTION = "Drops more apples, sticks, and saplings when used on leaves";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();

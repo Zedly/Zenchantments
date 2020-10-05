@@ -26,7 +26,8 @@ public class Anthropomorphism extends Zenchantment {
     private static final List<Entity>                            VORTEX        = new ArrayList<>();
     private static final Material[]                              MATERIALS     = new Material[] {STONE, GRAVEL, DIRT, GRASS_BLOCK};
 
-    private static final String                             KEY         = "anthropomorphism";
+    public static final String KEY = "anthropomorphism";
+
     private static final String                             NAME        = "Anthropomorphism";
     private static final String                             DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);

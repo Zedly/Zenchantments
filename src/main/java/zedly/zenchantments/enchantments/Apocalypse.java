@@ -16,7 +16,8 @@ import zedly.zenchantments.arrows.admin.ApocalypseArrow;
 import java.util.Set;
 
 public class Apocalypse extends Zenchantment {
-    private static final String                             KEY         = "apocalypse";
+    public static final String KEY = "apocalypse";
+
     private static final String                             NAME        = "Apocalypse";
     private static final String                             DESCRIPTION = "Unleashes hell";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
