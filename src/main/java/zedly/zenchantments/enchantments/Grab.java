@@ -1,48 +1,86 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.bukkit.entity.Player;
-
-import static zedly.zenchantments.Tool.*;
+import java.util.Set;
 
 public class Grab extends Zenchantment {
+    public static final String KEY = "grab";
 
-	// Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
-	public static final Map<Block, Player> grabLocs     = new HashMap<>();
-	public static final int                  ID           = 23;
+    public static final Map<Block, Player> GRAB_LOCATIONS = new HashMap<>();
 
-	@Override
-	public Builder<Grab> defaults() {
-		return new Builder<>(Grab::new, ID)
-			.maxLevel(1)
-			.name("Grab")
-			.probability(0)
-			.enchantable(new Tool[]{PICKAXE, SHOVEL, AXE})
-			.conflicting(new Class[]{})
-			.description("Teleports mined items and XP directly to the player")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.LEFT);
-	}
+    private static final String                             NAME        = "Grab";
+    private static final String                             DESCRIPTION = "Teleports mined items and XP directly to the player";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-	@Override
-	public boolean onBlockBreak(final BlockBreakEvent event, int level, boolean usedHand) {
-		grabLocs.put(event.getBlock(), event.getPlayer());
-		final Block block = event.getBlock();
-		//ADAPTER.breakBlockNMS(evt.getBlock(), evt.getPlayer());
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			grabLocs.remove(block);
-		}, 3);
-		return true;
-	}
+    private final NamespacedKey key;
+
+    public Grab(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, Grab.KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Grab.NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return Grab.DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return Grab.CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return Grab.HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        Block block = event.getBlock();
+
+        GRAB_LOCATIONS.put(block, event.getPlayer());
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+            this.getPlugin(),
+            () -> GRAB_LOCATIONS.remove(block),
+            3
+        );
+
+        return true;
+    }
 }

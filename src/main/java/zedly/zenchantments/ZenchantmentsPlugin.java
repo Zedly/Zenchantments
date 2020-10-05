@@ -60,7 +60,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
 
     @Override
     public void onDisable() {
-        for (Location location : FrozenStep.frozenLocs.keySet()) {
+        for (Location location : FrozenStep.FROZEN_LOCATIONS.keySet()) {
             location.getBlock().setType(WATER);
         }
 

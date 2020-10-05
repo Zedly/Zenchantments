@@ -1,91 +1,147 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
-import static zedly.zenchantments.Tool.LEGGINGS;
 
 public class Glide extends Zenchantment {
+    public static final String KEY = "glide";
 
-    // The players using glide and their most recent Y coordinate
-    public static final Map<Player, Double> sneakGlide = new HashMap<>();
-    public static final int ID = 20;
+    private static final String                             NAME        = "Glide";
+    private static final String                             DESCRIPTION = "Gently brings the player back to the ground when sneaking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-    @Override
-    public Builder<Glide> defaults() {
-        return new Builder<>(Glide::new, ID)
-                .maxLevel(3)
-                .name("Glide")
-                .probability(0)
-                .enchantable(new Tool[]{LEGGINGS})
-                .conflicting(new Class[]{})
-                .description("Gently brings the player back to the ground when sneaking")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.NONE);
+    public static final Map<UUID, Double> GLIDE_USERS = new HashMap<>();
+
+    private final NamespacedKey key;
+
+    public Glide(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, Glide.KEY);
     }
 
     @Override
-    public boolean onFastScan(Player player, int level, boolean usedHand) {
-        if (!sneakGlide.containsKey(player)) {
-            sneakGlide.put(player, player.getLocation().getY());
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Glide.NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return Glide.DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return Glide.CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return Glide.HAND_USE;
+    }
+
+    @Override
+    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
+        UUID uniqueId = player.getUniqueId();
+        Location location = player.getLocation();
+
+        if (!GLIDE_USERS.containsKey(uniqueId)) {
+            GLIDE_USERS.put(uniqueId, location.getY());
         }
-        if (!player.isSneaking() || sneakGlide.get(player) == player.getLocation().getY()) {
+
+        if (!player.isSneaking() || GLIDE_USERS.get(uniqueId) == location.getY()) {
             return false;
         }
+
+        // 🅱
+        // I actually don't know what this boolean does right now.
         boolean b = false;
+
         for (int i = -5; i < 0; i++) {
-            if (player.getLocation().getBlock().getRelative(0, i, 0).getType() != AIR) {
+            if (location.getBlock().getRelative(0, i, 0).getType() != AIR) {
                 b = true;
             }
         }
+
         if (player.getVelocity().getY() > -0.5) {
             b = true;
         }
+
         if (!b) {
-            double sinPitch = Math.sin(Math.toRadians(player.getLocation().getPitch()));
-            double cosPitch = Math.cos(Math.toRadians(player.getLocation().getPitch()));
-            double sinYaw = Math.sin(Math.toRadians(player.getLocation().getYaw()));
-            double cosYaw = Math.cos(Math.toRadians(player.getLocation().getYaw()));
+            double sinPitch = Math.sin(Math.toRadians(location.getPitch()));
+            double cosPitch = Math.cos(Math.toRadians(location.getPitch()));
+            double sinYaw = Math.sin(Math.toRadians(location.getYaw()));
+            double cosYaw = Math.cos(Math.toRadians(location.getYaw()));
             double y = -1 * (sinPitch);
-            Vector v = new Vector(-cosPitch * sinYaw, 0, -1 * (-cosPitch * cosYaw));
-            v.multiply(level * power / 2);
-            v.setY(-1);
-            player.setVelocity(v);
-            player.setFallDistance((float) (6 - level * power) - 4);
-            Location l = player.getLocation().clone();
-            l.setY(l.getY() - 3);
-            Utilities.display(l, Particle.CLOUD, 1, .1f, 0, 0, 0);
+
+            Vector vector = new Vector(-cosPitch * sinYaw, 0, -1 * (-cosPitch * cosYaw));
+            vector.multiply(level * this.getPower() / 2);
+            vector.setY(-1);
+
+            player.setVelocity(vector);
+            player.setFallDistance((float) (6 - level * this.getPower()) - 4);
+
+            Location particleLocation = location.clone();
+            particleLocation.setY(particleLocation.getY() - 3);
+            Utilities.display(particleLocation, Particle.CLOUD, 1, 0.1f, 0, 0, 0);
         }
-        if (Storage.rnd.nextInt(5 * level) == 5) { // Slowly damage all armor
-            ItemStack[] s = player.getInventory().getArmorContents();
+
+        // Gradually damage all armour.
+        if (ThreadLocalRandom.current().nextInt(5 * level) == 5) {
+            ItemStack[] armour = player.getInventory().getArmorContents();
             for (int i = 0; i < 4; i++) {
-                if (s[i] != null) {
-                    Map<Zenchantment, Integer> map = Zenchantment.getEnchants(s[i], player.getWorld());
-                    if (map.containsKey(this)) {
-                        Utilities.addUnbreaking(player, s[i], 1);
-                    }
-                    if (Utilities.getDamage(s[i]) > s[i].getType().getMaxDurability()) {
-                        s[i] = null;
-                    }
+                if (armour[i] == null) {
+                    continue;
+                }
+
+                Map<Zenchantment, Integer> map = Zenchantment.getEnchants(armour[i], player.getWorld());
+
+                if (map.containsKey(this)) {
+                    Utilities.addUnbreaking(player, armour[i], 1);
+                }
+
+                if (Utilities.getDamage(armour[i]) > armour[i].getType().getMaxDurability()) {
+                    armour[i] = null;
                 }
             }
-            player.getInventory().setArmorContents(s);
+
+            player.getInventory().setArmorContents(armour);
         }
-        sneakGlide.put(player, player.getLocation().getY());
+
+        GLIDE_USERS.put(uniqueId, player.getLocation().getY());
+
         return true;
     }
-
 }

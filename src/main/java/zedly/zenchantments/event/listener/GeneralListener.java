@@ -135,7 +135,7 @@ public class GeneralListener implements Listener {
 
     @EventHandler
     public void onItemSpawn(@NotNull ItemSpawnEvent event) {
-        if (Fire.cancelledItemDrops.contains(event.getLocation().getBlock())) {
+        if (Fire.CANCELLED_ITEM_DROPS.contains(event.getLocation().getBlock())) {
             event.setCancelled(true);
             return;
         }
@@ -143,7 +143,7 @@ public class GeneralListener implements Listener {
         Location location = event.getEntity().getLocation();
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-            for (Block block : Grab.grabLocs.keySet()) {
+            for (Block block : Grab.GRAB_LOCATIONS.keySet()) {
                 if (block.getLocation().getBlockX() != location.getBlockX()
                     || block.getLocation().getBlockY() != location.getBlockY()
                     || block.getLocation().getBlockZ() != location.getBlockZ()
@@ -151,12 +151,12 @@ public class GeneralListener implements Listener {
                     continue;
                 }
 
-                event.getEntity().teleport(Grab.grabLocs.get(block));
+                event.getEntity().teleport(Grab.GRAB_LOCATIONS.get(block));
                 event.getEntity().setPickupDelay(0);
 
                 for (Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.grabLocs.get(block), ((ExperienceOrb) entity).getExperience());
+                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
                 }
@@ -176,7 +176,7 @@ public class GeneralListener implements Listener {
 
                 for (Entity e : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (e instanceof ExperienceOrb) {
-                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.grabLocs.get(block), ((ExperienceOrb) e).getExperience());
+                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) e).getExperience());
                         e.remove();
                     }
                 }
@@ -187,7 +187,7 @@ public class GeneralListener implements Listener {
     @EventHandler
     public void onIceOrLavaBreak(@NotNull BlockBreakEvent event) {
         Location location = event.getBlock().getLocation();
-        if (FrozenStep.frozenLocs.containsKey(location) || NetherStep.netherstepLocs.containsKey(location)) {
+        if (FrozenStep.FROZEN_LOCATIONS.containsKey(location) || NetherStep.netherstepLocs.containsKey(location)) {
             event.setCancelled(true);
         }
     }

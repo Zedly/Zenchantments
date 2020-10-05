@@ -27,6 +27,18 @@ public class ZenchantmentFactory {
         ZenchantmentFactory.addConstructor(Conversion.class, Conversion::new);
         ZenchantmentFactory.addConstructor(Decapitation.class, Decapitation::new);
         ZenchantmentFactory.addConstructor(Ethereal.class, Ethereal::new);
+        ZenchantmentFactory.addConstructor(Extraction.class, Extraction::new);
+        ZenchantmentFactory.addConstructor(Fire.class, Fire::new);
+        ZenchantmentFactory.addConstructor(Firestorm.class, Firestorm::new);
+        ZenchantmentFactory.addConstructor(Fireworks.class, Fireworks::new);
+        ZenchantmentFactory.addConstructor(Force.class, Force::new);
+        ZenchantmentFactory.addConstructor(FrozenStep.class, FrozenStep::new);
+        ZenchantmentFactory.addConstructor(Fuse.class, Fuse::new);
+        ZenchantmentFactory.addConstructor(Germination.class, Germination::new);
+        ZenchantmentFactory.addConstructor(Glide.class, Glide::new);
+        ZenchantmentFactory.addConstructor(Gluttony.class, Gluttony::new);
+        ZenchantmentFactory.addConstructor(GoldRush.class, GoldRush::new);
+        ZenchantmentFactory.addConstructor(Grab.class, Grab::new);
     }
 
     public ZenchantmentFactory(@NotNull ZenchantmentsPlugin plugin) {

@@ -69,13 +69,13 @@ public class Switch extends Zenchantment {
 
             // Breaking succeeded, begin invasive operations
             Block clickedBlock = event.getClickedBlock();
-            Grab.grabLocs.put(clickedBlock, event.getPlayer());
+            Grab.GRAB_LOCATIONS.put(clickedBlock, event.getPlayer());
             event.setCancelled(true);
 
             Material mat = switchItem.getType();
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                Grab.grabLocs.remove(clickedBlock);
+                Grab.GRAB_LOCATIONS.remove(clickedBlock);
             }, 3);
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {

@@ -1,8 +1,9 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -11,74 +12,127 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.Tool.SWORD;
 
 public class Force extends Zenchantment {
+    public static final String KEY = "force";
 
-	public static final int ID = 16;
+    private static final String                             NAME        = "Force";
+    private static final String                             DESCRIPTION = "Pushes and pulls nearby mobs, configurable through shift clicking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(RainbowSlam.class, Gust.class);
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public Builder<Force> defaults() {
-		return new Builder<>(Force::new, ID)
-			.maxLevel(3)
-			.name("Force")
-			.probability(0)
-			.enchantable(new Tool[]{SWORD})
-			.conflicting(new Class[]{RainbowSlam.class, Gust.class})
-			.description("Pushes and pulls nearby mobs, configurable through shift clicking")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.BOTH);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		Player player = evt.getPlayer();
-		if (!evt.getPlayer().hasMetadata("ze.force.direction")) {
-			player.setMetadata("ze.force.direction", new FixedMetadataValue(Storage.zenchantments, true));
-		}
-		if (player.isSneaking() && (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK)) {
-			boolean b = !player.getMetadata("ze.force.direction").get(0).asBoolean();
-			player.setMetadata("ze.force.direction", new FixedMetadataValue(Storage.zenchantments, b));
-			player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + (b ? "Push Mode" : "Pull Mode"));
-			return false;
-		}
-		boolean mode = player.getMetadata("ze.force.direction").get(0).asBoolean();
-		if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			List<Entity> nearEnts = player.getNearbyEntities(5, 5, 5);
-			if (!nearEnts.isEmpty()) {
-				if (player.getFoodLevel() >= 2) {
-					if (Storage.rnd.nextInt(10) == 5) {
-						FoodLevelChangeEvent event = new FoodLevelChangeEvent(player, 2);
-						Bukkit.getServer().getPluginManager().callEvent(event);
-						if (!event.isCancelled()) {
-							player.setFoodLevel(player.getFoodLevel() - 2);
-						}
-					}
-					for (Entity ent : nearEnts) {
-						Location playLoc = player.getLocation();
-						Location entLoc = ent.getLocation();
-						Location total = mode ? entLoc.subtract(playLoc) : playLoc.subtract(entLoc);
-						org.bukkit.util.Vector vect = new Vector(total.getX(), total.getY(), total.getZ())
-							.multiply((.1f + (power * level * .2f)));
-						vect.setY(vect.getY() > 1 ? 1 : -1);
-						if (ent instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) ent, player, 0)) {
-							ent.setVelocity(vect);
-						}
-					}
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    public Force(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, Force.KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Force.NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return Force.DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return Force.CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return Force.HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        Player player = event.getPlayer();
+
+        if (!event.getPlayer().hasMetadata("ze.force.direction")) {
+            player.setMetadata("ze.force.direction", new FixedMetadataValue(this.getPlugin(), true));
+        }
+
+        if (player.isSneaking() && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)) {
+            boolean mode = !player.getMetadata("ze.force.direction").get(0).asBoolean();
+            player.setMetadata("ze.force.direction", new FixedMetadataValue(this.getPlugin(), mode));
+            player.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + (mode ? "Push Mode" : "Pull Mode"));
+            return false;
+        }
+
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return false;
+        }
+
+        List<Entity> nearbyEntities = player.getNearbyEntities(5, 5, 5);
+        if (nearbyEntities.isEmpty()) {
+            return false;
+        }
+
+        if (player.getFoodLevel() < 2) {
+            return false;
+        }
+
+        if (ThreadLocalRandom.current().nextInt(10) == 5) {
+            FoodLevelChangeEvent foodLevelChangeEvent = new FoodLevelChangeEvent(player, 2);
+            this.getPlugin().getServer().getPluginManager().callEvent(foodLevelChangeEvent);
+            if (!foodLevelChangeEvent.isCancelled()) {
+                player.setFoodLevel(player.getFoodLevel() - 2);
+            }
+        }
+
+        for (Entity entity : nearbyEntities) {
+            Location playerLocation = player.getLocation();
+            Location entityLocation = entity.getLocation();
+            Location total = player.getMetadata("ze.force.direction").get(0).asBoolean()
+                ? entityLocation.subtract(playerLocation)
+                : playerLocation.subtract(entityLocation);
+            Vector vector = new Vector(
+                total.getX(),
+                total.getY(),
+                total.getZ()
+            );
+
+            vector.multiply((0.1f + (this.getPower() * level * 0.2f)));
+            vector.setY(vector.getY() > 1 ? 1 : -1);
+
+            if (entity instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) entity, player, 0)) {
+                entity.setVelocity(vector);
+            }
+        }
+
+        return true;
+    }
 }

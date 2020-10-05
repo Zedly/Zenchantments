@@ -54,10 +54,10 @@ public class NetherStep extends Zenchantment {
 	@EffectTask(Frequency.MEDIUM_HIGH)
 	// Removes the blocks from NetherStep and FrozenStep after a peroid of time
 	public static void updateBlocks() {
-		Iterator it = FrozenStep.frozenLocs.keySet().iterator();
+		Iterator it = FrozenStep.FROZEN_LOCATIONS.keySet().iterator();
 		while (it.hasNext()) {
 			Location location = (Location) it.next();
-			if (Math.abs(System.nanoTime() - FrozenStep.frozenLocs.get(location)) > 9E8) {
+			if (Math.abs(System.nanoTime() - FrozenStep.FROZEN_LOCATIONS.get(location)) > 9E8) {
 				location.getBlock().setType(WATER);
 				it.remove();
 			}

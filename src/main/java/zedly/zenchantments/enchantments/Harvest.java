@@ -76,10 +76,10 @@ public class Harvest extends Zenchantment {
 
                             if (blockAltered) {
                                 Utilities.damageTool(event.getPlayer(), 1, usedHand);
-                                Grab.grabLocs.put(block, event.getPlayer());
+                                Grab.GRAB_LOCATIONS.put(block, event.getPlayer());
                                 Bukkit.getServer().getScheduler()
                                         .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                            Grab.grabLocs.remove(block);
+                                            Grab.GRAB_LOCATIONS.remove(block);
                                         }, 3);
                                 success = true;
                             }

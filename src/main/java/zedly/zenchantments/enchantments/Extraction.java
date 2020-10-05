@@ -1,58 +1,104 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
-import static zedly.zenchantments.Tool.PICKAXE;
 
 public class Extraction extends Zenchantment {
+    public static final String KEY = "extraction";
 
-	public static final int ID = 12;
+    private static final String                             NAME        = "Extraction";
+    private static final String                             DESCRIPTION = "Smelts and yields more product from ores";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Switch.class);
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-	@Override
-	public Builder<Extraction> defaults() {
-		return new Builder<>(Extraction::new, ID)
-			.maxLevel(3)
-			.name("Extraction")
-			.probability(0)
-			.enchantable(new Tool[]{PICKAXE})
-			.conflicting(new Class[]{Switch.class})
-			.description("Smelts and yields more product from ores")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.LEFT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockBreak(BlockBreakEvent event, final int level, boolean usedHand) {
-		if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-			return false;
-		}
-		if (event.getBlock().getType() == GOLD_ORE || event.getBlock().getType() == IRON_ORE) {
-			Utilities.damageTool(event.getPlayer(), 1, usedHand);
-			for (int x = 0; x < Storage.rnd.nextInt((int) Math.round(power * level + 1)) + 1; x++) {
-				event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(),
-					new ItemStack(event.getBlock().getType() == GOLD_ORE ?
-						GOLD_INGOT : IRON_INGOT));
-			}
-			ExperienceOrb o = (ExperienceOrb) event.getBlock().getWorld()
-			                                     .spawnEntity(event.getBlock().getLocation(), EXPERIENCE_ORB);
-			o.setExperience(
-				event.getBlock().getType() == IRON_ORE ? Storage.rnd.nextInt(5) + 1 : Storage.rnd.nextInt(5) + 3);
-			event.getBlock().setType(AIR);
-			Utilities.display(event.getBlock().getLocation(), Particle.FLAME, 10, .1f, .5f, .5f, .5f);
-			return true;
-		}
-		return false;
-	}
+    public Extraction(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, Extraction.KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Extraction.NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return Extraction.DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return Extraction.CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return Extraction.HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            return false;
+        }
+
+        Block block = event.getBlock();
+
+        if (block.getType() != GOLD_ORE && block.getType() != IRON_ORE) {
+            return false;
+        }
+
+        Utilities.damageTool(event.getPlayer(), 1, usedHand);
+
+        for (int x = 0; x < ThreadLocalRandom.current().nextInt((int) Math.round(this.getPower() * level + 1)) + 1; x++) {
+            block.getWorld().dropItemNaturally(
+                event.getBlock().getLocation(),
+                new ItemStack(event.getBlock().getType() == GOLD_ORE ? GOLD_INGOT : IRON_INGOT)
+            );
+        }
+
+        ExperienceOrb experienceOrb = (ExperienceOrb) block.getWorld().spawnEntity(event.getBlock().getLocation(), EXPERIENCE_ORB);
+
+        int experience = ThreadLocalRandom.current().nextInt(5);
+        experienceOrb.setExperience(block.getType() == IRON_ORE ? experience + 1 : experience + 3);
+
+        block.setType(AIR);
+
+        Utilities.display(block.getLocation(), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+
+        return true;
+    }
 }
