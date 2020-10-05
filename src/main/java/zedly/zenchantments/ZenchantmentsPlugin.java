@@ -1,19 +1,18 @@
 package zedly.zenchantments;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.api.Zenchantments;
 import zedly.zenchantments.command.ZenchantmentsCommandHandler;
 import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
-import zedly.zenchantments.enchantments.*;
+import zedly.zenchantments.enchantments.Anthropomorphism;
+import zedly.zenchantments.enchantments.FrozenStep;
+import zedly.zenchantments.enchantments.NetherStep;
 import zedly.zenchantments.event.listener.GeneralListener;
 import zedly.zenchantments.event.listener.ZenchantmentListener;
 import zedly.zenchantments.event.listener.merge.AnvilMergeListener;
@@ -36,21 +35,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
 
     @Override
     public void onEnable() {
-        Storage.zenchantments = this;
-        Storage.pluginPath = this.getServer()
-            .getPluginManager()
-            .getPlugin("Zenchantments")
-            .getClass()
-            .getProtectionDomain()
-            .getCodeSource()
-            .getLocation()
-            .getPath();
-        Storage.version = this.getServer()
-            .getPluginManager()
-            .getPlugin(this.getName())
-            .getDescription()
-            .getVersion();
-
         this.globalConfiguration.loadGlobalConfiguration();
         this.worldConfigurationProvider.loadWorldConfigurations();
 
@@ -72,24 +56,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
                 frequency.getPeriod()
             );
         }
-
-        if (this.getConfig().getBoolean("forceUpdateDescriptions", false)) {
-            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, this::updateDescriptions, 1, 200);
-        }
-
-        int[][] searchFaces = new int[27][3];
-        int i = 0;
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    searchFaces[i++] = new int[] {x, y, z};
-                }
-            }
-        }
-
-        Lumber.SEARCH_FACES = searchFaces;
-        Spectral.SEARCH_FACES = searchFaces;
-        Pierce.SEARCH_FACES = searchFaces;
     }
 
     @Override
@@ -141,14 +107,5 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @NotNull
     public ZenchantmentFactory getZenchantmentFactory() {
         return this.zenchantmentFactory;
-    }
-
-    private void updateDescriptions() {
-        for (Player player : this.getServer().getOnlinePlayers()) {
-            PlayerInventory inventory = player.getInventory();
-            for (ItemStack itemStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
-                Zenchantment.setEnchantment(itemStack, null, 0, player.getWorld());
-            }
-        }
     }
 }
