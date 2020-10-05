@@ -9,20 +9,10 @@ import java.util.Random;
 
 @Deprecated
 public class Storage {
-
-    // Instance of the Zenchantments plugin to be used by the rest of the classes
-    public static ZenchantmentsPlugin zenchantments;
-
     // Absolute path to the plugin jar
     public static String pluginPath;
 
-    // Current Zenchantments version
-    public static String version = "";
-
     public static final CompatibilityAdapter COMPATIBILITY_ADAPTER;
-
-    // Random object
-    public static final Random rnd = new Random();
 
     public static final BlockFace[] CARDINAL_BLOCK_FACES = {
         BlockFace.UP,
