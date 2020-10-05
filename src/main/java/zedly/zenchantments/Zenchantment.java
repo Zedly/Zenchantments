@@ -191,6 +191,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
     //endregion
 
+    protected ZenchantmentsPlugin getPlugin() {
+        return this.plugin;
+    }
+
     public static void applyForTool(Player player, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
         Zenchantment.getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
             if (!ench.used && Utilities.canUse(player, ench.id)) {
