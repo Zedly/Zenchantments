@@ -34,70 +34,56 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
     private final ZenchantmentsPlugin plugin;
-    private final NamespacedKey       key;
-    private final String              name;
-    private final String              description;
     private final int                 maxLevel;
     private final int                 cooldown;
     private final double              power;
     private final float               probability;
     private final Tool[]              enchantable;
-    private final Class<?>[]          conflicting;
-    private final Hand                handUse;
 
     private boolean used;
     private boolean cursed;
 
     public Zenchantment(
         @NotNull ZenchantmentsPlugin plugin,
-        @NotNull NamespacedKey key,
-        @NotNull String name,
-        @NotNull String description,
         int maxLevel,
         int cooldown,
         double power,
         float probability,
-        @NotNull Tool[] enchantable,
-        @NotNull Class<?>[] conflicting,
-        @NotNull Hand handUse
+        @NotNull Tool[] enchantable
     ) {
         this.plugin = plugin;
-        this.key = key;
-        this.name = name;
-        this.description = description;
         this.maxLevel = maxLevel;
         this.cooldown = cooldown;
         this.power = power;
         this.probability = probability;
         this.enchantable = enchantable;
-        this.conflicting = conflicting;
-        this.handUse = handUse;
     }
 
     public abstract Builder<? extends Zenchantment> defaults();
 
     @Override
     @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
+    public abstract NamespacedKey getKey();
+
+    @Override
+    @NotNull
+    public abstract String getName();
+
+    @Override
+    @NotNull
+    public abstract String getDescription();
+
+    @Override
+    public abstract Class<?>[] getConflicting();
+
+    @Override
+    @NotNull
+    public abstract Hand getHandUse();
 
     @Override
     @Deprecated
     public int getId() {
         return 0;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return this.description;
     }
 
     @Override
@@ -123,17 +109,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     @Override
     public Tool[] getEnchantable() {
         return this.enchantable;
-    }
-
-    @Override
-    public Class<?>[] getConflicting() {
-        return this.conflicting;
-    }
-
-    @Override
-    @NotNull
-    public Hand getHandUse() {
-        return handUse;
     }
 
     //region Enchantment Events
@@ -512,9 +487,8 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     public static final class Builder<T extends Zenchantment> {
         private final T zenchantment;
 
-        public Builder(Supplier<T> supplier, int id) {
+        public Builder(Supplier<T> supplier) {
             this.zenchantment = supplier.get();
-            this.zenchantment.id = id;
         }
 
         public Builder<T> maxLevel(int maxLevel) {
@@ -524,15 +498,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         public int maxLevel() {
             return this.zenchantment.maxLevel;
-        }
-
-        public Builder<T> name(String name) {
-            this.zenchantment.name = name;
-            return this;
-        }
-
-        public String name() {
-            return this.zenchantment.name;
         }
 
         public Builder<T> probability(float probability) {
@@ -553,24 +518,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
             return this.zenchantment.enchantable;
         }
 
-        public Builder<T> conflicting(Class<?>[] conflicting) {
-            zenchantment.conflicting = conflicting;
-            return this;
-        }
-
-        public Class<?>[] conflicting() {
-            return this.zenchantment.conflicting;
-        }
-
-        public Builder<T> description(String description) {
-            this.zenchantment.description = description;
-            return this;
-        }
-
-        public String description() {
-            return this.zenchantment.description;
-        }
-
         public Builder<T> cooldown(int cooldown) {
             this.zenchantment.cooldown = cooldown;
             return this;
@@ -587,15 +534,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         public double power() {
             return zenchantment.power;
-        }
-
-        public Builder<T> handUse(Hand handUse) {
-            this.zenchantment.handUse = handUse;
-            return this;
-        }
-
-        public Hand handUse() {
-            return this.zenchantment.handUse;
         }
 
         public T build() {
