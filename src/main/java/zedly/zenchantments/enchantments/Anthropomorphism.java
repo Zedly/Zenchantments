@@ -3,52 +3,76 @@ package zedly.zenchantments.enchantments;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
 
 import java.util.*;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
-import static zedly.zenchantments.Tool.PICKAXE;
 
 public class Anthropomorphism extends Zenchantment {
-    // The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
+    public static final  Map<FallingBlock, Pair<Double, Vector>> attackBlocks = new HashMap<>();
+    public static final  Map<FallingBlock, Entity>               idleBlocks   = new HashMap<>();
+    private static final List<Entity>                            anthVortex   = new ArrayList<>();
+    private static final Material[]                              MAT          = new Material[] {STONE, GRAVEL, DIRT, GRASS_BLOCK};
+    private static       boolean                                 fallBool     = false;
 
-    public static final Map<FallingBlock, Pair<Double, Vector>> attackBlocks = new HashMap<>();
-    // Players currently using the Anthropomorphism enchantment
-    private static final List<Entity> anthVortex = new ArrayList<>();
-    // The falling blocks from the Anthropomorphism enchantment that are idle, staying within the relative region
-    public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
-    private static final Material[] MAT = new Material[]{STONE, GRAVEL, DIRT, GRASS_BLOCK};
-    public static final int ID = 1;
-    // Determines if falling entities from Anthropomorphism should fall up or down
-    private static boolean fallBool = false;
+    private static final String     NAME        = "Anthropomorphism";
+    private static final String     DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
+    private static final Class<?>[] CONFLICTING = new Class<?>[] {Pierce.class, Switch.class};
+    private static final Hand       HAND_USE    = Hand.BOTH;
+
+    private final NamespacedKey key;
+
+    public Anthropomorphism(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Tool[] enchantable,
+        int maxLevel,
+        int cooldown,
+        double probability,
+        float power
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(plugin, "anthropomorphism");
+    }
 
     @Override
-    public Builder<Anthropomorphism> defaults() {
-        return new Builder<>(Anthropomorphism::new, ID)
-                .maxLevel(1)
-                .name("Anthropomorphism")
-                .probability(0)
-                .enchantable(new Tool[]{PICKAXE})
-                .conflicting(new Class[]{Pierce.class, Switch.class})
-                .description(
-                        "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.BOTH);
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Anthropomorphism.NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return Anthropomorphism.DESCRIPTION;
+    }
+
+    @Override
+    public Class<?>[] getConflicting() {
+        return Anthropomorphism.CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return Anthropomorphism.HAND_USE;
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
@@ -83,19 +107,19 @@ public class Anthropomorphism extends Zenchantment {
                         LivingEntity targetEntity = (LivingEntity) e;
 
                         Vector playerDir = attackBlocks.get(blockEntity) == null
-                                ? new Vector()
-                                : attackBlocks.get(blockEntity).getValue();
+                            ? new Vector()
+                            : attackBlocks.get(blockEntity).getValue();
 
                         blockEntity.setVelocity(e.getLocation().add(playerDir.multiply(.75)).subtract(blockEntity.getLocation()).toVector().multiply(0.25));
 
                         if (targetEntity.getLocation().getWorld().equals(blockEntity.getLocation().getWorld())) {
                             if (targetEntity.getLocation().distance(blockEntity.getLocation()) < 1.2
-                                    && blockEntity.hasMetadata("ze.anthrothrower")) {
+                                && blockEntity.hasMetadata("ze.anthrothrower")) {
                                 Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
 
                                 if (targetEntity.getNoDamageTicks() == 0 && attackBlocks.get(blockEntity) != null
-                                        && Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
-                                                2.0 * attackBlocks.get(blockEntity).getKey())) {
+                                    && Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
+                                    2.0 * attackBlocks.get(blockEntity).getKey())) {
                                     targetEntity.setNoDamageTicks(0);
                                     anthroIterator.remove();
                                     blockEntity.remove();
@@ -162,27 +186,27 @@ public class Anthropomorphism extends Zenchantment {
                     Utilities.damageTool(player, 2, usedHand);
                     Location loc = player.getLocation();
                     FallingBlock blockEntity
-                            = loc.getWorld().spawnFallingBlock(loc, Bukkit.createBlockData(MAT[Storage.rnd.nextInt(4)]));
+                        = loc.getWorld().spawnFallingBlock(loc, Bukkit.createBlockData(MAT[Storage.rnd.nextInt(4)]));
                     blockEntity.setDropItem(false);
                     blockEntity.setGravity(false);
                     blockEntity
-                            .setMetadata("ze.anthrothrower", new FixedMetadataValue(Storage.zenchantments, player));
+                        .setMetadata("ze.anthrothrower", new FixedMetadataValue(Storage.zenchantments, player));
                     idleBlocks.put(blockEntity, player);
                     return true;
                 }
             }
             return false;
         } else if ((event.getAction() == LEFT_CLICK_AIR || event.getAction() == LEFT_CLICK_BLOCK)
-                || hand.getType() == AIR) {
+            || hand.getType() == AIR) {
             anthVortex.remove(player);
             List<FallingBlock> toRemove = new ArrayList<>();
             for (FallingBlock blk : idleBlocks.keySet()) {
                 if (idleBlocks.get(blk).equals(player)) {
-                    attackBlocks.put(blk, new Pair<>(power, player.getLocation().getDirection()));
+                    attackBlocks.put(blk, new Pair<>(this.getPower(), player.getLocation().getDirection()));
                     toRemove.add(blk);
                     Block targetBlock = player.getTargetBlock(null, 7);
                     blk.setVelocity(targetBlock
-                            .getLocation().subtract(player.getLocation()).toVector().multiply(.25));
+                        .getLocation().subtract(player.getLocation()).toVector().multiply(.25));
                 }
             }
             for (FallingBlock blk : toRemove) {
