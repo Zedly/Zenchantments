@@ -1,13 +1,15 @@
 package zedly.zenchantments.api.player;
 
+import org.bukkit.NamespacedKey;
+
 public interface PlayerData {
-    void enableZenchantment(int zenchantmentId);
+    void enableZenchantment(NamespacedKey zenchantmentKey);
 
     void enableAllZenchantments();
 
-    void disableZenchantment(int zenchantmentId);
+    void disableZenchantment(NamespacedKey zenchantmentKey);
 
     void disableAllZenchantments();
 
-    int getCooldownForZenchantment(int zenchantmentId);
+    int getCooldownForZenchantment(NamespacedKey zenchantmentKey);
 }

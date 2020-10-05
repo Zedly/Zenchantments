@@ -369,7 +369,7 @@ public class ZenchantmentListener implements Listener {
                         }
 
                         if (ench.onFastScan(player, level, true)) {
-                            PlayerData.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
+                            PlayerData.matchPlayer(player).setCooldown(ench.getKey(), ench.getCooldown());
                         }
 
                         return true;
@@ -390,7 +390,7 @@ public class ZenchantmentListener implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, true)) {
-                        PlayerData.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
+                        PlayerData.matchPlayer(player).setCooldown(ench.getKey(), ench.getCooldown());
                     }
 
                     return true;
@@ -410,7 +410,7 @@ public class ZenchantmentListener implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, false)) {
-                        PlayerData.matchPlayer(player).setCooldown(ench.getId(), ench.getCooldown());
+                        PlayerData.matchPlayer(player).setCooldown(ench.getKey(), ench.getCooldown());
                     }
 
                     return true;

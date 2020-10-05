@@ -45,7 +45,7 @@ public class InfoCommand extends ZenchantmentsCommand {
                     ZenchantmentsCommand.MESSAGE_PREFIX
                         + zenchantment.getName()
                         + ": "
-                        + (playerData.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
+                        + (playerData.isDisabled(zenchantment.getKey()) ? ChatColor.RED + "**Disabled** " : "")
                         + ChatColor.AQUA + zenchantment.getDescription()
                 );
             }
@@ -69,7 +69,7 @@ public class InfoCommand extends ZenchantmentsCommand {
                 ChatColor.DARK_AQUA
                     + zenchantment.getName()
                     + ": "
-                    + (playerData.isDisabled(zenchantment.getId()) ? ChatColor.RED + "**Disabled** " : "")
+                    + (playerData.isDisabled(zenchantment.getKey()) ? ChatColor.RED + "**Disabled** " : "")
                     + ChatColor.AQUA
                     + zenchantment.getDescription()
             );

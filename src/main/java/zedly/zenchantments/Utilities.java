@@ -2,6 +2,7 @@ package zedly.zenchantments;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -367,16 +368,16 @@ public class Utilities {
 
     // Returns true if a player can use a certain enchantment at a certain time (permissions and cooldowns),
     //      otherwise false
-    public static boolean canUse(Player player, int enchantmentId) {
+    public static boolean canUse(Player player, NamespacedKey zenchantmentKey) {
         if (!player.hasPermission("zenchantments.enchant.use")) {
             return false;
         }
 
-        if (PlayerData.matchPlayer(player).getCooldownForZenchantment(enchantmentId) != 0) {
+        if (PlayerData.matchPlayer(player).getCooldownForZenchantment(zenchantmentKey) != 0) {
             return false;
         }
 
-        return !PlayerData.matchPlayer(player).isDisabled(enchantmentId);
+        return !PlayerData.matchPlayer(player).isDisabled(zenchantmentKey);
     }
 
     // Adds a potion effect of given length and intensity to the given entity.

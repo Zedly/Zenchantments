@@ -1,5 +1,6 @@
 package zedly.zenchantments.player;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -13,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
-    private final Map<Integer, Integer> enchantCooldown = new HashMap<>();
-    private final ZenchantmentsPlugin   plugin;
+    private final Map<NamespacedKey, Integer> enchantCooldown = new HashMap<>();
+    private final ZenchantmentsPlugin         plugin;
 
     private Player player;
 
@@ -24,8 +25,8 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
     }
 
     @Override
-    public void enableZenchantment(int zenchantmentId) {
-        this.player.setMetadata("ze." + zenchantmentId, new FixedMetadataValue(this.plugin, false));
+    public void enableZenchantment(NamespacedKey zenchantmentKey) {
+        this.player.setMetadata("ze." + zenchantmentKey, new FixedMetadataValue(this.plugin, false));
     }
 
     @Override
@@ -34,13 +35,13 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
         for (Zenchantment zenchantment : config.getEnchants()) {
-            this.player.setMetadata("ze." + zenchantment.getId(), new FixedMetadataValue(this.plugin, false));
+            this.player.setMetadata("ze." + zenchantment.getKey(), new FixedMetadataValue(this.plugin, false));
         }
     }
 
     @Override
-    public void disableZenchantment(int zenchantmentId) {
-        this.player.setMetadata("ze." + zenchantmentId, new FixedMetadataValue(this.plugin, true));
+    public void disableZenchantment(NamespacedKey zenchantmentKey) {
+        this.player.setMetadata("ze." + zenchantmentKey, new FixedMetadataValue(this.plugin, true));
     }
 
     @Override
@@ -49,13 +50,13 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
         for (Zenchantment zenchantment : config.getEnchants()) {
-            this.player.setMetadata("ze." + zenchantment.getId(), new FixedMetadataValue(this.plugin, true));
+            this.player.setMetadata("ze." + zenchantment.getKey(), new FixedMetadataValue(this.plugin, true));
         }
     }
 
     @Override
-    public int getCooldownForZenchantment(int zenchantmentId) {
-        return this.enchantCooldown.getOrDefault(zenchantmentId, 0);
+    public int getCooldownForZenchantment(NamespacedKey zenchantmentKey) {
+        return this.enchantCooldown.getOrDefault(zenchantmentKey, 0);
     }
 
     @Contract(mutates = "this")
@@ -67,16 +68,16 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         this.enchantCooldown.replaceAll((e, v) -> Math.max(enchantCooldown.get(e) - 1, 0));
     }
 
-    public void setCooldown(int zenchantmentId, int ticks) {
-        this.enchantCooldown.put(zenchantmentId, ticks);
+    public void setCooldown(NamespacedKey zenchantmentKey, int ticks) {
+        this.enchantCooldown.put(zenchantmentKey, ticks);
     }
 
-    public boolean isDisabled(int zenchantmentId) {
-        if (this.player.hasMetadata("ze." + zenchantmentId)) {
-            return this.player.getMetadata("ze." + zenchantmentId).get(0).asBoolean();
+    public boolean isDisabled(NamespacedKey zenchantmentKey) {
+        if (this.player.hasMetadata("ze." + zenchantmentKey)) {
+            return this.player.getMetadata("ze." + zenchantmentKey).get(0).asBoolean();
         }
 
-        this.player.setMetadata("ze." + zenchantmentId, new FixedMetadataValue(this.plugin, false));
+        this.player.setMetadata("ze." + zenchantmentKey, new FixedMetadataValue(this.plugin, false));
         return false;
     }
 

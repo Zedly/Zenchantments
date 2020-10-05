@@ -49,7 +49,7 @@ public class DisableCommand extends ZenchantmentsCommand {
             .enchantFromString(args[0]);
 
         if (zenchantment != null) {
-            playerData.disableZenchantment(zenchantment.getId());
+            playerData.disableZenchantment(zenchantment.getKey());
             player.sendMessage(
                 ZenchantmentsCommand.MESSAGE_PREFIX
                     + "The zenchantment "
