@@ -65,7 +65,7 @@ public class HighFrequencyRunnableCache implements Runnable {
                 continue;
             }
 
-            this.cacheFeeder.accept(player, tick -> this.cache1.add(tick));
+            this.cacheFeeder.accept(player, this.cache1::add);
         }
 
         this.feedFraction = (this.feedFraction + 1) % this.refreshPeriodTicks;
