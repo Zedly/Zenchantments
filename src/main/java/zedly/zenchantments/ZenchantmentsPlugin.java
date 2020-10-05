@@ -32,6 +32,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     private final GlobalConfiguration        globalConfiguration        = new GlobalConfiguration(this);
     private final WorldConfigurationProvider worldConfigurationProvider = new WorldConfigurationProvider(this);
     private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
+    private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
 
     @Override
     public void onEnable() {
@@ -135,6 +136,11 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @NotNull
     public PlayerDataProvider getPlayerDataProvider() {
         return this.playerDataProvider;
+    }
+
+    @NotNull
+    public ZenchantmentFactory getZenchantmentFactory() {
+        return this.zenchantmentFactory;
     }
 
     private void updateDescriptions() {
