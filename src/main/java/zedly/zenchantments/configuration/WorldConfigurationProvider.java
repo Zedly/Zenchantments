@@ -1,6 +1,7 @@
 package zedly.zenchantments.configuration;
 
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
@@ -11,24 +12,26 @@ public class WorldConfigurationProvider implements zedly.zenchantments.api.confi
     private final Map<UUID, WorldConfiguration> configMap = new HashMap<>();
     private final ZenchantmentsPlugin           plugin;
 
-    public WorldConfigurationProvider(ZenchantmentsPlugin plugin) {
+    public WorldConfigurationProvider(@NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public WorldConfiguration getConfigurationForWorld(World world) {
+    @NotNull
+    public WorldConfiguration getConfigurationForWorld(@NotNull World world) {
         return this.configMap.computeIfAbsent(world.getUID(), this::loadConfiguration);
     }
 
     @Override
-    public WorldConfiguration loadConfigurationForWorld(World world) {
+    @NotNull
+    public WorldConfiguration loadConfigurationForWorld(@NotNull World world) {
         WorldConfiguration newConfiguration = this.loadConfiguration(world.getUID());
         this.configMap.put(world.getUID(), newConfiguration);
         return newConfiguration;
     }
 
     @Override
-    public void resetConfigurationForWorld(World world) {
+    public void resetConfigurationForWorld(@NotNull World world) {
         // TODO: Load default config, set as configuration for given world.
     }
 
@@ -36,6 +39,7 @@ public class WorldConfigurationProvider implements zedly.zenchantments.api.confi
         this.plugin.getServer().getWorlds().forEach(this::loadConfigurationForWorld);
     }
 
+    @NotNull
     private WorldConfiguration loadConfiguration(UUID worldId) {
         return null; // TODO: Load configuration from disk.
     }
