@@ -29,6 +29,18 @@ import static org.bukkit.Material.AIR;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
 
 public class Utilities {
+    private static final int[][] SEARCH_FACES = new int[27][3];
+
+    static {
+        int i = 0;
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
+                    SEARCH_FACES[i++] = new int[] {x, y, z};
+                }
+            }
+        }
+    }
 
     // Returns true for main hand slots, false otherwise
     public static boolean isMainHand(EquipmentSlot preferred) {
@@ -632,5 +644,28 @@ public class Utilities {
         }
 
         return foundBlocks;
+    }
+
+    public static List<Block> bfs(
+        Block startBlock,
+        int maxBlocks,
+        boolean strictMax,
+        float maxDistFromOrigin,
+        EnumStorage<Material> validFind,
+        EnumStorage<Material> validSearch,
+        boolean strictValidSearch,
+        boolean flipValidSearch
+    ) {
+        return Utilities.bfs(
+            startBlock,
+            maxBlocks,
+            strictMax,
+            maxDistFromOrigin,
+            SEARCH_FACES,
+            validFind,
+            validSearch,
+            strictValidSearch,
+            flipValidSearch
+        );
     }
 }
