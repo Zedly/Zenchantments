@@ -122,7 +122,7 @@ public class GeneralListener implements Listener {
         }
 
         FallingBlock entity = (FallingBlock) event.getEntity();
-        if (Anthropomorphism.idleBlocks.containsKey(entity) || Anthropomorphism.attackBlocks.containsKey(entity)) {
+        if (Anthropomorphism.IDLE_BLOCKS.containsKey(entity) || Anthropomorphism.ATTACK_BLOCKS.containsKey(entity)) {
             event.setCancelled(true);
         }
     }

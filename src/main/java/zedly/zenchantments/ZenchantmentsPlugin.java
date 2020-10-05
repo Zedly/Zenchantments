@@ -102,7 +102,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
             location.getBlock().setType(LAVA);
         }
 
-        for (Entity entity : Anthropomorphism.idleBlocks.keySet()) {
+        for (Entity entity : Anthropomorphism.IDLE_BLOCKS.keySet()) {
             entity.remove();
         }
 
