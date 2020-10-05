@@ -1,5 +1,6 @@
 package zedly.zenchantments.api;
 
+import org.bukkit.Keyed;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
@@ -7,12 +8,13 @@ import zedly.zenchantments.Tool;
 /**
  * Represents a zenchantment.
  */
-public interface Zenchantment {
+public interface Zenchantment extends Keyed {
     /**
      * Gets the identifier of this {@link Zenchantment}.
      *
      * @return An {@code int} representing the identifier of this {@link Zenchantment}.
      */
+    @Deprecated
     int getId();
 
     /**
