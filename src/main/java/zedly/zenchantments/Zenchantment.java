@@ -64,119 +64,119 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     @Override
     @Deprecated
-    public int getId() {
+    public final int getId() {
         return 0;
     }
 
     @Override
     @NotNull
-    public Set<Tool> getEnchantable() {
+    public final Set<Tool> getEnchantable() {
         return this.enchantable;
     }
 
     @Override
-    public int getMaxLevel() {
+    public final int getMaxLevel() {
         return this.maxLevel;
     }
 
     @Override
-    public int getCooldown() {
+    public final int getCooldown() {
         return this.cooldown;
     }
 
     @Override
-    public double getPower() {
+    public final double getPower() {
         return this.power;
     }
 
     @Override
-    public float getProbability() {
+    public final float getProbability() {
         return this.probability;
     }
 
     //region Enchantment Events
-    public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onBlockInteractInteractable(PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteractInteractable(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityInteract(PlayerInteractEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityKill(EntityDeathEvent event, int level, boolean usedHand) {
+    public boolean onEntityKill(@NotNull EntityDeathEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onBeingHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onBeingHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityDamage(EntityDamageEvent event, int level, boolean usedHand) {
+    public boolean onEntityDamage(@NotNull EntityDamageEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onPlayerFish(PlayerFishEvent event, int level, boolean usedHand) {
+    public boolean onPlayerFish(@NotNull PlayerFishEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onHungerChange(FoodLevelChangeEvent event, int level, boolean usedHand) {
+    public boolean onHungerChange(@NotNull FoodLevelChangeEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onShear(PlayerShearEntityEvent event, int level, boolean usedHand) {
+    public boolean onShear(@NotNull PlayerShearEntityEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onPotionSplash(PotionSplashEvent event, int level, boolean usedHand) {
+    public boolean onPotionSplash(@NotNull PotionSplashEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onProjectileLaunch(ProjectileLaunchEvent event, int level, boolean usedHand) {
+    public boolean onProjectileLaunch(@NotNull ProjectileLaunchEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onPlayerDeath(PlayerDeathEvent event, int level, boolean usedHand) {
+    public boolean onPlayerDeath(@NotNull PlayerDeathEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onScan(Player player, int level, boolean usedHand) {
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onScanHands(Player player, int level, boolean usedHand) {
+    public boolean onScanHands(@NotNull Player player, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onCombust(EntityCombustByEntityEvent event, int level, boolean usedHand) {
+    public boolean onCombust(@NotNull EntityCombustByEntityEvent event, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onFastScan(Player player, int level, boolean usedHand) {
+    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
         return false;
     }
 
-    public boolean onFastScanHands(Player player, int level, boolean usedHand) {
+    public boolean onFastScanHands(@NotNull Player player, int level, boolean usedHand) {
         return false;
     }
     //endregion
 
-    protected ZenchantmentsPlugin getPlugin() {
+    protected final ZenchantmentsPlugin getPlugin() {
         return this.plugin;
     }
 
@@ -268,14 +268,14 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     // Returns the custom enchantment from the lore name
     private static Map.Entry<Zenchantment, Integer> getEnchant(String raw, World world) {
-        Matcher m = ENCH_LORE_PATTERN.matcher(raw);
+        Matcher matcher = ENCH_LORE_PATTERN.matcher(raw);
 
-        if (!m.find()) {
+        if (!matcher.find()) {
             return null;
         }
 
-        String enchantmentName = ChatColor.stripColor(m.group(1));
-        int level = m.group(2) == null || m.group(2).equals("") ? 1 : Utilities.getNumber(m.group(2));
+        String enchantmentName = ChatColor.stripColor(matcher.group(1));
+        int level = matcher.group(2) == null || matcher.group(2).equals("") ? 1 : Utilities.getNumber(matcher.group(2));
 
         Zenchantment zenchantment = WorldConfiguration.get(world).enchantFromString(enchantmentName);
         if (zenchantment == null) {
