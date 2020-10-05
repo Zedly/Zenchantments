@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.configuration.WorldConfiguration;
@@ -21,7 +22,6 @@ import zedly.zenchantments.player.PlayerData;
 
 import java.util.*;
 import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,32 +34,30 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
     private final ZenchantmentsPlugin plugin;
+    private final Tool[]              enchantable;
     private final int                 maxLevel;
     private final int                 cooldown;
     private final double              power;
     private final float               probability;
-    private final Tool[]              enchantable;
 
     private boolean used;
     private boolean cursed;
 
     public Zenchantment(
         @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Tool[] enchantable,
         int maxLevel,
         int cooldown,
         double power,
-        float probability,
-        @NotNull Tool[] enchantable
+        float probability
     ) {
         this.plugin = plugin;
+        this.enchantable = enchantable;
         this.maxLevel = maxLevel;
         this.cooldown = cooldown;
         this.power = power;
         this.probability = probability;
-        this.enchantable = enchantable;
     }
-
-    public abstract Builder<? extends Zenchantment> defaults();
 
     @Override
     @NotNull
@@ -87,6 +85,11 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     @Override
+    public Tool[] getEnchantable() {
+        return this.enchantable;
+    }
+
+    @Override
     public int getMaxLevel() {
         return this.maxLevel;
     }
@@ -104,11 +107,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     @Override
     public float getProbability() {
         return this.probability;
-    }
-
-    @Override
-    public Tool[] getEnchantable() {
-        return this.enchantable;
     }
 
     //region Enchantment Events
@@ -329,26 +327,27 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     public String getShown(int level, World world) {
-        WorldConfiguration config = WorldConfiguration.get(world);
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
         String levelString = Utilities.getRomanString(level);
+
         return (this.cursed ? config.getCurseColor() : config.getEnchantmentColor())
-            + this.name
+            + this.getName()
             + (this.maxLevel == 1 ? " " : " " + levelString);
     }
 
     public List<String> getDescription(World world) {
-        WorldConfiguration config = WorldConfiguration.get(world);
+        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
         List<String> desc = new LinkedList<>();
 
         if (config.descriptionLore()) {
-            String start = Utilities.toInvisibleString("ze.desc." + this.id)
+            String start = Utilities.toInvisibleString("ze.desc." + this.getKey())
                 + config.getDescriptionColor()
                 + ChatColor.ITALIC
                 + " ";
             StringBuilder builder = new StringBuilder();
             int i = 0;
 
-            for (char c : description.toCharArray()) {
+            for (char c : this.getDescription().toCharArray()) {
                 if (i < 30) {
                     i++;
                     builder.append(c);
@@ -484,60 +483,17 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         stack.setItemMeta(isBook ? bookMeta : itemMeta);
     }
 
-    public static final class Builder<T extends Zenchantment> {
-        private final T zenchantment;
-
-        public Builder(Supplier<T> supplier) {
-            this.zenchantment = supplier.get();
-        }
-
-        public Builder<T> maxLevel(int maxLevel) {
-            this.zenchantment.maxLevel = maxLevel;
-            return this;
-        }
-
-        public int maxLevel() {
-            return this.zenchantment.maxLevel;
-        }
-
-        public Builder<T> probability(float probability) {
-            this.zenchantment.probability = probability;
-            return this;
-        }
-
-        public float probability() {
-            return this.zenchantment.probability;
-        }
-
-        public Builder<T> enchantable(Tool[] enchantable) {
-            this.zenchantment.enchantable = enchantable;
-            return this;
-        }
-
-        public Tool[] enchantable() {
-            return this.zenchantment.enchantable;
-        }
-
-        public Builder<T> cooldown(int cooldown) {
-            this.zenchantment.cooldown = cooldown;
-            return this;
-        }
-
-        public int cooldown() {
-            return this.zenchantment.cooldown;
-        }
-
-        public Builder<T> power(double power) {
-            this.zenchantment.power = power;
-            return this;
-        }
-
-        public double power() {
-            return zenchantment.power;
-        }
-
-        public T build() {
-            return this.zenchantment;
-        }
+    @FunctionalInterface
+    public interface Constructor<T extends Zenchantment> {
+        @NotNull
+        @Contract(value = "_, _, _, _, _, _ -> new", pure = true)
+        T construct(
+            @NotNull ZenchantmentsPlugin plugin,
+            @NotNull Tool[] enchantable,
+            int maxLevel,
+            int cooldown,
+            double power,
+            float probability
+        );
     }
 }
