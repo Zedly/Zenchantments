@@ -1,38 +1,71 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.entity.Player;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.arrows.admin.ApocalypseArrow;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
-
-import static zedly.zenchantments.Tool.BOW;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.admin.ApocalypseArrow;
 
 public class Apocalypse extends Zenchantment {
+    private static final String     KEY         = "apocalypse";
+    private static final String     NAME        = "Apocalypse";
+    private static final String     DESCRIPTION = "Unleashes hell";
+    private static final Class<?>[] CONFLICTING = new Class<?>[0];
+    private static final Hand       HAND_USE    = Hand.RIGHT;
 
-	public static final int ID = 69;
+    private final NamespacedKey key;
 
-	@Override
-	public Builder<Apocalypse> defaults() {
-		return new Builder<>(Apocalypse::new, ID)
-			.maxLevel(1)
-			.name("Apocalypse")
-			.probability(0)
-			.enchantable(new Tool[]{BOW})
-			.conflicting(new Class[]{})
-			.description("Unleashes hell")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.RIGHT);
-	}
+    public Apocalypse(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Tool[] enchantable,
+        int maxLevel,
+        int cooldown,
+        double probability,
+        float power
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(plugin, Apocalypse.KEY);
+    }
 
-	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
-		ApocalypseArrow arrow = new ApocalypseArrow((Arrow) event.getProjectile());
-		EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
-		return true;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Apocalypse.NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return Apocalypse.DESCRIPTION;
+    }
+
+    @Override
+    public Class<?>[] getConflicting() {
+        return Apocalypse.CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return Apocalypse.HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        ApocalypseArrow arrow = new ApocalypseArrow((Arrow) event.getProjectile());
+        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        return true;
+    }
 }

@@ -25,6 +25,7 @@ public class Anthropomorphism extends Zenchantment {
     private static final List<Entity>                            VORTEX        = new ArrayList<>();
     private static final Material[]                              MATERIALS     = new Material[] {STONE, GRAVEL, DIRT, GRASS_BLOCK};
 
+    private static final String     KEY         = "anthropomorphism";
     private static final String     NAME        = "Anthropomorphism";
     private static final String     DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
     private static final Class<?>[] CONFLICTING = new Class<?>[] {Pierce.class, Switch.class};
@@ -43,7 +44,7 @@ public class Anthropomorphism extends Zenchantment {
         float power
     ) {
         super(plugin, enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(plugin, "anthropomorphism");
+        this.key = new NamespacedKey(plugin, Anthropomorphism.KEY);
     }
 
     @Override
@@ -187,7 +188,7 @@ public class Anthropomorphism extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
         Player player = event.getPlayer();
         ItemStack hand = Utilities.usedStack(player, usedHand);
 
@@ -221,7 +222,7 @@ public class Anthropomorphism extends Zenchantment {
                     return true;
                 }
             }
-            
+
             return false;
         } else if ((event.getAction() == LEFT_CLICK_AIR || event.getAction() == LEFT_CLICK_BLOCK) || hand.getType() == AIR) {
             VORTEX.remove(player);
