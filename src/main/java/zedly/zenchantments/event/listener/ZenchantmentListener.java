@@ -62,20 +62,6 @@ public class ZenchantmentListener implements Listener {
         );
     }
 
-    public void onBlockShred(BlockShredEvent event) {
-        if (event.isCancelled() || event.getBlock().getType() == AIR) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        boolean usedHand = Utilities.isMainHand(HAND);
-
-        Zenchantment.applyForTool(
-            player,
-            Utilities.usedStack(player, usedHand),
-            (ench, level) -> ench.onBlockBreak(event, level, usedHand)
-        );
-    }
 
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent event) {

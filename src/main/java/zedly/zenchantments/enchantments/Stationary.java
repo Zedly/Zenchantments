@@ -1,57 +1,92 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.arrows.enchanted.StationaryArrow;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import static zedly.zenchantments.Tool.BOW;
-import static zedly.zenchantments.Tool.SWORD;
+import java.util.Set;
 
 public class Stationary extends Zenchantment {
+    public static final String KEY = "stationary";
 
-    public static final int ID = 58;
+    private static final String                             NAME        = "Stationary";
+    private static final String                             DESCRIPTION = "Negates any knockback when attacking mobs, leaving them clueless as to who is attacking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.BOTH;
 
-    @Override
-    public Builder<Stationary> defaults() {
-        return new Builder<>(Stationary::new, ID)
-                .maxLevel(1)
-                .name("Stationary")
-                .probability(0)
-                .enchantable(new Tool[]{BOW, SWORD})
-                .conflicting(new Class[]{})
-                .description("Negates any knockback when attacking mobs, leaving them clueless as to who is attacking")
-                .cooldown(0)
-                .power(-1.0)
-                .handUse(Hand.BOTH);
+    private final NamespacedKey key;
+
+    public Stationary(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
-    public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
-        if (!(event.getEntity() instanceof LivingEntity)
-                || ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)) {
-            LivingEntity ent = (LivingEntity) event.getEntity();
-            if (event.getDamage() < ent.getHealth()) {
-                event.setCancelled(true);
-                Utilities.damageTool(((Player) event.getDamager()), 1, usedHand);
-                ent.damage(event.getDamage());
-            }
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+        if (event.getEntity() instanceof LivingEntity
+            && !ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
+        ) {
+            return true;
         }
+
+        LivingEntity entity = (LivingEntity) event.getEntity();
+
+        if (event.getDamage() < entity.getHealth()) {
+            event.setCancelled(true);
+            entity.damage(event.getDamage());
+            Utilities.damageTool(((Player) event.getDamager()), 1, usedHand);
+        }
+
         return true;
     }
 
     @Override
-    public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
         StationaryArrow arrow = new StationaryArrow((Arrow) event.getProjectile());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
-
 }

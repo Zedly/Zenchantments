@@ -9,12 +9,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class ZenchantmentFactory {
-    private static final Map<Class<? extends Zenchantment>, Constructor<? extends Zenchantment>> CONSTRUCTOR_MAP
-        = new HashMap<>();
+    // Increase this when adding a new Zenchantment!
+    private static final int ZENCHANTMENT_COUNT = 73;
+
+    private static final Map<Class<? extends Zenchantment>, Constructor<? extends Zenchantment>> CONSTRUCTOR_MAP;
 
     private final ZenchantmentsPlugin plugin;
 
     static {
+        CONSTRUCTOR_MAP = new HashMap<>(ZENCHANTMENT_COUNT);
         ZenchantmentFactory.addConstructor(Anthropomorphism.class, Anthropomorphism::new);
         ZenchantmentFactory.addConstructor(Apocalypse.class, Apocalypse::new);
         ZenchantmentFactory.addConstructor(Arborist.class, Arborist::new);
@@ -64,6 +67,30 @@ public class ZenchantmentFactory {
         ZenchantmentFactory.addConstructor(QuickShot.class, QuickShot::new);
         ZenchantmentFactory.addConstructor(Rainbow.class, Rainbow::new);
         ZenchantmentFactory.addConstructor(RainbowSlam.class, RainbowSlam::new);
+        ZenchantmentFactory.addConstructor(Reaper.class, Reaper::new);
+        ZenchantmentFactory.addConstructor(Reveal.class, Reveal::new);
+        ZenchantmentFactory.addConstructor(Saturation.class, Saturation::new);
+        ZenchantmentFactory.addConstructor(ShortCast.class, ShortCast::new);
+        ZenchantmentFactory.addConstructor(Shred.class, Shred::new);
+        ZenchantmentFactory.addConstructor(Singularity.class, Singularity::new);
+        ZenchantmentFactory.addConstructor(Siphon.class, Siphon::new);
+        ZenchantmentFactory.addConstructor(SonicShock.class, SonicShock::new);
+        ZenchantmentFactory.addConstructor(Spectral.class, Spectral::new);
+        ZenchantmentFactory.addConstructor(Speed.class, Speed::new);
+        ZenchantmentFactory.addConstructor(Spikes.class, Spikes::new);
+        ZenchantmentFactory.addConstructor(Spread.class, Spread::new);
+        ZenchantmentFactory.addConstructor(Stationary.class, Stationary::new);
+        ZenchantmentFactory.addConstructor(Stock.class, Stock::new);
+        ZenchantmentFactory.addConstructor(Stream.class, Stream::new);
+        ZenchantmentFactory.addConstructor(Switch.class, Switch::new);
+        ZenchantmentFactory.addConstructor(Terraformer.class, Terraformer::new);
+        ZenchantmentFactory.addConstructor(Toxic.class, Toxic::new);
+        ZenchantmentFactory.addConstructor(Tracer.class, Tracer::new);
+        ZenchantmentFactory.addConstructor(Transformation.class, Transformation::new);
+        ZenchantmentFactory.addConstructor(Unrepairable.class, Unrepairable::new);
+        ZenchantmentFactory.addConstructor(Variety.class, Variety::new);
+        ZenchantmentFactory.addConstructor(Vortex.class, Vortex::new);
+        ZenchantmentFactory.addConstructor(Weight.class, Weight::new);
     }
 
     public ZenchantmentFactory(@NotNull ZenchantmentsPlugin plugin) {

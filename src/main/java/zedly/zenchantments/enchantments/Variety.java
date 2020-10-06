@@ -1,51 +1,92 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import static org.bukkit.Material.*;
-import static zedly.zenchantments.Tool.AXE;
+import java.util.Set;
+
+import static org.bukkit.Material.AIR;
 
 public class Variety extends Zenchantment {
+    public static final String KEY = "variety";
 
-	public static final int ID = 65;
+    private static final String                             NAME        = "Variety";
+    private static final String                             DESCRIPTION = "Drops random types of wood or leaves";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Fire.class);
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-	@Override
-	public Builder<Variety> defaults() {
-		return new Builder<>(Variety::new, ID)
-			.maxLevel(1)
-			.name("Variety")
-			.probability(0)
-			.enchantable(new Tool[]{AXE})
-			.conflicting(new Class[]{Fire.class})
-			.description("Drops random types of wood or leaves")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.LEFT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockBreak(BlockBreakEvent event, int level, boolean usedHand) {
-		Material mat = event.getBlock().getType();
-		if (Storage.COMPATIBILITY_ADAPTER.Logs().contains(mat)) {
-			event.getBlock().setType(AIR);
-			event.getBlock().getWorld()
-			   .dropItemNaturally(event.getBlock().getLocation(),
-				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.Logs().getRandom()));
-			Utilities.damageTool(event.getPlayer(), 1, usedHand);
-		} else if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(mat)) {
-			event.getBlock().setType(AIR);
-			event.getBlock().getWorld()
-			   .dropItemNaturally(event.getBlock().getLocation(),
-				   new ItemStack(Storage.COMPATIBILITY_ADAPTER.Leaves().getRandom()));
-			Utilities.damageTool(event.getPlayer(), 1, usedHand);
-		}
-		return true;
-	}
+    public Variety(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        Block block = event.getBlock();
+        Material material = block.getType();
+
+        if (Storage.COMPATIBILITY_ADAPTER.Logs().contains(material)) {
+            block.setType(AIR);
+            block.getWorld().dropItemNaturally(
+                block.getLocation(),
+                new ItemStack(Storage.COMPATIBILITY_ADAPTER.Logs().getRandom())
+            );
+
+            Utilities.damageTool(event.getPlayer(), 1, usedHand);
+        } else if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(material)) {
+            block.setType(AIR);
+            block.getWorld().dropItemNaturally(
+                block.getLocation(),
+                new ItemStack(Storage.COMPATIBILITY_ADAPTER.Leaves().getRandom())
+            );
+            Utilities.damageTool(event.getPlayer(), 1, usedHand);
+        }
+
+        return true;
+    }
 }

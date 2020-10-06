@@ -1,48 +1,89 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.arrows.enchanted.SiphonArrow;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
-import static zedly.zenchantments.Tool.BOW;
-import static zedly.zenchantments.Tool.SWORD;
+import java.util.Objects;
+import java.util.Set;
 
 public class Siphon extends Zenchantment {
+    public static final String KEY = "siphon";
 
-    public static final int ID = 53;
+    private static final String                             NAME        = "Siphon";
+    private static final String                             DESCRIPTION = "Drains the health of the mob that you attack, giving it to you";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.BOTH;
 
-    @Override
-    public Builder<Siphon> defaults() {
-        return new Builder<>(Siphon::new, ID)
-                .maxLevel(4)
-                .name("Siphon")
-                .probability(0)
-                .enchantable(new Tool[]{BOW, SWORD})
-                .conflicting(new Class[]{})
-                .description("Drains the health of the mob that you attack, giving it to you")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.BOTH);
+    private final NamespacedKey key;
+
+    public Siphon(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
-    public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
         if (event.getEntity() instanceof LivingEntity
-                && ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)) {
+            && ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
+        ) {
             Player player = (Player) event.getDamager();
-            int difference = (int) Math.round(.17 * level * power * event.getDamage());
+            int difference = (int) Math.round(0.17 * level * this.getPower() * event.getDamage());
+
+            double genericMaxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+
             while (difference > 0) {
-                if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
-                    player.setHealth(Math.min(player.getHealth() + 1, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+                if (player.getHealth() < genericMaxHealth) {
+                    player.setHealth(Math.min(player.getHealth() + 1, genericMaxHealth));
                 }
+
                 difference--;
             }
         }
@@ -50,8 +91,8 @@ public class Siphon extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(EntityShootBowEvent event, int level, boolean usedHand) {
-        SiphonArrow arrow = new SiphonArrow((Arrow) event.getProjectile(), level, power);
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        SiphonArrow arrow = new SiphonArrow((Arrow) event.getProjectile(), level, this.getPower());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

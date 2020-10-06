@@ -1,43 +1,84 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.Zenchantment;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
-import static zedly.zenchantments.Tool.WINGS;
+import java.util.Set;
 
 public class SonicShock extends Zenchantment {
+    public static final String KEY = "sonic_shock";
 
-	public static final int ID = 75;
+    private static final String                             NAME        = "Sonic Shock";
+    private static final String                             DESCRIPTION = "Damages mobs when flying past at high speed";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public Builder<SonicShock> defaults() {
-		return new Builder<>(SonicShock::new, ID)
-			.maxLevel(3)
-			.name("Sonic Shock")
-			.probability(0)
-			.enchantable(new Tool[]{WINGS})
-			.conflicting(new Class[]{})
-			.description("Damages mobs when flying past at high speed")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onFastScan(Player player, int level, boolean usedHand) {
-		if (player.isGliding() && player.getVelocity().length() >= 1) {
-			for (Entity e : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
-				double damage = player.getVelocity().length() * 1.5 * level * power;
-				if (e instanceof Monster) {
-					ADAPTER.attackEntity((LivingEntity) e, player,  damage);
-				}
-			}
-		}
-		return true;
-	}
+    public SonicShock(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
+        if (!player.isGliding() || !(player.getVelocity().length() >= 1)) {
+            return true;
+        }
+
+        for (Entity entity : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
+            if (entity instanceof Monster) {
+                double damage = player.getVelocity().length() * 1.5 * level * this.getPower();
+                ADAPTER.attackEntity((LivingEntity) entity, player, damage);
+            }
+        }
+
+        return true;
+    }
 }

@@ -1,42 +1,76 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import org.bukkit.entity.EntityType;
-import static zedly.zenchantments.Tool.SWORD;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Transformation extends Zenchantment {
+    public static final String KEY = "transformation";
 
-    public static final int ID = 64;
+    private static final String                             NAME        = "Transformation";
+    private static final String                             DESCRIPTION = "Occasionally causes the attacked mob to be transformed into its similar cousin";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-    @Override
-    public Builder<Transformation> defaults() {
-        return new Builder<>(Transformation::new, ID)
-                .maxLevel(3)
-                .name("Transformation")
-                .probability(0)
-                .enchantable(new Tool[]{SWORD})
-                .conflicting(new Class[]{})
-                .description("Occasionally causes the attacked mob to be transformed into its similar cousin")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.LEFT);
+    private final NamespacedKey key;
+
+    public Transformation(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
-    public boolean onEntityHit(EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
         if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return false;
         }
@@ -49,59 +83,68 @@ public class Transformation extends Zenchantment {
             return true;
         }
 
-        LivingEntity le = (LivingEntity) event.getEntity();
-        if (hasValuableItems(le)) {
+        LivingEntity entity = (LivingEntity) event.getEntity();
+        if (this.hasValuableItems(entity)) {
             return true;
         }
 
-        if (ADAPTER.attackEntity(le, (Player) event.getDamager(), 0)) {
-            if (Storage.rnd.nextInt(100) < (level * power * 8)) {
-                LivingEntity newEnt = Storage.COMPATIBILITY_ADAPTER.TransformationCycle(le,
-                        Storage.rnd);
-                if (newEnt != null) {
-                    if (event.getDamage() > (le).getHealth()) {
-                        event.setCancelled(true);
-                    }
-                    Utilities.display(Utilities.getCenter(event.getEntity().getLocation()), Particle.HEART, 70, .1f,
-                            .5f, 2, .5f);
-
-                    double originalHealth = (le).getHealth();
-                    newEnt.setHealth(Math.max(1,
-                            Math.min(originalHealth, newEnt.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
-                    event.getEntity().remove();
-                }
-            }
+        if (!ADAPTER.attackEntity(entity, (Player) event.getDamager(), 0)) {
+            return true;
         }
+
+        if (!(ThreadLocalRandom.current().nextInt(100) < (level * this.getPower() * 8))) {
+            return true;
+        }
+
+        LivingEntity newEntity = Storage.COMPATIBILITY_ADAPTER.TransformationCycle(entity, ThreadLocalRandom.current());
+
+        if (newEntity == null) {
+            return true;
+        }
+
+        if (event.getDamage() > (entity).getHealth()) {
+            event.setCancelled(true);
+        }
+
+        Utilities.display(Utilities.getCenter(event.getEntity().getLocation()), Particle.HEART, 70, 0.1f, 0.5f, 2, 0.5f);
+
+        double originalHealth = (entity).getHealth();
+        newEntity.setHealth(Math.max(1, Math.min(originalHealth, newEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
+        event.getEntity().remove();
+
         return true;
     }
 
-    private boolean hasValuableItems(LivingEntity le) {
-        if (le.getEquipment() != null) {
-            for (ItemStack stk : le.getEquipment().getArmorContents()) {
-                if (stk.hasItemMeta() && stk.getItemMeta().hasEnchants()) {
-                    return true;
-                }
-                switch (stk.getType()) {
-                    case AIR:
-                        continue;
-                    case GOLDEN_SWORD:
-                        if (le.getType() != EntityType.ZOMBIFIED_PIGLIN) {
-                            return true;
-                        }
-                        break;
-                    case BOW:
-                        if (le.getType() != EntityType.SKELETON) {
-                            return true;
-                        }
-                        break;
-                    case STONE_SWORD:
-                        if (le.getType() != EntityType.WITHER_SKELETON) {
-                            return true;
-                        }
-                        break;
-                    default:
+    private boolean hasValuableItems(LivingEntity entity) {
+        if (entity.getEquipment() == null) {
+            return false;
+        }
+
+        for (ItemStack stack : entity.getEquipment().getArmorContents()) {
+            if (stack.hasItemMeta() && stack.getItemMeta().hasEnchants()) {
+                return true;
+            }
+
+            switch (stack.getType()) {
+                case AIR:
+                    continue;
+                case GOLDEN_SWORD:
+                    if (entity.getType() != EntityType.ZOMBIFIED_PIGLIN) {
                         return true;
-                }
+                    }
+                    break;
+                case BOW:
+                    if (entity.getType() != EntityType.SKELETON) {
+                        return true;
+                    }
+                    break;
+                case STONE_SWORD:
+                    if (entity.getType() != EntityType.WITHER_SKELETON) {
+                        return true;
+                    }
+                    break;
+                default:
+                    return true;
             }
         }
         return false;

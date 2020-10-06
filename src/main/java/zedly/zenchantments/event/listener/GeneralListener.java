@@ -162,7 +162,7 @@ public class GeneralListener implements Listener {
                 }
             }
 
-            for (Block block : Vortex.vortexLocs.keySet()) {
+            for (Block block : Vortex.VORTEX_LOCATIONS.keySet()) {
                 if (!block.getLocation().getWorld().equals(location.getWorld())) {
                     continue;
                 }
@@ -171,7 +171,7 @@ public class GeneralListener implements Listener {
                     continue;
                 }
 
-                event.getEntity().teleport(Vortex.vortexLocs.get(block));
+                event.getEntity().teleport(Vortex.VORTEX_LOCATIONS.get(block));
                 event.getEntity().setPickupDelay(0);
 
                 for (Entity e : event.getEntity().getNearbyEntities(1, 1, 1)) {
@@ -195,7 +195,7 @@ public class GeneralListener implements Listener {
     @EventHandler
     public void onOreUncover(@NotNull BlockBreakEvent event) {
         for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
-            if (!Reveal.glowingBlocks.containsKey(event.getBlock().getRelative(face))) {
+            if (!Reveal.GLOWING_BLOCKS.containsKey(event.getBlock().getRelative(face))) {
                 continue;
             }
 
@@ -206,7 +206,7 @@ public class GeneralListener implements Listener {
                 }
             }
 
-            Reveal.glowingBlocks.remove(event.getBlock());
+            Reveal.GLOWING_BLOCKS.remove(event.getBlock());
         }
     }
 
@@ -348,7 +348,7 @@ public class GeneralListener implements Listener {
     public void onEat(@NotNull PlayerInteractEvent event) {
         if (event.getPlayer().getInventory().getItemInMainHand().getType().isEdible()
             && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)
-            && Toxic.hungerPlayers.containsKey(event.getPlayer())
+            && Toxic.HUNGER_PLAYERS.containsKey(event.getPlayer())
         ) {
             event.setCancelled(true);
         }

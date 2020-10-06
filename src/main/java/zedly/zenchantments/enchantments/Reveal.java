@@ -1,95 +1,136 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static zedly.zenchantments.Tool.PICKAXE;
+import java.util.Set;
 
 public class Reveal extends Zenchantment {
+    public static final String KEY = "reveal";
 
-	// Blocks made to glow by the Reveal enchantment
-	public static final Map<Block, Integer> glowingBlocks = new HashMap<>();
-    public static final int ID = 68;
+    public static final Map<Block, Integer> GLOWING_BLOCKS = new HashMap<>();
 
-    @Override
-    public Builder<Reveal> defaults() {
-        return new Builder<>(Reveal::new, ID)
-            .maxLevel(4)
-            .name("Reveal")
-            .probability(0)
-            .enchantable(new Tool[]{PICKAXE})
-            .conflicting(new Class[]{Switch.class, Pierce.class, Spectral.class})
-            .description("Makes nearby ores glow white through the stone.")
-            .cooldown(100)
-            .power(1.0)
-            .handUse(Hand.NONE);
+    private static final String                             NAME        = "Reveal";
+    private static final String                             DESCRIPTION = "Makes nearby ores glow white through the stone";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Switch.class, Pierce.class, Spectral.class);
+    private static final Hand                               HAND_USE    = Hand.NONE;
+
+    private final NamespacedKey key;
+
+    public Reveal(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
+
     @Override
-    public boolean onBlockInteract(final PlayerInteractEvent event, int level, boolean usedHand) {
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return false;
+        }
+
         Player player = event.getPlayer();
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getPlayer().isSneaking()) {
-                int radius = (int) Math.max(2, Math.round((2 + level) * power));
-                int found = 0;
-                for (int x = -radius; x <= radius; x++) {
-                    for (int y = -radius; y <= radius; y++) {
-                        for (int z = -radius; z <= radius; z++) {
-                            Block blk = event.getPlayer().getLocation().getBlock().getRelative(x, y, z);
-                            if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(blk.getType())) {
-                                boolean exposed = false;
-                                for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
-                                    if (Storage.COMPATIBILITY_ADAPTER.Airs().contains(blk.getRelative(face).getType())) {
-                                        exposed = true;
-                                    }
-                                }
-                                if (exposed) {
-                                    continue;
-                                }
 
-                                found++;
-                                int entityId = 2000000000 + (blk.hashCode()) % 10000000;
-                                if (glowingBlocks.containsKey(blk)) {
-                                    glowingBlocks.put(blk, glowingBlocks.get(blk) + 1);
-                                } else {
-                                    glowingBlocks.put(blk, 1);
-                                }
+        if (!player.isSneaking()) {
+            return false;
+        }
 
-                                if (!ADAPTER.showShulker(blk, entityId, player)) {
-                                    return false;
-                                }
-                                Bukkit.getServer().getScheduler()
-                                      .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                          ADAPTER.hideShulker(entityId, player);
-                                          if (glowingBlocks.containsKey(blk)
-                                             && glowingBlocks.get(blk) > 1) {
-                                              glowingBlocks.put(blk,
-                                                                        glowingBlocks.get(blk) - 1);
-                                          } else {
-                                              glowingBlocks.remove(blk);
-                                          }
-                                      }, 100);
-                            }
+        int radius = (int) Math.max(2, Math.round((2 + level) * this.getPower()));
+        int found = 0;
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    Block block = player.getLocation().getBlock().getRelative(x, y, z);
+
+                    if (!Storage.COMPATIBILITY_ADAPTER.Ores().contains(block.getType())) {
+                        continue;
+                    }
+
+                    boolean exposed = false;
+
+                    for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
+                        if (Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(face).getType())) {
+                            exposed = true;
                         }
                     }
-                }
-                Utilities.damageTool(event.getPlayer(), Math.max(16, (int) Math.round(found * 1.3)), usedHand);
 
-                return true;
+                    if (exposed) {
+                        continue;
+                    }
+
+                    found++;
+                    int entityId = 2000000000 + (block.hashCode()) % 10000000;
+
+                    if (GLOWING_BLOCKS.containsKey(block)) {
+                        GLOWING_BLOCKS.put(block, GLOWING_BLOCKS.get(block) + 1);
+                    } else {
+                        GLOWING_BLOCKS.put(block, 1);
+                    }
+
+                    if (!ADAPTER.showShulker(block, entityId, player)) {
+                        return false;
+                    }
+
+                    this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+                        ADAPTER.hideShulker(entityId, player);
+                        if (GLOWING_BLOCKS.containsKey(block) && GLOWING_BLOCKS.get(block) > 1) {
+                            GLOWING_BLOCKS.put(block, GLOWING_BLOCKS.get(block) - 1);
+                        } else {
+                            GLOWING_BLOCKS.remove(block);
+                        }
+                    }, 100);
+                }
             }
         }
-        return false;
-    }
 
+        Utilities.damageTool(player, Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+
+        return true;
+    }
 }

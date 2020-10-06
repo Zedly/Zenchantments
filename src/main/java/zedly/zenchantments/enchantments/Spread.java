@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -8,65 +9,106 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.arrows.enchanted.MultiArrow;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import static zedly.zenchantments.Tool.BOW;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Spread extends Zenchantment {
+    public static final String KEY = "spread";
 
-	public static final int ID = 57;
+    private static final String                             NAME        = "Spread";
+    private static final String                             DESCRIPTION = "Fires an array of arrows simultaneously";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Burst.class);
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public Builder<Spread> defaults() {
-		return new Builder<>(Spread::new, ID)
-			.maxLevel(5)
-			.name("Spread")
-			.probability(0)
-			.enchantable(new Tool[]{BOW})
-			.conflicting(new Class[]{Burst.class})
-			.description("Fires an array of arrows simultaneously")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.RIGHT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onProjectileLaunch(ProjectileLaunchEvent evt, int level, boolean usedHand) {
-		Arrow originalArrow = (Arrow) evt.getEntity();
-		Player player = (Player) originalArrow.getShooter();
-		ItemStack hand = Utilities.usedStack(player, usedHand);
-		MultiArrow ar = new MultiArrow(originalArrow);
-		EnchantedArrow.putArrow(originalArrow, ar, player);
-		Bukkit.getPluginManager().callEvent(
-			new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length()));
-		Utilities.damageTool(player, (int) Math.round(level / 2.0 + 1), usedHand);
-		for (int i = 0; i < (int) Math.round(power * level * 4); i++) {
-			Vector v = originalArrow.getVelocity();
-			v.setX(v.getX() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
-			v.setZ(v.getZ() + Math.max(Math.min(Storage.rnd.nextGaussian() / 8, 0.75), -0.75));
-			Arrow arrow = player.getWorld().spawnArrow(
-				player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)), v, 1, 0);
-			arrow.setShooter(player);
-			arrow.setVelocity(v.normalize().multiply(originalArrow.getVelocity().length()));
-			arrow.setFireTicks(originalArrow.getFireTicks());
-			arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
-			EntityShootBowEvent event =
-				new EntityShootBowEvent(player, hand, arrow, (float) originalArrow.getVelocity().length());
-			Bukkit.getPluginManager().callEvent(event);
-			if (evt.isCancelled()) {
-				arrow.remove();
-				return false;
-			}
-			arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
-			arrow.setCritical(originalArrow.isCritical());
-			EnchantedArrow.putArrow(originalArrow, new MultiArrow(originalArrow), player);
-		}
-		return true;
-	}
+    public Spread(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onProjectileLaunch(@NotNull ProjectileLaunchEvent event, int level, boolean usedHand) {
+        Arrow originalArrow = (Arrow) event.getEntity();
+        Player player = (Player) originalArrow.getShooter();
+        ItemStack hand = Utilities.usedStack(player, usedHand);
+
+        MultiArrow ar = new MultiArrow(originalArrow);
+        EnchantedArrow.putArrow(originalArrow, ar, player);
+
+        this.getPlugin().getServer().getPluginManager().callEvent(
+            new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length())
+        );
+
+        Utilities.damageTool(player, (int) Math.round(level / 2.0 + 1), usedHand);
+
+        for (int i = 0; i < (int) Math.round(this.getPower() * level * 4); i++) {
+            Vector vector = originalArrow.getVelocity();
+
+            vector.setX(vector.getX() + Math.max(Math.min(ThreadLocalRandom.current().nextGaussian() / 8, 0.75), -0.75));
+            vector.setZ(vector.getZ() + Math.max(Math.min(ThreadLocalRandom.current().nextGaussian() / 8, 0.75), -0.75));
+
+            Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)), vector, 1, 0);
+            arrow.setShooter(player);
+            arrow.setVelocity(vector.normalize().multiply(originalArrow.getVelocity().length()));
+            arrow.setFireTicks(originalArrow.getFireTicks());
+            arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
+
+            EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(player, hand, arrow, (float) originalArrow.getVelocity().length());
+
+            this.getPlugin().getServer().getPluginManager().callEvent(entityShootBowEvent);
+
+            if (entityShootBowEvent.isCancelled()) {
+                arrow.remove();
+                return false;
+            }
+
+            arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
+            arrow.setCritical(originalArrow.isCritical());
+
+            EnchantedArrow.putArrow(originalArrow, new MultiArrow(originalArrow), player);
+        }
+
+        return true;
+    }
 }
