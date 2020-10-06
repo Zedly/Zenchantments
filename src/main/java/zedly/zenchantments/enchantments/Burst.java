@@ -19,7 +19,7 @@ import java.util.Set;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Burst extends Zenchantment {
+public final class Burst extends Zenchantment {
     public static final String KEY = "burst";
 
     private static final String                             NAME        = "Burst";

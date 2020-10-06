@@ -15,7 +15,7 @@ import java.util.Set;
 import static org.bukkit.Material.PACKED_ICE;
 import static org.bukkit.Material.WATER;
 
-public class FrozenStep extends Zenchantment {
+public final class FrozenStep extends Zenchantment {
     public static final String KEY = "frozen_step";
 
     public static final Map<Location, Long> FROZEN_LOCATIONS = new HashMap<>();

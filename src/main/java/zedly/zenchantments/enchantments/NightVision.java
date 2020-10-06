@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
 
-public class NightVision extends Zenchantment {
+public final class NightVision extends Zenchantment {
     public static final String KEY = "night_vision";
 
     private static final String                             NAME        = "Night Vision";

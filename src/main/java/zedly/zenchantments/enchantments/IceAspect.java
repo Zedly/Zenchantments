@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
 
-public class IceAspect extends Zenchantment {
+public final class IceAspect extends Zenchantment {
     public static final String KEY = "ice_aspect";
 
     private static final String                             NAME        = "Ice Aspect";

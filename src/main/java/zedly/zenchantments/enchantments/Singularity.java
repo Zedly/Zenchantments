@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Singularity extends Zenchantment {
+public final class Singularity extends Zenchantment {
     public static final String KEY = "singularity";
 
     private static final String                             NAME        = "Singularity";

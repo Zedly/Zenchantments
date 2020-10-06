@@ -19,7 +19,7 @@ import java.util.Set;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Laser extends Zenchantment {
+public final class Laser extends Zenchantment {
     public static final String KEY = "laser";
 
     private static final String                             NAME        = "Laser";

@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.JUMP;
 
-public class Meador extends Zenchantment {
+public final class Meador extends Zenchantment {
     public static final String KEY = "meador";
 
     private static final String                             NAME        = "Meador";

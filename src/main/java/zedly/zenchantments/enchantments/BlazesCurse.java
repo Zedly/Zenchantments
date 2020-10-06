@@ -20,7 +20,7 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.*;
 
-public class BlazesCurse extends Zenchantment {
+public final class BlazesCurse extends Zenchantment {
     private static final float SUBMERGE_DAMAGE = 1.5f;
     private static final float RAIN_DAMAGE     = 0.5f;
 

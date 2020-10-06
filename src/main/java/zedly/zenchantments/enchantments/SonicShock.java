@@ -14,7 +14,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Set;
 
-public class SonicShock extends Zenchantment {
+public final class SonicShock extends Zenchantment {
     public static final String KEY = "sonic_shock";
 
     private static final String                             NAME        = "Sonic Shock";

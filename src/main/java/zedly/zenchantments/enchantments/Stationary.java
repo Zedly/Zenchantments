@@ -12,7 +12,7 @@ import zedly.zenchantments.*;
 
 import java.util.Set;
 
-public class Stationary extends Zenchantment {
+public final class Stationary extends Zenchantment {
     public static final String KEY = "stationary";
 
     private static final String                             NAME        = "Stationary";

@@ -20,7 +20,7 @@ import java.util.Set;
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
 
-public class Toxic extends Zenchantment {
+public final class Toxic extends Zenchantment {
     public static final String KEY = "toxic";
 
     public static final Map<Player, Integer> HUNGER_PLAYERS = new HashMap<>();

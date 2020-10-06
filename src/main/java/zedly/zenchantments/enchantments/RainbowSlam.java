@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class RainbowSlam extends Zenchantment {
+public final class RainbowSlam extends Zenchantment {
     public static final String KEY = "rainbow_slam";
 
     public static final Set<Entity> RAINBOW_SLAM_ENTITIES = new HashSet<>();

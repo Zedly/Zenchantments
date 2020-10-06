@@ -14,7 +14,7 @@ import java.util.Set;
 
 import static org.bukkit.entity.EntityType.DROPPED_ITEM;
 
-public class Magnetism extends Zenchantment {
+public final class Magnetism extends Zenchantment {
     public static final String KEY = "magnetism";
 
     private static final String                             NAME        = "Magnetism";

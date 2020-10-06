@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Reveal extends Zenchantment {
+public final class Reveal extends Zenchantment {
     public static final String KEY = "reveal";
 
     public static final Map<Block, Integer> GLOWING_BLOCKS = new HashMap<>();

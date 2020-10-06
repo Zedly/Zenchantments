@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Persephone extends Zenchantment {
+public final class Persephone extends Zenchantment {
     public static final String KEY = "persephone";
 
     private static final String                             NAME        = "Persephone";

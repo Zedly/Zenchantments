@@ -11,7 +11,7 @@ import zedly.zenchantments.*;
 
 import java.util.Set;
 
-public class Missile extends Zenchantment {
+public final class Missile extends Zenchantment {
     public static final String KEY = "missile";
 
     private static final String                             NAME        = "Missile";

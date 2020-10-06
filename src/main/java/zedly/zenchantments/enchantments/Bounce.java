@@ -14,7 +14,7 @@ import java.util.Set;
 
 import static org.bukkit.Material.SLIME_BLOCK;
 
-public class Bounce extends Zenchantment {
+public final class Bounce extends Zenchantment {
     public static final String KEY = "bounce";
 
     private static final String                             NAME        = "Bounce";

@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.bukkit.Material.*;
 
-public class Gluttony extends Zenchantment {
+public final class Gluttony extends Zenchantment {
     public static final String KEY = "gluttony";
 
     private static final String                             NAME        = "Gluttony";

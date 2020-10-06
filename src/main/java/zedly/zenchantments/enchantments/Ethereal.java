@@ -9,7 +9,7 @@ import zedly.zenchantments.*;
 
 import java.util.Set;
 
-public class Ethereal extends Zenchantment {
+public final class Ethereal extends Zenchantment {
     public static final String KEY = "ethereal";
 
     private static final String                             NAME        = "Ethereal";

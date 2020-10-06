@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
 
-public class GreenThumb extends Zenchantment {
+public final class GreenThumb extends Zenchantment {
     public static final String KEY = "green_thumb";
 
     private static final String                             NAME        = "Green Thumb";

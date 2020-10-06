@@ -19,7 +19,7 @@ import java.util.Set;
 import static org.bukkit.Material.*;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
 
-public class Shred extends Zenchantment {
+public final class Shred extends Zenchantment {
     public static final String KEY = "shred";
 
     private static final String                             NAME        = "Shred";

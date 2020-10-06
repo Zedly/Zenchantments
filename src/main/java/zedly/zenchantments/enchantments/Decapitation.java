@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.*;
 
-public class Decapitation extends Zenchantment {
+public final class Decapitation extends Zenchantment {
     public static final String KEY = "decapitation";
 
     private static final String                             NAME        = "Decapitation";

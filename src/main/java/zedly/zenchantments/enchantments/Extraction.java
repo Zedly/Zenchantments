@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 
-public class Extraction extends Zenchantment {
+public final class Extraction extends Zenchantment {
     public static final String KEY = "extraction";
 
     private static final String                             NAME        = "Extraction";

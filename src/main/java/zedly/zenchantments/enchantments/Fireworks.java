@@ -13,7 +13,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Set;
 
-public class Fireworks extends Zenchantment {
+public final class Fireworks extends Zenchantment {
     public static final String KEY = "fireworks";
 
     private static final String                             NAME        = "Fireworks";

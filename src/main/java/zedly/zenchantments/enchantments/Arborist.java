@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
 
-public class Arborist extends Zenchantment {
+public final class Arborist extends Zenchantment {
     public static final String KEY = "arborist";
 
     private static final String                             NAME        = "Arborist";

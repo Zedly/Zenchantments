@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
 
-public class Glide extends Zenchantment {
+public final class Glide extends Zenchantment {
     public static final String KEY = "glide";
 
     private static final String                             NAME        = "Glide";

@@ -17,7 +17,7 @@ import zedly.zenchantments.*;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Transformation extends Zenchantment {
+public final class Transformation extends Zenchantment {
     public static final String KEY = "transformation";
 
     private static final String                             NAME        = "Transformation";

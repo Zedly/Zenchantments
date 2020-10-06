@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.JUMP;
 
-public class Jump extends Zenchantment {
+public final class Jump extends Zenchantment {
     public static final String KEY = "jump";
 
     private static final String                             NAME        = "Jump";

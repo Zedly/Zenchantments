@@ -13,7 +13,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Set;
 
-public class Blizzard extends Zenchantment {
+public final class Blizzard extends Zenchantment {
     public static final String KEY = "blizzard";
 
     private static final String                             NAME        = "Blizzard";

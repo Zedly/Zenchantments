@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Stream extends Zenchantment {
+public final class Stream extends Zenchantment {
     public static final String KEY = "stream";
 
     private static final String                             NAME        = "Stream";

@@ -17,7 +17,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Objects;
 import java.util.Set;
 
-public class Siphon extends Zenchantment {
+public final class Siphon extends Zenchantment {
     public static final String KEY = "siphon";
 
     private static final String                             NAME        = "Siphon";

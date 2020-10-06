@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Vortex extends Zenchantment {
+public final class Vortex extends Zenchantment {
     public static final String KEY = "vortex";
 
     public static final Map<Block, Player> VORTEX_LOCATIONS = new HashMap<>();

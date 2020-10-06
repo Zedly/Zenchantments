@@ -13,7 +13,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Set;
 
-public class Potion extends Zenchantment {
+public final class Potion extends Zenchantment {
     public static final String KEY = "potion";
 
     private static final String                             NAME        = "Potion";

@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.block.BlockFace.DOWN;
 
-public class Rainbow extends Zenchantment {
+public final class Rainbow extends Zenchantment {
     public static final String KEY = "rainbow";
 
     private static final String                             NAME        = "Rainbow";

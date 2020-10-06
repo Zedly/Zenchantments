@@ -10,7 +10,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Set;
 
-public class Unrepairable extends Zenchantment {
+public final class Unrepairable extends Zenchantment {
     public static final String KEY = "unrepairable";
 
     private static final String                             NAME        = "Unrepairable";

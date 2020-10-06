@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
 
-public class Anthropomorphism extends Zenchantment {
+public final class Anthropomorphism extends Zenchantment {
     public static final String KEY = "anthropomorphism";
 
     public static final Map<FallingBlock, Pair<Double, Vector>> ATTACK_BLOCKS = new HashMap<>();

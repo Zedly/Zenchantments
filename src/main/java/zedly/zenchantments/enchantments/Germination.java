@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Germination extends Zenchantment {
+public final class Germination extends Zenchantment {
     public static final String KEY = "germination";
 
     private static final String                             NAME        = "Germination";

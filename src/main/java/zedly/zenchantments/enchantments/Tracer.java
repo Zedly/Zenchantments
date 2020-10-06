@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Tracer extends Zenchantment {
+public final class Tracer extends Zenchantment {
     public static final String KEY = "tracer";
 
     private static final String                             NAME        = "Tracer";

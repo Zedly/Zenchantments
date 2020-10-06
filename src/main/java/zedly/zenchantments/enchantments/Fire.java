@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 
-public class Fire extends Zenchantment {
+public final class Fire extends Zenchantment {
     public static final String KEY = "fire";
 
     // Locations where Fire has been used on a block and the drop was changed. 

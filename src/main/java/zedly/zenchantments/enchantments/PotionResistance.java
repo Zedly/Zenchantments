@@ -15,7 +15,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Map;
 import java.util.Set;
 
-public class PotionResistance extends Zenchantment {
+public final class PotionResistance extends Zenchantment {
     public static final String KEY = "potion_resistance";
 
     private static final String                             NAME        = "Potion Resistance";

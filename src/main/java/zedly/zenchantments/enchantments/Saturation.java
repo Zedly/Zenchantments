@@ -13,7 +13,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Saturation extends Zenchantment {
+public final class Saturation extends Zenchantment {
     public static final String KEY = "saturation";
 
     private static final String                             NAME        = "Saturation";

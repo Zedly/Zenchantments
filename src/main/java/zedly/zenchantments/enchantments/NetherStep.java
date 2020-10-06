@@ -17,7 +17,7 @@ import java.util.Set;
 
 import static org.bukkit.Material.*;
 
-public class NetherStep extends Zenchantment {
+public final class NetherStep extends Zenchantment {
     public static final String KEY = "nether_step";
 
     public static final Map<Location, Long> NETHERSTEP_LOCATIONS = new HashMap<>();

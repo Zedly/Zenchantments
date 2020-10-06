@@ -13,7 +13,7 @@ import java.util.Set;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Conversion extends Zenchantment {
+public final class Conversion extends Zenchantment {
     public static final String KEY = "conversion";
 
     private static final String                             NAME        = "Conversion";

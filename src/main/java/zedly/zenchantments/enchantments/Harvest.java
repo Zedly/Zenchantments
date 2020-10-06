@@ -15,7 +15,7 @@ import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Harvest extends Zenchantment {
+public final class Harvest extends Zenchantment {
     public static final String KEY = "harvest";
 
     private static final String                             NAME        = "Harvest";
@@ -68,7 +68,7 @@ public class Harvest extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
         if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }

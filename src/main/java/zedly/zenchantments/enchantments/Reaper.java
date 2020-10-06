@@ -15,7 +15,7 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.BLINDNESS;
 
-public class Reaper extends Zenchantment {
+public final class Reaper extends Zenchantment {
     public static final String KEY = "reaper";
 
     private static final String                             NAME        = "Reaper";

@@ -18,7 +18,7 @@ import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Spectral extends Zenchantment {
+public final class Spectral extends Zenchantment {
     public static final String KEY = "spectral";
 
     private static final String                             NAME        = "Spectral";

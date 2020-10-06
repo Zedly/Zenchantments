@@ -12,7 +12,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Set;
 
-public class LongCast extends Zenchantment {
+public final class LongCast extends Zenchantment {
     public static final String KEY = "long_cast";
 
     private static final String                             NAME        = "Long Cast";

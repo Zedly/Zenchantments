@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.entity.EntityType.SQUID;
 
-public class MysteryFish extends Zenchantment {
+public final class MysteryFish extends Zenchantment {
     public static final String KEY = "mystery_fish";
 
     private static final String                             NAME        = "Mystery Fish";

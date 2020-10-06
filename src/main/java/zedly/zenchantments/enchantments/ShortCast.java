@@ -13,7 +13,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Set;
 
-public class ShortCast extends Zenchantment {
+public final class ShortCast extends Zenchantment {
     public static final String KEY = "short_cast";
 
     private static final String                             NAME        = "Short Cast";

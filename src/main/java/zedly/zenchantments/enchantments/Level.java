@@ -16,7 +16,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Level extends Zenchantment {
+public final class Level extends Zenchantment {
     public static final String KEY = "level";
 
     private static final String                             NAME        = "Level";

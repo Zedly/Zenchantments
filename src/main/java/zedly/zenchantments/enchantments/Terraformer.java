@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class Terraformer extends Zenchantment {
+public final class Terraformer extends Zenchantment {
     public static final String KEY = "terraformer";
 
     private static final String                             NAME        = "Terraformer";

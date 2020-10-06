@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.GOLD_NUGGET;
 import static org.bukkit.Material.SAND;
 
-public class GoldRush extends Zenchantment {
+public final class GoldRush extends Zenchantment {
     public static final String KEY = "gold_rush";
 
     private static final String                             NAME        = "Gold Rush";

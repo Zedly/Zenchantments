@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Grab extends Zenchantment {
+public final class Grab extends Zenchantment {
     public static final String KEY = "grab";
 
     public static final Map<Block, Player> GRAB_LOCATIONS = new HashMap<>();

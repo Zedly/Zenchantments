@@ -15,7 +15,7 @@ import java.util.Set;
 
 import static org.bukkit.Material.AIR;
 
-public class Switch extends Zenchantment {
+public final class Switch extends Zenchantment {
     public static final String KEY = "switch";
 
     private static final String                             NAME        = "Switch";

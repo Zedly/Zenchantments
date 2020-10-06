@@ -10,7 +10,7 @@ import zedly.zenchantments.*;
 import java.util.List;
 import java.util.Set;
 
-public class Lumber extends Zenchantment {
+public final class Lumber extends Zenchantment {
     public static final String KEY = "lumber";
 
     private static final String                             NAME        = "Lumber";

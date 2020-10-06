@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Bind extends Zenchantment {
+public final class Bind extends Zenchantment {
     public static final String KEY = "bind";
 
     private static final String                             NAME        = "Bind";

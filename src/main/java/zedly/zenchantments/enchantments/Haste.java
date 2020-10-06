@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
-public class Haste extends Zenchantment {
+public final class Haste extends Zenchantment {
     public static final String KEY = "haste";
 
     private static final String                             NAME        = "Haste";

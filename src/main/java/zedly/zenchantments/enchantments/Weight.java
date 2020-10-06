@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE;
 
-public class Weight extends Zenchantment {
+public final class Weight extends Zenchantment {
     public static final String KEY = "weight";
 
     private static final String                             NAME        = "Weight";

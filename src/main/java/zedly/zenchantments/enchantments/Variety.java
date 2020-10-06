@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.bukkit.Material.AIR;
 
-public class Variety extends Zenchantment {
+public final class Variety extends Zenchantment {
     public static final String KEY = "variety";
 
     private static final String                             NAME        = "Variety";
