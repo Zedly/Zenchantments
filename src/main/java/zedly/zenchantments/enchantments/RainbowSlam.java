@@ -1,97 +1,150 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static zedly.zenchantments.Tool.SWORD;
-
 public class RainbowSlam extends Zenchantment {
+    public static final String KEY = "rainbow_slam";
 
-	// Entities affected by Rainbow Slam, protected against fall damage in order to deal damage as the attacker
-	public static final Set<Entity> rainbowSlamNoFallEntities = new HashSet<>();
-	public static final int         ID                        = 48;
+    public static final Set<Entity> RAINBOW_SLAM_ENTITIES = new HashSet<>();
 
-	@Override
-	public Builder<RainbowSlam> defaults() {
-		return new Builder<>(RainbowSlam::new, ID)
-			.maxLevel(4)
-			.name("Rainbow Slam")
-			.probability(0)
-			.enchantable(new Tool[]{SWORD})
-			.conflicting(new Class[]{Force.class, Gust.class})
-			.description("Attacks enemy mobs with a powerful swirling slam")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.RIGHT);
-	}
+    private static final String                             NAME        = "Rainbow Slam";
+    private static final String                             DESCRIPTION = "Attacks enemy mobs with a powerful swirling slam";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Force.class, Gust.class);
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public boolean onEntityInteract(final PlayerInteractEntityEvent event, final int level, boolean usedHand) {
-		if (!(event.getRightClicked() instanceof LivingEntity) ||
-			!ADAPTER.attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)) {
-			return false;
-		}
-		Utilities.damageTool(event.getPlayer(), 9, usedHand);
-		final LivingEntity ent = (LivingEntity) event.getRightClicked();
-		final Location l = ent.getLocation().clone();
-		ent.teleport(l);
-		for (int i = 0; i < 30; i++) {
-			final int fI = i;
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-				for (int j = 0; j < 40; j++) {
-					if (ent.isDead()) {
-						return;
-					}
-					Location loc = l.clone();
-					float t = 30 * fI + j;
-					loc.setY(loc.getY() + (t / 100));
-					loc.setX(loc.getX() + Math.sin(Math.toRadians(t)) * t / 330);
-					loc.setZ(loc.getZ() + Math.cos(Math.toRadians(t)) * t / 330);
+    private final NamespacedKey key;
 
-					ent.getWorld().spawnParticle(Particle.REDSTONE, loc, 1,
-						new Particle.DustOptions(
-							Color.fromRGB(Storage.rnd.nextInt(256), Storage.rnd.nextInt(256),
-								Storage.rnd.nextInt(256)),
-							1.0f));
-					loc.setY(loc.getY() + 1.3);
-					ent.setVelocity(loc.toVector().subtract(ent.getLocation().toVector()));
-				}
-			}, i);
-		}
-		AtomicBoolean applied = new AtomicBoolean(false);
-		rainbowSlamNoFallEntities.add(ent);
-		for (int i = 0; i < 3; i++) {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-				// ent.setNoDamageTicks(20); // Prevent fall damage
-				ent.setVelocity(l.toVector().subtract(ent.getLocation().toVector()).multiply(.3));
-				ent.setFallDistance(0);
-				if (ent.isOnGround() && !applied.get()) {
-					applied.set(true);
-					rainbowSlamNoFallEntities.remove(ent);
-					ADAPTER.attackEntity(ent, event.getPlayer(), level * power);
-					for (int c = 0; c < 1000; c++) {
-						// Vector v = new Vector(Math.sin(Math.toRadians(c)), Storage.rnd.nextFloat(), Math.cos(Math
-						// .toRadians(c))).multiply(.75);
-						ent.getWorld().spawnParticle(Particle.BLOCK_DUST, Utilities.getCenter(l), 10,
-							event.getPlayer().getLocation().getBlock().getBlockData());
-					}
-				}
-			}, 35 + (i * 5));
-		}
-		return true;
-	}
+    public RainbowSlam(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, boolean usedHand) {
+        if (!(event.getRightClicked() instanceof LivingEntity)
+            || !ADAPTER.attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
+        ) {
+            return false;
+        }
+
+        Utilities.damageTool(event.getPlayer(), 9, usedHand);
+
+        LivingEntity entity = (LivingEntity) event.getRightClicked();
+        Location location = entity.getLocation();
+
+        entity.teleport(location);
+
+        for (int i = 0; i < 30; i++) {
+            int finalI = i;
+
+            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+                for (int j = 0; j < 40; j++) {
+                    if (entity.isDead()) {
+                        return;
+                    }
+                    Location cloned = location.clone();
+                    float t = 30 * finalI + j;
+                    cloned.setY(cloned.getY() + (t / 100));
+                    cloned.setX(cloned.getX() + Math.sin(Math.toRadians(t)) * t / 330);
+                    cloned.setZ(cloned.getZ() + Math.cos(Math.toRadians(t)) * t / 330);
+
+                    ThreadLocalRandom random = ThreadLocalRandom.current();
+
+                    entity.getWorld().spawnParticle(
+                        Particle.REDSTONE,
+                        cloned,
+                        1,
+                        new Particle.DustOptions(Color.fromRGB(random.nextInt(256), random.nextInt(256), random.nextInt(256)), 1.0f)
+                    );
+
+                    cloned.setY(cloned.getY() + 1.3);
+
+                    entity.setVelocity(cloned.toVector().subtract(entity.getLocation().toVector()));
+                }
+            }, i);
+        }
+
+        RAINBOW_SLAM_ENTITIES.add(entity);
+
+        AtomicBoolean applied = new AtomicBoolean(false);
+
+        for (int i = 0; i < 3; i++) {
+            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+                entity.setVelocity(location.toVector().subtract(entity.getLocation().toVector()).multiply(0.3));
+                entity.setFallDistance(0);
+
+                if (!entity.isOnGround() || applied.get()) {
+                    return;
+                }
+
+                applied.set(true);
+
+                RAINBOW_SLAM_ENTITIES.remove(entity);
+
+                ADAPTER.attackEntity(entity, event.getPlayer(), level * this.getPower());
+
+                for (int c = 0; c < 1000; c++) {
+                    entity.getWorld().spawnParticle(
+                        Particle.BLOCK_DUST,
+                        Utilities.getCenter(location),
+                        10,
+                        event.getPlayer().getLocation().getBlock().getBlockData()
+                    );
+                }
+            }, 35 + i * 5);
+        }
+
+        return true;
+    }
 }

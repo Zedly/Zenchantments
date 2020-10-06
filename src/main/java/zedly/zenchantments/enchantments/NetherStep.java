@@ -1,74 +1,108 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.Zenchantment;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.Utilities.selfRemovingArea;
-import static zedly.zenchantments.Tool.BOOTS;
 
 public class NetherStep extends Zenchantment {
+    public static final String KEY = "nether_step";
 
-	// Blocks spawned from the NatherStep enchantment
-	public static final Map<Location, Long> netherstepLocs = new HashMap<>();
-	public static final int                 ID             = 39;
+    public static final Map<Location, Long> NETHERSTEP_LOCATIONS = new HashMap<>();
 
-	@Override
-	public Builder<NetherStep> defaults() {
-		return new Builder<>(NetherStep::new, ID)
-			.maxLevel(3)
-			.name("Nether Step")
-			.probability(0)
-			.enchantable(new Tool[]{BOOTS})
-			.conflicting(new Class[]{FrozenStep.class})
-			.description("Allows the player to slowly but safely walk on lava")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.NONE);
-	}
+    private static final String                             NAME        = "Nether Step";
+    private static final String                             DESCRIPTION = "Allows the player to slowly but safely walk on lava";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(FrozenStep.class);
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public boolean onScan(Player player, int level, boolean usedHand) {
-		if (player.isSneaking() && player.getLocation().getBlock().getType() == LAVA &&
-			!player.isFlying()) {
-			player.setVelocity(player.getVelocity().setY(.4));
-		}
-		Block block = player.getLocation().add(0, 0.2, 0).getBlock();
-		int radius = (int) Math.round(power * level + 2);
+    private final NamespacedKey key;
 
-		selfRemovingArea(SOUL_SAND, LAVA, radius, block, player, netherstepLocs);
+    public NetherStep(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-		return true;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
 
-	@EffectTask(Frequency.MEDIUM_HIGH)
-	// Removes the blocks from NetherStep and FrozenStep after a peroid of time
-	public static void updateBlocks() {
-		Iterator it = FrozenStep.FROZEN_LOCATIONS.keySet().iterator();
-		while (it.hasNext()) {
-			Location location = (Location) it.next();
-			if (Math.abs(System.nanoTime() - FrozenStep.FROZEN_LOCATIONS.get(location)) > 9E8) {
-				location.getBlock().setType(WATER);
-				it.remove();
-			}
-		}
-		it = netherstepLocs.keySet().iterator();
-		while (it.hasNext()) {
-			Location location = (Location) it.next();
-			if (Math.abs(System.nanoTime() - netherstepLocs.get(location)) > 9E8) {
-				location.getBlock().setType(LAVA);
-				it.remove();
-			}
-		}
-	}
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+        if (player.isSneaking() && player.getLocation().getBlock().getType() == LAVA && !player.isFlying()) {
+            player.setVelocity(player.getVelocity().setY(.4));
+        }
+
+        Block block = player.getLocation().add(0, 0.2, 0).getBlock();
+        int radius = (int) Math.round(this.getPower() * level + 2);
+
+        Utilities.selfRemovingArea(SOUL_SAND, LAVA, radius, block, player, NETHERSTEP_LOCATIONS);
+
+        return true;
+    }
+
+    @EffectTask(Frequency.MEDIUM_HIGH)
+    public static void updateBlocks() {
+        Iterator<Location> iterator = FrozenStep.FROZEN_LOCATIONS.keySet().iterator();
+        while (iterator.hasNext()) {
+            Location location = iterator.next();
+            if (Math.abs(System.nanoTime() - FrozenStep.FROZEN_LOCATIONS.get(location)) > 9E8) {
+                location.getBlock().setType(WATER);
+                iterator.remove();
+            }
+        }
+
+        iterator = NETHERSTEP_LOCATIONS.keySet().iterator();
+        while (iterator.hasNext()) {
+            Location location = iterator.next();
+            if (Math.abs(System.nanoTime() - NETHERSTEP_LOCATIONS.get(location)) > 9E8) {
+                location.getBlock().setType(LAVA);
+                iterator.remove();
+            }
+        }
+    }
 }

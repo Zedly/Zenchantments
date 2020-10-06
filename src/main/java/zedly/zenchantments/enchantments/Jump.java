@@ -1,35 +1,70 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.JUMP;
-import static zedly.zenchantments.Tool.BOOTS;
 
 public class Jump extends Zenchantment {
+    public static final String KEY = "jump";
 
-	public static final int ID = 30;
+    private static final String                             NAME        = "Jump";
+    private static final String                             DESCRIPTION = "Gives the player a jump boost";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public Builder<Jump> defaults() {
-		return new Builder<>(Jump::new, ID)
-			.maxLevel(4)
-			.name("Jump")
-			.probability(0)
-			.enchantable(new Tool[]{BOOTS})
-			.conflicting(new Class[]{})
-			.description("Gives the player a jump boost")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onScan(Player player, int level, boolean usedHand) {
-		Utilities.addPotion(player, JUMP, 610, (int) Math.round(level * power));
-		return true;
-	}
+    public Jump(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+        Utilities.addPotion(player, JUMP, 610, (int) Math.round(level * this.getPower()));
+        return true;
+    }
 }

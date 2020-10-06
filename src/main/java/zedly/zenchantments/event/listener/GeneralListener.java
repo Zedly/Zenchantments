@@ -128,7 +128,7 @@ public class GeneralListener implements Listener {
 
     @EventHandler
     public void onEntityFall(@NotNull EntityDamageEvent event) {
-        if (event.getCause() == DamageCause.FALL && RainbowSlam.rainbowSlamNoFallEntities.contains(event.getEntity())) {
+        if (event.getCause() == DamageCause.FALL && RainbowSlam.RAINBOW_SLAM_ENTITIES.contains(event.getEntity())) {
             event.setCancelled(true);
         }
     }
@@ -187,7 +187,7 @@ public class GeneralListener implements Listener {
     @EventHandler
     public void onIceOrLavaBreak(@NotNull BlockBreakEvent event) {
         Location location = event.getBlock().getLocation();
-        if (FrozenStep.FROZEN_LOCATIONS.containsKey(location) || NetherStep.netherstepLocs.containsKey(location)) {
+        if (FrozenStep.FROZEN_LOCATIONS.containsKey(location) || NetherStep.NETHERSTEP_LOCATIONS.containsKey(location)) {
             event.setCancelled(true);
         }
     }

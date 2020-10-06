@@ -64,7 +64,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
             location.getBlock().setType(WATER);
         }
 
-        for (Location location : NetherStep.netherstepLocs.keySet()) {
+        for (Location location : NetherStep.NETHERSTEP_LOCATIONS.keySet()) {
             location.getBlock().setType(LAVA);
         }
 

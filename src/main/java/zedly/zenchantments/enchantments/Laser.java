@@ -1,8 +1,9 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -10,83 +11,121 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.player.PlayerData;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.Tool.AXE;
-import static zedly.zenchantments.Tool.PICKAXE;
 
 public class Laser extends Zenchantment {
+    public static final String KEY = "laser";
 
-    // Time at which a later enchantment was fired; this is used to prevent double firing when clicking an entity
-    // public static final Map<Player, Long> laserTimes = new HashMap<>();
-    public static final int ID = 31;
+    private static final String                             NAME        = "Laser";
+    private static final String                             DESCRIPTION = "Breaks blocks and damages mobs using a powerful beam of light";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-    @Override
-    public Builder<Laser> defaults() {
-        return new Builder<>(Laser::new, ID)
-                .maxLevel(3)
-                .name("Laser")
-                .probability(0)
-                .enchantable(new Tool[]{PICKAXE, AXE})
-                .conflicting(new Class[]{})
-                .description("Breaks blocks and damages mobs using a powerful beam of light")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.RIGHT);
+    private final NamespacedKey key;
+
+    public Laser(
+        @NotNull ZenchantmentsPlugin plugin,
+        @NotNull Set<Tool> enchantable,
+        int maxLevel,
+        int cooldown,
+        double power,
+        float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
-    public void shoot(Player player, int level, boolean usedHand) {
-        PlayerData.matchPlayer(player).setCooldown(Lumber.ID, 5); // Avoid recursing into Lumber enchant
-        Block blk = player.getTargetBlock(null, 6
-                + (int) Math.round(level * power * 3));
-        Location playLoc = player.getLocation();
-        Location target = Utilities.getCenter(blk.getLocation());
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, boolean usedHand) {
+        if (usedHand && !event.getPlayer().isSneaking()) {
+            this.shoot(event.getPlayer(), level);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        if (usedHand && !event.getPlayer().isSneaking()
+            && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)
+        ) {
+            this.shoot(event.getPlayer(), level);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void shoot(@NotNull Player player, int level) {
+        // Avoid conflicting with Lumber zenchantment.
+        this.getPlugin()
+            .getPlayerDataProvider()
+            .getDataForPlayer(player)
+            .setCooldown(new NamespacedKey(this.getPlugin(), Lumber.KEY), 5);
+
+        Block block = player.getTargetBlock(null, 6 + (int) Math.round(level * this.getPower() * 3));
+        Location playerLocation = player.getLocation();
+        Location target = Utilities.getCenter(block.getLocation());
+
         target.setY(target.getY() + .5);
-        playLoc.setY(playLoc.getY() + 1.1);
-        double d = target.distance(playLoc);
+        playerLocation.setY(playerLocation.getY() + 1.1);
+        double d = target.distance(playerLocation);
+
         for (int i = 0; i < (int) d * 5; i++) {
-            Location tempLoc = target.clone();
-            tempLoc.setX(playLoc.getX() + (i * ((target.getX() - playLoc.getX()) / (d * 5))));
-            tempLoc.setY(playLoc.getY() + (i * ((target.getY() - playLoc.getY()) / (d * 5))));
-            tempLoc.setZ(playLoc.getZ() + (i * ((target.getZ() - playLoc.getZ()) / (d * 5))));
+            Location particleLocation = target.clone();
+            particleLocation.setX(playerLocation.getX() + (i * ((target.getX() - playerLocation.getX()) / (d * 5))));
+            particleLocation.setY(playerLocation.getY() + (i * ((target.getY() - playerLocation.getY()) / (d * 5))));
+            particleLocation.setZ(playerLocation.getZ() + (i * ((target.getZ() - playerLocation.getZ()) / (d * 5))));
 
-            player.getWorld().spawnParticle(Particle.REDSTONE, tempLoc, 1, new Particle.DustOptions(Color.RED, 0.5f));
+            player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, new Particle.DustOptions(Color.RED, 0.5f));
 
-            for (Entity ent : Bukkit.getWorld(playLoc.getWorld().getName()).getNearbyEntities(tempLoc, .3, .3, .3)) {
-                if (ent instanceof LivingEntity && ent != player) {
-                    LivingEntity e = (LivingEntity) ent;
-                    ADAPTER.attackEntity(e, player, 1 + (level + power * 2));
+            for (Entity entity : playerLocation.getWorld().getNearbyEntities(particleLocation, 0.3, 0.3, 0.3)) {
+                if (entity instanceof LivingEntity && entity != player) {
+                    ADAPTER.attackEntity((LivingEntity) entity, player, 1 + (level + this.getPower() * 2));
                     return;
                 }
             }
         }
-        if (ADAPTER.isBlockSafeToBreak(blk) && !ADAPTER.LaserBlackListBlocks().contains(blk.getType())) {
-            ADAPTER.breakBlockNMS(blk, player);
-        }
-    }
 
-    @Override
-    public boolean onEntityInteract(PlayerInteractEntityEvent event, int level, boolean usedHand) {
-        if (usedHand && !event.getPlayer().isSneaking()) {
-            shoot(event.getPlayer(), level, usedHand);
-            return true;
+        if (ADAPTER.isBlockSafeToBreak(block) && !ADAPTER.LaserBlackListBlocks().contains(block.getType())) {
+            ADAPTER.breakBlockNMS(block, player);
         }
-        return false;
-    }
-
-    @Override
-    public boolean onBlockInteract(final PlayerInteractEvent event, int level, boolean usedHand) {
-        if (usedHand && !event.getPlayer().isSneaking()
-                && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)) {
-            shoot(event.getPlayer(), level, usedHand);
-            return true;
-        }
-        return false;
     }
 }

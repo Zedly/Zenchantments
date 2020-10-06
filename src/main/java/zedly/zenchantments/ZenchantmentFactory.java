@@ -39,6 +39,31 @@ public class ZenchantmentFactory {
         ZenchantmentFactory.addConstructor(Gluttony.class, Gluttony::new);
         ZenchantmentFactory.addConstructor(GoldRush.class, GoldRush::new);
         ZenchantmentFactory.addConstructor(Grab.class, Grab::new);
+        ZenchantmentFactory.addConstructor(GreenThumb.class, GreenThumb::new);
+        ZenchantmentFactory.addConstructor(Gust.class, Gust::new);
+        ZenchantmentFactory.addConstructor(Harvest.class, Harvest::new);
+        ZenchantmentFactory.addConstructor(Haste.class, Haste::new);
+        ZenchantmentFactory.addConstructor(IceAspect.class, IceAspect::new);
+        ZenchantmentFactory.addConstructor(Jump.class, Jump::new);
+        ZenchantmentFactory.addConstructor(Laser.class, Laser::new);
+        ZenchantmentFactory.addConstructor(Level.class, Level::new);
+        ZenchantmentFactory.addConstructor(LongCast.class, LongCast::new);
+        ZenchantmentFactory.addConstructor(Lumber.class, Lumber::new);
+        ZenchantmentFactory.addConstructor(Magnetism.class, Magnetism::new);
+        ZenchantmentFactory.addConstructor(Meador.class, Meador::new);
+        ZenchantmentFactory.addConstructor(Missile.class, Missile::new);
+        ZenchantmentFactory.addConstructor(Mow.class, Mow::new);
+        ZenchantmentFactory.addConstructor(MysteryFish.class, MysteryFish::new);
+        ZenchantmentFactory.addConstructor(NetherStep.class, NetherStep::new);
+        ZenchantmentFactory.addConstructor(NightVision.class, NightVision::new);
+        ZenchantmentFactory.addConstructor(Persephone.class, Persephone::new);
+        ZenchantmentFactory.addConstructor(Pierce.class, Pierce::new);
+        ZenchantmentFactory.addConstructor(Plough.class, Plough::new);
+        ZenchantmentFactory.addConstructor(Potion.class, Potion::new);
+        ZenchantmentFactory.addConstructor(PotionResistance.class, PotionResistance::new);
+        ZenchantmentFactory.addConstructor(QuickShot.class, QuickShot::new);
+        ZenchantmentFactory.addConstructor(Rainbow.class, Rainbow::new);
+        ZenchantmentFactory.addConstructor(RainbowSlam.class, RainbowSlam::new);
     }
 
     public ZenchantmentFactory(@NotNull ZenchantmentsPlugin plugin) {
