@@ -25,7 +25,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
     }
 
     @Override
-    public void enableZenchantment(NamespacedKey zenchantmentKey) {
+    public void enableZenchantment(@NotNull NamespacedKey zenchantmentKey) {
         this.player.setMetadata("ze." + zenchantmentKey, new FixedMetadataValue(this.plugin, false));
     }
 
@@ -40,7 +40,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
     }
 
     @Override
-    public void disableZenchantment(NamespacedKey zenchantmentKey) {
+    public void disableZenchantment(@NotNull NamespacedKey zenchantmentKey) {
         this.player.setMetadata("ze." + zenchantmentKey, new FixedMetadataValue(this.plugin, true));
     }
 
@@ -55,7 +55,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
     }
 
     @Override
-    public int getCooldownForZenchantment(NamespacedKey zenchantmentKey) {
+    public int getCooldownForZenchantment(@NotNull NamespacedKey zenchantmentKey) {
         return this.enchantCooldown.getOrDefault(zenchantmentKey, 0);
     }
 

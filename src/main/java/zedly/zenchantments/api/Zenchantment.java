@@ -12,14 +12,6 @@ import java.util.Set;
  */
 public interface Zenchantment extends Keyed {
     /**
-     * Gets the identifier of this {@link Zenchantment}.
-     *
-     * @return An {@code int} representing the identifier of this {@link Zenchantment}.
-     */
-    @Deprecated
-    int getId();
-
-    /**
      * Gets the name of this {@link Zenchantment}.
      * <p>
      * This is also the text used in the lore of an item enchanted with it.
