@@ -245,11 +245,11 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         Map<Zenchantment, Integer> finalMap = new LinkedHashMap<>();
 
-        for (int id : new int[] {Lumber.ID, Shred.ID, Mow.ID, Pierce.ID, Extraction.ID, Plough.ID}) {
+        for (String key : new String[] {Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY}) {
             Zenchantment zenchantment = null;
 
             for (Zenchantment ench : WorldConfiguration.allEnchants) {
-                if (ench.id == id) {
+                if (ench.getKey().getKey().equals(key)) {
                     zenchantment = ench;
                     break;
                 }
