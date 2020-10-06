@@ -1,96 +1,95 @@
 package zedly.zenchantments;
 
+import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment.Constructor;
 import zedly.zenchantments.enchantments.*;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class ZenchantmentFactory {
-    // Increase this when adding a new Zenchantment!
-    private static final int ZENCHANTMENT_COUNT = 73;
-
     private static final Map<Class<? extends Zenchantment>, Constructor<? extends Zenchantment>> CONSTRUCTOR_MAP;
 
     private final ZenchantmentsPlugin plugin;
 
     static {
-        CONSTRUCTOR_MAP = new HashMap<>(ZENCHANTMENT_COUNT);
-        ZenchantmentFactory.addConstructor(Anthropomorphism.class, Anthropomorphism::new);
-        ZenchantmentFactory.addConstructor(Apocalypse.class, Apocalypse::new);
-        ZenchantmentFactory.addConstructor(Arborist.class, Arborist::new);
-        ZenchantmentFactory.addConstructor(Bind.class, Bind::new);
-        ZenchantmentFactory.addConstructor(BlazesCurse.class, BlazesCurse::new);
-        ZenchantmentFactory.addConstructor(Blizzard.class, Blizzard::new);
-        ZenchantmentFactory.addConstructor(Bounce.class, Bounce::new);
-        ZenchantmentFactory.addConstructor(Burst.class, Burst::new);
-        ZenchantmentFactory.addConstructor(Combustion.class, Combustion::new);
-        ZenchantmentFactory.addConstructor(Conversion.class, Conversion::new);
-        ZenchantmentFactory.addConstructor(Decapitation.class, Decapitation::new);
-        ZenchantmentFactory.addConstructor(Ethereal.class, Ethereal::new);
-        ZenchantmentFactory.addConstructor(Extraction.class, Extraction::new);
-        ZenchantmentFactory.addConstructor(Fire.class, Fire::new);
-        ZenchantmentFactory.addConstructor(Firestorm.class, Firestorm::new);
-        ZenchantmentFactory.addConstructor(Fireworks.class, Fireworks::new);
-        ZenchantmentFactory.addConstructor(Force.class, Force::new);
-        ZenchantmentFactory.addConstructor(FrozenStep.class, FrozenStep::new);
-        ZenchantmentFactory.addConstructor(Fuse.class, Fuse::new);
-        ZenchantmentFactory.addConstructor(Germination.class, Germination::new);
-        ZenchantmentFactory.addConstructor(Glide.class, Glide::new);
-        ZenchantmentFactory.addConstructor(Gluttony.class, Gluttony::new);
-        ZenchantmentFactory.addConstructor(GoldRush.class, GoldRush::new);
-        ZenchantmentFactory.addConstructor(Grab.class, Grab::new);
-        ZenchantmentFactory.addConstructor(GreenThumb.class, GreenThumb::new);
-        ZenchantmentFactory.addConstructor(Gust.class, Gust::new);
-        ZenchantmentFactory.addConstructor(Harvest.class, Harvest::new);
-        ZenchantmentFactory.addConstructor(Haste.class, Haste::new);
-        ZenchantmentFactory.addConstructor(IceAspect.class, IceAspect::new);
-        ZenchantmentFactory.addConstructor(Jump.class, Jump::new);
-        ZenchantmentFactory.addConstructor(Laser.class, Laser::new);
-        ZenchantmentFactory.addConstructor(Level.class, Level::new);
-        ZenchantmentFactory.addConstructor(LongCast.class, LongCast::new);
-        ZenchantmentFactory.addConstructor(Lumber.class, Lumber::new);
-        ZenchantmentFactory.addConstructor(Magnetism.class, Magnetism::new);
-        ZenchantmentFactory.addConstructor(Meador.class, Meador::new);
-        ZenchantmentFactory.addConstructor(Missile.class, Missile::new);
-        ZenchantmentFactory.addConstructor(Mow.class, Mow::new);
-        ZenchantmentFactory.addConstructor(MysteryFish.class, MysteryFish::new);
-        ZenchantmentFactory.addConstructor(NetherStep.class, NetherStep::new);
-        ZenchantmentFactory.addConstructor(NightVision.class, NightVision::new);
-        ZenchantmentFactory.addConstructor(Persephone.class, Persephone::new);
-        ZenchantmentFactory.addConstructor(Pierce.class, Pierce::new);
-        ZenchantmentFactory.addConstructor(Plough.class, Plough::new);
-        ZenchantmentFactory.addConstructor(Potion.class, Potion::new);
-        ZenchantmentFactory.addConstructor(PotionResistance.class, PotionResistance::new);
-        ZenchantmentFactory.addConstructor(QuickShot.class, QuickShot::new);
-        ZenchantmentFactory.addConstructor(Rainbow.class, Rainbow::new);
-        ZenchantmentFactory.addConstructor(RainbowSlam.class, RainbowSlam::new);
-        ZenchantmentFactory.addConstructor(Reaper.class, Reaper::new);
-        ZenchantmentFactory.addConstructor(Reveal.class, Reveal::new);
-        ZenchantmentFactory.addConstructor(Saturation.class, Saturation::new);
-        ZenchantmentFactory.addConstructor(ShortCast.class, ShortCast::new);
-        ZenchantmentFactory.addConstructor(Shred.class, Shred::new);
-        ZenchantmentFactory.addConstructor(Singularity.class, Singularity::new);
-        ZenchantmentFactory.addConstructor(Siphon.class, Siphon::new);
-        ZenchantmentFactory.addConstructor(SonicShock.class, SonicShock::new);
-        ZenchantmentFactory.addConstructor(Spectral.class, Spectral::new);
-        ZenchantmentFactory.addConstructor(Speed.class, Speed::new);
-        ZenchantmentFactory.addConstructor(Spikes.class, Spikes::new);
-        ZenchantmentFactory.addConstructor(Spread.class, Spread::new);
-        ZenchantmentFactory.addConstructor(Stationary.class, Stationary::new);
-        ZenchantmentFactory.addConstructor(Stock.class, Stock::new);
-        ZenchantmentFactory.addConstructor(Stream.class, Stream::new);
-        ZenchantmentFactory.addConstructor(Switch.class, Switch::new);
-        ZenchantmentFactory.addConstructor(Terraformer.class, Terraformer::new);
-        ZenchantmentFactory.addConstructor(Toxic.class, Toxic::new);
-        ZenchantmentFactory.addConstructor(Tracer.class, Tracer::new);
-        ZenchantmentFactory.addConstructor(Transformation.class, Transformation::new);
-        ZenchantmentFactory.addConstructor(Unrepairable.class, Unrepairable::new);
-        ZenchantmentFactory.addConstructor(Variety.class, Variety::new);
-        ZenchantmentFactory.addConstructor(Vortex.class, Vortex::new);
-        ZenchantmentFactory.addConstructor(Weight.class, Weight::new);
+        ImmutableMap.Builder<Class<? extends Zenchantment>, Constructor<? extends Zenchantment>> builder = ImmutableMap.builder();
+        ZenchantmentFactory.addConstructor(builder, Anthropomorphism.class, Anthropomorphism::new);
+        ZenchantmentFactory.addConstructor(builder, Apocalypse.class, Apocalypse::new);
+        ZenchantmentFactory.addConstructor(builder, Arborist.class, Arborist::new);
+        ZenchantmentFactory.addConstructor(builder, Bind.class, Bind::new);
+        ZenchantmentFactory.addConstructor(builder, BlazesCurse.class, BlazesCurse::new);
+        ZenchantmentFactory.addConstructor(builder, Blizzard.class, Blizzard::new);
+        ZenchantmentFactory.addConstructor(builder, Bounce.class, Bounce::new);
+        ZenchantmentFactory.addConstructor(builder, Burst.class, Burst::new);
+        ZenchantmentFactory.addConstructor(builder, Combustion.class, Combustion::new);
+        ZenchantmentFactory.addConstructor(builder, Conversion.class, Conversion::new);
+        ZenchantmentFactory.addConstructor(builder, Decapitation.class, Decapitation::new);
+        ZenchantmentFactory.addConstructor(builder, Ethereal.class, Ethereal::new);
+        ZenchantmentFactory.addConstructor(builder, Extraction.class, Extraction::new);
+        ZenchantmentFactory.addConstructor(builder, Fire.class, Fire::new);
+        ZenchantmentFactory.addConstructor(builder, Firestorm.class, Firestorm::new);
+        ZenchantmentFactory.addConstructor(builder, Fireworks.class, Fireworks::new);
+        ZenchantmentFactory.addConstructor(builder, Force.class, Force::new);
+        ZenchantmentFactory.addConstructor(builder, FrozenStep.class, FrozenStep::new);
+        ZenchantmentFactory.addConstructor(builder, Fuse.class, Fuse::new);
+        ZenchantmentFactory.addConstructor(builder, Germination.class, Germination::new);
+        ZenchantmentFactory.addConstructor(builder, Glide.class, Glide::new);
+        ZenchantmentFactory.addConstructor(builder, Gluttony.class, Gluttony::new);
+        ZenchantmentFactory.addConstructor(builder, GoldRush.class, GoldRush::new);
+        ZenchantmentFactory.addConstructor(builder, Grab.class, Grab::new);
+        ZenchantmentFactory.addConstructor(builder, GreenThumb.class, GreenThumb::new);
+        ZenchantmentFactory.addConstructor(builder, Gust.class, Gust::new);
+        ZenchantmentFactory.addConstructor(builder, Harvest.class, Harvest::new);
+        ZenchantmentFactory.addConstructor(builder, Haste.class, Haste::new);
+        ZenchantmentFactory.addConstructor(builder, IceAspect.class, IceAspect::new);
+        ZenchantmentFactory.addConstructor(builder, Jump.class, Jump::new);
+        ZenchantmentFactory.addConstructor(builder, Laser.class, Laser::new);
+        ZenchantmentFactory.addConstructor(builder, Level.class, Level::new);
+        ZenchantmentFactory.addConstructor(builder, LongCast.class, LongCast::new);
+        ZenchantmentFactory.addConstructor(builder, Lumber.class, Lumber::new);
+        ZenchantmentFactory.addConstructor(builder, Magnetism.class, Magnetism::new);
+        ZenchantmentFactory.addConstructor(builder, Meador.class, Meador::new);
+        ZenchantmentFactory.addConstructor(builder, Missile.class, Missile::new);
+        ZenchantmentFactory.addConstructor(builder, Mow.class, Mow::new);
+        ZenchantmentFactory.addConstructor(builder, MysteryFish.class, MysteryFish::new);
+        ZenchantmentFactory.addConstructor(builder, NetherStep.class, NetherStep::new);
+        ZenchantmentFactory.addConstructor(builder, NightVision.class, NightVision::new);
+        ZenchantmentFactory.addConstructor(builder, Persephone.class, Persephone::new);
+        ZenchantmentFactory.addConstructor(builder, Pierce.class, Pierce::new);
+        ZenchantmentFactory.addConstructor(builder, Plough.class, Plough::new);
+        ZenchantmentFactory.addConstructor(builder, Potion.class, Potion::new);
+        ZenchantmentFactory.addConstructor(builder, PotionResistance.class, PotionResistance::new);
+        ZenchantmentFactory.addConstructor(builder, QuickShot.class, QuickShot::new);
+        ZenchantmentFactory.addConstructor(builder, Rainbow.class, Rainbow::new);
+        ZenchantmentFactory.addConstructor(builder, RainbowSlam.class, RainbowSlam::new);
+        ZenchantmentFactory.addConstructor(builder, Reaper.class, Reaper::new);
+        ZenchantmentFactory.addConstructor(builder, Reveal.class, Reveal::new);
+        ZenchantmentFactory.addConstructor(builder, Saturation.class, Saturation::new);
+        ZenchantmentFactory.addConstructor(builder, ShortCast.class, ShortCast::new);
+        ZenchantmentFactory.addConstructor(builder, Shred.class, Shred::new);
+        ZenchantmentFactory.addConstructor(builder, Singularity.class, Singularity::new);
+        ZenchantmentFactory.addConstructor(builder, Siphon.class, Siphon::new);
+        ZenchantmentFactory.addConstructor(builder, SonicShock.class, SonicShock::new);
+        ZenchantmentFactory.addConstructor(builder, Spectral.class, Spectral::new);
+        ZenchantmentFactory.addConstructor(builder, Speed.class, Speed::new);
+        ZenchantmentFactory.addConstructor(builder, Spikes.class, Spikes::new);
+        ZenchantmentFactory.addConstructor(builder, Spread.class, Spread::new);
+        ZenchantmentFactory.addConstructor(builder, Stationary.class, Stationary::new);
+        ZenchantmentFactory.addConstructor(builder, Stock.class, Stock::new);
+        ZenchantmentFactory.addConstructor(builder, Stream.class, Stream::new);
+        ZenchantmentFactory.addConstructor(builder, Switch.class, Switch::new);
+        ZenchantmentFactory.addConstructor(builder, Terraformer.class, Terraformer::new);
+        ZenchantmentFactory.addConstructor(builder, Toxic.class, Toxic::new);
+        ZenchantmentFactory.addConstructor(builder, Tracer.class, Tracer::new);
+        ZenchantmentFactory.addConstructor(builder, Transformation.class, Transformation::new);
+        ZenchantmentFactory.addConstructor(builder, Unrepairable.class, Unrepairable::new);
+        ZenchantmentFactory.addConstructor(builder, Variety.class, Variety::new);
+        ZenchantmentFactory.addConstructor(builder, Vortex.class, Vortex::new);
+        ZenchantmentFactory.addConstructor(builder, Weight.class, Weight::new);
+
+        CONSTRUCTOR_MAP = builder.build();
     }
 
     public ZenchantmentFactory(@NotNull ZenchantmentsPlugin plugin) {
@@ -127,9 +126,10 @@ public class ZenchantmentFactory {
     // This method allows the compiler to ensure that 'constructor' returns an instance of 'zenchantmentClass'.
     // CONSTRUCTOR_MAP.put() by itself does not ensure that the generic types are the same, so always use this method!
     private static <T extends Zenchantment> void addConstructor(
+        @NotNull ImmutableMap.Builder<Class<? extends Zenchantment>, Constructor<? extends Zenchantment>> builder,
         @NotNull Class<T> zenchantmentClass,
         @NotNull Constructor<T> constructor
     ) {
-        CONSTRUCTOR_MAP.put(zenchantmentClass, constructor);
+        builder.put(zenchantmentClass, constructor);
     }
 }
