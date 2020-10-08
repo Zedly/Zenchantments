@@ -106,7 +106,7 @@ public final class Transformation extends Zenchantment {
             event.setCancelled(true);
         }
 
-        Utilities.display(Utilities.getCenter(event.getEntity().getLocation()), Particle.HEART, 70, 0.1f, 0.5f, 2, 0.5f);
+        Utilities.displayParticle(Utilities.getCenter(event.getEntity().getLocation()), Particle.HEART, 70, 0.1f, 0.5f, 2, 0.5f);
 
         double originalHealth = (entity).getHealth();
         newEntity.setHealth(Math.max(1, Math.min(originalHealth, newEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));

@@ -97,7 +97,7 @@ public final class Extraction extends Zenchantment {
 
         block.setType(AIR);
 
-        Utilities.display(block.getLocation(), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+        Utilities.displayParticle(block.getLocation(), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
         return true;
     }

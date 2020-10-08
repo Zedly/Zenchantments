@@ -90,7 +90,7 @@ public final class Conversion extends Zenchantment {
         for (int i = 0; i < 3; i++) {
             this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
                 this.getPlugin(),
-                () -> Utilities.display(
+                () -> Utilities.displayParticle(
                     Utilities.getCenter(player.getLocation()),
                     Particle.HEART,
                     10,

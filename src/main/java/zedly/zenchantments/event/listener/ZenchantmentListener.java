@@ -70,7 +70,7 @@ public class ZenchantmentListener implements Listener {
         ) {
             Player player = event.getPlayer();
             boolean isMainHand = Utilities.isMainHand(event.getHand());
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
+            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
                 Zenchantment.applyForTool(
                     player,
                     usedStack,
@@ -87,7 +87,7 @@ public class ZenchantmentListener implements Listener {
         ) {
             Player player = event.getPlayer();
             boolean isMainHand = Utilities.isMainHand(event.getHand());
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, isMainHand)) {
+            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
                 Zenchantment.applyForTool(
                     player,
                     usedStack,
@@ -146,7 +146,7 @@ public class ZenchantmentListener implements Listener {
             Player player = (Player) event.getDamager();
             boolean usedHand = Utilities.isMainHand(HAND);
             if (event.getEntity() instanceof LivingEntity) {
-                for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, usedHand)) {
+                for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, usedHand)) {
                     Zenchantment.applyForTool(
                         player,
                         usedStack,
@@ -159,7 +159,7 @@ public class ZenchantmentListener implements Listener {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             // Only check main hand for some reason.
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
+            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
                 Zenchantment.applyForTool(player, usedStack, (ench, level) -> ench.onBeingHit(event, level, true));
             }
         }
@@ -172,7 +172,7 @@ public class ZenchantmentListener implements Listener {
         }
 
         Player player = (Player) event.getEntity();
-        for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, false)) {
+        for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, false)) {
             Zenchantment.applyForTool(
                 player,
                 usedStack,
@@ -205,7 +205,7 @@ public class ZenchantmentListener implements Listener {
         }
 
         Player player = (Player) event.getEntity();
-        for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
+        for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
             Zenchantment.applyForTool(player, usedStack, (ench, level) -> ench.onHungerChange(event, level, true));
         }
     }
@@ -262,7 +262,7 @@ public class ZenchantmentListener implements Listener {
             Player player = (Player) entity;
             AtomicBoolean apply = new AtomicBoolean(true);
 
-            for (ItemStack usedStack : Utilities.getArmorAndMainHandItems(player, true)) {
+            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
                 // Only apply one enchantment, which in practice is Potion Resistance.
                 // This will always skip execution of the Lambda and return false after a Lambda returned true once
                 // Yes, I am bored

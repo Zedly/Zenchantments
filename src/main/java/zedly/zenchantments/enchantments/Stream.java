@@ -166,7 +166,7 @@ public final class Stream extends Zenchantment {
                 );
         }
 
-        Utilities.display(player.getLocation(), TRAIL_TYPES[mode], 3, 0.1, 0, 0, 0);
+        Utilities.displayParticle(player.getLocation(), TRAIL_TYPES[mode], 3, 0.1, 0, 0, 0);
         return true;
     }
 }

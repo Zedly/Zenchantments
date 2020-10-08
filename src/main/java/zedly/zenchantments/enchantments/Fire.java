@@ -141,7 +141,7 @@ public final class Fire extends Zenchantment {
     }
 
     private boolean handleClay(@NotNull Block block) {
-        Utilities.display(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+        Utilities.displayParticle(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
         ItemStack brickStack = new ItemStack(BRICK);
         for (int x = 0; x < 4; x++) {
@@ -175,7 +175,7 @@ public final class Fire extends Zenchantment {
         for (int i = blocks.size() - 1; i >= 0; i--) {
             Block bfsBlock = blocks.get(i);
 
-            Utilities.display(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+            Utilities.displayParticle(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
             block.getWorld().dropItemNaturally(
                 Utilities.getCenter(bfsBlock.getLocation()),
@@ -212,7 +212,7 @@ public final class Fire extends Zenchantment {
         for (int i = blocks.size() - 1; i >= 0; i--) {
             Block bfsBlock = blocks.get(i);
 
-            Utilities.display(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+            Utilities.displayParticle(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
             if (bfsBlock.getType().equals(CHORUS_PLANT)) {
                 block.getWorld().dropItemNaturally(
@@ -242,7 +242,7 @@ public final class Fire extends Zenchantment {
     private boolean handleEverythingElse(@NotNull Block block, @NotNull Material material) {
         block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(material, 1));
 
-        Utilities.display(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+        Utilities.displayParticle(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
         CANCELLED_ITEM_DROPS.add(block);
 

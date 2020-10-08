@@ -115,7 +115,7 @@ public final class Glide extends Zenchantment {
 
             Location particleLocation = location.clone();
             particleLocation.setY(particleLocation.getY() - 3);
-            Utilities.display(particleLocation, Particle.CLOUD, 1, 0.1f, 0, 0, 0);
+            Utilities.displayParticle(particleLocation, Particle.CLOUD, 1, 0.1f, 0, 0, 0);
         }
 
         // Gradually damage all armour.

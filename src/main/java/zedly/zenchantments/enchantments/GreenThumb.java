@@ -114,7 +114,7 @@ public final class GreenThumb extends Zenchantment {
 
                     // Display particles and damage armour.
                     if (applied) {
-                        Utilities.display(
+                        Utilities.displayParticle(
                             Utilities.getCenter(centerBlock.getRelative(x, y + 1, z)),
                             Particle.VILLAGER_HAPPY,
                             20,

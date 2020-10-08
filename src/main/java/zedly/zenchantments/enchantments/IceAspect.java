@@ -72,7 +72,7 @@ public final class IceAspect extends Zenchantment {
             (int) Math.round(40 + level * this.getPower() * 40),
             (int) Math.round(this.getPower() * level * 2)
         );
-        Utilities.display(Utilities.getCenter(event.getEntity().getLocation()), Particle.CLOUD, 10, 0.1f, 1f, 2f, 1f);
+        Utilities.displayParticle(Utilities.getCenter(event.getEntity().getLocation()), Particle.CLOUD, 10, 0.1f, 1f, 2f, 1f);
         return true;
     }
 }
