@@ -27,12 +27,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class Singularity extends Zenchantment {
     public static final String KEY = "singularity";
 
+    public static final Map<Location, Boolean> SINGULARITIES = new HashMap<>();
+
     private static final String                             NAME        = "Singularity";
     private static final String                             DESCRIPTION = "Creates a black hole that attracts nearby entities and then discharges them";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private static final Map<Location, Boolean> SINGULARITIES = new HashMap<>();
 
     private final NamespacedKey key;
 
