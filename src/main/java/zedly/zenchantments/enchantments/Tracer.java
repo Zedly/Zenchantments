@@ -26,12 +26,12 @@ import java.util.Set;
 public final class Tracer extends Zenchantment {
     public static final String KEY = "tracer";
 
+    public static final Map<Arrow, Integer> TRACERS = new HashMap<>();
+
     private static final String                             NAME        = "Tracer";
     private static final String                             DESCRIPTION = "Guides the arrow to targets and then attacks";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private static final Map<Arrow, Integer> TRACERS = new HashMap<>();
 
     private final NamespacedKey key;
 
