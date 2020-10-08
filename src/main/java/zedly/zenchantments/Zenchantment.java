@@ -180,13 +180,13 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         return this.plugin;
     }
 
-    public static void applyForTool(Player player, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
+    public static void applyForTool(Player player, PlayerData playerData, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
         Zenchantment.getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
-            if (!ench.used && Utilities.canUse(player, ench.getKey())) {
+            if (!ench.used && Utilities.canUse(player, playerData, ench.getKey())) {
                 try {
                     ench.used = true;
                     if (action.test(ench, level)) {
-                        PlayerData.matchPlayer(player).setCooldown(ench.getKey(), ench.cooldown);
+                        playerData.setCooldown(ench.getKey(), ench.cooldown);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -288,7 +288,8 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     /**
      * Determines if the material provided is enchantable with this enchantment.
      *
-     * @param material The material to test.
+     * @param material
+     *     The material to test.
      *
      * @return true iff the material can be enchanted with this enchantment.
      */
@@ -306,7 +307,8 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
      * Determines if the stack of material provided is enchantable with this
      * enchantment.
      *
-     * @param itemStack The stack of material to test.
+     * @param itemStack
+     *     The stack of material to test.
      *
      * @return true iff the stack of material can be enchanted with this
      * enchantment.

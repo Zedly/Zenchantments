@@ -149,9 +149,9 @@ public final class Shred extends Zenchantment {
 
                 Zenchantment.applyForTool(
                     eventPlayer,
+                    this.getPlugin().getPlayerDataProvider().getDataForPlayer(player),
                     Utilities.usedStack(eventPlayer, eventUsedHand),
-                    (ench, level) -> ench.onBlockBreak(event, level, eventUsedHand)
-                );
+                    (ench, level) -> ench.onBlockBreak(event, level, eventUsedHand));
 
                 if (event.isCancelled()) {
                     return;
