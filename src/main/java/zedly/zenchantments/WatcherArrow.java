@@ -24,11 +24,11 @@ public class WatcherArrow implements Listener {
 
         Arrow entity = (Arrow) event.getEntity();
 
-        if (!EnchantedArrow.advancedProjectiles.containsKey(entity)) {
+        if (!EnchantedArrow.ADVANCED_PROJECTILES.containsKey(entity)) {
             return;
         }
 
-        for (EnchantedArrow arrow : EnchantedArrow.advancedProjectiles.get(entity)) {
+        for (EnchantedArrow arrow : EnchantedArrow.ADVANCED_PROJECTILES.get(entity)) {
             arrow.onImpact();
         }
     }
@@ -42,11 +42,11 @@ public class WatcherArrow implements Listener {
 
         Arrow damager = (Arrow) event.getDamager();
 
-        if (!EnchantedArrow.advancedProjectiles.containsKey(damager)) {
+        if (!EnchantedArrow.ADVANCED_PROJECTILES.containsKey(damager)) {
             return;
         }
 
-        for (EnchantedArrow arrow : EnchantedArrow.advancedProjectiles.remove(damager)) {
+        for (EnchantedArrow arrow : EnchantedArrow.ADVANCED_PROJECTILES.remove(damager)) {
             if (event.getEntity() instanceof LivingEntity) {
                 if (!arrow.onImpact(event)) {
                     event.setDamage(0);
@@ -56,7 +56,7 @@ public class WatcherArrow implements Listener {
             if (event.getEntity() instanceof LivingEntity
                 && event.getDamage() >= ((LivingEntity) event.getEntity()).getHealth()
             ) {
-                EnchantedArrow.killedEntities.put(event.getEntity(), arrow);
+                EnchantedArrow.KILLED_ENTITIES.put(event.getEntity(), arrow);
             }
         }
     }
@@ -65,7 +65,7 @@ public class WatcherArrow implements Listener {
     @EventHandler
     public void entityDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
-        Map<Entity, EnchantedArrow> killedEntities = EnchantedArrow.killedEntities;
+        Map<Entity, EnchantedArrow> killedEntities = EnchantedArrow.KILLED_ENTITIES;
 
         if (killedEntities.containsKey(entity)) {
             killedEntities.remove(entity).onKill(event);

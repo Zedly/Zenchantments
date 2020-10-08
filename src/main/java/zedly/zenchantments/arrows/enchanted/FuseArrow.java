@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
@@ -43,18 +44,18 @@ public class FuseArrow extends EnchantedArrow {
 		die();
 	}
 
-	public boolean onImpact(EntityDamageByEntityEvent evt) {
-		Location l = evt.getEntity().getLocation();
-		if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) arrow.getShooter(),
+	public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+		Location l = event.getEntity().getLocation();
+		if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) arrow.getShooter(),
 			0)) {
-			if (evt.getEntity().getType().equals(EntityType.CREEPER)) {
-				Creeper c = (Creeper) evt.getEntity();
-				Storage.COMPATIBILITY_ADAPTER.explodeCreeper(c, Config.get(evt.getDamager().getWorld()).explosionBlockBreak());
-			} else if (evt.getEntity().getType().equals(EntityType.MUSHROOM_COW)) {
-				MushroomCow c = (MushroomCow) evt.getEntity();
+			if (event.getEntity().getType().equals(EntityType.CREEPER)) {
+				Creeper c = (Creeper) event.getEntity();
+				Storage.COMPATIBILITY_ADAPTER.explodeCreeper(c, Config.get(event.getDamager().getWorld()).explosionBlockBreak());
+			} else if (event.getEntity().getType().equals(EntityType.MUSHROOM_COW)) {
+				MushroomCow c = (MushroomCow) event.getEntity();
 				if (c.isAdult()) {
 					Utilities.display(l, Particle.EXPLOSION_LARGE, 1, 1f, 0, 0, 0);
-					evt.getEntity().remove();
+					event.getEntity().remove();
 					l.getWorld().spawnEntity(l, EntityType.COW);
 					l.getWorld().dropItemNaturally(l, new ItemStack(Material.RED_MUSHROOM, 5));
 				}

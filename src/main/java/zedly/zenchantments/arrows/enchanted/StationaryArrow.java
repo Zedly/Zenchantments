@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Zenchantments;
 import zedly.zenchantments.arrows.EnchantedArrow;
@@ -14,12 +15,12 @@ public class StationaryArrow extends EnchantedArrow {
         super(entity);
     }
 
-    public boolean onImpact(EntityDamageByEntityEvent evt) {
-        if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) arrow.getShooter(),
+    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+        if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) arrow.getShooter(),
                 0)) {
-            LivingEntity ent = (LivingEntity) evt.getEntity();
-            if (evt.getDamage() < ent.getHealth()) {
-                evt.setCancelled(true);
+            LivingEntity ent = (LivingEntity) event.getEntity();
+            if (event.getDamage() < ent.getHealth()) {
+                event.setCancelled(true);
 
                 // Imitate Flame arrows after cancelling the original event
                 if (arrow.getFireTicks() > 0) {
@@ -33,9 +34,9 @@ public class StationaryArrow extends EnchantedArrow {
                     }
                 }
 
-                ent.damage(evt.getDamage());
-                if (evt.getDamager().getType() == EntityType.ARROW) {
-                    evt.getDamager().remove();
+                ent.damage(event.getDamage());
+                if (event.getDamager().getType() == EntityType.ARROW) {
+                    event.getDamager().remove();
                 }
             }
 

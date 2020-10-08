@@ -1,225 +1,144 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Storage;
-import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.enums.Frequency;
+import zedly.zenchantments.task.EffectTask;
+import zedly.zenchantments.task.Frequency;
 
 import java.util.*;
 
-/**
- * Proxy for {@link Arrow} which allows subclasses to define custom behavior
- * triggered on certain events.
- */
 public class EnchantedArrow {
-    // Entities an enchanted arrow has damaged or killed
+    public static final Map<Entity, EnchantedArrow>     KILLED_ENTITIES      = new HashMap<>();
+    public static final Map<Arrow, Set<EnchantedArrow>> ADVANCED_PROJECTILES = new HashMap<>();
 
-    public static final Map<Entity, EnchantedArrow> killedEntities = new HashMap<>();
-    // Arrows mapped to different advanced arrow effects, to be used by the Arrow Watcher to perform these effects
-    public static final Map<Arrow, Set<EnchantedArrow>> advancedProjectiles = new HashMap<>();
-    protected final Arrow arrow;
-    protected final int level;
+    protected final Arrow  arrow;
+    protected final int    level;
     protected final double power;
+
+    private static final Set<EnchantedArrow> DIE_QUEUE = new HashSet<>();
+
     private int tick;
 
-    private static final Set<EnchantedArrow> dieQueue = new HashSet<>();
-
-    /**
-     * Creates a new EnchantedArrow from the given arrow with the specified
-     * level and power.
-     *
-     * @param arrow Arrow entity from which to make the EnchantedArrow.
-     * @param level Level of enchantment on arrow.
-     * @param power Power level of enchantment.
-     */
-    public EnchantedArrow(Arrow arrow, int level, double power) {
+    public EnchantedArrow(@NotNull Arrow arrow, int level, double power) {
         this.arrow = arrow;
         this.level = level;
         this.power = power;
     }
 
-    /**
-     * Creates a new EnchantedArrow from the given arrow with the specified
-     * level.
-     *
-     * @param arrow Arrow entity from which to make the EnchantedArrow.
-     * @param level Level of enchantment on arrow.
-     */
-    public EnchantedArrow(Arrow arrow, int level) {
+    public EnchantedArrow(@NotNull Arrow arrow, int level) {
         this(arrow, level, 1);
     }
 
-    /**
-     * Creates a new EnchantedArrow from the given arrow.
-     *
-     * @param arrow Arrow entity from which to make the EnchantedArrow.
-     */
-    public EnchantedArrow(Arrow arrow) {
+    public EnchantedArrow(@NotNull Arrow arrow) {
         this(arrow, 0);
     }
 
-    // Adds an arrow entity into the arrow storage variable calls its launch method
-    public static void putArrow(Arrow e, EnchantedArrow a, Player p) {
-        Set<EnchantedArrow> ars;
-        if (advancedProjectiles.containsKey(e)) {
-            ars = advancedProjectiles.get(e);
+    public static void putArrow(@NotNull Arrow arrow, @NotNull EnchantedArrow enchantedArrow, @NotNull Player player) {
+        Set<EnchantedArrow> arrows;
+
+        if (ADVANCED_PROJECTILES.containsKey(arrow)) {
+            arrows = ADVANCED_PROJECTILES.get(arrow);
         } else {
-            ars = new HashSet<>();
+            arrows = new HashSet<>();
         }
-        ars.add(a);
-        advancedProjectiles.put(e, ars);
-        a.onLaunch(p, null);
+
+        arrows.add(enchantedArrow);
+        ADVANCED_PROJECTILES.put(arrow, arrows);
+        enchantedArrow.onLaunch(player, null);
     }
 
     protected void die() {
-        die(true);
+        this.die(true);
     }
-        // Called when the arrow has finished any functionality
+
     protected void die(boolean removeArrow) {
-        onDie();
+        this.onDie();
+
         if (removeArrow) {
             arrow.remove();
         }
+
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            if (advancedProjectiles.containsKey(arrow)) {
-                advancedProjectiles.get(arrow).remove(this);
-                if (advancedProjectiles.get(arrow).isEmpty()) {
-                    advancedProjectiles.remove(arrow);
+            if (ADVANCED_PROJECTILES.containsKey(arrow)) {
+                ADVANCED_PROJECTILES.get(arrow).remove(this);
+                if (ADVANCED_PROJECTILES.get(arrow).isEmpty()) {
+                    ADVANCED_PROJECTILES.remove(arrow);
                 }
             }
         }, 1);
     }
 
-    /**
-     * Increments internal tick counter
-     */
     private void tick() {
-        tick++;
-        onTick();
+        this.tick++;
+        this.onTick();
     }
 
-    //region Getters
-    /**
-     * @return Ticks since arrow was created.
-     */
     public int getTick() {
         return this.tick;
     }
 
-    /**
-     * @return Level of enchantment on this arrow.
-     */
     public int getLevel() {
         return this.level;
     }
 
-    /**
-     * @return Power of enchantment on this arrow.
-     */
     public double getPower() {
         return power;
     }
 
-//    /**
-//     * @return Current location of this arrow.
-//     */
-//    public Location getLocation() {
-//        return this.arrow.getLocation();
-//    }
-//
-//    /**
-//     * @return World that this arrow exists in.
-//     */
-//    public World getWorld() {
-//        return this.arrow.getWorld();
-//    }
-//
-//    /**
-//     * @return True iff this arrow is dead
-//     */
-//    public boolean isDead() {
-//        return this.arrow.isDead();
-//    }
-    //endregion
-    //region Events
-    // Called when the player shoots an arrow of this type
-    /**
-     * Called when an arrow of this type is launched.
-     *
-     * @param player Player launching the arrow.
-     * @param lore List of lore attached to this arrow.
-     */
-    public void onLaunch(LivingEntity player, List<String> lore) {
+    public void onLaunch(@NotNull LivingEntity player, @Nullable List<String> lore) {
     }
 
-    /**
-     * Called on every 'tick' this arrow experiences.
-     */
     protected void onTick() {
     }
 
-    /**
-     * Called when this arrow impacts a block.
-     */
     public void onImpact() {
         die(true);
     }
 
-    /**
-     * Called when this arrow kills another entity.
-     *
-     * @param evt Event concerning entity killed.
-     */
-    public void onKill(EntityDeathEvent evt) {
+    public void onKill(@NotNull EntityDeathEvent event) {
     }
 
-    /**
-     * Called when this arrow impacts another entity.
-     *
-     * @param evt Event concerning entity impacted.
-     *
-     * @return true iff impact successful and should deal damage.
-     */
-    public boolean onImpact(EntityDamageByEntityEvent evt) {
-        onImpact();
+    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+        this.onImpact();
         return true;
     }
 
-    /**
-     * Called when this arrow dies.
-     */
     protected void onDie() {
     }
 
-    //endregion
     @EffectTask(Frequency.MEDIUM_HIGH)
     public static void scanAndReap() {
-        synchronized (advancedProjectiles) {
-            for (Arrow a : advancedProjectiles.keySet()) {
-                if (a.isDead()) {
-                    dieQueue.addAll(advancedProjectiles.get(a));
+        synchronized (ADVANCED_PROJECTILES) {
+            for (Arrow arrow : ADVANCED_PROJECTILES.keySet()) {
+                if (arrow.isDead()) {
+                    DIE_QUEUE.addAll(ADVANCED_PROJECTILES.get(arrow));
                 }
-                for (EnchantedArrow ea : advancedProjectiles.get(a)) {
-                    if (ea.getTick() > 600) {
-                        dieQueue.add(ea);
+                for (EnchantedArrow enchantedArrow : ADVANCED_PROJECTILES.get(arrow)) {
+                    if (enchantedArrow.getTick() > 600) {
+                        DIE_QUEUE.add(enchantedArrow);
                     }
                 }
             }
 
-            for (EnchantedArrow a : dieQueue) {
-                a.die();
+            for (EnchantedArrow enchantedArrow : DIE_QUEUE) {
+                enchantedArrow.die();
             }
-            dieQueue.clear();
+            DIE_QUEUE.clear();
         }
     }
 
     @EffectTask(Frequency.HIGH)
     public static void doTick() {
-        synchronized (advancedProjectiles) {
-            advancedProjectiles.values().forEach((set) -> set.forEach(EnchantedArrow::tick));
+        synchronized (ADVANCED_PROJECTILES) {
+            ADVANCED_PROJECTILES.values().forEach((set) -> set.forEach(EnchantedArrow::tick));
         }
     }
 }

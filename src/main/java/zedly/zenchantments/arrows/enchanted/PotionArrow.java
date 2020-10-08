@@ -4,6 +4,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
@@ -16,7 +17,7 @@ public class PotionArrow extends EnchantedArrow {
 		super(entity, level, power);
 	}
 
-	public boolean onImpact(EntityDamageByEntityEvent evt) {
+	public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
 		if (Storage.rnd.nextInt((int) Math.round(10 / (getLevel() * getPower() + 1))) == 1) {
 			Utilities.addPotion((LivingEntity) arrow.getShooter(),
 				Storage.COMPATIBILITY_ADAPTER.PotionPotions().get(Storage.rnd.nextInt(12)),

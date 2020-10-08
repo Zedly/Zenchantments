@@ -2,6 +2,7 @@ package zedly.zenchantments.arrows.enchanted;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.enchantments.Tracer;
 
@@ -13,8 +14,8 @@ public class TracerArrow extends EnchantedArrow {
 	}
 
 	@Override
-	public boolean onImpact(EntityDamageByEntityEvent evt) {
-		if (evt.isCancelled()) {
+	public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+		if (event.isCancelled()) {
 			Tracer.tracer.remove(arrow);
 			die();
 		}

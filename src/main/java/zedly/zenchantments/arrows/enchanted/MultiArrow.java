@@ -4,6 +4,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
@@ -13,8 +14,8 @@ public class MultiArrow extends EnchantedArrow {
 		super(entity);
 	}
 
-	public boolean onImpact(EntityDamageByEntityEvent evt) {
-		final LivingEntity e = (LivingEntity) evt.getEntity();
+	public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+		final LivingEntity e = (LivingEntity) event.getEntity();
 		int temp = e.getMaximumNoDamageTicks();
 		e.setMaximumNoDamageTicks(0);
 		e.setNoDamageTicks(0);

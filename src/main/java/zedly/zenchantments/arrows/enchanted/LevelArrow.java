@@ -2,6 +2,7 @@ package zedly.zenchantments.arrows.enchanted;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class LevelArrow extends EnchantedArrow {
@@ -10,7 +11,7 @@ public class LevelArrow extends EnchantedArrow {
 		super(entity, level, power);
 	}
 
-	public void onKill(EntityDeathEvent evt) {
+	public void onKill(@NotNull EntityDeathEvent event) {
 		die(true);
 	}
         

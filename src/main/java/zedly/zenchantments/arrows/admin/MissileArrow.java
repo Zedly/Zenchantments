@@ -3,6 +3,7 @@ package zedly.zenchantments.arrows.admin;
 import org.bukkit.*;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Config;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
@@ -18,7 +19,7 @@ public class MissileArrow extends EnchantedArrow {
 		super(entity);
 	}
 
-	public void onLaunch(LivingEntity player, List<String> lore) {
+	public void onLaunch(@NotNull LivingEntity player, List<String> lore) {
 		final Config config = Config.get(player.getWorld());
 		Location playLoc = player.getLocation();
 		final Location target = Utilities.getCenter(player.getTargetBlock(null, 220));
