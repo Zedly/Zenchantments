@@ -10,26 +10,35 @@ import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class MultiArrow extends EnchantedArrow {
 
-	public MultiArrow(Arrow entity) {
-		super(entity);
-	}
+    public MultiArrow(Arrow entity) {
+        super(entity);
+    }
 
-	public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
-		final LivingEntity e = (LivingEntity) event.getEntity();
-		int temp = e.getMaximumNoDamageTicks();
-		e.setMaximumNoDamageTicks(0);
-		e.setNoDamageTicks(0);
-		e.setMaximumNoDamageTicks(temp);
-		die();
-		return true;
-	}
+    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+        LivingEntity entity = (LivingEntity) event.getEntity();
+        int temp = entity.getMaximumNoDamageTicks();
 
-	public void onImpact() {
-		Arrow p = arrow.getWorld().spawnArrow(arrow.getLocation(), arrow.getVelocity(),
-			(float) (arrow.getVelocity().length() / 10), 0);
-		p.setFireTicks(arrow.getFireTicks());
-		p.getLocation().setDirection(arrow.getLocation().getDirection());
-		p.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
-		this.arrow.remove();
-	}
+        entity.setMaximumNoDamageTicks(0);
+        entity.setNoDamageTicks(0);
+        entity.setMaximumNoDamageTicks(temp);
+
+        this.die();
+
+        return true;
+    }
+
+    public void onImpact() {
+        Arrow arrow = this.getArrow().getWorld().spawnArrow(
+            this.getArrow().getLocation(),
+            this.getArrow().getVelocity(),
+            (float) (this.getArrow().getVelocity().length() / 10),
+            0
+        );
+
+        arrow.setFireTicks(this.getArrow().getFireTicks());
+        arrow.getLocation().setDirection(this.getArrow().getLocation().getDirection());
+        arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
+
+        this.getArrow().remove();
+    }
 }
