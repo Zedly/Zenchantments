@@ -10,24 +10,21 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
-import static org.bukkit.potion.PotionEffectType.BLINDNESS;
-
 public class ReaperArrow extends EnchantedArrow {
 
-	public ReaperArrow(Arrow entity, int level, double power) {
-		super(entity, level, power);
-	}
+    public ReaperArrow(Arrow entity, int level, double power) {
+        super(entity, level, power);
+    }
 
-	public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
-		if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) arrow.getShooter(),
-			0)) {
-			int pow = (int) Math.round(getLevel() * getPower());
-			int dur = (int) Math.round(20 + getLevel() * 10 * getPower());
-			Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.WITHER, dur, pow);
-			Utilities.addPotion((LivingEntity) event.getEntity(), BLINDNESS, dur, pow);
-		}
-		die();
-		return true;
-	}
+    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+        if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
+            int power = (int) Math.round(this.getLevel() * this.getPower());
+            int duration = (int) Math.round(20 + this.getLevel() * 10 * this.getPower());
+            Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.WITHER, duration, power);
+            Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.BLINDNESS, duration, power);
+        }
 
+        this.die();
+        return true;
+    }
 }
