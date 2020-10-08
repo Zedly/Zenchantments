@@ -6,11 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class VortexArrow extends EnchantedArrow {
-
-    public VortexArrow(Arrow entity) {
+    public VortexArrow(@NotNull Arrow entity) {
         super(entity);
     }
 
+    @Override
     public void onKill(final @NotNull EntityDeathEvent event) {
         this.die();
     }

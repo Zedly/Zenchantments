@@ -5,17 +5,18 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.enchantments.Singularity;
 
 public class SingularityArrow extends EnchantedArrow {
-
-    public SingularityArrow(Arrow entity, int level) {
+    public SingularityArrow(@NotNull Arrow entity, int level) {
         super(entity, level);
     }
 
+    @Override
     public void onImpact() {
         Location location = this.getArrow().getLocation().clone();
 

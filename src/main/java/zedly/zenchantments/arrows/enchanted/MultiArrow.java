@@ -9,11 +9,11 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class MultiArrow extends EnchantedArrow {
-
-    public MultiArrow(Arrow entity) {
+    public MultiArrow(@NotNull Arrow entity) {
         super(entity);
     }
 
+    @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
         LivingEntity entity = (LivingEntity) event.getEntity();
         int temp = entity.getMaximumNoDamageTicks();
@@ -27,6 +27,7 @@ public class MultiArrow extends EnchantedArrow {
         return true;
     }
 
+    @Override
     public void onImpact() {
         Arrow arrow = this.getArrow().getWorld().spawnArrow(
             this.getArrow().getLocation(),

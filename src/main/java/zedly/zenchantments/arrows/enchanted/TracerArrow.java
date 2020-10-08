@@ -7,8 +7,7 @@ import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.enchantments.Tracer;
 
 public class TracerArrow extends EnchantedArrow {
-
-    public TracerArrow(Arrow entity, int level, double power) {
+    public TracerArrow(@NotNull Arrow entity, int level, double power) {
         super(entity, level, power);
         Tracer.TRACERS.put(entity, (int) Math.round(level * power));
     }

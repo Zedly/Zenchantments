@@ -15,11 +15,11 @@ import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
 
 public class ToxicArrow extends EnchantedArrow {
-
-    public ToxicArrow(Arrow entity, int level, double power) {
+    public ToxicArrow(@NotNull Arrow entity, int level, double power) {
         super(entity, level, power);
     }
 
+    @Override
     public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             int value = (int) Math.round(this.getLevel() * this.getPower());

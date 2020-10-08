@@ -8,17 +8,18 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 import static org.bukkit.FireworkEffect.Type.*;
 
 public class FireworkArrow extends EnchantedArrow {
-
-    public FireworkArrow(Arrow entity, int level) {
+    public FireworkArrow(@NotNull Arrow entity, int level) {
         super(entity, level);
     }
 
+    @Override
     public void onImpact() {
         FireworkEffect.Type[] type = {BALL, BURST, STAR, BALL_LARGE};
         FireworkEffect.Builder builder = FireworkEffect.builder()

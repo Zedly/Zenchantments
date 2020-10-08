@@ -13,11 +13,11 @@ import zedly.zenchantments.arrows.EnchantedArrow;
 import java.util.Objects;
 
 public class SiphonArrow extends EnchantedArrow {
-
-    public SiphonArrow(Arrow entity, int level, double power) {
+    public SiphonArrow(@NotNull Arrow entity, int level, double power) {
         super(entity, level, power);
     }
 
+    @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof LivingEntity
             && Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)

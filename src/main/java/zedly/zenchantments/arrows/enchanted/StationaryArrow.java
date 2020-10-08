@@ -12,11 +12,11 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class StationaryArrow extends EnchantedArrow {
-
-    public StationaryArrow(Arrow entity) {
+    public StationaryArrow(@NotNull Arrow entity) {
         super(entity);
     }
 
+    @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
         if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             LivingEntity entity = (LivingEntity) event.getEntity();

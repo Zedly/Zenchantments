@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
@@ -17,12 +18,12 @@ import java.util.List;
 import static org.bukkit.Material.AIR;
 
 public class MissileArrow extends EnchantedArrow {
-
-    public MissileArrow(Arrow entity) {
+    public MissileArrow(@NotNull Arrow entity) {
         super(entity);
     }
 
-    public void onLaunch(@NotNull LivingEntity player, List<String> lore) {
+    @Override
+    public void onLaunch(@NotNull LivingEntity player, @Nullable List<String> lore) {
         WorldConfiguration config = WorldConfiguration.get(player.getWorld());
 
         Location target = Utilities.getCenter(player.getTargetBlock(null, 220));

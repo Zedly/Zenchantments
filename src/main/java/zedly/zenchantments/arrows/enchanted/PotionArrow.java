@@ -12,11 +12,11 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PotionArrow extends EnchantedArrow {
-
-    public PotionArrow(Arrow entity, int level, double power) {
+    public PotionArrow(@NotNull Arrow entity, int level, double power) {
         super(entity, level, power);
     }
 
+    @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
         if (ThreadLocalRandom.current().nextInt((int) Math.round(10 / (this.getLevel() * this.getPower() + 1))) == 1) {
             Utilities.addPotion(

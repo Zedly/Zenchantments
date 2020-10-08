@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.configuration.WorldConfiguration;
@@ -15,11 +16,11 @@ import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
 public class ApocalypseArrow extends EnchantedArrow {
-
-    public ApocalypseArrow(Arrow entity) {
+    public ApocalypseArrow(@NotNull Arrow entity) {
         super(entity);
     }
 
+    @Override
     public void onImpact() {
         WorldConfiguration config = WorldConfiguration.get(this.getArrow().getWorld());
 

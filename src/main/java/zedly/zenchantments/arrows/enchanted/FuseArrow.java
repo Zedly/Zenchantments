@@ -21,11 +21,11 @@ import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.TNT;
 
 public class FuseArrow extends EnchantedArrow {
-
-    public FuseArrow(Arrow entity) {
+    public FuseArrow(@NotNull Arrow entity) {
         super(entity);
     }
 
+    @Override
     public void onImpact() {
         Location location = this.getArrow().getLocation();
         for (int i = 1; i < 5; i++) {
@@ -60,6 +60,7 @@ public class FuseArrow extends EnchantedArrow {
         this.die();
     }
 
+    @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
         if (!Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             this.die();
