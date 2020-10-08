@@ -16,25 +16,32 @@ import static org.bukkit.potion.PotionEffectType.HUNGER;
 
 public class ToxicArrow extends EnchantedArrow {
 
-	public ToxicArrow(Arrow entity, int level, double power) {
-		super(entity, level, power);
-	}
+    public ToxicArrow(Arrow entity, int level, double power) {
+        super(entity, level, power);
+    }
 
-	public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
-		if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) arrow.getShooter(),
-			0)) {
-			final int value = (int) Math.round(getLevel() * getPower());
-			Utilities.addPotion((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
-			Utilities.addPotion((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
-			if (event.getEntity() instanceof Player) {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-					((LivingEntity) event.getEntity()).removePotionEffect(HUNGER);
-					Utilities.addPotion((LivingEntity) event.getEntity(), HUNGER, 60 + 40 * value, 0);
-				}, 20 + 60 * value);
-				Toxic.hungerPlayers.put((Player) event.getEntity(), (1 + value) * 100);
-			}
-		}
-		die();
-		return true;
-	}
+    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
+        if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
+            int value = (int) Math.round(this.getLevel() * this.getPower());
+
+            Utilities.addPotion((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
+            Utilities.addPotion((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
+
+            if (event.getEntity() instanceof Player) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(
+                    Storage.zenchantments,
+                    () -> {
+                        ((LivingEntity) event.getEntity()).removePotionEffect(HUNGER);
+                        Utilities.addPotion((LivingEntity) event.getEntity(), HUNGER, 60 + 40 * value, 0);
+                    },
+                    20 + 60 * value
+                );
+
+                Toxic.HUNGER_PLAYERS.put((Player) event.getEntity(), (1 + value) * 100);
+            }
+        }
+
+        this.die();
+        return true;
+    }
 }
