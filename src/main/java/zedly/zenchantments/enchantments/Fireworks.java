@@ -10,6 +10,8 @@ import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.enchanted.FireworkArrow;
 
 import java.util.Set;
 

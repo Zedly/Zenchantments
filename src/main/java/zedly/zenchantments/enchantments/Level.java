@@ -12,6 +12,8 @@ import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.enchanted.LevelArrow;
 
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;

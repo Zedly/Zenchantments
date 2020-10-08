@@ -10,6 +10,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.enchanted.ReaperArrow;
 
 import java.util.Set;
 
@@ -68,13 +70,6 @@ public final class Reaper extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        ReaperArrow arrow = new ReaperArrow((Arrow) event.getProjectile(), level, this.getPower());
-        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
-        return true;
-    }
-
-    @Override
     public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
         if (!(event.getEntity() instanceof LivingEntity)
             || !ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
@@ -87,6 +82,13 @@ public final class Reaper extends Zenchantment {
         Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.WITHER, dur, pow);
         Utilities.addPotion((LivingEntity) event.getEntity(), BLINDNESS, dur, pow);
 
+        return true;
+    }
+
+    @Override
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        ReaperArrow arrow = new ReaperArrow((Arrow) event.getProjectile(), level, this.getPower());
+        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 }
