@@ -75,8 +75,8 @@ public final class Spread extends Zenchantment {
         Player player = (Player) originalArrow.getShooter();
         ItemStack hand = Utilities.usedStack(player, usedHand);
 
-        MultiArrow ar = new MultiArrow(originalArrow);
-        EnchantedArrow.putArrow(originalArrow, ar, player);
+        MultiArrow multiArrow = new MultiArrow(this.getPlugin(), originalArrow);
+        EnchantedArrow.putArrow(originalArrow, multiArrow, player);
 
         this.getPlugin().getServer().getPluginManager().callEvent(
             new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length())
@@ -108,7 +108,7 @@ public final class Spread extends Zenchantment {
             arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
             arrow.setCritical(originalArrow.isCritical());
 
-            EnchantedArrow.putArrow(originalArrow, new MultiArrow(originalArrow), player);
+            EnchantedArrow.putArrow(originalArrow, new MultiArrow(this.getPlugin(), originalArrow), player);
         }
 
         return true;

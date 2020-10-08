@@ -69,7 +69,7 @@ public final class QuickShot extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        QuickArrow arrow = new QuickArrow((Arrow) event.getProjectile());
+        QuickArrow arrow = new QuickArrow(this.getPlugin(), (Arrow) event.getProjectile());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

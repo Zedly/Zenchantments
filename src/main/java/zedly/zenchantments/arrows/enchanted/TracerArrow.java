@@ -3,12 +3,13 @@ package zedly.zenchantments.arrows.enchanted;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.enchantments.Tracer;
 
 public class TracerArrow extends EnchantedArrow {
-    public TracerArrow(@NotNull Arrow entity, int level, double power) {
-        super(entity, level, power);
+    public TracerArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+        super(plugin, entity, level, power);
         Tracer.TRACERS.put(entity, (int) Math.round(level * power));
     }
 

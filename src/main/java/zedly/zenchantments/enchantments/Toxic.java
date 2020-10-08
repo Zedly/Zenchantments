@@ -107,7 +107,7 @@ public final class Toxic extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        ToxicArrow arrow = new ToxicArrow((Arrow) event.getProjectile(), level, this.getPower());
+        ToxicArrow arrow = new ToxicArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

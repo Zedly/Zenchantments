@@ -121,7 +121,7 @@ public final class Burst extends Zenchantment {
                 } else {
                     arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
                     arrow.setCritical(true);
-                    EnchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
+                    EnchantedArrow.putArrow(arrow, new MultiArrow(this.getPlugin(), arrow), player);
                     Utilities.damageTool(player, 1, usedHand);
                 }
             }, i * 2);

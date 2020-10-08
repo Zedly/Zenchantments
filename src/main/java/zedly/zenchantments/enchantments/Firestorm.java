@@ -69,7 +69,7 @@ public final class Firestorm extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        FirestormArrow arrow = new FirestormArrow((Arrow) event.getProjectile(), level, this.getPower());
+        FirestormArrow arrow = new FirestormArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

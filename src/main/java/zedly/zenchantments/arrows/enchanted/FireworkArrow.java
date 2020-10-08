@@ -1,6 +1,5 @@
 package zedly.zenchantments.arrows.enchanted;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -9,14 +8,14 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 import static org.bukkit.FireworkEffect.Type.*;
 
 public class FireworkArrow extends EnchantedArrow {
-    public FireworkArrow(@NotNull Arrow entity, int level) {
-        super(entity, level);
+    public FireworkArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level) {
+        super(plugin, entity, level);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class FireworkArrow extends EnchantedArrow {
 
         firework.setFireworkMeta(fireworkMeta);
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, firework::detonate, 1);
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), firework::detonate, 1);
 
         this.die();
     }

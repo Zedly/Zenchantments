@@ -5,12 +5,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class MultiArrow extends EnchantedArrow {
-    public MultiArrow(@NotNull Arrow entity) {
-        super(entity);
+    public MultiArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+        super(plugin, entity);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MultiArrow extends EnchantedArrow {
 
         arrow.setFireTicks(this.getArrow().getFireTicks());
         arrow.getLocation().setDirection(this.getArrow().getLocation().getDirection());
-        arrow.setMetadata("ze.arrow", new FixedMetadataValue(Storage.zenchantments, null));
+        arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
 
         this.getArrow().remove();
     }

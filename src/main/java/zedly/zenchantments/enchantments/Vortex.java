@@ -90,7 +90,7 @@ public final class Vortex extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        VortexArrow arrow = new VortexArrow((Arrow) event.getProjectile());
+        VortexArrow arrow = new VortexArrow(this.getPlugin(), (Arrow) event.getProjectile());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

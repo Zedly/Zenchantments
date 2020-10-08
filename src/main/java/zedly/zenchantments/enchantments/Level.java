@@ -93,7 +93,7 @@ public final class Level extends Zenchantment {
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
         if (ThreadLocalRandom.current().nextBoolean()) {
-            LevelArrow arrow = new LevelArrow((Arrow) event.getProjectile(), level, this.getPower());
+            LevelArrow arrow = new LevelArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
             EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
             return true;
         }

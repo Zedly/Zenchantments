@@ -1,6 +1,5 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -9,7 +8,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zedly.zenchantments.Storage;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
@@ -21,24 +20,26 @@ public class EnchantedArrow {
 
     private static final Set<EnchantedArrow> DIE_QUEUE = new HashSet<>();
 
-    private final Arrow  arrow;
-    private final int    level;
-    private final double power;
+    private final ZenchantmentsPlugin plugin;
+    private final Arrow               arrow;
+    private final int                 level;
+    private final double              power;
 
     private int tick;
 
-    public EnchantedArrow(@NotNull Arrow arrow, int level, double power) {
+    public EnchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level, double power) {
+        this.plugin = plugin;
         this.arrow = arrow;
         this.level = level;
         this.power = power;
     }
 
-    public EnchantedArrow(@NotNull Arrow arrow, int level) {
-        this(arrow, level, 1);
+    public EnchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level) {
+        this(plugin, arrow, level, 1);
     }
 
-    public EnchantedArrow(@NotNull Arrow arrow) {
-        this(arrow, 0);
+    public EnchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow) {
+        this(plugin, arrow, 0);
     }
 
     public static void putArrow(@NotNull Arrow arrow, @NotNull EnchantedArrow enchantedArrow, @NotNull Player player) {
@@ -53,6 +54,11 @@ public class EnchantedArrow {
         arrows.add(enchantedArrow);
         ADVANCED_PROJECTILES.put(arrow, arrows);
         enchantedArrow.onLaunch(player, null);
+    }
+
+    @NotNull
+    public ZenchantmentsPlugin getPlugin() {
+        return this.plugin;
     }
 
     @NotNull
@@ -83,7 +89,7 @@ public class EnchantedArrow {
             arrow.remove();
         }
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
             if (ADVANCED_PROJECTILES.containsKey(arrow)) {
                 ADVANCED_PROJECTILES.get(arrow).remove(this);
                 if (ADVANCED_PROJECTILES.get(arrow).isEmpty()) {

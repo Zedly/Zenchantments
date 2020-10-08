@@ -69,7 +69,7 @@ public final class Blizzard extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        BlizzardArrow arrow = new BlizzardArrow((Arrow) event.getProjectile(), level, this.getPower());
+        BlizzardArrow arrow = new BlizzardArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

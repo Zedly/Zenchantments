@@ -9,11 +9,12 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class StationaryArrow extends EnchantedArrow {
-    public StationaryArrow(@NotNull Arrow entity) {
-        super(entity);
+    public StationaryArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+        super(plugin, entity);
     }
 
     @Override
@@ -30,8 +31,8 @@ public class StationaryArrow extends EnchantedArrow {
                     Bukkit.getPluginManager().callEvent(combustByEntityEvent);
 
                     if (!combustByEntityEvent.isCancelled()) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(
-                            Storage.zenchantments,
+                        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+                            this.getPlugin(),
                             () -> Storage.COMPATIBILITY_ADAPTER.igniteEntity(entity, (Player) this.getArrow().getShooter(), 300),
                             1
                         );

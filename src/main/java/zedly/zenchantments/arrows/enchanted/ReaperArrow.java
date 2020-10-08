@@ -8,11 +8,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 public class ReaperArrow extends EnchantedArrow {
-    public ReaperArrow(@NotNull Arrow entity, int level, double power) {
-        super(entity, level, power);
+    public ReaperArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+        super(plugin, entity, level, power);
     }
 
     @Override

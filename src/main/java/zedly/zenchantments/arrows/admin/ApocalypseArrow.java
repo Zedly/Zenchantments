@@ -6,7 +6,7 @@ import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
@@ -16,13 +16,13 @@ import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
 public class ApocalypseArrow extends EnchantedArrow {
-    public ApocalypseArrow(@NotNull Arrow entity) {
-        super(entity);
+    public ApocalypseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+        super(plugin, entity);
     }
 
     @Override
     public void onImpact() {
-        WorldConfiguration config = WorldConfiguration.get(this.getArrow().getWorld());
+        WorldConfiguration config = this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(this.getArrow().getWorld());
 
         Location clone = this.getArrow().getLocation().clone();
         clone.setY(clone.getY() + 1);
@@ -35,8 +35,8 @@ public class ApocalypseArrow extends EnchantedArrow {
             int finalLs = l;
             for (int i = 0; i <= 45; i++) {
                 int c = i + 1;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
-                    Storage.zenchantments,
+                this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+                    this.getPlugin(),
                     () -> {
                         Entity entity = location.getWorld().spawnFallingBlock(location, Bukkit.createBlockData(FIRE));
 

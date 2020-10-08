@@ -94,7 +94,7 @@ public final class Siphon extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        SiphonArrow arrow = new SiphonArrow((Arrow) event.getProjectile(), level, this.getPower());
+        SiphonArrow arrow = new SiphonArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

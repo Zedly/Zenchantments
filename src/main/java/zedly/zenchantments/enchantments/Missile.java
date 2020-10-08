@@ -67,7 +67,7 @@ public final class Missile extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        MissileArrow arrow = new MissileArrow((Arrow) event.getProjectile());
+        MissileArrow arrow = new MissileArrow(this.getPlugin(), (Arrow) event.getProjectile());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         event.setCancelled(true);
         Utilities.damageTool((Player) event.getEntity(), 1, usedHand);

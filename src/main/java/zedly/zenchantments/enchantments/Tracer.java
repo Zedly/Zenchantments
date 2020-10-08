@@ -79,7 +79,7 @@ public final class Tracer extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        TracerArrow arrow = new TracerArrow((Arrow) event.getProjectile(), level, this.getPower());
+        TracerArrow arrow = new TracerArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

@@ -69,7 +69,7 @@ public final class Fuse extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        FuseArrow arrow = new FuseArrow((Arrow) event.getProjectile());
+        FuseArrow arrow = new FuseArrow(this.getPlugin(), (Arrow) event.getProjectile());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

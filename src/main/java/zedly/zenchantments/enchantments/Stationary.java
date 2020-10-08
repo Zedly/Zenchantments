@@ -87,7 +87,7 @@ public final class Stationary extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        StationaryArrow arrow = new StationaryArrow((Arrow) event.getProjectile());
+        StationaryArrow arrow = new StationaryArrow(this.getPlugin(), (Arrow) event.getProjectile());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

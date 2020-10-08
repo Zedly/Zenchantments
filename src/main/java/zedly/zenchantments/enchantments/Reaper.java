@@ -87,7 +87,7 @@ public final class Reaper extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        ReaperArrow arrow = new ReaperArrow((Arrow) event.getProjectile(), level, this.getPower());
+        ReaperArrow arrow = new ReaperArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

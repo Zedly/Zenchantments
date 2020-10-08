@@ -8,13 +8,14 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
 
 import java.util.Objects;
 
 public class SiphonArrow extends EnchantedArrow {
-    public SiphonArrow(@NotNull Arrow entity, int level, double power) {
-        super(entity, level, power);
+    public SiphonArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+        super(plugin, entity, level, power);
     }
 
     @Override

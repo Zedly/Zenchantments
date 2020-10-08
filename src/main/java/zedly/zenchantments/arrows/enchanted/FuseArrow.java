@@ -12,8 +12,8 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Objects;
 
@@ -21,8 +21,8 @@ import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.TNT;
 
 public class FuseArrow extends EnchantedArrow {
-    public FuseArrow(@NotNull Arrow entity) {
-        super(entity);
+    public FuseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+        super(plugin, entity);
     }
 
     @Override
@@ -69,7 +69,13 @@ public class FuseArrow extends EnchantedArrow {
 
         if (event.getEntity().getType() == EntityType.CREEPER) {
             Creeper creeper = (Creeper) event.getEntity();
-            Storage.COMPATIBILITY_ADAPTER.explodeCreeper(creeper, WorldConfiguration.get(event.getDamager().getWorld()).explosionBlockBreak());
+            Storage.COMPATIBILITY_ADAPTER.explodeCreeper(
+                creeper,
+                this.getPlugin()
+                    .getWorldConfigurationProvider()
+                    .getConfigurationForWorld(event.getDamager().getWorld())
+                    .explosionBlockBreak()
+            );
         } else if (event.getEntity().getType() == EntityType.MUSHROOM_COW) {
             MushroomCow mooshroom = (MushroomCow) event.getEntity();
 
