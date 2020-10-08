@@ -10,58 +10,79 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Config;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.configuration.WorldConfiguration;
+
+import java.util.Objects;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.TNT;
 
 public class FuseArrow extends EnchantedArrow {
 
-	public FuseArrow(Arrow entity) {
-		super(entity);
-	}
+    public FuseArrow(Arrow entity) {
+        super(entity);
+    }
 
-	public void onImpact() {
-		Location loc = arrow.getLocation();
-		for (int i = 1; i < 5; i++) {
-			Vector vec = arrow.getVelocity().multiply(.25 * i);
-			Location hitLoc = new Location(loc.getWorld(), loc.getX() + vec.getX(), loc.getY() + vec.getY(),
-				loc.getZ() + vec.getZ());
-			if (hitLoc.getBlock().getType().equals(TNT)) {
-				BlockBreakEvent event = new BlockBreakEvent(hitLoc.getBlock(), (Player) arrow.getShooter());
-				Bukkit.getServer().getPluginManager().callEvent(event);
-				if (!event.isCancelled()) {
-					hitLoc.getBlock().setType(AIR);
-					hitLoc.getWorld().spawnEntity(hitLoc, EntityType.PRIMED_TNT);
-					die();
-				}
-				return;
-			}
-		}
-		die();
-	}
+    public void onImpact() {
+        Location location = this.getArrow().getLocation();
+        for (int i = 1; i < 5; i++) {
+            Vector vector = this.getArrow().getVelocity().multiply(0.25 * i);
+            Location hitLocation = new Location(
+                location.getWorld(),
+                location.getX() + vector.getX(),
+                location.getY() + vector.getY(),
+                location.getZ() + vector.getZ()
+            );
 
-	public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
-		Location l = event.getEntity().getLocation();
-		if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) arrow.getShooter(),
-			0)) {
-			if (event.getEntity().getType().equals(EntityType.CREEPER)) {
-				Creeper c = (Creeper) event.getEntity();
-				Storage.COMPATIBILITY_ADAPTER.explodeCreeper(c, Config.get(event.getDamager().getWorld()).explosionBlockBreak());
-			} else if (event.getEntity().getType().equals(EntityType.MUSHROOM_COW)) {
-				MushroomCow c = (MushroomCow) event.getEntity();
-				if (c.isAdult()) {
-					Utilities.display(l, Particle.EXPLOSION_LARGE, 1, 1f, 0, 0, 0);
-					event.getEntity().remove();
-					l.getWorld().spawnEntity(l, EntityType.COW);
-					l.getWorld().dropItemNaturally(l, new ItemStack(Material.RED_MUSHROOM, 5));
-				}
-			}
-		}
-		die();
-		return true;
-	}
+            if (hitLocation.getBlock().getType() != TNT) {
+                continue;
+            }
+
+            BlockBreakEvent event = new BlockBreakEvent(
+                hitLocation.getBlock(),
+                (Player) Objects.requireNonNull(this.getArrow().getShooter())
+            );
+
+            Bukkit.getServer().getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                hitLocation.getBlock().setType(AIR);
+                hitLocation.getWorld().spawnEntity(hitLocation, EntityType.PRIMED_TNT);
+                this.die();
+            }
+
+            return;
+        }
+
+        this.die();
+    }
+
+    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+        if (!Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
+            this.die();
+            return true;
+        }
+
+        if (event.getEntity().getType() == EntityType.CREEPER) {
+            Creeper creeper = (Creeper) event.getEntity();
+            Storage.COMPATIBILITY_ADAPTER.explodeCreeper(creeper, WorldConfiguration.get(event.getDamager().getWorld()).explosionBlockBreak());
+        } else if (event.getEntity().getType() == EntityType.MUSHROOM_COW) {
+            MushroomCow mooshroom = (MushroomCow) event.getEntity();
+
+            if (mooshroom.isAdult()) {
+                Location location = event.getEntity().getLocation();
+
+                Utilities.displayParticle(location, Particle.EXPLOSION_LARGE, 1, 1f, 0, 0, 0);
+                event.getEntity().remove();
+                location.getWorld().spawnEntity(location, EntityType.COW);
+                location.getWorld().dropItemNaturally(location, new ItemStack(Material.RED_MUSHROOM, 5));
+            }
+        }
+
+        this.die();
+        return true;
+    }
 }
