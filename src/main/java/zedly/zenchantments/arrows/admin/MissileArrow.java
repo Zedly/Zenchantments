@@ -1,13 +1,16 @@
 package zedly.zenchantments.arrows.admin;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Config;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.List;
 
@@ -15,42 +18,59 @@ import static org.bukkit.Material.AIR;
 
 public class MissileArrow extends EnchantedArrow {
 
-	public MissileArrow(Arrow entity) {
-		super(entity);
-	}
+    public MissileArrow(Arrow entity) {
+        super(entity);
+    }
 
-	public void onLaunch(@NotNull LivingEntity player, List<String> lore) {
-		final Config config = Config.get(player.getWorld());
-		Location playLoc = player.getLocation();
-		final Location target = Utilities.getCenter(player.getTargetBlock(null, 220));
-		target.setY(target.getY() + .5);
-		final Location c = playLoc;
-		c.setY(c.getY() + 1.1);
-		final double d = target.distance(c);
-		for (int i = 9; i <= ((int) (d * 5) + 9); i++) {
-			final int i1 = i;
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-				Location loc = target.clone();
-				loc.setX(c.getX() + (i1 * ((target.getX() - c.getX()) / (d * 5))));
-				loc.setY(c.getY() + (i1 * ((target.getY() - c.getY()) / (d * 5))));
-				loc.setZ(c.getZ() + (i1 * ((target.getZ() - c.getZ()) / (d * 5))));
-				Location loc2 = target.clone();
-				loc2.setX(c.getX() + ((i1 + 10) * ((target.getX() - c.getX()) / (d * 5))));
-				loc2.setY(c.getY() + ((i1 + 10) * ((target.getY() - c.getY()) / (d * 5))));
-				loc2.setZ(c.getZ() + ((i1 + 10) * ((target.getZ() - c.getZ()) / (d * 5))));
-				Utilities.display(loc, Particle.FLAME, 10, .001f, 0, 0, 0);
-				Utilities.display(loc, Particle.FLAME, 1, .1f, 0, 0, 0);
-				if (i1 % 50 == 0) {
-					target.getWorld().playSound(loc, Sound.ENTITY_WITHER_SPAWN, 10f, .1f);
-				}
-				if (i1 >= ((int) (d * 5) + 9) || loc2.getBlock().getType() != AIR) {
-					Utilities.display(loc2, Particle.EXPLOSION_HUGE, 10, 0.1f, 0, 0, 0);
-					Utilities.display(loc, Particle.FLAME, 175, 1f, 0, 0, 0);
-					loc2.setY(loc2.getY() + 5);
-					loc2.getWorld().createExplosion(loc2.getX(), loc2.getY(), loc2.getZ(), 10,
-						config.explosionBlockBreak(), config.explosionBlockBreak());
-				}
-			}, i / 7);
-		}
-	}
+    public void onLaunch(@NotNull LivingEntity player, List<String> lore) {
+        WorldConfiguration config = WorldConfiguration.get(player.getWorld());
+
+        Location target = Utilities.getCenter(player.getTargetBlock(null, 220));
+        target.setY(target.getY() + .5);
+
+        Location playerLocation = player.getLocation();
+        playerLocation.setY(playerLocation.getY() + 1.1);
+
+        double distance = target.distance(playerLocation);
+
+        for (int i = 9; i <= ((int) (distance * 5) + 9); i++) {
+            int finalI = i;
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
+                Storage.zenchantments,
+                () -> {
+                    Location location1 = target.clone();
+                    location1.setX(playerLocation.getX() + (finalI * ((target.getX() - playerLocation.getX()) / (distance * 5))));
+                    location1.setY(playerLocation.getY() + (finalI * ((target.getY() - playerLocation.getY()) / (distance * 5))));
+                    location1.setZ(playerLocation.getZ() + (finalI * ((target.getZ() - playerLocation.getZ()) / (distance * 5))));
+
+                    Location location2 = target.clone();
+                    location2.setX(playerLocation.getX() + ((finalI + 10) * ((target.getX() - playerLocation.getX()) / (distance * 5))));
+                    location2.setY(playerLocation.getY() + ((finalI + 10) * ((target.getY() - playerLocation.getY()) / (distance * 5))));
+                    location2.setZ(playerLocation.getZ() + ((finalI + 10) * ((target.getZ() - playerLocation.getZ()) / (distance * 5))));
+
+                    Utilities.displayParticle(location1, Particle.FLAME, 10, .001f, 0, 0, 0);
+                    Utilities.displayParticle(location1, Particle.FLAME, 1, .1f, 0, 0, 0);
+
+                    if (finalI % 50 == 0) {
+                        target.getWorld().playSound(location1, Sound.ENTITY_WITHER_SPAWN, 10f, .1f);
+                    }
+
+                    if (finalI >= ((int) (distance * 5) + 9) || location2.getBlock().getType() != AIR) {
+                        Utilities.displayParticle(location2, Particle.EXPLOSION_HUGE, 10, 0.1f, 0, 0, 0);
+                        Utilities.displayParticle(location1, Particle.FLAME, 175, 1f, 0, 0, 0);
+                        location2.setY(location2.getY() + 5);
+                        location2.getWorld().createExplosion(
+                            location2.getX(),
+                            location2.getY(),
+                            location2.getZ(),
+                            10,
+                            config.explosionBlockBreak(),
+                            config.explosionBlockBreak()
+                        );
+                    }
+                },
+                i / 7
+            );
+        }
+    }
 }
