@@ -19,11 +19,11 @@ public class EnchantedArrow {
     public static final Map<Entity, EnchantedArrow>     KILLED_ENTITIES      = new HashMap<>();
     public static final Map<Arrow, Set<EnchantedArrow>> ADVANCED_PROJECTILES = new HashMap<>();
 
-    protected final Arrow  arrow;
-    protected final int    level;
-    protected final double power;
-
     private static final Set<EnchantedArrow> DIE_QUEUE = new HashSet<>();
+
+    private final Arrow  arrow;
+    private final int    level;
+    private final double power;
 
     private int tick;
 
@@ -55,6 +55,23 @@ public class EnchantedArrow {
         enchantedArrow.onLaunch(player, null);
     }
 
+    @NotNull
+    public Arrow getArrow() {
+        return this.arrow;
+    }
+
+    public int getLevel() {
+        return this.level;
+    }
+
+    public double getPower() {
+        return this.power;
+    }
+
+    public int getTick() {
+        return this.tick;
+    }
+
     protected void die() {
         this.die(true);
     }
@@ -79,18 +96,6 @@ public class EnchantedArrow {
     private void tick() {
         this.tick++;
         this.onTick();
-    }
-
-    public int getTick() {
-        return this.tick;
-    }
-
-    public int getLevel() {
-        return this.level;
-    }
-
-    public double getPower() {
-        return power;
     }
 
     public void onLaunch(@NotNull LivingEntity player, @Nullable List<String> lore) {
