@@ -13,6 +13,7 @@ import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.Anthropomorphism;
 import zedly.zenchantments.enchantments.FrozenStep;
 import zedly.zenchantments.enchantments.NetherStep;
+import zedly.zenchantments.event.listener.ArrowListener;
 import zedly.zenchantments.event.listener.GeneralListener;
 import zedly.zenchantments.event.listener.ZenchantmentListener;
 import zedly.zenchantments.event.listener.merge.AnvilMergeListener;
@@ -43,6 +44,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         enchCommand.setExecutor(commandHandler);
         enchCommand.setTabCompleter(commandHandler);
 
+        this.getServer().getPluginManager().registerEvents(new ArrowListener(), this);
         this.getServer().getPluginManager().registerEvents(new GeneralListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ZenchantmentListener(this), this);
         this.getServer().getPluginManager().registerEvents(new AnvilMergeListener(this), this);

@@ -1,4 +1,4 @@
-package zedly.zenchantments;
+package zedly.zenchantments.event.listener;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -8,16 +8,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
-import java.util.Map;
-
-// This is the watcher used by the EnchantArrow class. Each method checks for certain events
-// and conditions and will call the relevant methods defined in the AdvancedArrow interface
-public class WatcherArrow implements Listener {
-    // Called when an arrow hits a block
+public class ArrowListener implements Listener {
     @EventHandler
-    public void impact(ProjectileHitEvent event) {
+    private void onProjectileHit(@NotNull ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Arrow)) {
             return;
         }
@@ -33,9 +29,8 @@ public class WatcherArrow implements Listener {
         }
     }
 
-    // Called when an arrow hits an entity
     @EventHandler
-    public void entityHit(EntityDamageByEntityEvent event) {
+    private void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Arrow)) {
             return;
         }
@@ -61,14 +56,12 @@ public class WatcherArrow implements Listener {
         }
     }
 
-    // Called when an arrow kills an entity; the advanced arrow is removed after this event
     @EventHandler
-    public void entityDeath(EntityDeathEvent event) {
+    private void onEntityDeath(@NotNull EntityDeathEvent event) {
         Entity entity = event.getEntity();
-        Map<Entity, ZenchantedArrow> killedEntities = ZenchantedArrow.KILLED_ENTITIES;
 
-        if (killedEntities.containsKey(entity)) {
-            killedEntities.remove(entity).onKill(event);
+        if (ZenchantedArrow.KILLED_ENTITIES.containsKey(entity)) {
+            ZenchantedArrow.KILLED_ENTITIES.remove(entity).onKill(event);
         }
     }
 }
