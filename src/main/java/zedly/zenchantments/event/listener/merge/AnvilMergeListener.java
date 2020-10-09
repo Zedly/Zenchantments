@@ -146,13 +146,13 @@ public class AnvilMergeListener implements Listener {
         int rightUnbreakingLevel = rightEnch.getOrDefault(DURABILITY, -1);
 
         for (Zenchantment enchantment : leftEnchantments.keySet()) {
-            if (enchantment.getId() == Unrepairable.ID) {
+            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
                 return new ItemStack(AIR);
             }
         }
 
         for (Zenchantment enchantment : rightEnchantments.keySet()) {
-            if (enchantment.getId() == Unrepairable.ID) {
+            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
                 return new ItemStack(AIR);
             }
         }

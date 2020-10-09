@@ -63,12 +63,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     @Override
-    @Deprecated
-    public final int getId() {
-        return 0;
-    }
-
-    @Override
     @NotNull
     public final Set<Tool> getEnchantable() {
         return this.enchantable;

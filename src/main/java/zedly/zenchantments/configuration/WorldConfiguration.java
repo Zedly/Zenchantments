@@ -1,23 +1,24 @@
 package zedly.zenchantments.configuration;
 
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import zedly.zenchantments.Zenchantment;
 
 import java.util.*;
 
 public class WorldConfiguration implements zedly.zenchantments.api.configuration.WorldConfiguration {
-    private final Set<Zenchantment>          worldEnchants;
-    private final Map<String, Zenchantment>  nameToEnch;
-    private final Map<Integer, Zenchantment> idToEnch;
-    private final double                     enchantRarity;
-    private final int                        maxEnchants;
-    private final int                        shredDrops;
-    private final boolean                    explosionBlockBreak;
-    private final boolean                    descriptionLore;
-    private final ChatColor                  descriptionColor;
-    private final boolean                    enchantGlow;
-    private final ChatColor                  enchantmentColor;
-    private final ChatColor                  curseColor;
+    private final Set<Zenchantment>                worldEnchants;
+    private final Map<String, Zenchantment>        nameToEnch;
+    private final Map<NamespacedKey, Zenchantment> keyToEnch;
+    private final double                           enchantRarity;
+    private final int                              maxEnchants;
+    private final int                              shredDrops;
+    private final boolean                          explosionBlockBreak;
+    private final boolean                          descriptionLore;
+    private final ChatColor                        descriptionColor;
+    private final boolean                          enchantGlow;
+    private final ChatColor                        enchantmentColor;
+    private final ChatColor                        curseColor;
 
     public WorldConfiguration(
         Set<Zenchantment> worldEnchants,
@@ -44,9 +45,9 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
             nameToEnch.put(ChatColor.stripColor(ench.getName().toLowerCase().replace(" ", "")), ench);
         }
 
-        this.idToEnch = new HashMap<>();
+        this.keyToEnch = new HashMap<>();
         for (Zenchantment ench : this.worldEnchants) {
-            idToEnch.put(ench.getId(), ench);
+            this.keyToEnch.put(ench.getKey(), ench);
         }
 
         this.enchantGlow = enchantGlow;
