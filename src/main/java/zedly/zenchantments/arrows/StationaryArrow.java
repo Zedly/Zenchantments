@@ -1,6 +1,5 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -27,7 +26,7 @@ public class StationaryArrow extends ZenchantedArrow {
                 if (this.getArrow().getFireTicks() > 0) {
                     EntityCombustByEntityEvent combustByEntityEvent = new EntityCombustByEntityEvent(this.getArrow(), entity, 5);
 
-                    Bukkit.getPluginManager().callEvent(combustByEntityEvent);
+                    this.getPlugin().getServer().getPluginManager().callEvent(combustByEntityEvent);
 
                     if (!combustByEntityEvent.isCancelled()) {
                         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(

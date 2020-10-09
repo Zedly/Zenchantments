@@ -1,6 +1,5 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
@@ -37,7 +36,7 @@ public class ApocalypseArrow extends ZenchantedArrow {
                 this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
                     this.getPlugin(),
                     () -> {
-                        Entity entity = location.getWorld().spawnFallingBlock(location, Bukkit.createBlockData(FIRE));
+                        Entity entity = location.getWorld().spawnFallingBlock(location, this.getPlugin().getServer().createBlockData(FIRE));
 
                         Vector vector = location.toVector();
                         vector.setY(Math.abs(Math.sin(c)));

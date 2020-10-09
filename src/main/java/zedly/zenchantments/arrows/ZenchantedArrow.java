@@ -111,7 +111,7 @@ public class ZenchantedArrow {
     }
 
     public void onImpact() {
-        die(true);
+        this.die(true);
     }
 
     public void onKill(@NotNull EntityDeathEvent event) {
@@ -132,6 +132,7 @@ public class ZenchantedArrow {
                 if (arrow.isDead()) {
                     DIE_QUEUE.addAll(ADVANCED_PROJECTILES.get(arrow));
                 }
+
                 for (ZenchantedArrow zenchantedArrow : ADVANCED_PROJECTILES.get(arrow)) {
                     if (zenchantedArrow.getTick() > 600) {
                         DIE_QUEUE.add(zenchantedArrow);
@@ -142,6 +143,7 @@ public class ZenchantedArrow {
             for (ZenchantedArrow zenchantedArrow : DIE_QUEUE) {
                 zenchantedArrow.die();
             }
+
             DIE_QUEUE.clear();
         }
     }

@@ -1,6 +1,5 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -45,7 +44,7 @@ public class FuseArrow extends ZenchantedArrow {
                 (Player) Objects.requireNonNull(this.getArrow().getShooter())
             );
 
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            this.getPlugin().getServer().getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
                 hitLocation.getBlock().setType(AIR);
