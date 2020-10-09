@@ -8,13 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.enchantments.Toxic;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
 
-public class ToxicArrow extends EnchantedArrow {
+public class ToxicArrow extends ZenchantedArrow {
     public ToxicArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }

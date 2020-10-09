@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.admin.MissileArrow;
 
 import java.util.Set;
@@ -68,7 +68,7 @@ public final class Missile extends Zenchantment {
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
         MissileArrow arrow = new MissileArrow(this.getPlugin(), (Arrow) event.getProjectile());
-        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         event.setCancelled(true);
         Utilities.damageTool((Player) event.getEntity(), 1, usedHand);
         Utilities.removeItem(((Player) event.getEntity()), Material.ARROW, 1);

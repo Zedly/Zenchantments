@@ -11,7 +11,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.enchanted.MultiArrow;
 
 import java.util.Set;
@@ -76,7 +76,7 @@ public final class Spread extends Zenchantment {
         ItemStack hand = Utilities.usedStack(player, usedHand);
 
         MultiArrow multiArrow = new MultiArrow(this.getPlugin(), originalArrow);
-        EnchantedArrow.putArrow(originalArrow, multiArrow, player);
+        ZenchantedArrow.putArrow(originalArrow, multiArrow, player);
 
         this.getPlugin().getServer().getPluginManager().callEvent(
             new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length())
@@ -108,7 +108,7 @@ public final class Spread extends Zenchantment {
             arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
             arrow.setCritical(originalArrow.isCritical());
 
-            EnchantedArrow.putArrow(originalArrow, new MultiArrow(this.getPlugin(), originalArrow), player);
+            ZenchantedArrow.putArrow(originalArrow, new MultiArrow(this.getPlugin(), originalArrow), player);
         }
 
         return true;

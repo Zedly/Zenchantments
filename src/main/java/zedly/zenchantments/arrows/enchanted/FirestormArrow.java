@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
-public class FirestormArrow extends EnchantedArrow {
+public class FirestormArrow extends ZenchantedArrow {
     public FirestormArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }

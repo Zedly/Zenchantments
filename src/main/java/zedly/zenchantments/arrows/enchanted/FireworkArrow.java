@@ -9,11 +9,11 @@ import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import static org.bukkit.FireworkEffect.Type.*;
 
-public class FireworkArrow extends EnchantedArrow {
+public class FireworkArrow extends ZenchantedArrow {
     public FireworkArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level) {
         super(plugin, entity, level);
     }

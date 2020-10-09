@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.enchanted.VortexArrow;
 
 import java.util.HashMap;
@@ -91,7 +91,7 @@ public final class Vortex extends Zenchantment {
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
         VortexArrow arrow = new VortexArrow(this.getPlugin(), (Arrow) event.getProjectile());
-        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 }

@@ -7,10 +7,10 @@ import org.bukkit.entity.Arrow;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.enchantments.Singularity;
 
-public class SingularityArrow extends EnchantedArrow {
+public class SingularityArrow extends ZenchantedArrow {
     public SingularityArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level) {
         super(plugin, entity, level);
     }

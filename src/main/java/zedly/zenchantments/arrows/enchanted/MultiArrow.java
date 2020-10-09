@@ -6,9 +6,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
-public class MultiArrow extends EnchantedArrow {
+public class MultiArrow extends ZenchantedArrow {
     public MultiArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

@@ -10,9 +10,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
-public class StationaryArrow extends EnchantedArrow {
+public class StationaryArrow extends ZenchantedArrow {
     public StationaryArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

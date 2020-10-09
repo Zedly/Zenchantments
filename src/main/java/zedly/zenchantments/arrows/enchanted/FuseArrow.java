@@ -13,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.Objects;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.TNT;
 
-public class FuseArrow extends EnchantedArrow {
+public class FuseArrow extends ZenchantedArrow {
     public FuseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

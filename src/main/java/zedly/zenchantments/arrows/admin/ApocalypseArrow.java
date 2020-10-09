@@ -7,7 +7,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
 import static org.bukkit.Material.FIRE;
@@ -15,7 +15,7 @@ import static org.bukkit.entity.EntityType.BLAZE;
 import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
-public class ApocalypseArrow extends EnchantedArrow {
+public class ApocalypseArrow extends ZenchantedArrow {
     public ApocalypseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

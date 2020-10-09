@@ -9,14 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.List;
 
 import static org.bukkit.Material.AIR;
 
-public class MissileArrow extends EnchantedArrow {
+public class MissileArrow extends ZenchantedArrow {
     public MissileArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

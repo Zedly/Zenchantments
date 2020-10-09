@@ -14,7 +14,7 @@ import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.admin.SingularityArrow;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
@@ -81,7 +81,7 @@ public final class Singularity extends Zenchantment {
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
         SingularityArrow arrow = new SingularityArrow(this.getPlugin(), (Arrow) event.getProjectile(), level);
-        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 

@@ -14,11 +14,11 @@ import zedly.zenchantments.task.Frequency;
 
 import java.util.*;
 
-public class EnchantedArrow {
-    public static final Map<Entity, EnchantedArrow>     KILLED_ENTITIES      = new HashMap<>();
-    public static final Map<Arrow, Set<EnchantedArrow>> ADVANCED_PROJECTILES = new HashMap<>();
+public class ZenchantedArrow {
+    public static final Map<Entity, ZenchantedArrow>     KILLED_ENTITIES      = new HashMap<>();
+    public static final Map<Arrow, Set<ZenchantedArrow>> ADVANCED_PROJECTILES = new HashMap<>();
 
-    private static final Set<EnchantedArrow> DIE_QUEUE = new HashSet<>();
+    private static final Set<ZenchantedArrow> DIE_QUEUE = new HashSet<>();
 
     private final ZenchantmentsPlugin plugin;
     private final Arrow               arrow;
@@ -27,23 +27,23 @@ public class EnchantedArrow {
 
     private int tick;
 
-    public EnchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level, double power) {
+    public ZenchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level, double power) {
         this.plugin = plugin;
         this.arrow = arrow;
         this.level = level;
         this.power = power;
     }
 
-    public EnchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level) {
+    public ZenchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level) {
         this(plugin, arrow, level, 1);
     }
 
-    public EnchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow) {
+    public ZenchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow) {
         this(plugin, arrow, 0);
     }
 
-    public static void putArrow(@NotNull Arrow arrow, @NotNull EnchantedArrow enchantedArrow, @NotNull Player player) {
-        Set<EnchantedArrow> arrows;
+    public static void putArrow(@NotNull Arrow arrow, @NotNull ZenchantedArrow zenchantedArrow, @NotNull Player player) {
+        Set<ZenchantedArrow> arrows;
 
         if (ADVANCED_PROJECTILES.containsKey(arrow)) {
             arrows = ADVANCED_PROJECTILES.get(arrow);
@@ -51,9 +51,9 @@ public class EnchantedArrow {
             arrows = new HashSet<>();
         }
 
-        arrows.add(enchantedArrow);
+        arrows.add(zenchantedArrow);
         ADVANCED_PROJECTILES.put(arrow, arrows);
-        enchantedArrow.onLaunch(player, null);
+        zenchantedArrow.onLaunch(player, null);
     }
 
     @NotNull
@@ -132,15 +132,15 @@ public class EnchantedArrow {
                 if (arrow.isDead()) {
                     DIE_QUEUE.addAll(ADVANCED_PROJECTILES.get(arrow));
                 }
-                for (EnchantedArrow enchantedArrow : ADVANCED_PROJECTILES.get(arrow)) {
-                    if (enchantedArrow.getTick() > 600) {
-                        DIE_QUEUE.add(enchantedArrow);
+                for (ZenchantedArrow zenchantedArrow : ADVANCED_PROJECTILES.get(arrow)) {
+                    if (zenchantedArrow.getTick() > 600) {
+                        DIE_QUEUE.add(zenchantedArrow);
                     }
                 }
             }
 
-            for (EnchantedArrow enchantedArrow : DIE_QUEUE) {
-                enchantedArrow.die();
+            for (ZenchantedArrow zenchantedArrow : DIE_QUEUE) {
+                zenchantedArrow.die();
             }
             DIE_QUEUE.clear();
         }
@@ -149,7 +149,7 @@ public class EnchantedArrow {
     @EffectTask(Frequency.HIGH)
     public static void doTick() {
         synchronized (ADVANCED_PROJECTILES) {
-            ADVANCED_PROJECTILES.values().forEach((set) -> set.forEach(EnchantedArrow::tick));
+            ADVANCED_PROJECTILES.values().forEach((set) -> set.forEach(ZenchantedArrow::tick));
         }
     }
 }

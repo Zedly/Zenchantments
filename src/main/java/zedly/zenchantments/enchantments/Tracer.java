@@ -14,7 +14,7 @@ import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.EnchantedArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.enchanted.TracerArrow;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
@@ -80,7 +80,7 @@ public final class Tracer extends Zenchantment {
     @Override
     public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
         TracerArrow arrow = new TracerArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
-        EnchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 
