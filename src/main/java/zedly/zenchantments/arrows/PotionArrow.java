@@ -1,4 +1,4 @@
-package zedly.zenchantments.arrows.enchanted;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;

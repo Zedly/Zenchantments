@@ -1,4 +1,4 @@
-package zedly.zenchantments.arrows.admin;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -7,7 +7,6 @@ import org.bukkit.entity.Arrow;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.enchantments.Singularity;
 
 public class SingularityArrow extends ZenchantedArrow {

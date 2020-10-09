@@ -10,7 +10,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.ZenchantedArrow;
-import zedly.zenchantments.arrows.enchanted.VortexArrow;
+import zedly.zenchantments.arrows.VortexArrow;
 
 import java.util.HashMap;
 import java.util.Map;

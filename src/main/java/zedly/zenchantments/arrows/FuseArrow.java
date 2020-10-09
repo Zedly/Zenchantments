@@ -1,4 +1,4 @@
-package zedly.zenchantments.arrows.enchanted;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.Objects;
 

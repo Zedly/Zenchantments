@@ -1,4 +1,4 @@
-package zedly.zenchantments.arrows.admin;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -7,7 +7,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
 import static org.bukkit.Material.FIRE;

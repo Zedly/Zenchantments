@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.ZenchantedArrow;
-import zedly.zenchantments.arrows.admin.MissileArrow;
+import zedly.zenchantments.arrows.MissileArrow;
 
 import java.util.Set;
 

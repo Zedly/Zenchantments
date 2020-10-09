@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.ZenchantedArrow;
-import zedly.zenchantments.arrows.enchanted.MultiArrow;
+import zedly.zenchantments.arrows.MultiArrow;
 
 import java.util.Set;
 

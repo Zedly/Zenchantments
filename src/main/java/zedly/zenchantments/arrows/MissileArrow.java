@@ -1,4 +1,4 @@
-package zedly.zenchantments.arrows.admin;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.List;

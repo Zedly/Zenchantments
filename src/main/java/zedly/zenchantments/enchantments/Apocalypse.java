@@ -11,7 +11,7 @@ import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.ZenchantedArrow;
-import zedly.zenchantments.arrows.admin.ApocalypseArrow;
+import zedly.zenchantments.arrows.ApocalypseArrow;
 
 import java.util.Set;
 

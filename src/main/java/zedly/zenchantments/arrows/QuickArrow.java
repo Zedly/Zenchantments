@@ -1,11 +1,10 @@
-package zedly.zenchantments.arrows.enchanted;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.List;
 

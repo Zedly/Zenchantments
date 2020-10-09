@@ -1,4 +1,4 @@
-package zedly.zenchantments.arrows.enchanted;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -9,7 +9,6 @@ import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import static org.bukkit.FireworkEffect.Type.*;
 

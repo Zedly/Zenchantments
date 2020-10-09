@@ -15,7 +15,7 @@ import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.ZenchantedArrow;
-import zedly.zenchantments.arrows.admin.SingularityArrow;
+import zedly.zenchantments.arrows.SingularityArrow;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 

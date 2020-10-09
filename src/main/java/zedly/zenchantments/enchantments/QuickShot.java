@@ -11,7 +11,7 @@ import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.ZenchantedArrow;
-import zedly.zenchantments.arrows.enchanted.QuickArrow;
+import zedly.zenchantments.arrows.QuickArrow;
 
 import java.util.Set;
 

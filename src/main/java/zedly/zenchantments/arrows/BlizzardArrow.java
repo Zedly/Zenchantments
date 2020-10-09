@@ -1,4 +1,4 @@
-package zedly.zenchantments.arrows.enchanted;
+package zedly.zenchantments.arrows;
 
 import org.bukkit.Particle;
 import org.bukkit.entity.Arrow;
@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
 
