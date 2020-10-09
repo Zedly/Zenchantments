@@ -9,7 +9,7 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.enchantments.Singularity;
 
-public class SingularityArrow extends ZenchantedArrow {
+public final class SingularityArrow extends ZenchantedArrow {
     public SingularityArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level) {
         super(plugin, entity, level);
     }

@@ -7,7 +7,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
-public class MultiArrow extends ZenchantedArrow {
+public final class MultiArrow extends ZenchantedArrow {
     public MultiArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

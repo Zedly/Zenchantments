@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Storage;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
-public class StationaryArrow extends ZenchantedArrow {
+public final class StationaryArrow extends ZenchantedArrow {
     public StationaryArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

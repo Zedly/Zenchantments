@@ -12,7 +12,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Objects;
 
-public class SiphonArrow extends ZenchantedArrow {
+public final class SiphonArrow extends ZenchantedArrow {
     public SiphonArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }

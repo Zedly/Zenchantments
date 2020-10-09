@@ -18,7 +18,7 @@ import java.util.Objects;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.TNT;
 
-public class FuseArrow extends ZenchantedArrow {
+public final class FuseArrow extends ZenchantedArrow {
     public FuseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

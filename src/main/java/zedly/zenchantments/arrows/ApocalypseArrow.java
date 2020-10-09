@@ -13,7 +13,7 @@ import static org.bukkit.entity.EntityType.BLAZE;
 import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
-public class ApocalypseArrow extends ZenchantedArrow {
+public final class ApocalypseArrow extends ZenchantedArrow {
     public ApocalypseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

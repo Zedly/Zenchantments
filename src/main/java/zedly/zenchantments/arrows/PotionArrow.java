@@ -11,7 +11,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class PotionArrow extends ZenchantedArrow {
+public final class PotionArrow extends ZenchantedArrow {
     public PotionArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }

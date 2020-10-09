@@ -5,7 +5,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
-public class VortexArrow extends ZenchantedArrow {
+public final class VortexArrow extends ZenchantedArrow {
     public VortexArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

@@ -10,7 +10,7 @@ import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
-public class FirestormArrow extends ZenchantedArrow {
+public final class FirestormArrow extends ZenchantedArrow {
     public FirestormArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }

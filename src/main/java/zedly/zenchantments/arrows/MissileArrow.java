@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.bukkit.Material.AIR;
 
-public class MissileArrow extends ZenchantedArrow {
+public final class MissileArrow extends ZenchantedArrow {
     public MissileArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

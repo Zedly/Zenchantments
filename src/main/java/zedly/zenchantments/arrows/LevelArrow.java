@@ -5,7 +5,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
-public class LevelArrow extends ZenchantedArrow {
+public final class LevelArrow extends ZenchantedArrow {
     public LevelArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }

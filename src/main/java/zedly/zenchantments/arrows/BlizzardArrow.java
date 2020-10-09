@@ -12,7 +12,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
 
-public class BlizzardArrow extends ZenchantedArrow {
+public final class BlizzardArrow extends ZenchantedArrow {
     public BlizzardArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }

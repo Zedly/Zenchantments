@@ -8,7 +8,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.List;
 
-public class QuickArrow extends ZenchantedArrow {
+public final class QuickArrow extends ZenchantedArrow {
     public QuickArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
         super(plugin, entity);
     }

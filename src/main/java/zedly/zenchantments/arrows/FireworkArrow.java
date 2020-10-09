@@ -12,7 +12,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import static org.bukkit.FireworkEffect.Type.*;
 
-public class FireworkArrow extends ZenchantedArrow {
+public final class FireworkArrow extends ZenchantedArrow {
     public FireworkArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level) {
         super(plugin, entity, level);
     }
