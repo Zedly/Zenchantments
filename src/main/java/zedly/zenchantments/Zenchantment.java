@@ -46,7 +46,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     private boolean used;
     private boolean cursed;
 
-    public Zenchantment(
+    protected Zenchantment(
         @NotNull ZenchantmentsPlugin plugin,
         @NotNull Set<Tool> enchantable,
         int maxLevel,
