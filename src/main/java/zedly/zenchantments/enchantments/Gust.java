@@ -92,7 +92,7 @@ public final class Gust extends Zenchantment {
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
             this.getPlugin(),
-            () -> Utilities.damageTool(event.getPlayer(), 1, usedHand),
+            () -> Utilities.damageItemStack(event.getPlayer(), 1, usedHand),
             1
         );
 

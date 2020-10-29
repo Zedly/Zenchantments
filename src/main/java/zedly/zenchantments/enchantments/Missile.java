@@ -70,8 +70,8 @@ public final class Missile extends Zenchantment {
         MissileArrow arrow = new MissileArrow(this.getPlugin(), (Arrow) event.getProjectile());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         event.setCancelled(true);
-        Utilities.damageTool((Player) event.getEntity(), 1, usedHand);
-        Utilities.removeItem(((Player) event.getEntity()), Material.ARROW, 1);
+        Utilities.damageItemStack((Player) event.getEntity(), 1, usedHand);
+        Utilities.removeMaterialsFromPlayer(((Player) event.getEntity()), Material.ARROW, 1);
         return true;
     }
 }

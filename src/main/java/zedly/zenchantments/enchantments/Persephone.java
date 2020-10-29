@@ -96,19 +96,19 @@ public final class Persephone extends Zenchantment {
                         Inventory inventory = player.getInventory();
                         if (inventory.contains(CARROT)) {
                             if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS, null)) {
-                                Utilities.removeItem(player, CARROT, 1);
+                                Utilities.removeMaterialsFromPlayer(player, CARROT, 1);
                             }
                         } else if (inventory.contains(POTATO)) {
                             if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, POTATOES, null)) {
-                                Utilities.removeItem(player, POTATO, 1);
+                                Utilities.removeMaterialsFromPlayer(player, POTATO, 1);
                             }
                         } else if (inventory.contains(WHEAT_SEEDS)) {
                             if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, null)) {
-                                Utilities.removeItem(player, WHEAT_SEEDS, 1);
+                                Utilities.removeMaterialsFromPlayer(player, WHEAT_SEEDS, 1);
                             }
                         } else if (inventory.contains(BEETROOT_SEEDS)) {
                             if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOTS, null)) {
-                                Utilities.removeItem(player, BEETROOT_SEEDS, 1);
+                                Utilities.removeMaterialsFromPlayer(player, BEETROOT_SEEDS, 1);
                             }
                         }
                     } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
@@ -117,7 +117,7 @@ public final class Persephone extends Zenchantment {
                         if (event.getPlayer().getInventory().contains(NETHER_WART)) {
                             if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART,
                                 null)) {
-                                Utilities.removeItem(player, NETHER_WART, 1);
+                                Utilities.removeMaterialsFromPlayer(player, NETHER_WART, 1);
                             }
                         }
                     } else {
@@ -125,7 +125,7 @@ public final class Persephone extends Zenchantment {
                     }
 
                     if (ThreadLocalRandom.current().nextBoolean()) {
-                        Utilities.damageTool(player, 1, usedHand);
+                        Utilities.damageItemStack(player, 1, usedHand);
                     }
                 }
             }

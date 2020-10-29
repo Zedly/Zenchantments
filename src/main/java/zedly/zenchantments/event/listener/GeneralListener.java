@@ -278,7 +278,7 @@ public class GeneralListener implements Listener {
             for (Zenchantment zenchantment : validPool) {
                 running += zenchantment.getProbability();
                 if (running > decision) {
-                    int level = Utilities.getEnchantLevel(zenchantment.getMaxLevel(), event.getExpLevelCost());
+                    int level = Utilities.getEnchantmentLevel(zenchantment.getMaxLevel(), event.getExpLevelCost());
                     addedEnchants.put(zenchantment, level);
                     break;
                 }

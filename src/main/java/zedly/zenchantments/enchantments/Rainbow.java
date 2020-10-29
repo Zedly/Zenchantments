@@ -95,7 +95,7 @@ public final class Rainbow extends Zenchantment {
 
         event.getPlayer().getWorld().dropItem(Utilities.getCenter(block), new ItemStack(dropMaterial, 1));
 
-        Utilities.damageTool(event.getPlayer(), 1, usedHand);
+        Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
 
         return true;
     }
@@ -109,7 +109,7 @@ public final class Rainbow extends Zenchantment {
 
         int count = ThreadLocalRandom.current().nextInt(3) + 1;
 
-        Utilities.damageTool(event.getPlayer(), 1, usedHand);
+        Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
 
         sheep.setSheared(true);
 

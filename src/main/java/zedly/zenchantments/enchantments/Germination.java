@@ -87,7 +87,7 @@ public final class Germination extends Zenchantment {
                     Block relativeBlock = clickedBlock.getRelative(x, y, z);
 
                     if (!(relativeBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)
-                        || !Utilities.hasItem(player, Material.BONE_MEAL, 1)
+                        || !Utilities.playerHasMaterial(player, Material.BONE_MEAL, 1)
                         || !ADAPTER.grow(relativeBlock, player)
                     ) {
                         continue;
@@ -110,10 +110,10 @@ public final class Germination extends Zenchantment {
                     );
 
                     if (ThreadLocalRandom.current().nextInt(10) <= 3) {
-                        Utilities.damageTool(player, 1, usedHand);
+                        Utilities.damageItemStack(player, 1, usedHand);
                     }
 
-                    Utilities.removeItem(player, Material.BONE_MEAL, 1);
+                    Utilities.removeMaterialsFromPlayer(player, Material.BONE_MEAL, 1);
                 }
             }
         }

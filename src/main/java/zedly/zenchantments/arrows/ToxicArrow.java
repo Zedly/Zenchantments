@@ -23,15 +23,15 @@ public final class ToxicArrow extends ZenchantedArrow {
         if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             int value = (int) Math.round(this.getLevel() * this.getPower());
 
-            Utilities.addPotion((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
-            Utilities.addPotion((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
+            Utilities.addPotionEffect((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
+            Utilities.addPotionEffect((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
 
             if (event.getEntity() instanceof Player) {
                 this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
                     this.getPlugin(),
                     () -> {
                         ((LivingEntity) event.getEntity()).removePotionEffect(HUNGER);
-                        Utilities.addPotion((LivingEntity) event.getEntity(), HUNGER, 60 + 40 * value, 0);
+                        Utilities.addPotionEffect((LivingEntity) event.getEntity(), HUNGER, 60 + 40 * value, 0);
                     },
                     20 + 60 * value
                 );

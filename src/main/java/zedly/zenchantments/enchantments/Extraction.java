@@ -81,7 +81,7 @@ public final class Extraction extends Zenchantment {
             return false;
         }
 
-        Utilities.damageTool(event.getPlayer(), 1, usedHand);
+        Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
 
         for (int x = 0; x < ThreadLocalRandom.current().nextInt((int) Math.round(this.getPower() * level + 1)) + 1; x++) {
             block.getWorld().dropItemNaturally(

@@ -123,7 +123,7 @@ public final class Harvest extends Zenchantment {
                         continue;
                     }
 
-                    Utilities.damageTool(event.getPlayer(), 1, usedHand);
+                    Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
 
                     Grab.GRAB_LOCATIONS.put(block, event.getPlayer());
 

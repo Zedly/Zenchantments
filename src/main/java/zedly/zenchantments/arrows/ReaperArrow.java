@@ -20,8 +20,8 @@ public final class ReaperArrow extends ZenchantedArrow {
         if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             int power = (int) Math.round(this.getLevel() * this.getPower());
             int duration = (int) Math.round(20 + this.getLevel() * 10 * this.getPower());
-            Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.WITHER, duration, power);
-            Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.BLINDNESS, duration, power);
+            Utilities.addPotionEffect((LivingEntity) event.getEntity(), PotionEffectType.WITHER, duration, power);
+            Utilities.addPotionEffect((LivingEntity) event.getEntity(), PotionEffectType.BLINDNESS, duration, power);
         }
 
         this.die();

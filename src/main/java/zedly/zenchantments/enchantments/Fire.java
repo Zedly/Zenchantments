@@ -94,7 +94,7 @@ public final class Fire extends Zenchantment {
             return false;
         }
 
-        ItemStack hand = Utilities.usedStack(event.getPlayer(), usedHand);
+        ItemStack hand = Utilities.getUsedItemStack(event.getPlayer(), usedHand);
         Block block = event.getBlock();
         Material original = block.getType();
         Material material = AIR;

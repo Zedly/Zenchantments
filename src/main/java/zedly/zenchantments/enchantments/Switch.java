@@ -124,7 +124,7 @@ public final class Switch extends Zenchantment {
             ADAPTER.placeBlock(clickedBlock, player, material, null); // TODO: BlockData - whatever that means.
         }, 1);
 
-        Utilities.removeItem(event.getPlayer(), material, 1);
+        Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);
         return true;
     }
 }

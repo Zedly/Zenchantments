@@ -81,7 +81,7 @@ public final class Shred extends Zenchantment {
             return false;
         }
 
-        ItemStack hand = Utilities.usedStack(event.getPlayer(), usedHand);
+        ItemStack hand = Utilities.getUsedItemStack(event.getPlayer(), usedHand);
 
         this.shred(
             block,
@@ -150,7 +150,7 @@ public final class Shred extends Zenchantment {
                 Zenchantment.applyForTool(
                     eventPlayer,
                     this.getPlugin().getPlayerDataProvider().getDataForPlayer(player),
-                    Utilities.usedStack(eventPlayer, eventUsedHand),
+                    Utilities.getUsedItemStack(eventPlayer, eventUsedHand),
                     (ench, level) -> ench.onBlockBreak(event, level, eventUsedHand));
 
                 if (event.isCancelled()) {
@@ -187,7 +187,7 @@ public final class Shred extends Zenchantment {
             relativeBlock.getLocation().getWorld().playSound(relativeBlock.getLocation(), sound, 1, 1);
         }
 
-        Utilities.damageTool(player, 1, usedHand);
+        Utilities.damageItemStack(player, 1, usedHand);
 
         used.add(relativeBlock);
 

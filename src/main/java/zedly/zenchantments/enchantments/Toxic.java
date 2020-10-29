@@ -86,8 +86,8 @@ public final class Toxic extends Zenchantment {
 
         int value = (int) Math.round(level * this.getPower());
 
-        Utilities.addPotion((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
-        Utilities.addPotion((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
+        Utilities.addPotionEffect((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
+        Utilities.addPotionEffect((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
 
         if (!(event.getEntity() instanceof Player)) {
             return true;
@@ -97,7 +97,7 @@ public final class Toxic extends Zenchantment {
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
             player.removePotionEffect(HUNGER);
-            Utilities.addPotion(player, HUNGER, 60 + 40 * value, 0);
+            Utilities.addPotionEffect(player, HUNGER, 60 + 40 * value, 0);
         }, 20 + 60 * value);
 
         HUNGER_PLAYERS.put((Player) event.getEntity(), (1 + value) * 100);

@@ -66,7 +66,7 @@ public final class IceAspect extends Zenchantment {
 
     @Override
     public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
-        Utilities.addPotion(
+        Utilities.addPotionEffect(
             (LivingEntity) event.getEntity(),
             SLOW,
             (int) Math.round(40 + level * this.getPower() * 40),

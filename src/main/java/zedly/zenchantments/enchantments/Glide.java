@@ -132,7 +132,7 @@ public final class Glide extends Zenchantment {
                     Utilities.addUnbreaking(player, armour[i], 1);
                 }
 
-                if (Utilities.getDamage(armour[i]) > armour[i].getType().getMaxDurability()) {
+                if (Utilities.getItemStackDamage(armour[i]) > armour[i].getType().getMaxDurability()) {
                     armour[i] = null;
                 }
             }

@@ -176,7 +176,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     public static void applyForTool(Player player, PlayerData playerData, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
         Zenchantment.getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
-            if (!ench.used && Utilities.canUse(player, playerData, ench.getKey())) {
+            if (!ench.used && Utilities.playerCanUseZenchantment(player, playerData, ench.getKey())) {
                 try {
                     ench.used = true;
                     if (action.test(ench, level)) {
@@ -269,7 +269,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         }
 
         String enchantmentName = ChatColor.stripColor(matcher.group(1));
-        int level = matcher.group(2) == null || matcher.group(2).equals("") ? 1 : Utilities.getNumber(matcher.group(2));
+        int level = matcher.group(2) == null || matcher.group(2).equals("") ? 1 : Utilities.convertNumeralToInt(matcher.group(2));
 
         Zenchantment zenchantment = WorldConfiguration.get(world).enchantFromString(enchantmentName);
         if (zenchantment == null) {
@@ -313,7 +313,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     public String getShown(int level, World world) {
         WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        String levelString = Utilities.getRomanString(level);
+        String levelString = Utilities.convertIntToNumeral(level);
 
         return (this.cursed ? config.getCurseColor() : config.getEnchantmentColor())
             + this.getName()
@@ -325,7 +325,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         List<String> desc = new LinkedList<>();
 
         if (config.descriptionLore()) {
-            String start = Utilities.toInvisibleString("ze.desc." + this.getKey())
+            String start = Utilities.makeStringInvisible("ze.desc." + this.getKey())
                 + config.getDescriptionColor()
                 + ChatColor.ITALIC
                 + " ";

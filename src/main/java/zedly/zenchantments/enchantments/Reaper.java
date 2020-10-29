@@ -79,8 +79,8 @@ public final class Reaper extends Zenchantment {
 
         int pow = (int) Math.round(level * this.getPower());
         int dur = (int) Math.round(10 + level * 20 * this.getPower());
-        Utilities.addPotion((LivingEntity) event.getEntity(), PotionEffectType.WITHER, dur, pow);
-        Utilities.addPotion((LivingEntity) event.getEntity(), BLINDNESS, dur, pow);
+        Utilities.addPotionEffect((LivingEntity) event.getEntity(), PotionEffectType.WITHER, dur, pow);
+        Utilities.addPotionEffect((LivingEntity) event.getEntity(), BLINDNESS, dur, pow);
 
         return true;
     }

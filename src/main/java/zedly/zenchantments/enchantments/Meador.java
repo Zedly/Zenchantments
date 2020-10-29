@@ -72,7 +72,7 @@ public final class Meador extends Zenchantment {
 
         player.setMetadata("ze.speed", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));
 
-        Utilities.addPotion(player, JUMP, 610, (int) Math.round(this.getPower() * level + 2));
+        Utilities.addPotionEffect(player, JUMP, 610, (int) Math.round(this.getPower() * level + 2));
 
         return true;
     }

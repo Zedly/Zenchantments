@@ -64,7 +64,7 @@ public final class NightVision extends Zenchantment {
 
     @Override
     public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
-        Utilities.addPotion(player, NIGHT_VISION, 610, 5);
+        Utilities.addPotionEffect(player, NIGHT_VISION, 610, 5);
         return true;
     }
 }

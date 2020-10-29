@@ -76,7 +76,7 @@ public final class Burst extends Zenchantment {
     @Override
     public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
         Player player = event.getPlayer();
-        ItemStack hand = Utilities.usedStack(player, usedHand);
+        ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
 
         if (!event.getAction().equals(RIGHT_CLICK_AIR) && !event.getAction().equals(RIGHT_CLICK_BLOCK)) {
             return false;
@@ -85,14 +85,14 @@ public final class Burst extends Zenchantment {
         boolean result = false;
 
         for (int i = 0; i <= (int) Math.round((this.getPower() * level) + 1); i++) {
-            if ((!hand.containsEnchantment(Enchantment.ARROW_INFINITE) || !Utilities.hasItem(player, Material.ARROW, 1))
-                && !Utilities.removeItem(player, Material.ARROW, 1)
+            if ((!hand.containsEnchantment(Enchantment.ARROW_INFINITE) || !Utilities.playerHasMaterial(player, Material.ARROW, 1))
+                && !Utilities.removeMaterialsFromPlayer(player, Material.ARROW, 1)
             ) {
                 continue;
             }
 
             result = true;
-            Utilities.setHand(player, hand, usedHand);
+            Utilities.setItemStackInHand(player, hand, usedHand);
 
             this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
                 Arrow arrow = player.getWorld().spawnArrow(
@@ -122,7 +122,7 @@ public final class Burst extends Zenchantment {
                     arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
                     arrow.setCritical(true);
                     ZenchantedArrow.putArrow(arrow, new MultiArrow(this.getPlugin(), arrow), player);
-                    Utilities.damageTool(player, 1, usedHand);
+                    Utilities.damageItemStack(player, 1, usedHand);
                 }
             }, i * 2);
         }

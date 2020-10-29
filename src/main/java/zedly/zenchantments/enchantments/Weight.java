@@ -90,7 +90,7 @@ public final class Weight extends Zenchantment {
         for (int i = 0; i < 4; i++) {
             if (armour[i] != null) {
                 Utilities.addUnbreaking(player, armour[i], 1);
-                if (Utilities.getDamage(armour[i]) > armour[i].getType().getMaxDurability()) {
+                if (Utilities.getItemStackDamage(armour[i]) > armour[i].getType().getMaxDurability()) {
                     armour[i] = null;
                 }
             }
@@ -103,7 +103,7 @@ public final class Weight extends Zenchantment {
 
     @Override
     public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
-        Utilities.addPotion(player, INCREASE_DAMAGE, 610, (int) Math.round(this.getPower() * level));
+        Utilities.addPotionEffect(player, INCREASE_DAMAGE, 610, (int) Math.round(this.getPower() * level));
         player.setWalkSpeed((float) (0.164f - level * this.getPower() * 0.014f));
         player.setMetadata("ze.speed", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));
         return true;

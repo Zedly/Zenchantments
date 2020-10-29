@@ -76,7 +76,7 @@ public final class Gluttony extends Zenchantment {
                 continue;
             }
 
-            Utilities.removeItem(player, foodMaterial, 1);
+            Utilities.removeMaterialsFromPlayer(player, foodMaterial, 1);
 
             player.setFoodLevel(player.getFoodLevel() + foodLevel);
             player.setSaturation((float) (player.getSaturation() + Storage.COMPATIBILITY_ADAPTER.GluttonySaturations()[i]));

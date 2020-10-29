@@ -57,7 +57,7 @@ public class ZenchantmentListener implements Listener {
         Zenchantment.applyForTool(
             player,
             this.plugin.getPlayerDataProvider().getDataForPlayer(player),
-            Utilities.usedStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onBlockBreak(event, level, usedHand)
         );
     }
@@ -113,7 +113,7 @@ public class ZenchantmentListener implements Listener {
         Zenchantment.applyForTool(
             player,
             this.plugin.getPlayerDataProvider().getDataForPlayer(player),
-            Utilities.usedStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityInteract(event, level, usedHand)
         );
     }
@@ -136,7 +136,7 @@ public class ZenchantmentListener implements Listener {
         Zenchantment.applyForTool(
             player,
             this.plugin.getPlayerDataProvider().getDataForPlayer(player),
-            Utilities.usedStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityKill(event, level, usedHand)
         );
     }
@@ -205,7 +205,7 @@ public class ZenchantmentListener implements Listener {
         Zenchantment.applyForTool(
             player,
             this.plugin.getPlayerDataProvider().getDataForPlayer(player),
-            Utilities.usedStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onPlayerFish(event, level, true)
         );
     }
@@ -244,7 +244,7 @@ public class ZenchantmentListener implements Listener {
         Zenchantment.applyForTool(
             player,
             this.plugin.getPlayerDataProvider().getDataForPlayer(player),
-            Utilities.usedStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onShear(event, level, true)
         );
     }
@@ -266,7 +266,7 @@ public class ZenchantmentListener implements Listener {
         Zenchantment.applyForTool(
             player,
             this.plugin.getPlayerDataProvider().getDataForPlayer(player),
-            Utilities.usedStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityShootBow(event, level, true)
         );
     }
@@ -314,7 +314,7 @@ public class ZenchantmentListener implements Listener {
         Zenchantment.applyForTool(
             player,
             this.plugin.getPlayerDataProvider().getDataForPlayer(player),
-            Utilities.usedStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onProjectileLaunch(event, level, usedHand)
         );
     }

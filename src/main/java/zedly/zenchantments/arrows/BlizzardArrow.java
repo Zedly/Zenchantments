@@ -38,7 +38,7 @@ public final class BlizzardArrow extends ZenchantedArrow {
                 continue;
             }
 
-            Utilities.addPotion(
+            Utilities.addPotionEffect(
                 (LivingEntity) entity,
                 SLOW,
                 (int) Math.round(50 + this.getLevel() * this.getPower() * 50),

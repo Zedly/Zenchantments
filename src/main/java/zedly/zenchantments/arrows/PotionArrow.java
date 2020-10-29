@@ -19,7 +19,7 @@ public final class PotionArrow extends ZenchantedArrow {
     @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
         if (ThreadLocalRandom.current().nextInt((int) Math.round(10 / (this.getLevel() * this.getPower() + 1))) == 1) {
-            Utilities.addPotion(
+            Utilities.addPotionEffect(
                 (LivingEntity) Objects.requireNonNull(this.getArrow().getShooter()),
                 Storage.COMPATIBILITY_ADAPTER.PotionPotions().get(ThreadLocalRandom.current().nextInt(12)),
                 150 + (int) Math.round(this.getLevel() * this.getPower() * 50),

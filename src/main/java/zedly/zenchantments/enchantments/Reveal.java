@@ -129,7 +129,7 @@ public final class Reveal extends Zenchantment {
             }
         }
 
-        Utilities.damageTool(player, Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+        Utilities.damageItemStack(player, Math.max(16, (int) Math.round(found * 1.3)), usedHand);
 
         return true;
     }

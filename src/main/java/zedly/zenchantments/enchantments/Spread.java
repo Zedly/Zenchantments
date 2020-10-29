@@ -73,7 +73,7 @@ public final class Spread extends Zenchantment {
     public boolean onProjectileLaunch(@NotNull ProjectileLaunchEvent event, int level, boolean usedHand) {
         Arrow originalArrow = (Arrow) event.getEntity();
         Player player = (Player) originalArrow.getShooter();
-        ItemStack hand = Utilities.usedStack(player, usedHand);
+        ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
 
         MultiArrow multiArrow = new MultiArrow(this.getPlugin(), originalArrow);
         ZenchantedArrow.putArrow(originalArrow, multiArrow, player);
@@ -82,7 +82,7 @@ public final class Spread extends Zenchantment {
             new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length())
         );
 
-        Utilities.damageTool(player, (int) Math.round(level / 2.0 + 1), usedHand);
+        Utilities.damageItemStack(player, (int) Math.round(level / 2.0 + 1), usedHand);
 
         for (int i = 0; i < (int) Math.round(this.getPower() * level * 4); i++) {
             Vector vector = originalArrow.getVelocity();

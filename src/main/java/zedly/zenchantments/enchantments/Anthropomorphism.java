@@ -194,7 +194,7 @@ public final class Anthropomorphism extends Zenchantment {
     @Override
     public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
         Player player = event.getPlayer();
-        ItemStack hand = Utilities.usedStack(player, usedHand);
+        ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
 
         if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
             if (player.isSneaking()) {
@@ -210,8 +210,8 @@ public final class Anthropomorphism extends Zenchantment {
                 }
 
                 if (counter < 64 && player.getInventory().contains(COBBLESTONE)) {
-                    Utilities.removeItem(player, COBBLESTONE, 1);
-                    Utilities.damageTool(player, 2, usedHand);
+                    Utilities.removeMaterialsFromPlayer(player, COBBLESTONE, 1);
+                    Utilities.damageItemStack(player, 2, usedHand);
 
                     Location location = player.getLocation();
                     FallingBlock blockEntity = location.getWorld().spawnFallingBlock(
