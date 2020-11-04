@@ -414,13 +414,11 @@ public final class Utilities {
                 continue;
             }
 
-            if (effect.getAmplifier() > intensity) {
+            if (effect.getAmplifier() > intensity || effect.getDuration() > length) {
                 return;
-            } else if (effect.getDuration() > length) {
-                return;
-            } else {
-                entity.removePotionEffect(effectType);
             }
+
+            entity.removePotionEffect(effectType);
         }
 
         entity.addPotionEffect(new PotionEffect(effectType, length, intensity));
