@@ -3,7 +3,6 @@ package zedly.zenchantments;
 import org.bukkit.ChatColor;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -18,22 +17,29 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.player.PlayerData;
+import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
 
 public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zenchantment {
-    private static final Pattern ENCH_LORE_PATTERN = Pattern.compile("§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)");
+    private static final Pattern ZENCHANTMENT_LORE_PATTERN = Pattern.compile(
+        "§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)"
+    );
 
+    @Deprecated // Deprecation warnings from Storage don't appear when using this field.
     protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
 
     private final ZenchantmentsPlugin plugin;
@@ -47,12 +53,12 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     private boolean cursed;
 
     protected Zenchantment(
-        @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Set<Tool> enchantable,
-        int maxLevel,
-        int cooldown,
-        double power,
-        float probability
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
     ) {
         this.plugin = plugin;
         this.enchantable = enchantable;
@@ -61,6 +67,275 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         this.power = power;
         this.probability = probability;
     }
+
+    //region Static Methods
+    public static void applyForTool(
+        final @NotNull Player player,
+        final @NotNull PlayerDataProvider playerDataProvider,
+        final @NotNull WorldConfigurationProvider worldConfigurationProvider,
+        final @NotNull ItemStack tool,
+        final @NotNull BiPredicate<Zenchantment, Integer> action
+    ) {
+        requireNonNull(player);
+        requireNonNull(playerDataProvider);
+        requireNonNull(worldConfigurationProvider);
+        requireNonNull(tool);
+        requireNonNull(action);
+
+        final Map<Zenchantment, Integer> zenchantments = getZenchantmentsOnItemStack(
+            tool,
+            worldConfigurationProvider.getConfigurationForWorld(player.getWorld())
+        );
+
+        for (final Map.Entry<Zenchantment, Integer> entry : zenchantments.entrySet()) {
+            final Zenchantment ench = entry.getKey();
+            final Integer level = entry.getValue(); // Use Integer to prevent unboxing and then re-boxing.
+            final PlayerData playerData = playerDataProvider.getDataForPlayer(player);
+
+            if (!ench.used && Utilities.playerCanUseZenchantment(player, playerData, ench.getKey())) {
+                try {
+                    ench.used = true;
+                    if (action.test(ench, level)) {
+                        playerData.setCooldown(ench.getKey(), ench.cooldown);
+                    }
+                } catch (Exception ex) {
+                    // This is absolutely terrible.
+                    // TODO: Fix this monstrosity.
+                    ex.printStackTrace();
+                }
+
+                ench.used = false;
+            }
+        }
+    }
+
+    @NotNull
+    public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
+        final @NotNull ItemStack itemStack,
+        final @NotNull WorldConfiguration worldConfiguration,
+        final @NotNull List<String> outExtraLore
+    ) {
+        return getZenchantmentsOnItemStack(itemStack, false, worldConfiguration, outExtraLore);
+    }
+
+    @NotNull
+    public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
+        final @NotNull ItemStack itemStack,
+        final boolean acceptBooks,
+        final @NotNull WorldConfiguration worldConfiguration
+    ) {
+        return getZenchantmentsOnItemStack(itemStack, acceptBooks, worldConfiguration, null);
+    }
+
+    @NotNull
+    public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
+        final @NotNull ItemStack itemStack,
+        final @NotNull WorldConfiguration worldConfiguration
+    ) {
+        return getZenchantmentsOnItemStack(itemStack, false, worldConfiguration, null);
+    }
+
+    @NotNull
+    public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
+        final @NotNull ItemStack itemStack,
+        final boolean acceptBooks,
+        final @NotNull WorldConfiguration worldConfiguration,
+        final @Nullable List<String> outExtraLore
+    ) {
+        final Map<Zenchantment, Integer> map = new LinkedHashMap<>();
+
+        if ((!acceptBooks && itemStack.getType() == Material.ENCHANTED_BOOK)
+            || !itemStack.hasItemMeta()
+            || !requireNonNull(itemStack.getItemMeta()).hasLore()
+        ) {
+            return Collections.emptyMap();
+        }
+
+        for (String raw : requireNonNull(itemStack.getItemMeta().getLore())) {
+            final Map.Entry<Zenchantment, Integer> ench = getZenchantmentFromString(raw, worldConfiguration);
+            if (ench != null) {
+                map.put(ench.getKey(), ench.getValue());
+            } else {
+                if (outExtraLore != null) {
+                    outExtraLore.add(raw);
+                }
+            }
+        }
+
+        final Map<Zenchantment, Integer> finalMap = new LinkedHashMap<>();
+
+        // What does this part even do exactly?
+        // Can it be removed?
+        for (final String key : new String[] {Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY}) {
+            Zenchantment zenchantment = null;
+
+            // TODO: Replace this with a better way of getting all configured Zenchantments.
+            for (final Zenchantment ench : WorldConfiguration.allEnchants) {
+                if (ench.getKey().getKey().equals(key)) {
+                    zenchantment = ench;
+                    break;
+                }
+            }
+
+            if (map.containsKey(zenchantment)) {
+                finalMap.put(zenchantment, map.get(zenchantment));
+                map.remove(zenchantment);
+            }
+        }
+
+        finalMap.putAll(map);
+
+        return finalMap;
+    }
+
+    @Nullable
+    private static Map.Entry<Zenchantment, Integer> getZenchantmentFromString(
+        final @NotNull String raw,
+        final @NotNull WorldConfiguration config
+    ) {
+        final Matcher matcher = ZENCHANTMENT_LORE_PATTERN.matcher(raw);
+
+        if (!matcher.find()) {
+            return null;
+        }
+
+        final String enchantmentName = ChatColor.stripColor(matcher.group(1));
+        final Zenchantment zenchantment = config.enchantFromString(enchantmentName);
+        if (zenchantment == null) {
+            return null;
+        }
+
+        final int level = matcher.group(2) == null || matcher.group(2).equals("") ? 1 : Utilities.convertNumeralToInt(matcher.group(2));
+
+        return new AbstractMap.SimpleEntry<>(zenchantment, level);
+    }
+
+    public static boolean isDescription(final @NotNull String string) {
+        requireNonNull(string);
+
+        for (final Map.Entry<String, Boolean> entry : Utilities.fromInvisibleString(string).entrySet()) {
+            if (entry.getValue()) {
+                continue;
+            }
+
+            final String[] values = entry.getKey().split("\\.");
+            if (values.length == 3 && values[0].equals("ze") && values[1].equals("desc")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void setZenchantmentForItemStack(
+        final @Nullable ItemStack stack,
+        final @Nullable Zenchantment ench,
+        final int level,
+        final @NotNull WorldConfiguration worldConfiguration
+    ) {
+        requireNonNull(worldConfiguration);
+
+        if (stack == null) {
+            return;
+        }
+
+        final ItemMeta meta = requireNonNull(stack.getItemMeta());
+        final List<String> lore = new LinkedList<>();
+        final List<String> normalLore = new LinkedList<>();
+
+        boolean zenchantment = false;
+
+        if (meta.hasLore()) {
+            for (final String line : requireNonNull(meta.getLore())) {
+                Map.Entry<Zenchantment, Integer> enchEntry = getZenchantmentFromString(line, worldConfiguration);
+                if (enchEntry == null && !Zenchantment.isDescription(line)) {
+                    normalLore.add(line);
+                } else if (enchEntry != null && enchEntry.getKey() != ench) {
+                    zenchantment = true;
+                    lore.add(enchEntry.getKey().getShown(enchEntry.getValue(), worldConfiguration));
+                    lore.addAll(enchEntry.getKey().getDescription(worldConfiguration));
+                }
+            }
+        }
+
+        if (ench != null && level > 0 && level <= ench.maxLevel) {
+            lore.add(ench.getShown(level, worldConfiguration));
+            lore.addAll(ench.getDescription(worldConfiguration));
+            zenchantment = true;
+        }
+
+        lore.addAll(normalLore);
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+
+        if (zenchantment && stack.getType() == BOOK) {
+            stack.setType(ENCHANTED_BOOK);
+        }
+
+        updateEnchantmentGlowForItemStack(stack, zenchantment, worldConfiguration);
+    }
+
+    public static void updateEnchantmentGlowForItemStack(
+        final @NotNull ItemStack stack,
+        final boolean zenchantment,
+        final @NotNull WorldConfiguration worldConfiguration
+    ) {
+        if (!worldConfiguration.enchantGlow()) {
+            return;
+        }
+
+        final ItemMeta itemMeta = requireNonNull(stack.getItemMeta());
+
+        EnchantmentStorageMeta bookMeta = null;
+
+        final boolean book = stack.getType() == BOOK || stack.getType() == ENCHANTED_BOOK;
+
+        boolean containsNormal = false;
+        boolean containsHidden = false;
+        int durabilityLevel = 0;
+        Map<Enchantment, Integer> enchantments;
+
+        if (stack.getType() == ENCHANTED_BOOK) {
+            bookMeta = (EnchantmentStorageMeta) stack.getItemMeta();
+            enchantments = bookMeta.getStoredEnchants();
+        } else {
+            enchantments = itemMeta.getEnchants();
+        }
+
+        for (Map.Entry<Enchantment, Integer> set : enchantments.entrySet()) {
+            if (!(set.getKey().equals(Enchantment.DURABILITY) && (durabilityLevel = set.getValue()) == 0)) {
+                containsNormal = true;
+            } else {
+                containsHidden = true;
+            }
+        }
+
+        if (containsNormal || (!zenchantment && containsHidden)) {
+            if (stack.getType() == ENCHANTED_BOOK) {
+                if (durabilityLevel == 0) {
+                    bookMeta.removeStoredEnchant(Enchantment.DURABILITY);
+                }
+                bookMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+            } else {
+                if (durabilityLevel == 0) {
+                    itemMeta.removeEnchant(Enchantment.DURABILITY);
+                }
+                itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+        } else if (zenchantment) {
+            if (stack.getType() == BOOK) {
+                stack.setType(ENCHANTED_BOOK);
+                bookMeta = (EnchantmentStorageMeta) stack.getItemMeta();
+                bookMeta.addStoredEnchant(Enchantment.DURABILITY, 0, true);
+                bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            } else {
+                itemMeta.addEnchant(Enchantment.DURABILITY, 0, true);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+        }
+
+        stack.setItemMeta(book ? bookMeta : itemMeta);
+    }
+    //endregion
 
     @Override
     @NotNull
@@ -89,383 +364,152 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     //region Enchantment Events
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onBlockInteractInteractable(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteractInteractable(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityKill(@NotNull EntityDeathEvent event, int level, boolean usedHand) {
+    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onBeingHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityDamage(@NotNull EntityDamageEvent event, int level, boolean usedHand) {
+    public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onPlayerFish(@NotNull PlayerFishEvent event, int level, boolean usedHand) {
+    public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onHungerChange(@NotNull FoodLevelChangeEvent event, int level, boolean usedHand) {
+    public boolean onHungerChange(final @NotNull FoodLevelChangeEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onShear(@NotNull PlayerShearEntityEvent event, int level, boolean usedHand) {
+    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onPotionSplash(@NotNull PotionSplashEvent event, int level, boolean usedHand) {
+    public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onProjectileLaunch(@NotNull ProjectileLaunchEvent event, int level, boolean usedHand) {
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onPlayerDeath(@NotNull PlayerDeathEvent event, int level, boolean usedHand) {
+    public boolean onPlayerDeath(final @NotNull PlayerDeathEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onScanHands(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onCombust(@NotNull EntityCombustByEntityEvent event, int level, boolean usedHand) {
+    public boolean onScanHands(final @NotNull Player player, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
         return false;
     }
 
-    public boolean onFastScanHands(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onFastScanHands(final @NotNull Player player, final int level, final boolean usedHand) {
         return false;
     }
     //endregion
 
-    protected final ZenchantmentsPlugin getPlugin() {
-        return this.plugin;
-    }
-
-    public static void applyForTool(Player player, PlayerData playerData, ItemStack tool, BiPredicate<Zenchantment, Integer> action) {
-        Zenchantment.getEnchants(tool, player.getWorld()).forEach((Zenchantment ench, Integer level) -> {
-            if (!ench.used && Utilities.playerCanUseZenchantment(player, playerData, ench.getKey())) {
-                try {
-                    ench.used = true;
-                    if (action.test(ench, level)) {
-                        playerData.setCooldown(ench.getKey(), ench.cooldown);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                ench.used = false;
-            }
-        });
-    }
-
-    // Returns a mapping of custom enchantments and their level on a given tool
-    public static Map<Zenchantment, Integer> getEnchants(
-        ItemStack itemStack,
-        World world,
-        List<String> outExtraLore
-    ) {
-        return Zenchantment.getEnchants(itemStack, false, world, outExtraLore);
-    }
-
-    // Returns a mapping of custom enchantments and their level on a given tool
-    public static Map<Zenchantment, Integer> getEnchants(
-        ItemStack itemStack,
-        boolean acceptBooks,
-        World world
-    ) {
-        return Zenchantment.getEnchants(itemStack, acceptBooks, world, null);
-    }
-
-    // Returns a mapping of custom enchantments and their level on a given tool
-    public static Map<Zenchantment, Integer> getEnchants(ItemStack itemStack, World world) {
-        return Zenchantment.getEnchants(itemStack, false, world, null);
-    }
-
-    public static Map<Zenchantment, Integer> getEnchants(
-        ItemStack itemStack,
-        boolean acceptBooks,
-        World world,
-        List<String> outExtraLore
-    ) {
-        Map<Zenchantment, Integer> map = new LinkedHashMap<>();
-        if (itemStack != null
-            && (acceptBooks || itemStack.getType() != Material.ENCHANTED_BOOK)
-            && itemStack.hasItemMeta()
-            && itemStack.getItemMeta().hasLore()
-        ) {
-            for (String raw : itemStack.getItemMeta().getLore()) {
-                Map.Entry<Zenchantment, Integer> ench = getEnchant(raw, world);
-                if (ench != null) {
-                    map.put(ench.getKey(), ench.getValue());
-                } else {
-                    if (outExtraLore != null) {
-                        outExtraLore.add(raw);
-                    }
-                }
-            }
-        }
-
-        Map<Zenchantment, Integer> finalMap = new LinkedHashMap<>();
-
-        for (String key : new String[] {Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY}) {
-            Zenchantment zenchantment = null;
-
-            for (Zenchantment ench : WorldConfiguration.allEnchants) {
-                if (ench.getKey().getKey().equals(key)) {
-                    zenchantment = ench;
-                    break;
-                }
-            }
-
-            if (map.containsKey(zenchantment)) {
-                finalMap.put(zenchantment, map.get(zenchantment));
-                map.remove(zenchantment);
-            }
-        }
-
-        finalMap.putAll(map);
-
-        return finalMap;
-    }
-
-    // Returns the custom enchantment from the lore name
-    private static Map.Entry<Zenchantment, Integer> getEnchant(String raw, World world) {
-        Matcher matcher = ENCH_LORE_PATTERN.matcher(raw);
-
-        if (!matcher.find()) {
-            return null;
-        }
-
-        String enchantmentName = ChatColor.stripColor(matcher.group(1));
-        int level = matcher.group(2) == null || matcher.group(2).equals("") ? 1 : Utilities.convertNumeralToInt(matcher.group(2));
-
-        Zenchantment zenchantment = WorldConfiguration.get(world).enchantFromString(enchantmentName);
-        if (zenchantment == null) {
-            return null;
-        }
-
-        return new AbstractMap.SimpleEntry<>(zenchantment, level);
-    }
-
-    /**
-     * Determines if the material provided is enchantable with this enchantment.
-     *
-     * @param material
-     *     The material to test.
-     *
-     * @return true iff the material can be enchanted with this enchantment.
-     */
-    // Returns true if the given material (tool) is compatible with the enchantment, otherwise false
-    public boolean validMaterial(Material material) {
-        for (Tool tool : this.enchantable) {
+    public final boolean isValidMaterial(final @NotNull Material material) {
+        for (final Tool tool : this.enchantable) {
             if (tool.contains(material)) {
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * Determines if the stack of material provided is enchantable with this
-     * enchantment.
-     *
-     * @param itemStack
-     *     The stack of material to test.
-     *
-     * @return true iff the stack of material can be enchanted with this
-     * enchantment.
-     */
-    public boolean validMaterial(ItemStack itemStack) {
-        return this.validMaterial(itemStack.getType());
+    public final boolean isValidMaterial(final @NotNull ItemStack itemStack) {
+        return this.isValidMaterial(itemStack.getType());
     }
 
-    public String getShown(int level, World world) {
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        String levelString = Utilities.convertIntToNumeral(level);
-
-        return (this.cursed ? config.getCurseColor() : config.getEnchantmentColor())
+    @NotNull
+    public final String getShown(final int level, final @NotNull WorldConfiguration worldConfiguration) {
+        return (this.cursed ? worldConfiguration.getCurseColor() : worldConfiguration.getEnchantmentColor())
             + this.getName()
-            + (this.maxLevel == 1 ? " " : " " + levelString);
+            + (this.maxLevel == 1 ? " " : " " + Utilities.convertIntToNumeral(level));
     }
 
-    public List<String> getDescription(World world) {
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        List<String> desc = new LinkedList<>();
+    @NotNull
+    public final List<String> getDescription(final @NotNull WorldConfiguration worldConfiguration) {
+        if (!worldConfiguration.descriptionLore()) {
+            return Collections.emptyList();
+        }
 
-        if (config.descriptionLore()) {
-            String start = Utilities.makeStringInvisible("ze.desc." + this.getKey())
-                + config.getDescriptionColor()
-                + ChatColor.ITALIC
-                + " ";
-            StringBuilder builder = new StringBuilder();
-            int i = 0;
+        final List<String> description = new LinkedList<>();
+        final String start = Utilities.makeStringInvisible("ze.desc." + this.getKey())
+            + worldConfiguration.getDescriptionColor()
+            + ChatColor.ITALIC
+            + " ";
 
-            for (char c : this.getDescription().toCharArray()) {
-                if (i < 30) {
-                    i++;
-                    builder.append(c);
+        StringBuilder builder = new StringBuilder();
+        int i = 0;
+
+        for (char c : this.getDescription().toCharArray()) {
+            if (i < 30) {
+                i++;
+                builder.append(c);
+            } else {
+                if (c == ' ') {
+                    description.add(start + builder.toString());
+                    builder = new StringBuilder(" ");
+                    i = 1;
                 } else {
-                    if (c == ' ') {
-                        desc.add(start + builder.toString());
-                        builder = new StringBuilder(" ");
-                        i = 1;
-                    } else {
-                        builder.append(c);
-                    }
-                }
-            }
-
-            if (i != 0) {
-                desc.add(start + builder.toString());
-            }
-        }
-
-        return desc;
-    }
-
-    public static boolean isDescription(String string) {
-        for (Map.Entry<String, Boolean> entry : Utilities.fromInvisibleString(string).entrySet()) {
-            if (entry.getValue()) {
-                continue;
-            }
-
-            String[] values = entry.getKey().split("\\.");
-
-            if (values.length == 3 && values[0].equals("ze") && values[1].equals("desc")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setEnchantment(ItemStack stack, int level, World world) {
-        Zenchantment.setEnchantment(stack, this, level, world);
-    }
-
-    public static void setEnchantment(ItemStack stack, Zenchantment ench, int level, World world) {
-        if (stack == null) {
-            return;
-        }
-        ItemMeta meta = stack.getItemMeta();
-        List<String> lore = new LinkedList<>();
-        List<String> normalLore = new LinkedList<>();
-        boolean isCustomEnchantment = false;
-        if (meta.hasLore()) {
-            for (String loreStr : meta.getLore()) {
-                Map.Entry<Zenchantment, Integer> enchEntry = Zenchantment.getEnchant(loreStr, world);
-                if (enchEntry == null && !Zenchantment.isDescription(loreStr)) {
-                    normalLore.add(loreStr);
-                } else if (enchEntry != null && enchEntry.getKey() != ench) {
-                    isCustomEnchantment = true;
-                    lore.add(enchEntry.getKey().getShown(enchEntry.getValue(), world));
-                    lore.addAll(enchEntry.getKey().getDescription(world));
+                    builder.append(c);
                 }
             }
         }
 
-        if (ench != null && level > 0 && level <= ench.maxLevel) {
-            lore.add(ench.getShown(level, world));
-            lore.addAll(ench.getDescription(world));
-            isCustomEnchantment = true;
+        if (i != 0) {
+            description.add(start + builder.toString());
         }
 
-        lore.addAll(normalLore);
-        meta.setLore(lore);
-        stack.setItemMeta(meta);
-
-        if (isCustomEnchantment && stack.getType() == BOOK) {
-            stack.setType(ENCHANTED_BOOK);
-        }
-
-        Zenchantment.setGlow(stack, isCustomEnchantment, world);
+        return description;
     }
 
-    public static void setGlow(ItemStack stack, boolean isCustomEnchantment, World world) {
-        if (WorldConfiguration.get(world) == null || !WorldConfiguration.get(world).enchantGlow()) {
-            return;
-        }
+    public final void setForItemStack(final @Nullable ItemStack stack, final int level, final @NotNull WorldConfiguration worldConfiguration) {
+        setZenchantmentForItemStack(stack, this, level, worldConfiguration);
+    }
 
-        ItemMeta itemMeta = stack.getItemMeta();
-        EnchantmentStorageMeta bookMeta = null;
-
-        boolean isBook = stack.getType() == BOOK || stack.getType() == ENCHANTED_BOOK;
-
-        boolean containsNormal = false;
-        boolean containsHidden = false;
-        int durabilityLevel = 0;
-        Map<Enchantment, Integer> enchantments;
-
-        if (stack.getType() == ENCHANTED_BOOK) {
-            bookMeta = (EnchantmentStorageMeta) stack.getItemMeta();
-            enchantments = bookMeta.getStoredEnchants();
-        } else {
-            enchantments = itemMeta.getEnchants();
-        }
-
-        for (Map.Entry<Enchantment, Integer> set : enchantments.entrySet()) {
-            if (!(set.getKey().equals(Enchantment.DURABILITY) && (durabilityLevel = set.getValue()) == 0)) {
-                containsNormal = true;
-            } else {
-                containsHidden = true;
-            }
-        }
-        if (containsNormal || (!isCustomEnchantment && containsHidden)) {
-            if (stack.getType() == ENCHANTED_BOOK) {
-                if (durabilityLevel == 0) {
-                    bookMeta.removeStoredEnchant(Enchantment.DURABILITY);
-                }
-                bookMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-            } else {
-                if (durabilityLevel == 0) {
-                    itemMeta.removeEnchant(Enchantment.DURABILITY);
-                }
-                itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-            }
-        } else if (isCustomEnchantment) {
-            if (stack.getType() == BOOK) {
-                stack.setType(ENCHANTED_BOOK);
-                bookMeta = (EnchantmentStorageMeta) stack.getItemMeta();
-                bookMeta.addStoredEnchant(Enchantment.DURABILITY, 0, true);
-                bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            } else {
-                itemMeta.addEnchant(Enchantment.DURABILITY, 0, true);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            }
-        }
-
-        stack.setItemMeta(isBook ? bookMeta : itemMeta);
+    @NotNull
+    protected final ZenchantmentsPlugin getPlugin() {
+        return this.plugin;
     }
 
     @FunctionalInterface
@@ -473,12 +517,12 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         @NotNull
         @Contract(value = "_, _, _, _, _, _ -> new", pure = true)
         T construct(
-            @NotNull ZenchantmentsPlugin plugin,
-            @NotNull Set<Tool> enchantable,
-            int maxLevel,
-            int cooldown,
-            double power,
-            float probability
+            final @NotNull ZenchantmentsPlugin plugin,
+            final @NotNull Set<Tool> enchantable,
+            final int maxLevel,
+            final int cooldown,
+            final double power,
+            final float probability
         );
     }
 }
