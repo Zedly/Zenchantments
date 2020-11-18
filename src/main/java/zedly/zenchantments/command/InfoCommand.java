@@ -52,7 +52,7 @@ public class InfoCommand extends ZenchantmentsCommand {
             return;
         }
 
-        Set<Zenchantment> zenchantments = Zenchantment.getEnchants(
+        Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             player.getInventory().getItemInMainHand(),
             true,
             world

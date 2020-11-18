@@ -51,8 +51,8 @@ public class GrindstoneMergeListener implements Listener {
             return;
         }
 
-        for (Zenchantment enchantment : Zenchantment.getEnchants(itemStack, world).keySet()) {
-            Zenchantment.setEnchantment(itemStack, enchantment, 0, world);
+        for (Zenchantment enchantment : Zenchantment.getZenchantmentsOnItemStack(itemStack, world).keySet()) {
+            Zenchantment.setZenchantmentForItemStack(itemStack, enchantment, 0, world);
         }
 
         inventory.setItem(2, itemStack);

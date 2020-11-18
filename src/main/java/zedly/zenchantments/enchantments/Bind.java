@@ -78,7 +78,7 @@ public final class Bind extends Zenchantment {
         final List<ItemStack> removed = new ArrayList<>();
 
         for (int i = 0; i < contents.length; i++) {
-            if (!Zenchantment.getEnchants(contents[i], player.getWorld()).containsKey(this)) {
+            if (!Zenchantment.getZenchantmentsOnItemStack(contents[i], player.getWorld()).containsKey(this)) {
                 contents[i] = null;
             } else {
                 removed.add(contents[i]);

@@ -38,7 +38,7 @@ public class ListCommand extends ZenchantmentsCommand {
             .getConfigurationForWorld(player.getWorld())
             .getEnchants()
             .stream()
-            .filter(zenchantment -> zenchantment.validMaterial(player.getInventory().getItemInMainHand()))
+            .filter(zenchantment -> zenchantment.isValidMaterial(player.getInventory().getItemInMainHand()))
             .sorted(Comparator.comparing(Zenchantment::getName))
             .forEachOrdered(zenchantment -> player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + zenchantment.getName()));
     }

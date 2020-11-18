@@ -102,7 +102,7 @@ public class GiveCommand extends ZenchantmentsCommand {
             Enchantment enchantment = Enchantment.getByName(enchantName);
 
             if (zenchantment != null) {
-                if (zenchantment.validMaterial(material) || material == Material.ENCHANTED_BOOK) {
+                if (zenchantment.isValidMaterial(material) || material == Material.ENCHANTED_BOOK) {
                     zenchantmentsToAdd.put(zenchantment, level);
                 } else {
                     sender.sendMessage(
@@ -149,7 +149,7 @@ public class GiveCommand extends ZenchantmentsCommand {
         );
 
         for (Map.Entry<Zenchantment, Integer> zenchantment : zenchantmentsToAdd.entrySet()) {
-            zenchantment.getKey().setEnchantment(itemStack, zenchantment.getValue(), world);
+            zenchantment.getKey().setForItemStack(itemStack, zenchantment.getValue(), world);
             message.append(ChatColor.stripColor(zenchantment.getKey().getName())).append(", ");
         }
 

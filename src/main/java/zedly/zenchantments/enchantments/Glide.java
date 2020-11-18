@@ -126,7 +126,7 @@ public final class Glide extends Zenchantment {
                     continue;
                 }
 
-                Map<Zenchantment, Integer> map = Zenchantment.getEnchants(armour[i], player.getWorld());
+                Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(armour[i], player.getWorld());
 
                 if (map.containsKey(this)) {
                     Utilities.addUnbreaking(player, armour[i], 1);

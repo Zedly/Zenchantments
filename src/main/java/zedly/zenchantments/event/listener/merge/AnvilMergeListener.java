@@ -120,13 +120,13 @@ public class AnvilMergeListener implements Listener {
         }
 
         List<String> normalLeftLore = new ArrayList<>();
-        Map<Zenchantment, Integer> leftEnchantments = Zenchantment.getEnchants(
+        Map<Zenchantment, Integer> leftEnchantments = Zenchantment.getZenchantmentsOnItemStack(
             leftItem,
             true,
             world,
             normalLeftLore
         );
-        Map<Zenchantment, Integer> rightEnchantments = Zenchantment.getEnchants(
+        Map<Zenchantment, Integer> rightEnchantments = Zenchantment.getZenchantmentsOnItemStack(
             rightItem,
             true,
             world
@@ -178,7 +178,7 @@ public class AnvilMergeListener implements Listener {
         newOutItem.setItemMeta(meta);
 
         for (Entry<Zenchantment, Integer> enchantEntry : outEnchantments.entrySet()) {
-            enchantEntry.getKey().setEnchantment(newOutItem, enchantEntry.getValue(), world);
+            enchantEntry.getKey().setForItemStack(newOutItem, enchantEntry.getValue(), world);
         }
 
         ItemMeta newOutMeta = newOutItem.getItemMeta();
@@ -201,7 +201,7 @@ public class AnvilMergeListener implements Listener {
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
 
-        Zenchantment.setGlow(newOutItem, !outEnchantments.isEmpty(), world);
+        Zenchantment.updateEnchantmentGlowForItemStack(newOutItem, !outEnchantments.isEmpty(), world);
 
         return newOutItem;
     }
@@ -232,7 +232,7 @@ public class AnvilMergeListener implements Listener {
         private void addEnchant(@NotNull Entry<Zenchantment, Integer> enchantEntry) {
             Zenchantment ench = enchantEntry.getKey();
 
-            if (this.itemStack.getType() != ENCHANTED_BOOK && !ench.validMaterial(this.itemStack)) {
+            if (this.itemStack.getType() != ENCHANTED_BOOK && !ench.isValidMaterial(this.itemStack)) {
                 return;
             }
 

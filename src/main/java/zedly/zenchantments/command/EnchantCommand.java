@@ -79,7 +79,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         }
 
         // Check if the item can be enchanted
-        if (!enchantment.validMaterial(itemStack)
+        if (!enchantment.isValidMaterial(itemStack)
             && itemStack.getType() != BOOK
             && itemStack.getType() != ENCHANTED_BOOK
         ) {
@@ -102,7 +102,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             level = 1;
         }
 
-        enchantment.setEnchantment(itemStack, level, world);
+        enchantment.setForItemStack(itemStack, level, world);
 
         if (level != 0) {
             player.sendMessage(

@@ -88,7 +88,7 @@ public final class Ethereal extends Zenchantment {
                 continue;
             }
 
-            if (Zenchantment.getEnchants(stack, player.getWorld()).containsKey(this)) {
+            if (Zenchantment.getZenchantmentsOnItemStack(stack, player.getWorld()).containsKey(this)) {
                 Utilities.setItemStackDamage(stack, 0);
             }
         }
