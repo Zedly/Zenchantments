@@ -38,6 +38,7 @@ import zedly.zenchantments.enchantments.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
@@ -45,25 +46,26 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 public class GeneralListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
-    public GeneralListener(@NotNull ZenchantmentsPlugin plugin) {
+    public GeneralListener(final @NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onBlockDispense(@NotNull BlockDispenseEvent event) {
-        World world = event.getBlock().getWorld();
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-
+    public void onBlockDispense(final @NotNull BlockDispenseEvent event) {
         if (event.getBlock().getType() != DISPENSER) {
             return;
         }
 
-        ItemStack item = event.getItem();
+        final World world = event.getBlock().getWorld();
+        final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final ItemStack item = event.getItem();
+
         Laser laser = null;
 
-        for (Zenchantment enchantment : config.getEnchants()) {
-            if (enchantment.getClass().equals(Laser.class)) {
+        for (final Zenchantment enchantment : config.getEnchants()) {
+            if (enchantment.getClass() == Laser.class) {
                 laser = (Laser) enchantment;
+                break;
             }
         }
 
@@ -71,79 +73,83 @@ public class GeneralListener implements Listener {
             return;
         }
 
-        if (!Zenchantment.getEnchants(item, world).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
+        final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+
+        if (!Zenchantment.getZenchantmentsOnItemStack(item, worldConfiguration).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
             return;
         }
 
         event.setCancelled(true);
 
-        int level = Zenchantment.getEnchants(item, world).get(laser);
-        int range = 6 + (int) Math.round(level * laser.getPower() * 3);
+        final int level = Zenchantment.getZenchantmentsOnItemStack(item, worldConfiguration).get(laser);
+        final int range = 6 + (int) Math.round(level * laser.getPower() * 3);
 
-        Block block = event.getBlock();
-        Block relativeBlock = block.getRelative(((Directional) block.getState().getData()).getFacing(), range);
+        final Block block = event.getBlock();
+        final Block relativeBlock = block.getRelative(((Directional) block.getState().getData()).getFacing(), range);
 
-        Location play = Utilities.getCenter(block);
-        Location target = Utilities.getCenter(relativeBlock);
+        final Location play = Utilities.getCenter(block);
+        final Location target = Utilities.getCenter(relativeBlock);
 
         play.setY(play.getY() - 0.5);
         target.setY(target.getY() + 0.5);
         play.setY(play.getY() + 1.1);
 
-        double d = target.distance(play);
+        final double distance = target.distance(play);
 
-        for (int i = 0; i < (int) d * 10; i++) {
-            Location location = target.clone();
-            location.setX(play.getX() + (i * ((target.getX() - play.getX()) / (d * 10))));
-            location.setY(play.getY() + (i * ((target.getY() - play.getY()) / (d * 10))));
-            location.setZ(play.getZ() + (i * ((target.getZ() - play.getZ()) / (d * 10))));
-            location.getWorld().spawnParticle(Particle.REDSTONE, location, 1, new Particle.DustOptions(Color.RED, 0.75f));
+        for (int i = 0; i < (int) distance * 10; i++) {
+            final Location location = target.clone();
+            location.setX(play.getX() + (i * ((target.getX() - play.getX()) / (distance * 10))));
+            location.setY(play.getY() + (i * ((target.getY() - play.getY()) / (distance * 10))));
+            location.setZ(play.getZ() + (i * ((target.getZ() - play.getZ()) / (distance * 10))));
+            requireNonNull(location.getWorld()).spawnParticle(Particle.REDSTONE, location, 1, new Particle.DustOptions(Color.RED, 0.75f));
 
-            for (Entity entity : play.getWorld().getEntities()) {
-                if (entity.getLocation().distance(location) < 0.75 && entity instanceof LivingEntity) {
-                    int damageAmount = 1 + (level * 2);
-                    EntityDamageEvent damageEvent = new EntityDamageEvent(entity, DamageCause.FIRE, damageAmount);
-                    this.plugin.getServer().getPluginManager().callEvent(damageEvent);
-                    entity.setLastDamageCause(damageEvent);
+            for (final Entity entity : requireNonNull(play.getWorld()).getEntities()) {
+                if (entity.getLocation().distance(location) >= 0.75 || !(entity instanceof LivingEntity)) {
+                    continue;
+                }
 
-                    if (!event.isCancelled()) {
-                        ((LivingEntity) entity).damage(damageAmount);
-                    }
+                final int damageAmount = 1 + (level * 2);
+                final EntityDamageEvent damageEvent = new EntityDamageEvent(entity, DamageCause.FIRE, damageAmount);
+                this.plugin.getServer().getPluginManager().callEvent(damageEvent);
+                entity.setLastDamageCause(damageEvent);
+
+                if (!event.isCancelled()) {
+                    ((LivingEntity) entity).damage(damageAmount);
                 }
             }
         }
     }
 
     @EventHandler
-    public void onEntityChangeBlock(@NotNull EntityChangeBlockEvent event) {
+    public void onEntityChangeBlock(final @NotNull EntityChangeBlockEvent event) {
         if (!(event.getEntity() instanceof FallingBlock)) {
             return;
         }
 
-        FallingBlock entity = (FallingBlock) event.getEntity();
+        final FallingBlock entity = (FallingBlock) event.getEntity();
         if (Anthropomorphism.IDLE_BLOCKS.containsKey(entity) || Anthropomorphism.ATTACK_BLOCKS.containsKey(entity)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onEntityFall(@NotNull EntityDamageEvent event) {
+    public void onEntityFall(final @NotNull EntityDamageEvent event) {
         if (event.getCause() == DamageCause.FALL && RainbowSlam.RAINBOW_SLAM_ENTITIES.contains(event.getEntity())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onItemSpawn(@NotNull ItemSpawnEvent event) {
+    public void onItemSpawn(final @NotNull ItemSpawnEvent event) {
         if (Fire.CANCELLED_ITEM_DROPS.contains(event.getLocation().getBlock())) {
             event.setCancelled(true);
             return;
         }
 
-        Location location = event.getEntity().getLocation();
+        final Location location = event.getEntity().getLocation();
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-            for (Block block : Grab.GRAB_LOCATIONS.keySet()) {
+            for (final Block block : Grab.GRAB_LOCATIONS.keySet()) {
                 if (block.getLocation().getBlockX() != location.getBlockX()
                     || block.getLocation().getBlockY() != location.getBlockY()
                     || block.getLocation().getBlockZ() != location.getBlockZ()
@@ -154,7 +160,7 @@ public class GeneralListener implements Listener {
                 event.getEntity().teleport(Grab.GRAB_LOCATIONS.get(block));
                 event.getEntity().setPickupDelay(0);
 
-                for (Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
+                for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
                         Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
@@ -162,7 +168,7 @@ public class GeneralListener implements Listener {
                 }
             }
 
-            for (Block block : Vortex.VORTEX_LOCATIONS.keySet()) {
+            for (final Block block : Vortex.VORTEX_LOCATIONS.keySet()) {
                 if (!block.getLocation().getWorld().equals(location.getWorld())) {
                     continue;
                 }
@@ -174,10 +180,10 @@ public class GeneralListener implements Listener {
                 event.getEntity().teleport(Vortex.VORTEX_LOCATIONS.get(block));
                 event.getEntity().setPickupDelay(0);
 
-                for (Entity e : event.getEntity().getNearbyEntities(1, 1, 1)) {
-                    if (e instanceof ExperienceOrb) {
-                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) e).getExperience());
-                        e.remove();
+                for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
+                    if (entity instanceof ExperienceOrb) {
+                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                        entity.remove();
                     }
                 }
             }
@@ -185,22 +191,22 @@ public class GeneralListener implements Listener {
     }
 
     @EventHandler
-    public void onIceOrLavaBreak(@NotNull BlockBreakEvent event) {
-        Location location = event.getBlock().getLocation();
+    public void onIceOrLavaBreak(final @NotNull BlockBreakEvent event) {
+        final Location location = event.getBlock().getLocation();
         if (FrozenStep.FROZEN_LOCATIONS.containsKey(location) || NetherStep.NETHERSTEP_LOCATIONS.containsKey(location)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onOreUncover(@NotNull BlockBreakEvent event) {
-        for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
+    public void onOreUncover(final @NotNull BlockBreakEvent event) {
+        for (final BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
             if (!Reveal.GLOWING_BLOCKS.containsKey(event.getBlock().getRelative(face))) {
                 continue;
             }
 
-            int entityId = 2000000000 + (event.getBlock().getRelative(face).hashCode()) % 10000000;
-            for (Player player : this.plugin.getServer().getOnlinePlayers()) {
+            final int entityId = 2000000000 + event.getBlock().getRelative(face).hashCode() % 10000000;
+            for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
                 if (player.getWorld().equals(event.getBlock().getWorld())) {
                     Storage.COMPATIBILITY_ADAPTER.hideShulker(entityId, player);
                 }
@@ -211,27 +217,30 @@ public class GeneralListener implements Listener {
     }
 
     @EventHandler
-    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
+    public void onCommand(final @NotNull PlayerCommandPreprocessEvent event) {
         if (!event.getMessage().startsWith("/enchant ")) {
             return;
         }
 
-        Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
-        boolean customEnch = !Zenchantment.getEnchants(
+        final Player player = event.getPlayer();
+        final PlayerInventory inventory = player.getInventory();
+        final WorldConfiguration worldConfiguration = this.plugin
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(player.getWorld());
+        final boolean zenchantment = !Zenchantment.getZenchantmentsOnItemStack(
             inventory.getItemInMainHand(),
-            player.getWorld()
+            worldConfiguration
         ).isEmpty();
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(
             this.plugin,
-            () -> Zenchantment.setGlow(inventory.getItemInMainHand(), customEnch, player.getWorld()),
+            () -> Zenchantment.updateEnchantmentGlowForItemStack(inventory.getItemInMainHand(), zenchantment, worldConfiguration),
             0
         );
     }
 
     @EventHandler
-    public void onEnchantItem(@NotNull EnchantItemEvent event) {
+    public void onEnchantItem(final @NotNull EnchantItemEvent event) {
         if (!event.getEnchanter().hasPermission("zenchantments.enchant.get")) {
             return;
         }
@@ -240,20 +249,20 @@ public class GeneralListener implements Listener {
             return;
         }
 
-        ItemStack item = event.getItem();
-        World world = event.getEnchantBlock().getWorld();
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        Map<Zenchantment, Integer> existingEnchants = Zenchantment.getEnchants(item, world);
-        Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
+        final ItemStack item = event.getItem();
+        final World world = event.getEnchantBlock().getWorld();
+        final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final Map<Zenchantment, Integer> existingEnchants = Zenchantment.getZenchantmentsOnItemStack(item, config);
+        final Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
 
         for (int i = 1; i <= config.getMaxEnchants() - existingEnchants.size(); i++) {
             float totalChance = 0;
-            List<Zenchantment> mainPool = new ArrayList<>(config.getEnchants());
-            Set<Zenchantment> validPool = new HashSet<>();
+            final List<Zenchantment> mainPool = new ArrayList<>(config.getEnchants());
+            final Set<Zenchantment> validPool = new HashSet<>();
 
             Collections.shuffle(mainPool);
 
-            for (Zenchantment enchantment : mainPool) {
+            for (final Zenchantment enchantment : mainPool) {
                 boolean conflicts = false;
                 for (Zenchantment addedEnchant : addedEnchants.keySet()) {
                     if (enchantment.getConflicting().contains(addedEnchant.getClass())
@@ -265,36 +274,34 @@ public class GeneralListener implements Listener {
                     }
                 }
 
-                if (!conflicts
-                    && (event.getItem().getType() == BOOK || enchantment.validMaterial(item.getType()))
-                ) {
+                if (!conflicts && (event.getItem().getType() == BOOK || enchantment.isValidMaterial(item.getType()))) {
                     validPool.add(enchantment);
                     totalChance += enchantment.getProbability();
                 }
             }
 
-            double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), i);
             float running = 0;
+            final double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), i);
             for (Zenchantment zenchantment : validPool) {
                 running += zenchantment.getProbability();
                 if (running > decision) {
-                    int level = Utilities.getEnchantmentLevel(zenchantment.getMaxLevel(), event.getExpLevelCost());
+                    final int level = Utilities.getEnchantmentLevel(zenchantment.getMaxLevel(), event.getExpLevelCost());
                     addedEnchants.put(zenchantment, level);
                     break;
                 }
             }
         }
 
-        for (Map.Entry<Zenchantment, Integer> entry : addedEnchants.entrySet()) {
-            entry.getKey().setEnchantment(item, entry.getValue(), world);
+        for (final Map.Entry<Zenchantment, Integer> entry : addedEnchants.entrySet()) {
+            entry.getKey().setForItemStack(item, entry.getValue(), config);
         }
 
         if (event.getItem().getType() == ENCHANTED_BOOK) {
-            List<String> finalLore = item.getItemMeta().getLore();
-            Inventory inventory = event.getInventory();
+            final List<String> finalLore = item.getItemMeta().getLore();
+            final Inventory inventory = event.getInventory();
             this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                ItemStack book = inventory.getItem(0);
-                ItemMeta bookMeta = book.getItemMeta();
+                final ItemStack book = inventory.getItem(0);
+                final ItemMeta bookMeta = book.getItemMeta();
                 bookMeta.setLore(finalLore);
                 book.setItemMeta(bookMeta);
                 inventory.setItem(0, book);
@@ -303,18 +310,18 @@ public class GeneralListener implements Listener {
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(
             this.plugin,
-            () -> Zenchantment.setGlow(item, !addedEnchants.isEmpty(), world),
+            () -> Zenchantment.updateEnchantmentGlowForItemStack(item, !addedEnchants.isEmpty(), config),
             0
         );
     }
 
     @EventHandler
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
         if (event.getSlotType() != SlotType.ARMOR) {
             return;
         }
 
-        ItemStack item = event.getCurrentItem();
+        final ItemStack item = event.getCurrentItem();
 
         if (item == null) {
             return;
@@ -328,24 +335,25 @@ public class GeneralListener implements Listener {
             return;
         }
 
-        Player player = (Player) event.getWhoClicked();
-        for (Zenchantment enchantment : Zenchantment.getEnchants(event.getCurrentItem(), player.getWorld()).keySet()) {
-            if (enchantment.getClass().equals(Jump.class) || enchantment.getClass().equals(Meador.class)) {
+        final Player player = (Player) event.getWhoClicked();
+        final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld());
+        for (final Zenchantment enchantment : Zenchantment.getZenchantmentsOnItemStack(event.getCurrentItem(), config).keySet()) {
+            if (enchantment.getClass() == Jump.class || enchantment.getClass() == Meador.class) {
                 player.removePotionEffect(PotionEffectType.JUMP);
             }
 
-            if (enchantment.getClass().equals(NightVision.class)) {
+            if (enchantment.getClass() == NightVision.class) {
                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
             }
 
-            if (enchantment.getClass().equals(Weight.class)) {
+            if (enchantment.getClass() == Weight.class) {
                 player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
             }
         }
     }
 
     @EventHandler
-    public void onEat(@NotNull PlayerInteractEvent event) {
+    public void onEat(final @NotNull PlayerInteractEvent event) {
         if (event.getPlayer().getInventory().getItemInMainHand().getType().isEdible()
             && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)
             && Toxic.HUNGER_PLAYERS.containsKey(event.getPlayer())
@@ -355,8 +363,8 @@ public class GeneralListener implements Listener {
     }
 
     @EventHandler
-    public void onArrowPickup(@NotNull PlayerPickupArrowEvent event) {
-        Item item = event.getItem();
+    public void onArrowPickup(final @NotNull PlayerPickupArrowEvent event) {
+        final Item item = event.getItem();
         if (item.hasMetadata("ze.arrow")) {
             item.remove();
             event.setCancelled(true);
