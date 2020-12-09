@@ -88,15 +88,15 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         );
 
         for (final Map.Entry<Zenchantment, Integer> entry : zenchantments.entrySet()) {
-            final Zenchantment ench = entry.getKey();
+            final Zenchantment zenchantment = entry.getKey();
             final Integer level = entry.getValue(); // Use Integer to prevent unboxing and then re-boxing.
             final PlayerData playerData = playerDataProvider.getDataForPlayer(player);
 
-            if (!ench.used && Utilities.playerCanUseZenchantment(player, playerData, ench.getKey())) {
+            if (!zenchantment.used && Utilities.playerCanUseZenchantment(player, playerData, zenchantment.getKey())) {
                 try {
-                    ench.used = true;
-                    if (action.test(ench, level)) {
-                        playerData.setCooldown(ench.getKey(), ench.cooldown);
+                    zenchantment.used = true;
+                    if (action.test(zenchantment, level)) {
+                        playerData.setCooldown(zenchantment.getKey(), zenchantment.cooldown);
                     }
                 } catch (Exception ex) {
                     // This is absolutely terrible.
@@ -104,7 +104,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
                     ex.printStackTrace();
                 }
 
-                ench.used = false;
+                zenchantment.used = false;
             }
         }
     }
@@ -152,9 +152,9 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         }
 
         for (String raw : requireNonNull(itemStack.getItemMeta().getLore())) {
-            final Map.Entry<Zenchantment, Integer> ench = getZenchantmentFromString(raw, worldConfiguration);
-            if (ench != null) {
-                map.put(ench.getKey(), ench.getValue());
+            final Map.Entry<Zenchantment, Integer> zenchantment = getZenchantmentFromString(raw, worldConfiguration);
+            if (zenchantment != null) {
+                map.put(zenchantment.getKey(), zenchantment.getValue());
             } else {
                 if (outExtraLore != null) {
                     outExtraLore.add(raw);
@@ -166,7 +166,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         // What does this part even do exactly?
         // Can it be removed?
-        for (final String key : new String[] {Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY}) {
+        for (final String key : new String[] { Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY }) {
             Zenchantment zenchantment = null;
 
             // TODO: Replace this with a better way of getting all configured Zenchantments.
@@ -200,7 +200,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         }
 
         final String enchantmentName = ChatColor.stripColor(matcher.group(1));
-        final Zenchantment zenchantment = config.enchantFromString(enchantmentName);
+        final Zenchantment zenchantment = config.getZenchantmentFromName(enchantmentName);
         if (zenchantment == null) {
             return null;
         }
@@ -228,7 +228,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     public static void setZenchantmentForItemStack(
         final @Nullable ItemStack stack,
-        final @Nullable Zenchantment ench,
+        final @Nullable Zenchantment zenchantment,
         final int level,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
@@ -242,36 +242,36 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         final List<String> lore = new LinkedList<>();
         final List<String> normalLore = new LinkedList<>();
 
-        boolean zenchantment = false;
+        boolean isZenchantment = false;
 
         if (meta.hasLore()) {
             for (final String line : requireNonNull(meta.getLore())) {
-                Map.Entry<Zenchantment, Integer> enchEntry = getZenchantmentFromString(line, worldConfiguration);
-                if (enchEntry == null && !Zenchantment.isDescription(line)) {
+                Map.Entry<Zenchantment, Integer> zenchantmentEntry = getZenchantmentFromString(line, worldConfiguration);
+                if (zenchantmentEntry == null && !Zenchantment.isDescription(line)) {
                     normalLore.add(line);
-                } else if (enchEntry != null && enchEntry.getKey() != ench) {
-                    zenchantment = true;
-                    lore.add(enchEntry.getKey().getShown(enchEntry.getValue(), worldConfiguration));
-                    lore.addAll(enchEntry.getKey().getDescription(worldConfiguration));
+                } else if (zenchantmentEntry != null && zenchantmentEntry.getKey() != zenchantment) {
+                    isZenchantment = true;
+                    lore.add(zenchantmentEntry.getKey().getShown(zenchantmentEntry.getValue(), worldConfiguration));
+                    lore.addAll(zenchantmentEntry.getKey().getDescription(worldConfiguration));
                 }
             }
         }
 
-        if (ench != null && level > 0 && level <= ench.maxLevel) {
-            lore.add(ench.getShown(level, worldConfiguration));
-            lore.addAll(ench.getDescription(worldConfiguration));
-            zenchantment = true;
+        if (zenchantment != null && level > 0 && level <= zenchantment.maxLevel) {
+            lore.add(zenchantment.getShown(level, worldConfiguration));
+            lore.addAll(zenchantment.getDescription(worldConfiguration));
+            isZenchantment = true;
         }
 
         lore.addAll(normalLore);
         meta.setLore(lore);
         stack.setItemMeta(meta);
 
-        if (zenchantment && stack.getType() == BOOK) {
+        if (isZenchantment && stack.getType() == BOOK) {
             stack.setType(ENCHANTED_BOOK);
         }
 
-        updateEnchantmentGlowForItemStack(stack, zenchantment, worldConfiguration);
+        updateEnchantmentGlowForItemStack(stack, isZenchantment, worldConfiguration);
     }
 
     public static void updateEnchantmentGlowForItemStack(
@@ -279,7 +279,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         final boolean zenchantment,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
-        if (!worldConfiguration.enchantGlow()) {
+        if (!worldConfiguration.isZenchantmentGlowEnabled()) {
             return;
         }
 
@@ -468,7 +468,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     @NotNull
     public final List<String> getDescription(final @NotNull WorldConfiguration worldConfiguration) {
-        if (!worldConfiguration.descriptionLore()) {
+        if (!worldConfiguration.isDescriptionLoreEnabled()) {
             return Collections.emptyList();
         }
 
