@@ -98,7 +98,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                 level = Math.max(1, scanner.nextInt());
             }
 
-            Zenchantment zenchantment = config.enchantFromString(enchantName);
+            Zenchantment zenchantment = config.getZenchantmentFromName(enchantName);
             Enchantment enchantment = Enchantment.getByName(enchantName);
 
             if (zenchantment != null) {

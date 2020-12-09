@@ -46,7 +46,7 @@ public class EnableCommand extends ZenchantmentsCommand {
         Zenchantment zenchantment = this.plugin
             .getWorldConfigurationProvider()
             .getConfigurationForWorld(player.getWorld())
-            .enchantFromString(args[0]);
+            .getZenchantmentFromName(args[0]);
 
         if (zenchantment != null) {
             playerData.enableZenchantment(zenchantment.getKey());

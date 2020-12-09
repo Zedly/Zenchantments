@@ -39,7 +39,7 @@ public class InfoCommand extends ZenchantmentsCommand {
         PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
 
         if (args.length > 0) {
-            Zenchantment zenchantment = config.enchantFromString(args[0]);
+            Zenchantment zenchantment = config.getZenchantmentFromName(args[0]);
             if (zenchantment != null) {
                 player.sendMessage(
                     ZenchantmentsCommand.MESSAGE_PREFIX

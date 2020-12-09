@@ -53,13 +53,13 @@ public final class ApocalypseArrow extends ZenchantedArrow {
 
                         TNTPrimed prime = (TNTPrimed) this.getArrow().getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
                         prime.setFuseTicks(200);
-                        prime.setYield(config.explosionBlockBreak() ? 4 : 0);
+                        prime.setYield(config.isExplosionBlockBreakEnabled() ? 4 : 0);
 
                         Blaze blaze = (Blaze) this.getArrow().getWorld().spawnEntity(location, BLAZE);
                         blaze.addPotionEffect(new PotionEffect(ABSORPTION, 150, 100000));
                         blaze.addPotionEffect(new PotionEffect(HARM, 10000, 1));
 
-                        if (config.explosionBlockBreak()) {
+                        if (config.isExplosionBlockBreakEnabled()) {
                             Entity crystal = this.getArrow().getWorld().spawnEntity(location, EntityType.ENDER_CRYSTAL);
                             entity.addPassenger(prime);
                             crystal.addPassenger(blaze);

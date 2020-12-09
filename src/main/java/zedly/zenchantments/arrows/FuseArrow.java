@@ -72,7 +72,7 @@ public final class FuseArrow extends ZenchantedArrow {
                 this.getPlugin()
                     .getWorldConfigurationProvider()
                     .getConfigurationForWorld(event.getDamager().getWorld())
-                    .explosionBlockBreak()
+                    .isExplosionBlockBreakEnabled()
             );
         } else if (event.getEntity().getType() == EntityType.MUSHROOM_COW) {
             MushroomCow mooshroom = (MushroomCow) event.getEntity();

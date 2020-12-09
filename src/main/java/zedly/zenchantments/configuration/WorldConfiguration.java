@@ -2,101 +2,115 @@ package zedly.zenchantments.configuration;
 
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment;
 
 import java.util.*;
 
 public class WorldConfiguration implements zedly.zenchantments.api.configuration.WorldConfiguration {
-    private final Set<Zenchantment>                worldEnchants;
+    private final Set<Zenchantment>                zenchantments;
     private final Map<String, Zenchantment>        nameToEnch;
     private final Map<NamespacedKey, Zenchantment> keyToEnch;
-    private final double                           enchantRarity;
-    private final int                              maxEnchants;
-    private final int                              shredDrops;
-    private final boolean                          explosionBlockBreak;
-    private final boolean                          descriptionLore;
+    private final double                           zenchantmentRarity;
+    private final int                              maxZenchantments;
+    private final int                              shredDropsEnabled;
+    private final boolean                          explosionBlockBreakEnabled;
+    private final boolean                          descriptionLoreEnabled;
     private final ChatColor                        descriptionColor;
-    private final boolean                          enchantGlow;
+    private final boolean                          zenchantmentGlowEnabled;
     private final ChatColor                        enchantmentColor;
     private final ChatColor                        curseColor;
 
     public WorldConfiguration(
-        Set<Zenchantment> worldEnchants,
-        double enchantRarity,
-        int maxEnchants,
-        int shredDrops,
-        boolean explosionBlockBreak,
-        boolean descriptionLore,
-        ChatColor descriptionColor,
-        ChatColor enchantmentColor,
-        ChatColor curseColor,
-        boolean enchantGlow
+        final @NotNull Set<Zenchantment> zenchantments,
+        final double zenchantmentRarity,
+        final int maxZenchantments,
+        final int shredDropsEnabled,
+        final boolean explosionBlockBreakEnabled,
+        final boolean descriptionLoreEnabled,
+        final boolean zenchantmentGlowEnabled,
+        final @NotNull ChatColor descriptionColor,
+        final @NotNull ChatColor enchantmentColor,
+        final @NotNull ChatColor curseColor
     ) {
-        this.worldEnchants = worldEnchants;
-        this.enchantRarity = enchantRarity;
-        this.maxEnchants = maxEnchants;
-        this.shredDrops = shredDrops;
-        this.explosionBlockBreak = explosionBlockBreak;
-        this.descriptionLore = descriptionLore;
+        this.zenchantments = zenchantments;
+        this.zenchantmentRarity = zenchantmentRarity;
+        this.maxZenchantments = maxZenchantments;
+        this.shredDropsEnabled = shredDropsEnabled;
+        this.explosionBlockBreakEnabled = explosionBlockBreakEnabled;
+        this.descriptionLoreEnabled = descriptionLoreEnabled;
+        this.zenchantmentGlowEnabled = zenchantmentGlowEnabled;
         this.descriptionColor = descriptionColor;
+        this.enchantmentColor = enchantmentColor;
+        this.curseColor = curseColor;
 
         this.nameToEnch = new HashMap<>();
-        for (Zenchantment ench : this.worldEnchants) {
-            nameToEnch.put(ChatColor.stripColor(ench.getName().toLowerCase().replace(" ", "")), ench);
+        for (Zenchantment ench : this.zenchantments) {
+            this.nameToEnch.put(ChatColor.stripColor(ench.getName().toLowerCase().replace(" ", "")), ench);
         }
 
         this.keyToEnch = new HashMap<>();
-        for (Zenchantment ench : this.worldEnchants) {
+        for (Zenchantment ench : this.zenchantments) {
             this.keyToEnch.put(ench.getKey(), ench);
         }
-
-        this.enchantGlow = enchantGlow;
-        this.enchantmentColor = enchantmentColor;
-        this.curseColor = curseColor;
     }
 
-    public Set<Zenchantment> getEnchants() {
-        return worldEnchants;
+    @Override
+    @NotNull
+    public Set<Zenchantment> getZenchantments() {
+        return this.zenchantments;
     }
 
-    public double getEnchantRarity() {
-        return enchantRarity;
+    @Override
+    public double getZenchantmentRarity() {
+        return this.zenchantmentRarity;
     }
 
-    public int getMaxEnchants() {
-        return maxEnchants;
+    @Override
+    public int getMaxZenchantments() {
+        return this.maxZenchantments;
     }
 
-    public int getShredDrops() {
-        return shredDrops;
+    @Override
+    public int areShredDropsEnabled() {
+        return shredDropsEnabled;
     }
 
-    public boolean explosionBlockBreak() {
-        return explosionBlockBreak;
+    @Override
+    public boolean isExplosionBlockBreakEnabled() {
+        return this.explosionBlockBreakEnabled;
     }
 
-    public boolean descriptionLore() {
-        return descriptionLore;
+    @Override
+    public boolean isDescriptionLoreEnabled() {
+        return this.descriptionLoreEnabled;
     }
 
+    @Override
+    public boolean isZenchantmentGlowEnabled() {
+        return this.zenchantmentGlowEnabled;
+    }
+
+    @Override
+    @NotNull
     public ChatColor getDescriptionColor() {
-        return descriptionColor;
+        return this.descriptionColor;
     }
 
-    public boolean enchantGlow() {
-        return enchantGlow;
-    }
-
+    @Override
+    @NotNull
     public ChatColor getEnchantmentColor() {
-        return enchantmentColor;
+        return this.enchantmentColor;
     }
 
+    @Override
+    @NotNull
     public ChatColor getCurseColor() {
-        return curseColor;
+        return this.curseColor;
     }
 
-    public Zenchantment enchantFromString(String enchName) {
-        return nameToEnch.get(ChatColor.stripColor(enchName.toLowerCase()));
+    public Zenchantment getZenchantmentFromName(final @NotNull String name) {
+        return this.nameToEnch.get(ChatColor.stripColor(name).toLowerCase());
     }
 
     public List<String> getEnchantNames() {

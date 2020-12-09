@@ -36,7 +36,7 @@ public class ListCommand extends ZenchantmentsCommand {
         this.plugin
             .getWorldConfigurationProvider()
             .getConfigurationForWorld(player.getWorld())
-            .getEnchants()
+            .getZenchantments()
             .stream()
             .filter(zenchantment -> zenchantment.isValidMaterial(player.getInventory().getItemInMainHand()))
             .sorted(Comparator.comparing(Zenchantment::getName))

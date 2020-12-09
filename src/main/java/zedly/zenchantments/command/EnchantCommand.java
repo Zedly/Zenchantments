@@ -39,7 +39,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         Zenchantment zenchantment = this.plugin
             .getWorldConfigurationProvider()
             .getConfigurationForWorld(world)
-            .enchantFromString(args[0]);
+            .getZenchantmentFromName(args[0]);
 
         if (zenchantment == null) {
             player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "That enchantment does not exist!");

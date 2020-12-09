@@ -34,7 +34,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         World world = this.player.getWorld();
         WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
-        for (Zenchantment zenchantment : config.getEnchants()) {
+        for (Zenchantment zenchantment : config.getZenchantments()) {
             this.player.setMetadata("ze." + zenchantment.getKey(), new FixedMetadataValue(this.plugin, false));
         }
     }
@@ -49,7 +49,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         World world = this.player.getWorld();
         WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
-        for (Zenchantment zenchantment : config.getEnchants()) {
+        for (Zenchantment zenchantment : config.getZenchantments()) {
             this.player.setMetadata("ze." + zenchantment.getKey(), new FixedMetadataValue(this.plugin, true));
         }
     }

@@ -162,7 +162,7 @@ public class AnvilMergeListener implements Listener {
         }
 
         WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        EnchantmentPool pool = new EnchantmentPool(oldOutItem, config.getMaxEnchants());
+        EnchantmentPool pool = new EnchantmentPool(oldOutItem, config.getMaxZenchantments());
         pool.addAll(leftEnchantments);
 
         List<Entry<Zenchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());

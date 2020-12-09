@@ -62,7 +62,7 @@ public class GeneralListener implements Listener {
 
         Laser laser = null;
 
-        for (final Zenchantment enchantment : config.getEnchants()) {
+        for (final Zenchantment enchantment : config.getZenchantments()) {
             if (enchantment.getClass() == Laser.class) {
                 laser = (Laser) enchantment;
                 break;
@@ -255,9 +255,9 @@ public class GeneralListener implements Listener {
         final Map<Zenchantment, Integer> existingEnchants = Zenchantment.getZenchantmentsOnItemStack(item, config);
         final Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
 
-        for (int i = 1; i <= config.getMaxEnchants() - existingEnchants.size(); i++) {
+        for (int i = 1; i <= config.getMaxZenchantments() - existingEnchants.size(); i++) {
             float totalChance = 0;
-            final List<Zenchantment> mainPool = new ArrayList<>(config.getEnchants());
+            final List<Zenchantment> mainPool = new ArrayList<>(config.getZenchantments());
             final Set<Zenchantment> validPool = new HashSet<>();
 
             Collections.shuffle(mainPool);
@@ -281,7 +281,7 @@ public class GeneralListener implements Listener {
             }
 
             float running = 0;
-            final double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getEnchantRarity(), i);
+            final double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getZenchantmentRarity(), i);
             for (Zenchantment zenchantment : validPool) {
                 running += zenchantment.getProbability();
                 if (running > decision) {

@@ -63,8 +63,8 @@ public final class MissileArrow extends ZenchantedArrow {
                             location2.getY(),
                             location2.getZ(),
                             10,
-                            config.explosionBlockBreak(),
-                            config.explosionBlockBreak()
+                            config.isExplosionBlockBreakEnabled(),
+                            config.isExplosionBlockBreakEnabled()
                         );
                     }
                 },

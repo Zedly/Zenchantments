@@ -123,7 +123,7 @@ public final class Shred extends Zenchantment {
             return;
         }
 
-        if (config.getShredDrops() == 0) {
+        if (config.areShredDropsEnabled() == 0) {
             ADAPTER.breakBlockNMS(relativeBlock, player);
         } else {
             BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
@@ -133,7 +133,7 @@ public final class Shred extends Zenchantment {
                 return;
             }
 
-            if (config.getShredDrops() == 1) {
+            if (config.areShredDropsEnabled() == 1) {
                 if (relativeBlock.getType().equals(NETHER_QUARTZ_ORE)) {
                     relativeBlock.setType(NETHERRACK);
                 } else if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(relativeBlock.getType())) {
