@@ -3,60 +3,63 @@ package zedly.zenchantments;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 
-// Enum for Tool sets within the game, used by enchantment classes to easily define what tools can be used on each
-//      enchantment. Each enum has a String representation used in the config, and an array of materials it represents
 public enum Tool {
     AXE(
         "Axe",
-        new Material[] {WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE, NETHERITE_AXE},
+        new Material[] { WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE, NETHERITE_AXE },
         false
     ),
     SHOVEL(
         "Shovel",
-        new Material[] {WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL},
+        new Material[] { WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL },
         false
     ),
     SWORD(
         "Sword",
-        new Material[] {WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD},
+        new Material[] { WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD },
         false
     ),
     PICKAXE(
         "Pickaxe",
-        new Material[] {WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE},
+        new Material[] { WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE },
         false
     ),
     ROD(
         "Rod",
-        new Material[] {FISHING_ROD},
+        new Material[] { FISHING_ROD },
         true
     ),
     SHEAR(
         "Shears",
-        new Material[] {SHEARS},
+        new Material[] { SHEARS },
         true
     ),
     BOW(
         "Bow",
-        new Material[] {Material.BOW, CROSSBOW},
+        new Material[] { Material.BOW, CROSSBOW },
         true
     ),
     LIGHTER(
         "Lighter",
-        new Material[] {FLINT_AND_STEEL},
+        new Material[] { FLINT_AND_STEEL },
         true
     ),
     HOE(
         "Hoe",
-        new Material[] {WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE},
+        new Material[] { WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE },
         true
     ),
     HELMET(
         "Helmet",
-        new Material[] {NETHERITE_HELMET, DIAMOND_HELMET, IRON_HELMET, GOLDEN_HELMET, CHAINMAIL_HELMET, LEATHER_HELMET},
+        new Material[] { NETHERITE_HELMET, DIAMOND_HELMET, IRON_HELMET, GOLDEN_HELMET, CHAINMAIL_HELMET, LEATHER_HELMET },
         false
     ),
     CHESTPLATE(
@@ -86,12 +89,12 @@ public enum Tool {
     ),
     BOOTS(
         "Boots",
-        new Material[] {NETHERITE_BOOTS, DIAMOND_BOOTS, IRON_BOOTS, GOLDEN_BOOTS, CHAINMAIL_BOOTS, LEATHER_BOOTS},
+        new Material[] { NETHERITE_BOOTS, DIAMOND_BOOTS, IRON_BOOTS, GOLDEN_BOOTS, CHAINMAIL_BOOTS, LEATHER_BOOTS },
         false
     ),
     WINGS(
         "Elytra",
-        new Material[] {ELYTRA},
+        new Material[] { ELYTRA },
         false
     ),
     ALL(
@@ -161,24 +164,19 @@ public enum Tool {
         false
     );
 
-    private final String     id;               // The identification String of the enum
-    private final Material[] materials;        // The array of materials the enum represents
-    private final boolean    rightClickAction; // If the tool has a right click action
+    private final String     id;
+    private final Material[] materials;
+    private final boolean    rightClickAction;
 
-    // Constructs a new enum of given materials with the given ID
-    Tool(String id, Material[] materials, boolean rightClickAction) {
+    Tool(final @NotNull String id, final @NotNull Material[] materials, final boolean rightClickAction) {
         this.id = id;
         this.materials = materials;
         this.rightClickAction = rightClickAction;
     }
 
-    // Returns an enum using the given String, matching this with the enum's ID String
-    public static Tool fromString(String text) {
-        if (text == null) {
-            return null;
-        }
-
-        for (Tool tool : Tool.values()) {
+    @Nullable
+    public static Tool fromString(final @NotNull String text) {
+        for (Tool tool : values()) {
             if (text.equalsIgnoreCase(tool.id)) {
                 return tool;
             }
@@ -187,9 +185,11 @@ public enum Tool {
         return null;
     }
 
-    // Returns an enum using a given Material
-    public static Tool fromMaterial(Material material) {
-        for (Tool tool : Tool.values()) {
+    @Nullable
+    public static Tool fromMaterial(final @NotNull Material material) {
+        requireNonNull(material);
+
+        for (Tool tool : values()) {
             if (tool.contains(material)) {
                 return tool;
             }
@@ -198,28 +198,27 @@ public enum Tool {
         return null;
     }
 
-    // Returns an enum using a given ItemStack
-    public static Tool fromItemStack(ItemStack stack) {
-        return stack == null ? null : Tool.fromMaterial(stack.getType());
+    public static Tool fromItemStack(final @Nullable ItemStack stack) {
+        return stack == null ? null : fromMaterial(stack.getType());
     }
 
-    // Returns the String ID of the enum
+    @NotNull
     public String getId() {
         return this.id;
     }
 
-    // Returns the array of materials that the enum represents
+    @NotNull
     public Material[] getMaterials() {
         return this.materials;
     }
 
-    // Returns whether or not the tool type has a right click action
-    public boolean canRightClickAction() {
+    public boolean hasRightClickAction() {
         return this.rightClickAction;
     }
 
-    // Returns true if the given material is contained within the enum, otherwise false
-    public boolean contains(Material material) {
+    public boolean contains(final @NotNull Material material) {
+        requireNonNull(material);
+
         return ArrayUtils.contains(this.materials, material);
     }
 }
