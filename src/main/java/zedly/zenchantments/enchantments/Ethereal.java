@@ -82,13 +82,17 @@ public final class Ethereal extends Zenchantment {
     @Override
     public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
         for (ItemStack stack : player.getInventory().getArmorContents()) {
-            // Thanks IntelliJ, but individual items *can* in fact be null.
-            //noinspection ConstantConditions
             if (stack == null) {
                 continue;
             }
 
-            if (Zenchantment.getZenchantmentsOnItemStack(stack, player.getWorld()).containsKey(this)) {
+            if (
+                Zenchantment.getZenchantmentsOnItemStack(
+                    stack,
+                    this.getPlugin().getGlobalConfiguration(),
+                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                ).containsKey(this)
+            ) {
                 Utilities.setItemStackDamage(stack, 0);
             }
         }

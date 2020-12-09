@@ -1,6 +1,5 @@
 package zedly.zenchantments.event.listener.merge;
 
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -61,11 +60,11 @@ public class AnvilMergeListener implements Listener {
             return;
         }
 
-        AnvilInventory anvilInv = event.getInventory();
-        ItemStack item0 = anvilInv.getItem(0);
+        final AnvilInventory anvilInv = event.getInventory();
+        final ItemStack item0 = anvilInv.getItem(0);
 
         if (item0 != null && item0.getType() == ENCHANTED_BOOK) {
-            EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) item0.getItemMeta();
+            final EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) item0.getItemMeta();
 
             if (!bookMeta.getStoredEnchants().containsKey(DURABILITY)) {
                 bookMeta.addStoredEnchant(DURABILITY, 0, true);
@@ -73,9 +72,9 @@ public class AnvilMergeListener implements Listener {
             }
         }
 
-        ItemStack item1 = anvilInv.getItem(1);
+        final ItemStack item1 = anvilInv.getItem(1);
         if (item1 != null && item1.getType() == ENCHANTED_BOOK) {
-            EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) item1.getItemMeta();
+            final EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) item1.getItemMeta();
 
             if (!bookMeta.getStoredEnchants().containsKey(DURABILITY)) {
                 bookMeta.addStoredEnchant(DURABILITY, 0, true);
@@ -84,11 +83,14 @@ public class AnvilMergeListener implements Listener {
         }
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-            ItemStack stack = this.doMerge(
+            final ItemStack stack = this.doMerge(
                 item0,
                 item1,
                 anvilInv.getItem(2),
-                event.getViewers().get(0).getWorld());
+                this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(
+                    event.getViewers().get(0).getWorld()
+                )
+            );
 
             if (stack != null) {
                 anvilInv.setItem(2, stack);
@@ -102,7 +104,7 @@ public class AnvilMergeListener implements Listener {
         @Nullable ItemStack leftItem,
         @Nullable ItemStack rightItem,
         @Nullable ItemStack oldOutItem,
-        @NotNull World world
+        @NotNull WorldConfiguration worldConfiguration
     ) {
         if (leftItem == null || rightItem == null || oldOutItem == null) {
             return null;
@@ -119,39 +121,41 @@ public class AnvilMergeListener implements Listener {
             return null;
         }
 
-        List<String> normalLeftLore = new ArrayList<>();
-        Map<Zenchantment, Integer> leftEnchantments = Zenchantment.getZenchantmentsOnItemStack(
+        final List<String> normalLeftLore = new ArrayList<>();
+        final Map<Zenchantment, Integer> leftEnchantments = Zenchantment.getZenchantmentsOnItemStack(
             leftItem,
             true,
-            world,
+            this.plugin.getGlobalConfiguration(),
+            worldConfiguration,
             normalLeftLore
         );
-        Map<Zenchantment, Integer> rightEnchantments = Zenchantment.getZenchantmentsOnItemStack(
+        final Map<Zenchantment, Integer> rightEnchantments = Zenchantment.getZenchantmentsOnItemStack(
             rightItem,
             true,
-            world
+            this.plugin.getGlobalConfiguration(),
+            worldConfiguration
         );
 
-        boolean isBookLeft = leftItem.getType() == ENCHANTED_BOOK;
-        boolean isBookRight = rightItem.getType() == ENCHANTED_BOOK;
+        final boolean isBookLeft = leftItem.getType() == ENCHANTED_BOOK;
+        final boolean isBookRight = rightItem.getType() == ENCHANTED_BOOK;
 
-        Map<Enchantment, Integer> leftEnch = isBookLeft
+        final Map<Enchantment, Integer> leftEnch = isBookLeft
             ? ((EnchantmentStorageMeta) leftItem.getItemMeta()).getStoredEnchants()
             : leftItem.getEnchantments();
-        Map<Enchantment, Integer> rightEnch = isBookRight
+        final Map<Enchantment, Integer> rightEnch = isBookRight
             ? ((EnchantmentStorageMeta) rightItem.getItemMeta()).getStoredEnchants()
             : rightItem.getEnchantments();
 
         int leftUnbreakingLevel = leftEnch.getOrDefault(DURABILITY, -1);
         int rightUnbreakingLevel = rightEnch.getOrDefault(DURABILITY, -1);
 
-        for (Zenchantment enchantment : leftEnchantments.keySet()) {
+        for (final Zenchantment enchantment : leftEnchantments.keySet()) {
             if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
                 return new ItemStack(AIR);
             }
         }
 
-        for (Zenchantment enchantment : rightEnchantments.keySet()) {
+        for (final Zenchantment enchantment : rightEnchantments.keySet()) {
             if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
                 return new ItemStack(AIR);
             }
@@ -161,28 +165,26 @@ public class AnvilMergeListener implements Listener {
             return oldOutItem;
         }
 
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        EnchantmentPool pool = new EnchantmentPool(oldOutItem, config.getMaxZenchantments());
+        final EnchantmentPool pool = new EnchantmentPool(oldOutItem, worldConfiguration.getMaxZenchantments());
         pool.addAll(leftEnchantments);
 
-        List<Entry<Zenchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());
+        final List<Entry<Zenchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());
         Collections.shuffle(rightEnchantmentList);
         pool.addAll(rightEnchantmentList);
 
-        Map<Zenchantment, Integer> outEnchantments = pool.getEnchantmentMap();
+        final Map<Zenchantment, Integer> outEnchantments = pool.getEnchantmentMap();
+        final ItemStack newOutItem = new ItemStack(oldOutItem);
 
-        ItemStack newOutItem = new ItemStack(oldOutItem);
-
-        ItemMeta meta = oldOutItem.getItemMeta();
+        final ItemMeta meta = oldOutItem.getItemMeta();
         meta.setLore(null);
         newOutItem.setItemMeta(meta);
 
-        for (Entry<Zenchantment, Integer> enchantEntry : outEnchantments.entrySet()) {
-            enchantEntry.getKey().setForItemStack(newOutItem, enchantEntry.getValue(), world);
+        for (final Entry<Zenchantment, Integer> enchantEntry : outEnchantments.entrySet()) {
+            enchantEntry.getKey().setForItemStack(newOutItem, enchantEntry.getValue(), worldConfiguration);
         }
 
-        ItemMeta newOutMeta = newOutItem.getItemMeta();
-        List<String> outLore = newOutMeta.hasLore() ? newOutMeta.getLore() : new ArrayList<>();
+        final ItemMeta newOutMeta = newOutItem.getItemMeta();
+        final List<String> outLore = newOutMeta.hasLore() ? newOutMeta.getLore() : new ArrayList<>();
         outLore.addAll(normalLeftLore);
 
         if (leftUnbreakingLevel * rightUnbreakingLevel == 0
@@ -201,7 +203,7 @@ public class AnvilMergeListener implements Listener {
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
 
-        Zenchantment.updateEnchantmentGlowForItemStack(newOutItem, !outEnchantments.isEmpty(), world);
+        Zenchantment.updateEnchantmentGlowForItemStack(newOutItem, !outEnchantments.isEmpty(), worldConfiguration);
 
         return newOutItem;
     }

@@ -11,12 +11,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfiguration;
+
+import java.util.Set;
 
 import static org.bukkit.event.EventPriority.MONITOR;
 
-/**
- * @author Dennis
- */
 public class GrindstoneMergeListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
@@ -51,8 +51,14 @@ public class GrindstoneMergeListener implements Listener {
             return;
         }
 
-        for (Zenchantment enchantment : Zenchantment.getZenchantmentsOnItemStack(itemStack, world).keySet()) {
-            Zenchantment.setZenchantmentForItemStack(itemStack, enchantment, 0, world);
+        final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(itemStack,
+            this.plugin.getGlobalConfiguration(),
+            worldConfiguration
+        ).keySet();
+
+        for (Zenchantment zenchantment : zenchantments) {
+            Zenchantment.setZenchantmentForItemStack(itemStack, zenchantment, 0, worldConfiguration);
         }
 
         inventory.setItem(2, itemStack);

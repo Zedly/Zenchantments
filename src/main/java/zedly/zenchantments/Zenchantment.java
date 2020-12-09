@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
+import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.*;
@@ -72,6 +73,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     public static void applyForTool(
         final @NotNull Player player,
         final @NotNull PlayerDataProvider playerDataProvider,
+        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfigurationProvider worldConfigurationProvider,
         final @NotNull ItemStack tool,
         final @NotNull BiPredicate<Zenchantment, Integer> action
@@ -84,6 +86,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         final Map<Zenchantment, Integer> zenchantments = getZenchantmentsOnItemStack(
             tool,
+            globalConfiguration,
             worldConfigurationProvider.getConfigurationForWorld(player.getWorld())
         );
 
@@ -112,33 +115,37 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @NotNull ItemStack itemStack,
+        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration,
         final @NotNull List<String> outExtraLore
     ) {
-        return getZenchantmentsOnItemStack(itemStack, false, worldConfiguration, outExtraLore);
+        return getZenchantmentsOnItemStack(itemStack, false, globalConfiguration, worldConfiguration, outExtraLore);
     }
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @NotNull ItemStack itemStack,
         final boolean acceptBooks,
+        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
-        return getZenchantmentsOnItemStack(itemStack, acceptBooks, worldConfiguration, null);
+        return getZenchantmentsOnItemStack(itemStack, acceptBooks, globalConfiguration, worldConfiguration, null);
     }
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @NotNull ItemStack itemStack,
+        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
-        return getZenchantmentsOnItemStack(itemStack, false, worldConfiguration, null);
+        return getZenchantmentsOnItemStack(itemStack, false, globalConfiguration, worldConfiguration, null);
     }
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @NotNull ItemStack itemStack,
         final boolean acceptBooks,
+        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration,
         final @Nullable List<String> outExtraLore
     ) {
@@ -169,10 +176,9 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         for (final String key : new String[] { Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY }) {
             Zenchantment zenchantment = null;
 
-            // TODO: Replace this with a better way of getting all configured Zenchantments.
-            for (final Zenchantment ench : WorldConfiguration.allEnchants) {
-                if (ench.getKey().getKey().equals(key)) {
-                    zenchantment = ench;
+            for (final Zenchantment configured : globalConfiguration.getConfiguredZenchantments()) {
+                if (configured.getKey().getKey().equals(key)) {
+                    zenchantment = configured;
                     break;
                 }
             }

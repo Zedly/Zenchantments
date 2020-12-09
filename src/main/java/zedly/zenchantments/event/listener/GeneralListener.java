@@ -75,13 +75,19 @@ public class GeneralListener implements Listener {
 
         final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
-        if (!Zenchantment.getZenchantmentsOnItemStack(item, worldConfiguration).containsKey(laser) || item.getType() == ENCHANTED_BOOK) {
+        if (
+            !Zenchantment.getZenchantmentsOnItemStack(
+                item,
+                this.plugin.getGlobalConfiguration(),
+                worldConfiguration
+            ).containsKey(laser) || item.getType() == ENCHANTED_BOOK
+        ) {
             return;
         }
 
         event.setCancelled(true);
 
-        final int level = Zenchantment.getZenchantmentsOnItemStack(item, worldConfiguration).get(laser);
+        final int level = Zenchantment.getZenchantmentsOnItemStack(item, this.plugin.getGlobalConfiguration(), worldConfiguration).get(laser);
         final int range = 6 + (int) Math.round(level * laser.getPower() * 3);
 
         final Block block = event.getBlock();
@@ -229,6 +235,7 @@ public class GeneralListener implements Listener {
             .getConfigurationForWorld(player.getWorld());
         final boolean zenchantment = !Zenchantment.getZenchantmentsOnItemStack(
             inventory.getItemInMainHand(),
+            this.plugin.getGlobalConfiguration(),
             worldConfiguration
         ).isEmpty();
 
@@ -252,7 +259,11 @@ public class GeneralListener implements Listener {
         final ItemStack item = event.getItem();
         final World world = event.getEnchantBlock().getWorld();
         final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        final Map<Zenchantment, Integer> existingEnchants = Zenchantment.getZenchantmentsOnItemStack(item, config);
+        final Map<Zenchantment, Integer> existingEnchants = Zenchantment.getZenchantmentsOnItemStack(
+            item,
+            this.plugin.getGlobalConfiguration(),
+            config
+        );
         final Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
 
         for (int i = 1; i <= config.getMaxZenchantments() - existingEnchants.size(); i++) {
@@ -337,16 +348,22 @@ public class GeneralListener implements Listener {
 
         final Player player = (Player) event.getWhoClicked();
         final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld());
-        for (final Zenchantment enchantment : Zenchantment.getZenchantmentsOnItemStack(event.getCurrentItem(), config).keySet()) {
-            if (enchantment.getClass() == Jump.class || enchantment.getClass() == Meador.class) {
+        final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
+            event.getCurrentItem(),
+            this.plugin.getGlobalConfiguration(),
+            config
+        ).keySet();
+
+        for (final Zenchantment zenchantment : zenchantments) {
+            if (zenchantment.getClass() == Jump.class || zenchantment.getClass() == Meador.class) {
                 player.removePotionEffect(PotionEffectType.JUMP);
             }
 
-            if (enchantment.getClass() == NightVision.class) {
+            if (zenchantment.getClass() == NightVision.class) {
                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
             }
 
-            if (enchantment.getClass() == Weight.class) {
+            if (zenchantment.getClass() == Weight.class) {
                 player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
             }
         }

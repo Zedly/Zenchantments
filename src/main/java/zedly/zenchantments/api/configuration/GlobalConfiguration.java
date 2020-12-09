@@ -2,7 +2,10 @@ package zedly.zenchantments.api.configuration;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.api.Zenchantment;
 import zedly.zenchantments.api.Zenchantments;
+
+import java.util.Set;
 
 /**
  * The global {@link Zenchantments} configuration, as set in the {@code config.yml} file.
@@ -19,4 +22,7 @@ public interface GlobalConfiguration {
      */
     @NotNull
     WorldConfiguration getDefaultWorldConfiguration();
+
+    @NotNull
+    Set<? extends Zenchantment> getConfiguredZenchantments();
 }

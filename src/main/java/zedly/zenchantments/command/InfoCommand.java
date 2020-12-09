@@ -55,7 +55,8 @@ public class InfoCommand extends ZenchantmentsCommand {
         Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             player.getInventory().getItemInMainHand(),
             true,
-            world
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world)
         ).keySet();
 
         if (zenchantments.isEmpty()) {

@@ -132,7 +132,11 @@ public final class GreenThumb extends Zenchantment {
                         ItemStack[] armour = player.getInventory().getArmorContents();
                         for (int i = 0; i < 4; i++) {
                             if (armour[i] != null) {
-                                Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(armour[i], player.getWorld());
+                                final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
+                                    armour[i],
+                                    this.getPlugin().getGlobalConfiguration(),
+                                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                                );
 
                                 if (map.containsKey(this)) {
                                     Utilities.addUnbreaking(player, armour[i], 1);
