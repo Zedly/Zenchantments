@@ -13,37 +13,33 @@ import java.util.Collections;
 import java.util.List;
 
 public class EnableCommand extends ZenchantmentsCommand {
-    public EnableCommand(@NotNull ZenchantmentsPlugin plugin) {
+    public EnableCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
+    public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
+            sender.sendMessage(MESSAGE_PREFIX + "You must be a player to do this!");
             return;
         }
 
-        Player player = (Player) sender;
+        final Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.onoff")) {
-            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
+            player.sendMessage(MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
         }
 
         if (args.length == 0) {
             player.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
-                    + ChatColor.DARK_AQUA
-                    + "Usage: "
-                    + ChatColor.AQUA
-                    + "/ench enable <enchantment/all>"
+                MESSAGE_PREFIX + ChatColor.DARK_AQUA + "Usage: " + ChatColor.AQUA + "/ench enable <enchantment/all>"
             );
             return;
         }
 
-        PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
-        Zenchantment zenchantment = this.plugin
+        final PlayerData playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
+        final Zenchantment zenchantment = this.plugin
             .getWorldConfigurationProvider()
             .getConfigurationForWorld(player.getWorld())
             .getZenchantmentFromName(args[0]);
@@ -51,7 +47,7 @@ public class EnableCommand extends ZenchantmentsCommand {
         if (zenchantment != null) {
             playerData.enableZenchantment(zenchantment.getKey());
             player.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + "The zenchantment "
                     + ChatColor.DARK_AQUA
                     + zenchantment.getName()
@@ -63,20 +59,20 @@ public class EnableCommand extends ZenchantmentsCommand {
         } else if (args[0].equalsIgnoreCase("all")) {
             playerData.enableAllZenchantments();
             player.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + ChatColor.DARK_AQUA
                     + "All "
                     + ChatColor.AQUA
                     + "zenchantments have been enabled."
             );
         } else {
-            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "That zenchantment does not exist!");
+            player.sendMessage(MESSAGE_PREFIX + "That zenchantment does not exist!");
         }
     }
 
     @Override
     @Nullable
-    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
+    public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
         return Collections.emptyList();
     }
 }
