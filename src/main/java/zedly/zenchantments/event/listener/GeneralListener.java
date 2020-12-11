@@ -258,17 +258,17 @@ public class GeneralListener implements Listener {
 
         final ItemStack item = event.getItem();
         final World world = event.getEnchantBlock().getWorld();
-        final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
         final Map<Zenchantment, Integer> existingEnchants = Zenchantment.getZenchantmentsOnItemStack(
             item,
             this.plugin.getGlobalConfiguration(),
-            config
+            worldConfiguration
         );
         final Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
 
-        for (int i = 1; i <= config.getMaxZenchantments() - existingEnchants.size(); i++) {
+        for (int i = 1; i <= worldConfiguration.getMaxZenchantments() - existingEnchants.size(); i++) {
             float totalChance = 0;
-            final List<Zenchantment> mainPool = new ArrayList<>(config.getZenchantments());
+            final List<Zenchantment> mainPool = new ArrayList<>(worldConfiguration.getZenchantments());
             final Set<Zenchantment> validPool = new HashSet<>();
 
             Collections.shuffle(mainPool);
@@ -292,7 +292,7 @@ public class GeneralListener implements Listener {
             }
 
             float running = 0;
-            final double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(config.getZenchantmentRarity(), i);
+            final double decision = (ThreadLocalRandom.current().nextFloat() * totalChance) / Math.pow(worldConfiguration.getZenchantmentRarity(), i);
             for (Zenchantment zenchantment : validPool) {
                 running += zenchantment.getProbability();
                 if (running > decision) {
@@ -304,7 +304,7 @@ public class GeneralListener implements Listener {
         }
 
         for (final Map.Entry<Zenchantment, Integer> entry : addedEnchants.entrySet()) {
-            entry.getKey().setForItemStack(item, entry.getValue(), config);
+            entry.getKey().setForItemStack(item, entry.getValue(), worldConfiguration);
         }
 
         if (event.getItem().getType() == ENCHANTED_BOOK) {
@@ -321,7 +321,7 @@ public class GeneralListener implements Listener {
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(
             this.plugin,
-            () -> Zenchantment.updateEnchantmentGlowForItemStack(item, !addedEnchants.isEmpty(), config),
+            () -> Zenchantment.updateEnchantmentGlowForItemStack(item, !addedEnchants.isEmpty(), worldConfiguration),
             0
         );
     }

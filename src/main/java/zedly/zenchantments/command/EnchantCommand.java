@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,11 +36,11 @@ public class EnchantCommand extends ZenchantmentsCommand {
             return;
         }
 
-        World world = player.getWorld();
-        Zenchantment zenchantment = this.plugin
+        final WorldConfiguration worldConfiguration = this.plugin
             .getWorldConfigurationProvider()
-            .getConfigurationForWorld(world)
-            .getZenchantmentFromName(args[0]);
+            .getConfigurationForWorld(player.getWorld());
+
+        final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(args[0]);
 
         if (zenchantment == null) {
             player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "That enchantment does not exist!");
@@ -48,7 +49,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
 
         player.getInventory().setItemInMainHand(
             this.addEnchantments(
-                world,
+                worldConfiguration,
                 player,
                 zenchantment,
                 player.getInventory().getItemInMainHand(),
@@ -66,7 +67,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
     @NotNull
     @Contract(value = "_, _, _, _, _ -> param4", mutates = "param4")
     private ItemStack addEnchantments(
-        @NotNull World world,
+        @NotNull WorldConfiguration worldConfiguration,
         @NotNull Player player,
         @NotNull Zenchantment enchantment,
         @NotNull ItemStack itemStack,
@@ -102,7 +103,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             level = 1;
         }
 
-        enchantment.setForItemStack(itemStack, level, world);
+        enchantment.setForItemStack(itemStack, level, worldConfiguration);
 
         if (level != 0) {
             player.sendMessage(

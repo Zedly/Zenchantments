@@ -73,7 +73,7 @@ public class GiveCommand extends ZenchantmentsCommand {
         }
 
         World world = recipient.getWorld();
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
 
         if (material == null) {
             sender.sendMessage(
@@ -98,7 +98,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                 level = Math.max(1, scanner.nextInt());
             }
 
-            Zenchantment zenchantment = config.getZenchantmentFromName(enchantName);
+            Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(enchantName);
             Enchantment enchantment = Enchantment.getByName(enchantName);
 
             if (zenchantment != null) {
@@ -149,7 +149,7 @@ public class GiveCommand extends ZenchantmentsCommand {
         );
 
         for (Map.Entry<Zenchantment, Integer> zenchantment : zenchantmentsToAdd.entrySet()) {
-            zenchantment.getKey().setForItemStack(itemStack, zenchantment.getValue(), world);
+            zenchantment.getKey().setForItemStack(itemStack, zenchantment.getValue(), worldConfiguration);
             message.append(ChatColor.stripColor(zenchantment.getKey().getName())).append(", ");
         }
 
