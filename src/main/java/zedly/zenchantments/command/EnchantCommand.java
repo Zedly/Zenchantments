@@ -18,21 +18,21 @@ import java.util.List;
 import static org.bukkit.Material.*;
 
 public class EnchantCommand extends ZenchantmentsCommand {
-    public EnchantCommand(@NotNull ZenchantmentsPlugin plugin) {
+    public EnchantCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
+    public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
+            sender.sendMessage(MESSAGE_PREFIX + "You must be a player to do this!");
             return;
         }
 
-        Player player = (Player) sender;
+        final Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.enchant")) {
-            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
+            player.sendMessage(MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
         }
 
@@ -43,7 +43,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(args[0]);
 
         if (zenchantment == null) {
-            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "That enchantment does not exist!");
+            player.sendMessage(MESSAGE_PREFIX + "That enchantment does not exist!");
             return;
         }
 
@@ -60,32 +60,32 @@ public class EnchantCommand extends ZenchantmentsCommand {
 
     @Override
     @Nullable
-    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
+    public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
         return Collections.emptyList();
     }
 
     @NotNull
     @Contract(value = "_, _, _, _, _ -> param4", mutates = "param4")
     private ItemStack addEnchantments(
-        @NotNull WorldConfiguration worldConfiguration,
-        @NotNull Player player,
-        @NotNull Zenchantment enchantment,
-        @NotNull ItemStack itemStack,
-        @NotNull String levelString
+        final @NotNull WorldConfiguration worldConfiguration,
+        final @NotNull Player player,
+        final @NotNull Zenchantment enchantment,
+        final @NotNull ItemStack itemStack,
+        final @NotNull String levelString
     ) {
-        // Check if the player is holding an item
+        // Check if the player is holding an item.
         if (itemStack.getType() == AIR) {
             player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You need to be holding an item!");
             return itemStack;
         }
 
-        // Check if the item can be enchanted
+        // Check if the item can be enchanted.
         if (!enchantment.isValidMaterial(itemStack)
             && itemStack.getType() != BOOK
             && itemStack.getType() != ENCHANTED_BOOK
         ) {
             player.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + "The enchantment "
                     + ChatColor.DARK_AQUA
                     + enchantment.getName()
@@ -95,7 +95,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             return itemStack;
         }
 
-        // Get the level
+        // Get the level.
         int level;
         try {
             level = Math.min(Integer.parseInt(levelString), enchantment.getMaxLevel());
@@ -107,7 +107,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
 
         if (level != 0) {
             player.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + "The enchantment "
                     + ChatColor.DARK_AQUA
                     + enchantment.getName()
@@ -116,7 +116,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             );
         } else {
             player.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + "The enchantment "
                     + ChatColor.DARK_AQUA
                     + enchantment.getName()
