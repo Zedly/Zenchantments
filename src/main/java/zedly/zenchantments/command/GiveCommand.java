@@ -1,6 +1,5 @@
 package zedly.zenchantments.command;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,12 +16,12 @@ import zedly.zenchantments.configuration.WorldConfiguration;
 import java.util.*;
 
 public class GiveCommand extends ZenchantmentsCommand {
-    public GiveCommand(@NotNull ZenchantmentsPlugin plugin) {
+    public GiveCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
+    public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
         if (!sender.hasPermission("zenchantments.command.give")) {
             sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
@@ -30,7 +29,7 @@ public class GiveCommand extends ZenchantmentsCommand {
 
         if (args.length < 3) {
             sender.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + ChatColor.DARK_AQUA
                     + "Usage: "
                     + ChatColor.AQUA
@@ -38,7 +37,7 @@ public class GiveCommand extends ZenchantmentsCommand {
             );
             return;
         }
-        Scanner scanner = new Scanner(
+        final Scanner scanner = new Scanner(
             Arrays.toString(args)
                 .replace("[", "")
                 .replace("]", "")
@@ -46,10 +45,10 @@ public class GiveCommand extends ZenchantmentsCommand {
         );
         scanner.next();
 
-        String playerName = scanner.next();
+        final String playerName = scanner.next();
         Player recipient = null;
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
             if (player.getName().equalsIgnoreCase(playerName)) {
                 recipient = player;
             }
@@ -57,7 +56,7 @@ public class GiveCommand extends ZenchantmentsCommand {
 
         if (recipient == null) {
             sender.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + "The player "
                     + ChatColor.DARK_AQUA
                     + playerName
@@ -72,12 +71,14 @@ public class GiveCommand extends ZenchantmentsCommand {
             material = Material.matchMaterial(scanner.next());
         }
 
-        World world = recipient.getWorld();
-        WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final World world = recipient.getWorld();
+        final WorldConfiguration worldConfiguration = this.plugin
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(world);
 
         if (material == null) {
             sender.sendMessage(
-                ZenchantmentsCommand.MESSAGE_PREFIX
+                MESSAGE_PREFIX
                     + "The material "
                     + ChatColor.DARK_AQUA
                     + args[1].toUpperCase()
@@ -87,26 +88,26 @@ public class GiveCommand extends ZenchantmentsCommand {
             return;
         }
 
-        Map<Zenchantment, Integer> zenchantmentsToAdd = new HashMap<>();
-        Map<Enchantment, Integer> enchantmentsToAdd = new HashMap<>();
-        ItemStack itemStack = new ItemStack(material);
+        final Map<Zenchantment, Integer> zenchantmentsToAdd = new HashMap<>();
+        final Map<Enchantment, Integer> enchantmentsToAdd = new HashMap<>();
+        final ItemStack itemStack = new ItemStack(material);
 
         while (scanner.hasNext()) {
-            String enchantName = scanner.next();
+            final String enchantName = scanner.next();
             int level = 1;
             if (scanner.hasNextInt()) {
                 level = Math.max(1, scanner.nextInt());
             }
 
-            Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(enchantName);
-            Enchantment enchantment = Enchantment.getByName(enchantName);
+            final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(enchantName);
+            final Enchantment enchantment = Enchantment.getByName(enchantName);
 
             if (zenchantment != null) {
                 if (zenchantment.isValidMaterial(material) || material == Material.ENCHANTED_BOOK) {
                     zenchantmentsToAdd.put(zenchantment, level);
                 } else {
                     sender.sendMessage(
-                        ZenchantmentsCommand.MESSAGE_PREFIX
+                        MESSAGE_PREFIX
                             + "The enchantment "
                             + ChatColor.DARK_AQUA
                             + zenchantment.getName()
@@ -129,7 +130,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                 }
             } else {
                 sender.sendMessage(
-                    ZenchantmentsCommand.MESSAGE_PREFIX
+                    MESSAGE_PREFIX
                         + "The enchantment "
                         + ChatColor.DARK_AQUA
                         + enchantName
@@ -139,8 +140,8 @@ public class GiveCommand extends ZenchantmentsCommand {
             }
         }
 
-        StringBuilder message = new StringBuilder(
-            ZenchantmentsCommand.MESSAGE_PREFIX
+        final StringBuilder message = new StringBuilder(
+            MESSAGE_PREFIX
                 + "Gave "
                 + ChatColor.DARK_AQUA
                 + recipient.getName()
@@ -148,12 +149,12 @@ public class GiveCommand extends ZenchantmentsCommand {
                 + " the enchantments "
         );
 
-        for (Map.Entry<Zenchantment, Integer> zenchantment : zenchantmentsToAdd.entrySet()) {
+        for (final Map.Entry<Zenchantment, Integer> zenchantment : zenchantmentsToAdd.entrySet()) {
             zenchantment.getKey().setForItemStack(itemStack, zenchantment.getValue(), worldConfiguration);
             message.append(ChatColor.stripColor(zenchantment.getKey().getName())).append(", ");
         }
 
-        for (Map.Entry<Enchantment, Integer> enchantment : enchantmentsToAdd.entrySet()) {
+        for (final Map.Entry<Enchantment, Integer> enchantment : enchantmentsToAdd.entrySet()) {
             itemStack.addEnchantment(enchantment.getKey(), enchantment.getValue());
             message.append(ChatColor.stripColor(enchantment.getKey().getName())).append(", ");
         }
@@ -166,7 +167,7 @@ public class GiveCommand extends ZenchantmentsCommand {
 
     @Override
     @Nullable
-    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
+    public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
         return Collections.emptyList();
     }
 }
