@@ -1,6 +1,5 @@
 package zedly.zenchantments.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -15,6 +14,8 @@ import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.*;
 
+import static org.bukkit.ChatColor.*;
+
 public class GiveCommand extends ZenchantmentsCommand {
     public GiveCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
@@ -28,13 +29,7 @@ public class GiveCommand extends ZenchantmentsCommand {
         }
 
         if (args.length < 3) {
-            sender.sendMessage(
-                MESSAGE_PREFIX
-                    + ChatColor.DARK_AQUA
-                    + "Usage: "
-                    + ChatColor.AQUA
-                    + "/ench give <Player> <Material> <enchantment> <?level> ..."
-            );
+            sender.sendMessage(MESSAGE_PREFIX + DARK_AQUA + "Usage: " + AQUA + "/ench give <Player> <Material> <enchantment> <?level> ...");
             return;
         }
         final Scanner scanner = new Scanner(
@@ -55,14 +50,7 @@ public class GiveCommand extends ZenchantmentsCommand {
         }
 
         if (recipient == null) {
-            sender.sendMessage(
-                MESSAGE_PREFIX
-                    + "The player "
-                    + ChatColor.DARK_AQUA
-                    + playerName
-                    + ChatColor.AQUA
-                    + " is not online or does not exist."
-            );
+            sender.sendMessage(MESSAGE_PREFIX + "The player " + DARK_AQUA + playerName + AQUA + " is not online or does not exist.");
             return;
         }
 
@@ -77,14 +65,7 @@ public class GiveCommand extends ZenchantmentsCommand {
             .getConfigurationForWorld(world);
 
         if (material == null) {
-            sender.sendMessage(
-                MESSAGE_PREFIX
-                    + "The material "
-                    + ChatColor.DARK_AQUA
-                    + args[1].toUpperCase()
-                    + ChatColor.AQUA +
-                    " is not valid."
-            );
+            sender.sendMessage(MESSAGE_PREFIX + "The material " + DARK_AQUA + args[1].toUpperCase() + AQUA + " is not valid.");
             return;
         }
 
@@ -109,9 +90,9 @@ public class GiveCommand extends ZenchantmentsCommand {
                     sender.sendMessage(
                         MESSAGE_PREFIX
                             + "The enchantment "
-                            + ChatColor.DARK_AQUA
+                            + DARK_AQUA
                             + zenchantment.getName()
-                            + ChatColor.AQUA
+                            + AQUA
                             + " cannot be given with this item."
                     );
                 }
@@ -122,41 +103,27 @@ public class GiveCommand extends ZenchantmentsCommand {
                     sender.sendMessage(
                         ZenchantmentsCommand.MESSAGE_PREFIX
                             + "The enchantment "
-                            + ChatColor.DARK_AQUA
+                            + DARK_AQUA
                             + enchantment.getName()
-                            + ChatColor.AQUA +
+                            + AQUA +
                             " cannot be given in this configuration."
                     );
                 }
             } else {
-                sender.sendMessage(
-                    MESSAGE_PREFIX
-                        + "The enchantment "
-                        + ChatColor.DARK_AQUA
-                        + enchantName
-                        + ChatColor.AQUA
-                        + " does not exist!"
-                );
+                sender.sendMessage(MESSAGE_PREFIX + "The enchantment " + DARK_AQUA + enchantName + AQUA + " does not exist!");
             }
         }
 
-        final StringBuilder message = new StringBuilder(
-            MESSAGE_PREFIX
-                + "Gave "
-                + ChatColor.DARK_AQUA
-                + recipient.getName()
-                + ChatColor.AQUA
-                + " the enchantments "
-        );
+        final StringBuilder message = new StringBuilder(MESSAGE_PREFIX + "Gave " + DARK_AQUA + recipient.getName() + AQUA + " the enchantments ");
 
         for (final Map.Entry<Zenchantment, Integer> zenchantment : zenchantmentsToAdd.entrySet()) {
             zenchantment.getKey().setForItemStack(itemStack, zenchantment.getValue(), worldConfiguration);
-            message.append(ChatColor.stripColor(zenchantment.getKey().getName())).append(", ");
+            message.append(stripColor(zenchantment.getKey().getName())).append(", ");
         }
 
         for (final Map.Entry<Enchantment, Integer> enchantment : enchantmentsToAdd.entrySet()) {
             itemStack.addEnchantment(enchantment.getKey(), enchantment.getValue());
-            message.append(ChatColor.stripColor(enchantment.getKey().getName())).append(", ");
+            message.append(stripColor(enchantment.getKey().getName())).append(", ");
         }
 
         if (!zenchantmentsToAdd.isEmpty() && !enchantmentsToAdd.isEmpty()) {

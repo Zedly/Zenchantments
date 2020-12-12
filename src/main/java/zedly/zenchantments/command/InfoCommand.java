@@ -1,6 +1,5 @@
 package zedly.zenchantments.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,6 +13,8 @@ import zedly.zenchantments.player.PlayerData;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static org.bukkit.ChatColor.*;
 
 public class InfoCommand extends ZenchantmentsCommand {
     public InfoCommand(final @NotNull ZenchantmentsPlugin plugin) {
@@ -49,8 +50,8 @@ public class InfoCommand extends ZenchantmentsCommand {
                     MESSAGE_PREFIX
                         + zenchantment.getName()
                         + ": "
-                        + (playerData.isDisabled(zenchantment.getKey()) ? ChatColor.RED + "**Disabled** " : "")
-                        + ChatColor.AQUA + zenchantment.getDescription()
+                        + (playerData.isDisabled(zenchantment.getKey()) ? RED + "**Disabled** " : "")
+                        + AQUA + zenchantment.getDescription()
                 );
             }
             return;
@@ -71,11 +72,11 @@ public class InfoCommand extends ZenchantmentsCommand {
         player.sendMessage(MESSAGE_PREFIX + "Enchantment Info:");
         for (final Zenchantment zenchantment : zenchantments) {
             player.sendMessage(
-                ChatColor.DARK_AQUA
+                DARK_AQUA
                     + zenchantment.getName()
                     + ": "
-                    + (playerData.isDisabled(zenchantment.getKey()) ? ChatColor.RED + "**Disabled** " : "")
-                    + ChatColor.AQUA
+                    + (playerData.isDisabled(zenchantment.getKey()) ? RED + "**Disabled** " : "")
+                    + AQUA
                     + zenchantment.getDescription()
             );
         }

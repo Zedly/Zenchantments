@@ -1,6 +1,5 @@
 package zedly.zenchantments.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +10,9 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.DARK_AQUA;
 
 public class ListCommand extends ZenchantmentsCommand {
     public ListCommand(final @NotNull ZenchantmentsPlugin plugin) {
@@ -40,7 +42,7 @@ public class ListCommand extends ZenchantmentsCommand {
             .stream()
             .filter(zenchantment -> zenchantment.isValidMaterial(player.getInventory().getItemInMainHand()))
             .sorted(Comparator.comparing(Zenchantment::getName))
-            .forEachOrdered(zenchantment -> player.sendMessage(ChatColor.DARK_AQUA + "- " + ChatColor.AQUA + zenchantment.getName()));
+            .forEachOrdered(zenchantment -> player.sendMessage(DARK_AQUA + "- " + AQUA + zenchantment.getName()));
     }
 
     @Override

@@ -1,7 +1,5 @@
 package zedly.zenchantments.command;
 
-import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +13,8 @@ import zedly.zenchantments.configuration.WorldConfiguration;
 import java.util.Collections;
 import java.util.List;
 
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.Material.*;
 
 public class EnchantCommand extends ZenchantmentsCommand {
@@ -75,7 +75,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
     ) {
         // Check if the player is holding an item.
         if (itemStack.getType() == AIR) {
-            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You need to be holding an item!");
+            player.sendMessage(MESSAGE_PREFIX + "You need to be holding an item!");
             return itemStack;
         }
 
@@ -85,12 +85,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             && itemStack.getType() != ENCHANTED_BOOK
         ) {
             player.sendMessage(
-                MESSAGE_PREFIX
-                    + "The enchantment "
-                    + ChatColor.DARK_AQUA
-                    + enchantment.getName()
-                    + ChatColor.AQUA +
-                    " cannot be added to this item."
+                MESSAGE_PREFIX + "The enchantment " + DARK_AQUA + enchantment.getName() + AQUA + " cannot be added to this item."
             );
             return itemStack;
         }
@@ -107,21 +102,11 @@ public class EnchantCommand extends ZenchantmentsCommand {
 
         if (level != 0) {
             player.sendMessage(
-                MESSAGE_PREFIX
-                    + "The enchantment "
-                    + ChatColor.DARK_AQUA
-                    + enchantment.getName()
-                    + ChatColor.AQUA +
-                    " has been added."
+                MESSAGE_PREFIX + "The enchantment " + DARK_AQUA + enchantment.getName() + AQUA + " has been added."
             );
         } else {
             player.sendMessage(
-                MESSAGE_PREFIX
-                    + "The enchantment "
-                    + ChatColor.DARK_AQUA
-                    + enchantment.getName()
-                    + ChatColor.AQUA
-                    + " has been removed."
+                MESSAGE_PREFIX + "The enchantment " + DARK_AQUA + enchantment.getName() + AQUA + " has been removed."
             );
         }
 

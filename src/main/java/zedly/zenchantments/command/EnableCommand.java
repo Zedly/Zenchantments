@@ -1,6 +1,5 @@
 package zedly.zenchantments.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +10,8 @@ import zedly.zenchantments.player.PlayerData;
 
 import java.util.Collections;
 import java.util.List;
+
+import static org.bukkit.ChatColor.*;
 
 public class EnableCommand extends ZenchantmentsCommand {
     public EnableCommand(final @NotNull ZenchantmentsPlugin plugin) {
@@ -32,9 +33,7 @@ public class EnableCommand extends ZenchantmentsCommand {
         }
 
         if (args.length == 0) {
-            player.sendMessage(
-                MESSAGE_PREFIX + ChatColor.DARK_AQUA + "Usage: " + ChatColor.AQUA + "/ench enable <enchantment/all>"
-            );
+            player.sendMessage(MESSAGE_PREFIX + DARK_AQUA + "Usage: " + AQUA + "/ench enable <enchantment/all>");
             return;
         }
 
@@ -47,24 +46,11 @@ public class EnableCommand extends ZenchantmentsCommand {
         if (zenchantment != null) {
             playerData.enableZenchantment(zenchantment.getKey());
             player.sendMessage(
-                MESSAGE_PREFIX
-                    + "The zenchantment "
-                    + ChatColor.DARK_AQUA
-                    + zenchantment.getName()
-                    + ChatColor.AQUA
-                    + " has been"
-                    + ChatColor.GREEN
-                    + " enabled."
+                MESSAGE_PREFIX + "The zenchantment " + DARK_AQUA + zenchantment.getName() + AQUA + " has been" + GREEN + " enabled."
             );
         } else if (args[0].equalsIgnoreCase("all")) {
             playerData.enableAllZenchantments();
-            player.sendMessage(
-                MESSAGE_PREFIX
-                    + ChatColor.DARK_AQUA
-                    + "All "
-                    + ChatColor.AQUA
-                    + "zenchantments have been enabled."
-            );
+            player.sendMessage(MESSAGE_PREFIX + DARK_AQUA + "All " + AQUA + "zenchantments have been enabled.");
         } else {
             player.sendMessage(MESSAGE_PREFIX + "That zenchantment does not exist!");
         }
