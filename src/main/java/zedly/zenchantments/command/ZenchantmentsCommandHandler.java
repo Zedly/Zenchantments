@@ -18,7 +18,7 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
     private final EnchantCommand                    enchantCommand;
     private final Map<String, ZenchantmentsCommand> commandMap;
 
-    public ZenchantmentsCommandHandler(@NotNull ZenchantmentsPlugin plugin) {
+    public ZenchantmentsCommandHandler(final @NotNull ZenchantmentsPlugin plugin) {
         this.enchantCommand = new EnchantCommand(plugin);
         this.commandMap = new ImmutableMap.Builder<String, ZenchantmentsCommand>()
             .put("disable", new DisableCommand(plugin))
@@ -33,10 +33,10 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
 
     @Override
     public boolean onCommand(
-        @NotNull CommandSender sender,
-        @NotNull Command command,
-        @NotNull String label,
-        @NotNull String[] args
+        final @NotNull CommandSender sender,
+        final @NotNull Command command,
+        final @NotNull String label,
+        final @NotNull String[] args
     ) {
         String subcommand = "help";
         if (args.length > 0) {
@@ -50,16 +50,16 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
     @Override
     @Nullable
     public List<String> onTabComplete(
-        @NotNull CommandSender sender,
-        @NotNull Command command,
-        @NotNull String label,
-        @NotNull String[] args
+        final @NotNull CommandSender sender,
+        final @NotNull Command command,
+        final @NotNull String label,
+        final @NotNull String[] args
     ) {
         if (args.length == 0) {
             return Collections.emptyList();
         }
 
-        ZenchantmentsCommand zenchantmentsCommand = this.commandMap.get(args[0].toLowerCase());
+        final ZenchantmentsCommand zenchantmentsCommand = this.commandMap.get(args[0].toLowerCase());
 
         if (zenchantmentsCommand == null) {
             return Collections.emptyList();
