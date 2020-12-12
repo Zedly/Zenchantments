@@ -13,25 +13,25 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ListCommand extends ZenchantmentsCommand {
-    public ListCommand(@NotNull ZenchantmentsPlugin plugin) {
+    public ListCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
+    public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You must be a player to do this!");
+            sender.sendMessage(MESSAGE_PREFIX + "You must be a player to do this!");
             return;
         }
 
-        Player player = (Player) sender;
+        final Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.list")) {
-            player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "You do not have permission to do this!");
+            player.sendMessage(MESSAGE_PREFIX + "You do not have permission to do this!");
             return;
         }
 
-        player.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX + "Enchantment Types:");
+        player.sendMessage(MESSAGE_PREFIX + "Enchantment Types:");
 
         this.plugin
             .getWorldConfigurationProvider()
@@ -45,7 +45,7 @@ public class ListCommand extends ZenchantmentsCommand {
 
     @Override
     @Nullable
-    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
+    public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
         return Collections.emptyList();
     }
 }
