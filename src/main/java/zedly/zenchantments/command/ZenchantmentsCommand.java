@@ -20,12 +20,12 @@ public abstract class ZenchantmentsCommand {
 
     protected final ZenchantmentsPlugin plugin;
 
-    public ZenchantmentsCommand(@NotNull ZenchantmentsPlugin plugin) {
+    public ZenchantmentsCommand(final @NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public abstract void execute(@NotNull CommandSender sender, @NotNull String[] args);
+    public abstract void execute(final @NotNull CommandSender sender, final @NotNull String[] args);
 
     @Nullable
-    public abstract List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args);
+    public abstract List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args);
 }
