@@ -10,13 +10,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class HelpCommand extends ZenchantmentsCommand {
-    public HelpCommand(@NotNull ZenchantmentsPlugin plugin) {
+    public HelpCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
 
     @Override
-    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
-        sender.sendMessage(ZenchantmentsCommand.MESSAGE_PREFIX);
+    public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
+        sender.sendMessage(MESSAGE_PREFIX);
         sender.sendMessage(
             ChatColor.DARK_AQUA
                 + "- ench info <?enchantment>: "
@@ -57,7 +57,7 @@ public class HelpCommand extends ZenchantmentsCommand {
 
     @Override
     @Nullable
-    public List<String> getTabCompleteOptions(@NotNull CommandSender sender, @NotNull String[] args) {
+    public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
         return Collections.emptyList();
     }
 }
