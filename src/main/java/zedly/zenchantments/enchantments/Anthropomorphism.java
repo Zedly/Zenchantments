@@ -39,12 +39,12 @@ public final class Anthropomorphism extends Zenchantment {
     private final NamespacedKey key;
 
     public Anthropomorphism(
-        @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Set<Tool> enchantable,
-        int maxLevel,
-        int cooldown,
-        double probability,
-        float power
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double probability,
+        final float power
     ) {
         super(plugin, enchantable, maxLevel, cooldown, probability, power);
         this.key = new NamespacedKey(plugin, KEY);
@@ -262,7 +262,7 @@ public final class Anthropomorphism extends Zenchantment {
         private final K key;
         private final V value;
 
-        public Pair(K key, V value) {
+        public Pair(final K key, final V value) {
             this.key = key;
             this.value = value;
         }

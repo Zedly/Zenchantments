@@ -32,12 +32,12 @@ public final class Spectral extends Zenchantment {
     private final NamespacedKey key;
 
     public Spectral(
-        @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Set<Tool> enchantable,
-        int maxLevel,
-        int cooldown,
-        double power,
-        float probability
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
     ) {
         super(plugin, enchantable, maxLevel, cooldown, power, probability);
         this.key = new NamespacedKey(plugin, KEY);

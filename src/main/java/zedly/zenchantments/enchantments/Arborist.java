@@ -25,12 +25,12 @@ public final class Arborist extends Zenchantment {
     private final NamespacedKey key;
 
     public Arborist(
-        @NotNull ZenchantmentsPlugin plugin,
-        @NotNull Set<Tool> enchantable,
-        int maxLevel,
-        int cooldown,
-        double probability,
-        float power
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double probability,
+        final float power
     ) {
         super(plugin, enchantable, maxLevel, cooldown, probability, power);
         this.key = new NamespacedKey(plugin, KEY);
