@@ -16,7 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.compatibility.EnumStorage;
 import zedly.zenchantments.player.PlayerData;
 
 import java.util.*;
@@ -610,8 +609,8 @@ public final class Utilities {
         final boolean strictMax,
         final float maxDistFromOrigin,
         final int[][] searchFaces,
-        final @NotNull EnumStorage<Material> validFind,
-        @NotNull EnumStorage<Material> validSearch,
+        final @NotNull EnumSet<Material> validFind,
+        @NotNull EnumSet<Material> validSearch,
         final boolean strictValidSearch,
         final boolean flipValidSearch
     ) {
@@ -621,7 +620,7 @@ public final class Utilities {
 
         // Ensure the search list is in the whitelist.
         if (!flipValidSearch) {
-            validSearch = new EnumStorage<>(new Material[] {}, validSearch, validFind);
+            validSearch.addAll(validFind);
         }
 
         // BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large.
@@ -695,8 +694,8 @@ public final class Utilities {
         final int maxBlocks,
         final boolean strictMax,
         final float maxDistFromOrigin,
-        final @NotNull EnumStorage<Material> validFind,
-        final @NotNull EnumStorage<Material> validSearch,
+        final @NotNull EnumSet<Material> validFind,
+        final @NotNull EnumSet<Material> validSearch,
         final boolean strictValidSearch,
         final boolean flipValidSearch
     ) {

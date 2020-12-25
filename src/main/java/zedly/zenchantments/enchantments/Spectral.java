@@ -11,8 +11,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
-import zedly.zenchantments.compatibility.EnumStorage;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -367,8 +367,8 @@ public final class Spectral extends Zenchantment {
                     false,
                     Float.MAX_VALUE,
                     SEARCH_FACES,
-                    new EnumStorage<>(new Material[] {event.getClickedBlock().getType()}),
-                    new EnumStorage<>(new Material[0]),
+                    EnumSet.of(event.getClickedBlock().getType()),
+                    EnumSet.noneOf(Material.class),
                     false,
                     true
                 )

@@ -9,8 +9,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.compatibility.EnumStorage;
 
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -102,7 +102,7 @@ public final class Terraformer extends Zenchantment {
             5f,
             SEARCH_FACES,
             Storage.COMPATIBILITY_ADAPTER.Airs(),
-            new EnumStorage<>(new Material[0]),
+            EnumSet.noneOf(Material.class),
             false,
             true
         );

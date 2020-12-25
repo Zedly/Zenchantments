@@ -12,8 +12,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.compatibility.EnumStorage;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -166,8 +166,8 @@ public final class Fire extends Zenchantment {
             false,
             256,
             SEARCH_FACES_CACTUS,
-            new EnumStorage<>(new Material[] {CACTUS}),
-            new EnumStorage<>(new Material[] {}),
+            EnumSet.of(CACTUS),
+            EnumSet.noneOf(Material.class),
             false,
             true
         );
@@ -203,8 +203,8 @@ public final class Fire extends Zenchantment {
             false,
             256,
             SEARCH_FACES_CHORUS,
-            new EnumStorage<>(new Material[] {CHORUS_PLANT, CHORUS_FLOWER}),
-            new EnumStorage<>(new Material[] {}),
+            EnumSet.of(CHORUS_PLANT, CHORUS_FLOWER),
+            EnumSet.noneOf(Material.class),
             false,
             true
         );
