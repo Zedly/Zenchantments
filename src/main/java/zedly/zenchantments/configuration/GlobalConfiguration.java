@@ -12,7 +12,7 @@ public class GlobalConfiguration implements zedly.zenchantments.api.configuratio
 
     private WorldConfiguration defaultWorldConfiguration;
 
-    public GlobalConfiguration(@NotNull ZenchantmentsPlugin plugin) {
+    public GlobalConfiguration(final @NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
