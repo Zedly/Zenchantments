@@ -86,7 +86,7 @@ public final class Shred extends Zenchantment {
         this.shred(
             block,
             block,
-            new int[] {level + 3, level + 3, level + 3},
+            new int[] { level + 3, level + 3, level + 3 },
             0,
             4.6 + (level * 0.22),
             new HashSet<>(),
@@ -151,7 +151,8 @@ public final class Shred extends Zenchantment {
                     eventPlayer,
                     this.getPlugin().getPlayerDataProvider().getDataForPlayer(player),
                     Utilities.getUsedItemStack(eventPlayer, eventUsedHand),
-                    (ench, level) -> ench.onBlockBreak(event, level, eventUsedHand));
+                    (ench, level) -> ench.onBlockBreak(event, level, eventUsedHand)
+                );
 
                 if (event.isCancelled()) {
                     return;

@@ -32,7 +32,7 @@ public final class Anthropomorphism extends Zenchantment {
     private static final Hand                               HAND_USE    = Hand.BOTH;
 
     private static final List<Entity> VORTEX    = new ArrayList<>();
-    private static final Material[]   MATERIALS = new Material[] {STONE, GRAVEL, DIRT, GRASS_BLOCK};
+    private static final Material[]   MATERIALS = new Material[] { STONE, GRAVEL, DIRT, GRASS_BLOCK };
 
     private static boolean fallBool = false;
 
@@ -137,7 +137,8 @@ public final class Anthropomorphism extends Zenchantment {
 
                     if (targetEntity.getNoDamageTicks() == 0 && ATTACK_BLOCKS.get(blockEntity) != null
                         && Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
-                        2.0 * ATTACK_BLOCKS.get(blockEntity).getKey())) {
+                        2.0 * ATTACK_BLOCKS.get(blockEntity).getKey()
+                    )) {
                         targetEntity.setNoDamageTicks(0);
                         iterator.remove();
                         blockEntity.remove();

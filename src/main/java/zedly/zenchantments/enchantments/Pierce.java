@@ -135,22 +135,22 @@ public final class Pierce extends Zenchantment {
         if (mode != 1 && mode != 5) {
             int add = -1;
             boolean b = false;
-            int[][] ints = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+            int[][] ints = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
             switch (Utilities.getCardinalDirection(playerLocation.getYaw(), 0)) {
                 case SOUTH:
-                    ints = new int[][] {{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
+                    ints = new int[][] { { 1, 0, 0 }, { 0, 0, 1 }, { 0, 1, 0 } };
                     add = 1;
                     b = true;
                     break;
                 case WEST:
-                    ints = new int[][] {{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
+                    ints = new int[][] { { 0, 0, 1 }, { 1, 0, 0 }, { 0, 1, 0 } };
                     break;
                 case NORTH:
-                    ints = new int[][] {{1, 0, 0}, {0, 0, 1}, {0, 1, 0}};
+                    ints = new int[][] { { 1, 0, 0 }, { 0, 0, 1 }, { 0, 1, 0 } };
                     b = true;
                     break;
                 case EAST:
-                    ints = new int[][] {{0, 0, 1}, {1, 0, 0}, {0, 1, 0}};
+                    ints = new int[][] { { 0, 0, 1 }, { 1, 0, 0 }, { 0, 1, 0 } };
                     add = 1;
                     break;
             }

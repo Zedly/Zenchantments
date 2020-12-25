@@ -35,13 +35,13 @@ public final class Fire extends Zenchantment {
     private static final Hand                               HAND_USE    = Hand.LEFT;
 
     private static final int     MAX_BLOCKS          = 256;
-    private static final int[][] SEARCH_FACES_CACTUS = new int[][] {new int[] {0, 1, 0}};
+    private static final int[][] SEARCH_FACES_CACTUS = new int[][] { { 0, 1, 0 } };
     private static final int[][] SEARCH_FACES_CHORUS = new int[][] {
-        new int[] {-1, 0, 0},
-        new int[] {1, 0, 0},
-        new int[] {0, 1, 0},
-        new int[] {0, 0, -1},
-        new int[] {0, 0, 1}
+        { -1, 0, 0 },
+        { 1, 0, 0 },
+        { 0, 1, 0 },
+        { 0, 0, -1 },
+        { 0, 0, 1 }
     };
 
     private final NamespacedKey key;
