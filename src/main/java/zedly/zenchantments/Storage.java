@@ -5,8 +5,6 @@ import org.bukkit.block.BlockFace;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.compatibility.NMS_1_16_R1;
 
-import java.util.Random;
-
 @Deprecated
 public class Storage {
     // Absolute path to the plugin jar

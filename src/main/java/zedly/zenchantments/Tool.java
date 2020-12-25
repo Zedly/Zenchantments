@@ -6,8 +6,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 

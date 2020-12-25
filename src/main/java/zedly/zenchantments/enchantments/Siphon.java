@@ -13,8 +13,8 @@ import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.SiphonArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.Objects;
 import java.util.Set;

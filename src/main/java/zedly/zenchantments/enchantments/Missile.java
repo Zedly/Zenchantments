@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.MissileArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.Set;
 

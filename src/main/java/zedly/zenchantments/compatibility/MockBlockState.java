@@ -5,7 +5,6 @@
  */
 package zedly.zenchantments.compatibility;
 
-import java.util.List;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +15,8 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+
+import java.util.List;
 
 /**
  * Wrapper class for firing more accurate events

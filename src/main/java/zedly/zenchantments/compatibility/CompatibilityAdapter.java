@@ -5,8 +5,6 @@
  */
 package zedly.zenchantments.compatibility;
 
-import java.util.Random;
-
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -14,34 +12,28 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.EntityBlockFormEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
-
-import static org.bukkit.Material.*;
-import static org.bukkit.Material.TROPICAL_FISH;
-import org.bukkit.block.data.type.Bamboo;
-import static org.bukkit.entity.EntityType.*;
-import static org.bukkit.entity.EntityType.PUFFERFISH;
-import org.bukkit.event.block.Action;
-import static org.bukkit.potion.PotionEffectType.*;
-import static org.bukkit.potion.PotionEffectType.DOLPHINS_GRACE;
-import static org.bukkit.potion.PotionEffectType.WATER_BREATHING;
-
-import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
+import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Random;
+
+import static org.bukkit.Material.TROPICAL_FISH;
+import static org.bukkit.Material.*;
+import static org.bukkit.entity.EntityType.PUFFERFISH;
+import static org.bukkit.entity.EntityType.*;
+import static org.bukkit.potion.PotionEffectType.*;
 
 public class CompatibilityAdapter {
 

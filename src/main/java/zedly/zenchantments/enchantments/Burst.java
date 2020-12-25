@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.arrows.MultiArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.Set;
 
