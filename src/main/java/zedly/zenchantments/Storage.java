@@ -7,9 +7,6 @@ import zedly.zenchantments.compatibility.NMS_1_16_R1;
 
 @Deprecated
 public class Storage {
-    // Absolute path to the plugin jar
-    public static String pluginPath;
-
     public static final CompatibilityAdapter COMPATIBILITY_ADAPTER;
 
     public static final BlockFace[] CARDINAL_BLOCK_FACES = {
