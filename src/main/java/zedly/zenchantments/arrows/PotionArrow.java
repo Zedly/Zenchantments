@@ -3,15 +3,35 @@ package zedly.zenchantments.arrows;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.bukkit.potion.PotionEffectType.*;
+
 public final class PotionArrow extends ZenchantedArrow {
+    private static final PotionEffectType[] POTION_EFFECT_TYPES = {
+        ABSORPTION,
+        DAMAGE_RESISTANCE,
+        FIRE_RESISTANCE,
+        SPEED,
+        JUMP,
+        INVISIBILITY,
+        INCREASE_DAMAGE,
+        HEALTH_BOOST,
+        HEAL,
+        REGENERATION,
+        NIGHT_VISION,
+        SATURATION,
+        FAST_DIGGING,
+        WATER_BREATHING,
+        DOLPHINS_GRACE
+    };
+
     public PotionArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
         super(plugin, entity, level, power);
     }
@@ -21,7 +41,7 @@ public final class PotionArrow extends ZenchantedArrow {
         if (ThreadLocalRandom.current().nextInt((int) Math.round(10 / (this.getLevel() * this.getPower() + 1))) == 1) {
             Utilities.addPotionEffect(
                 (LivingEntity) Objects.requireNonNull(this.getArrow().getShooter()),
-                Storage.COMPATIBILITY_ADAPTER.PotionPotions().get(ThreadLocalRandom.current().nextInt(12)),
+                POTION_EFFECT_TYPES[ThreadLocalRandom.current().nextInt(15)],
                 150 + (int) Math.round(this.getLevel() * this.getPower() * 50),
                 (int) Math.round(this.getLevel() * this.getPower())
             );
