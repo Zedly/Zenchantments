@@ -1,35 +1,70 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
-import static zedly.zenchantments.enums.Tool.HELMET;
 
-public class NightVision extends CustomEnchantment {
+public final class NightVision extends Zenchantment {
+    public static final String KEY = "night_vision";
 
-	public static final int ID = 40;
+    private static final String                             NAME        = "Night Vision";
+    private static final String                             DESCRIPTION = "Lets the player see in the dark";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public Builder<NightVision> defaults() {
-		return new Builder<>(NightVision::new, ID)
-			.maxLevel(1)
-			.loreName("Night Vision")
-			.probability(0)
-			.enchantable(new Tool[]{HELMET})
-			.conflicting(new Class[]{})
-			.description("Lets the player see in the darkness")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onScan(Player player, int level, boolean usedHand) {
-		Utilities.addPotion(player, NIGHT_VISION, 610, 5);
-		return true;
-	}
+    public NightVision(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+        Utilities.addPotionEffect(player, NIGHT_VISION, 610, 5);
+        return true;
+    }
 }

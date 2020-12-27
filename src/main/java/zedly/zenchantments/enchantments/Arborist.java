@@ -1,68 +1,109 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.enums.Tool.AXE;
 
-public class Arborist extends CustomEnchantment {
+public final class Arborist extends Zenchantment {
+    public static final String KEY = "arborist";
 
-	public static final int ID = 2;
+    private static final String                             NAME        = "Arborist";
+    private static final String                             DESCRIPTION = "Drops more apples, sticks, and saplings when used on leaves";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-	@Override
-	public Builder<Arborist> defaults() {
-		return new Builder<>(Arborist::new, ID)
-			.maxLevel(3)
-			.loreName("Arborist")
-			.probability(0)
-			.enchantable(new Tool[]{AXE})
-			.conflicting(new Class[]{})
-			.description("Drops more apples, sticks, and saplings when used on leaves")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.LEFT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		Block blk = evt.getBlock();
-		Material mat = blk.getType();
-		if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(mat)) {
-			// Crudely get the index in the array of materials
+    public Arborist(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double probability,
+        final float power
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-			int index = Math.max(Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(mat),
-				Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(mat));
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
 
-			ItemStack stk = new ItemStack(Storage.COMPATIBILITY_ADAPTER.Saplings().get(index), 1);
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
 
-			if (Storage.rnd.nextInt(10) >= (9 - level) / (power + .001)) {
-				if (Storage.rnd.nextInt(3) % 3 == 0) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), stk);
-				}
-				if (Storage.rnd.nextInt(3) % 3 == 0) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(STICK, 1));
-				}
-				if (Storage.rnd.nextInt(3) % 3 == 0) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(APPLE, 1));
-				}
-				if (Storage.rnd.nextInt(65) == 25) {
-					evt.getBlock().getWorld()
-					   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(GOLDEN_APPLE, 1));
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        Block block = event.getBlock();
+        Material material = block.getType();
+
+        if (!Storage.COMPATIBILITY_ADAPTER.Leaves().contains(material)) {
+            return false;
+        }
+
+        // Crudely get the index in the array of materials.
+        // TODO: Make this not awful.
+        int index = Math.max(
+            Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(material),
+            Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(material)
+        );
+
+        ItemStack stack = new ItemStack(Storage.COMPATIBILITY_ADAPTER.Saplings().get(index), 1);
+
+        if (!(ThreadLocalRandom.current().nextInt(10) >= (9 - level) / (this.getPower() + 0.001))) {
+            return false;
+        }
+
+        if (ThreadLocalRandom.current().nextInt(3) % 3 == 0) {
+            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(3) % 3 == 0) {
+            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(STICK, 1));
+        }
+
+        if (ThreadLocalRandom.current().nextInt(3) % 3 == 0) {
+            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(APPLE, 1));
+        }
+
+        if (ThreadLocalRandom.current().nextInt(65) == 25) {
+            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(GOLDEN_APPLE, 1));
+        }
+
+        return true;
+    }
 }

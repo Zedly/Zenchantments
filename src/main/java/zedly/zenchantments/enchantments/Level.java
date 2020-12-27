@@ -1,63 +1,103 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.arrows.enchanted.LevelArrow;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.LevelArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
-import static zedly.zenchantments.enums.Tool.*;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class Level extends CustomEnchantment {
+public final class Level extends Zenchantment {
+    public static final String KEY = "level";
 
-    public static final int ID = 32;
+    private static final String                             NAME        = "Level";
+    private static final String                             DESCRIPTION = "Drops more XP when killing mobs or mining ores";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.BOTH;
 
-    @Override
-    public Builder<Level> defaults() {
-        return new Builder<>(Level::new, ID)
-                .maxLevel(3)
-                .loreName("Level")
-                .probability(0)
-                .enchantable(new Tool[]{PICKAXE, SWORD, BOW})
-                .conflicting(new Class[]{})
-                .description("Drops more XP when killing mobs or mining ores")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.BOTH);
+    private final NamespacedKey key;
+
+    public Level(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
-    public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
-        if (Storage.rnd.nextBoolean()) {
-            evt.setDroppedExp((int) (evt.getDroppedExp() * (1.3 + (level * power * .5))));
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityKill(@NotNull EntityDeathEvent event, int level, boolean usedHand) {
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            event.setDroppedExp((int) (event.getDroppedExp() * (1.3 + (level * this.getPower() * .5))));
             return true;
         }
+
         return false;
     }
 
     @Override
-    public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-        if (Storage.rnd.nextBoolean()) {
-            evt.setExpToDrop((int) (evt.getExpToDrop() * (1.3 + (level * power * .5))));
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            event.setExpToDrop((int) (event.getExpToDrop() * (1.3 + (level * this.getPower() * .5))));
             return true;
         }
+
         return false;
     }
 
     @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        if (Storage.rnd.nextBoolean()) {
-            LevelArrow arrow = new LevelArrow((Arrow) evt.getProjectile(), level, power);
-            EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            LevelArrow arrow = new LevelArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+            ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
             return true;
         }
+
         return false;
     }
-
 }

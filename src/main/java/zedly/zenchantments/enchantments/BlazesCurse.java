@@ -1,88 +1,141 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.Material.*;
-import static org.bukkit.block.BlockFace.DOWN;
-import static zedly.zenchantments.enums.Tool.CHESTPLATE;
+import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
+import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
+import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.*;
 
-public class BlazesCurse extends CustomEnchantment {
+public final class BlazesCurse extends Zenchantment {
+    private static final float SUBMERGE_DAMAGE = 1.5f;
+    private static final float RAIN_DAMAGE     = 0.5f;
 
-	private static final float   submergeDamage = 1.5f;
-	private static final float   rainDamage     = .5f;
-	public static final  int     ID             = 5;
+    public static final String KEY = "blazes_curse";
 
-	@Override
-	public Builder<BlazesCurse> defaults() {
-		return new Builder<>(BlazesCurse::new, ID)
-			.maxLevel(1)
-			.loreName("Blaze's Curse")
-			.probability(0)
-			.enchantable(new Tool[]{CHESTPLATE})
-			.conflicting(new Class[]{})
-			.description("Causes the player to be unharmed in lava and fire, but damages them in water and rain")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.NONE);
-	}
+    private static final String                             NAME        = "Blaze's Curse";
+    private static final String                             DESCRIPTION = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public boolean onEntityDamage(EntityDamageEvent evt, int level, boolean usedHand) {
-		if (evt.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR ||
-			evt.getCause() == EntityDamageEvent.DamageCause.LAVA ||
-			evt.getCause() == EntityDamageEvent.DamageCause.FIRE ||
-			evt.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
-			evt.setCancelled(true);
-			return true;
-		}
-		return false;
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBeingHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-		if (evt.getDamager().getType() == EntityType.FIREBALL
-			|| evt.getDamager().getType() == EntityType.SMALL_FIREBALL) {
-			evt.setDamage(0);
-			return true;
-		}
-		return false;
-	}
+    public BlazesCurse(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@Override
-	public boolean onScan(Player player, int level, boolean usedHand) {
-		Material mat = player.getLocation().getBlock().getType();
-		if (mat == WATER) {
-			ADAPTER.damagePlayer(player, submergeDamage, EntityDamageEvent.DamageCause.DROWNING);
-			return true;
-		}
-		mat = player.getLocation().getBlock().getRelative(DOWN).getType();
-		if (mat == ICE || mat == FROSTED_ICE) {
-			ADAPTER.damagePlayer(player, rainDamage, EntityDamageEvent.DamageCause.MELTING);
-			return true;
-		}
-		if (player.getWorld().hasStorm()
-			&& !Storage.COMPATIBILITY_ADAPTER.DryBiomes().contains(player.getLocation().getBlock().getBiome())) {
-			Location check_loc = player.getLocation();
-			while (check_loc.getBlockY() < 256) {
-				if (!Storage.COMPATIBILITY_ADAPTER.Airs().contains(check_loc.getBlock().getType())) {
-					break;
-				}
-				check_loc.setY(check_loc.getBlockY() + 1);
-			}
-			if (check_loc.getBlockY() == 256) {
-				ADAPTER.damagePlayer(player, rainDamage, EntityDamageEvent.DamageCause.CUSTOM);
-			}
-		}
-		player.setFireTicks(0);
-		return true;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityDamage(@NotNull EntityDamageEvent event, int level, boolean usedHand) {
+        if (event.getCause() == LAVA
+            || event.getCause() == FIRE
+            || event.getCause() == FIRE_TICK
+            || event.getCause() == HOT_FLOOR
+        ) {
+            event.setCancelled(true);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onBeingHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+        if (event.getDamager().getType() == EntityType.FIREBALL
+            || event.getDamager().getType() == EntityType.SMALL_FIREBALL
+        ) {
+            event.setDamage(0);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+        Block block = player.getLocation().getBlock();
+        Material material = block.getType();
+
+        if (material == WATER) {
+            ADAPTER.damagePlayer(player, SUBMERGE_DAMAGE, DROWNING);
+            return true;
+        }
+
+        material = block.getRelative(BlockFace.DOWN).getType();
+
+        if (material == ICE || material == FROSTED_ICE) {
+            ADAPTER.damagePlayer(player, RAIN_DAMAGE, MELTING);
+            return true;
+        }
+
+        if (player.getWorld().hasStorm()
+            && !Storage.COMPATIBILITY_ADAPTER.DryBiomes().contains(player.getLocation().getBlock().getBiome())
+        ) {
+            Location checkLocation = player.getLocation();
+            while (checkLocation.getBlockY() < 256) {
+                if (!Storage.COMPATIBILITY_ADAPTER.Airs().contains(checkLocation.getBlock().getType())) {
+                    break;
+                }
+
+                checkLocation.setY(checkLocation.getBlockY() + 1);
+            }
+
+            if (checkLocation.getBlockY() == 256) {
+                ADAPTER.damagePlayer(player, RAIN_DAMAGE, CUSTOM);
+            }
+        }
+
+        player.setFireTicks(0);
+        return true;
+    }
 }

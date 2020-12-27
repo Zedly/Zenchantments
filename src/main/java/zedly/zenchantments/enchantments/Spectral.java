@@ -1,53 +1,100 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.*;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 import zedly.zenchantments.compatibility.CompatibilityAdapter;
-import zedly.zenchantments.compatibility.EnumStorage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.enums.Tool.SHOVEL;
 
-public class Spectral extends CustomEnchantment {
+public final class Spectral extends Zenchantment {
+    public static final String KEY = "spectral";
 
-    private static final int MAX_BLOCKS = 1024;
+    private static final String                             NAME        = "Spectral";
+    private static final String                             DESCRIPTION = "Allows for cycling through a block's types";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-    public static int[][] SEARCH_FACES = new int[][]{new int[]{}};
+    private static final int     MAX_BLOCKS   = 1024;
+    private static final int[][] SEARCH_FACES = new int[0][0];
 
-    public static final int ID = 54;
+    private final NamespacedKey key;
 
-    @Override
-    public Builder<Spectral> defaults() {
-        return new Builder<>(Spectral::new, ID)
-                .maxLevel(1)
-                .loreName("Spectral")
-                .probability(0)
-                .enchantable(new Tool[]{SHOVEL})
-                .conflicting(new Class[]{})
-                .description("Allows for cycling through a block's types")
-                .cooldown(0)
-                .power(-1.0)
-                .handUse(Hand.RIGHT);
+    public Spectral(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
-    private boolean cycleBlockType(Set<Block> blocks) {
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        return this.doEvent(event, usedHand);
+    }
+
+    @Override
+    public boolean onBlockInteractInteractable(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        return this.doEvent(event, usedHand);
+    }
+
+    private boolean cycleBlockType(@NotNull Set<Block> blocks) {
         CompatibilityAdapter adapter = Storage.COMPATIBILITY_ADAPTER;
         boolean change = false;
+
         for (Block block : blocks) {
             Material original = block.getType();
             Material newMat = original;
+
+            // TODO: Can this even be fixed..?
+            // Honestly, what happened here?
+            // Where did it all go wrong?
+
             if (adapter.Wools().contains(original)) {
                 newMat = adapter.Wools().getNext(original);
             } else if (adapter.StainedGlass().contains(original)) {
@@ -188,11 +235,13 @@ public class Spectral extends CustomEnchantment {
                 newMat = adapter.Beds().getNext(original);
             }
 
+            // oh my god it's over
+
             if (!newMat.equals(original)) {
                 change = true;
                 BlockData blockData = block.getBlockData();
-                final Material newMatFinal = newMat;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
+                Material newMatFinal = newMat;
+                this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
 
                     block.setType(newMatFinal, false);
 
@@ -201,7 +250,7 @@ public class Spectral extends CustomEnchantment {
                         newBlockData.setHalf(((Bisected) blockData).getHalf());
                         block.setBlockData(newBlockData, false);
 
-                        // Set the second half's data
+                        // Set the second half's data.
                         if (block.getRelative(BlockFace.UP).getType().equals(original)) {
                             newBlockData.setHalf(Bisected.Half.TOP);
                             block.getRelative(BlockFace.UP).setBlockData(newBlockData, false);
@@ -217,18 +266,17 @@ public class Spectral extends CustomEnchantment {
                         newBlockData.setPart(((Bed) blockData).getPart());
                         block.setBlockData(newBlockData, false);
 
-                        // Set the second bed's part
+                        // Set the second bed's part.
                         BlockFace facing = !newBlockData.getPart().equals(Bed.Part.HEAD)
-                                ? ((Bed) blockData).getFacing()
-                                : ((Bed) blockData).getFacing().getOppositeFace();
+                            ? ((Bed) blockData).getFacing()
+                            : ((Bed) blockData).getFacing().getOppositeFace();
                         newBlockData.setPart(((Bed) block.getRelative(facing).getBlockData()).getPart());
                         block.getRelative(facing).setBlockData(newBlockData, false);
 
-                        // Set the second bed's direction since we never do that later on
+                        // Set the second bed's direction since we never do that later on.
                         Directional secondaryBlockData = (Directional) block.getRelative(facing).getBlockData();
                         secondaryBlockData.setFacing(((Directional) blockData).getFacing());
                         block.getRelative(facing).setBlockData(secondaryBlockData, true);
-
                     }
 
                     if (blockData instanceof Gate) {
@@ -272,6 +320,7 @@ public class Spectral extends CustomEnchantment {
                         newBlockData.setType(((Slab) blockData).getType());
                         block.setBlockData(newBlockData, true);
                     }
+
                     if (blockData instanceof MultipleFacing) {
                         MultipleFacing newBlockData = (MultipleFacing) block.getBlockData();
                         for (BlockFace bf : ((MultipleFacing) blockData).getFaces()) {
@@ -279,11 +328,13 @@ public class Spectral extends CustomEnchantment {
                         }
                         block.setBlockData(newBlockData, true);
                     }
+
                     if (blockData instanceof Directional) {
                         Directional newBlockData = (Directional) block.getBlockData();
                         newBlockData.setFacing(((Directional) blockData).getFacing());
                         block.setBlockData(newBlockData, true);
                     }
+
                     if (blockData instanceof Waterlogged) {
                         Waterlogged newBlockData = (Waterlogged) block.getBlockData();
                         newBlockData.setWaterlogged(((Waterlogged) blockData).isWaterlogged());
@@ -291,44 +342,51 @@ public class Spectral extends CustomEnchantment {
                     }
                 }, 0);
             }
-
         }
+
         return change;
     }
 
-    public boolean doEvent(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if (evt.getClickedBlock() == null) {
+    public boolean doEvent(@NotNull PlayerInteractEvent event, boolean usedHand) {
+        if (event.getClickedBlock() == null) {
             return false;
         }
 
-        if (evt.getAction() != RIGHT_CLICK_BLOCK) {
+        if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
+
         Set<Block> blocks = new HashSet<>();
-        blocks.add(evt.getClickedBlock());
-        if (evt.getPlayer().isSneaking()) {
-            blocks.addAll(Utilities.BFS(evt.getClickedBlock(), MAX_BLOCKS, false, Float.MAX_VALUE,
-                    SEARCH_FACES, new EnumStorage<>(new Material[]{evt.getClickedBlock().getType()}),
-                    new EnumStorage<>(new Material[]{}), false, true));
+        blocks.add(event.getClickedBlock());
+
+        if (event.getPlayer().isSneaking()) {
+            blocks.addAll(
+                Utilities.bfs(
+                    event.getClickedBlock(),
+                    MAX_BLOCKS,
+                    false,
+                    Float.MAX_VALUE,
+                    SEARCH_FACES,
+                    EnumSet.of(event.getClickedBlock().getType()),
+                    EnumSet.noneOf(Material.class),
+                    false,
+                    true
+                )
+            );
         }
 
-        boolean result = cycleBlockType(blocks);
+        boolean result = this.cycleBlockType(blocks);
+
         if (result) {
-            Utilities.damageTool(evt.getPlayer(), (int) Math.ceil(Math.log(blocks.size() + 1) / Math.log(2)),
-                    usedHand);
+            Utilities.damageItemStack(
+                event.getPlayer(),
+                (int) Math.ceil(Math.log(blocks.size() + 1) / Math.log(2)),
+                usedHand
+            );
         }
-        evt.setCancelled(true);
+
+        event.setCancelled(true);
+
         return result;
     }
-
-    @Override
-    public boolean onBlockInteractInteractable(PlayerInteractEvent evt, int level, boolean usedHand) {
-        return doEvent(evt, level, usedHand);
-    }
-
-    @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        return doEvent(evt, level, usedHand);
-    }
-
 }

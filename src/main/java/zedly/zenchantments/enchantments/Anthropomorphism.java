@@ -1,224 +1,278 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.enums.Frequency;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+import zedly.zenchantments.task.EffectTask;
+import zedly.zenchantments.task.Frequency;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
-import static zedly.zenchantments.enums.Tool.PICKAXE;
 
-public class Anthropomorphism extends CustomEnchantment {
-    // The falling blocks from the Anthropomorphism enchantment that are attacking, moving towards a set target
+public final class Anthropomorphism extends Zenchantment {
+    public static final String KEY = "anthropomorphism";
 
-    public static final Map<FallingBlock, Pair<Double, Vector>> attackBlocks = new HashMap<>();
-    // Players currently using the Anthropomorphism enchantment
-    private static final List<Entity> anthVortex = new ArrayList<>();
-    // The falling blocks from the Anthropomorphism enchantment that are idle, staying within the relative region
-    public static final Map<FallingBlock, Entity> idleBlocks = new HashMap<>();
-    private static final Material[] MAT = new Material[]{STONE, GRAVEL, DIRT, GRASS_BLOCK};
-    public static final int ID = 1;
-    // Determines if falling entities from Anthropomorphism should fall up or down
+    public static final Map<FallingBlock, Pair<Double, Vector>> ATTACK_BLOCKS = new HashMap<>();
+    public static final Map<FallingBlock, Entity>               IDLE_BLOCKS   = new HashMap<>();
+
+    private static final String                             NAME        = "Anthropomorphism";
+    private static final String                             DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
+    private static final Hand                               HAND_USE    = Hand.BOTH;
+
+    private static final List<Entity> VORTEX    = new ArrayList<>();
+    private static final Material[]   MATERIALS = new Material[] { STONE, GRAVEL, DIRT, GRASS_BLOCK };
+
     private static boolean fallBool = false;
 
+    private final NamespacedKey key;
+
+    public Anthropomorphism(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double probability,
+        final float power
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
     @Override
-    public Builder<Anthropomorphism> defaults() {
-        return new Builder<>(Anthropomorphism::new, ID)
-                .maxLevel(1)
-                .loreName("Anthropomorphism")
-                .probability(0)
-                .enchantable(new Tool[]{PICKAXE})
-                .conflicting(new Class[]{Pierce.class, Switch.class})
-                .description(
-                        "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.BOTH);
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
-    // Removes Anthropomorphism blocks when they are dead
-    public static void removeCheck() {
-        Iterator it = idleBlocks.keySet().iterator();
-        while (it.hasNext()) {
-            FallingBlock b = (FallingBlock) it.next();
-            if (b.isDead()) {
-                it.remove();
+    public static void removeOldBlocks() {
+        Iterator<FallingBlock> iterator = IDLE_BLOCKS.keySet().iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().isDead()) {
+                iterator.remove();
             }
         }
-        it = attackBlocks.keySet().iterator();
-        while (it.hasNext()) {
-            FallingBlock b = (FallingBlock) it.next();
-            if (b.isDead()) {
-                it.remove();
+
+        iterator = ATTACK_BLOCKS.keySet().iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().isDead()) {
+                iterator.remove();
             }
         }
     }
 
-    // Moves Anthropomorphism blocks around depending on their state
     @EffectTask(Frequency.HIGH)
-    public static void entityPhysics() {
-        // Move agressive Anthropomorphism Blocks towards a target & attack
-        Iterator<FallingBlock> anthroIterator = attackBlocks.keySet().iterator();
-        while (anthroIterator.hasNext()) {
-            FallingBlock blockEntity = anthroIterator.next();
-            if (!anthVortex.contains(idleBlocks.get(blockEntity))) {
-                for (Entity e : blockEntity.getNearbyEntities(7, 7, 7)) {
-                    if (e instanceof Monster) {
-                        LivingEntity targetEntity = (LivingEntity) e;
+    public static void moveBlocks() {
+        // Move aggressive Anthropomorphism Blocks towards a target & attack.
+        Iterator<FallingBlock> iterator = ATTACK_BLOCKS.keySet().iterator();
+        while (iterator.hasNext()) {
+            FallingBlock blockEntity = iterator.next();
+            if (VORTEX.contains(IDLE_BLOCKS.get(blockEntity))) {
+                continue;
+            }
 
-                        Vector playerDir = attackBlocks.get(blockEntity) == null
-                                ? new Vector()
-                                : attackBlocks.get(blockEntity).getValue();
+            for (Entity entity : blockEntity.getNearbyEntities(7, 7, 7)) {
+                if (!(entity instanceof Monster)) {
+                    continue;
+                }
 
-                        blockEntity.setVelocity(e.getLocation().add(playerDir.multiply(.75)).subtract(blockEntity.getLocation()).toVector().multiply(0.25));
+                LivingEntity targetEntity = (LivingEntity) entity;
 
-                        if (targetEntity.getLocation().getWorld().equals(blockEntity.getLocation().getWorld())) {
-                            if (targetEntity.getLocation().distance(blockEntity.getLocation()) < 1.2
-                                    && blockEntity.hasMetadata("ze.anthrothrower")) {
-                                Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
+                Vector playerDir = ATTACK_BLOCKS.get(blockEntity) == null
+                    ? new Vector()
+                    : ATTACK_BLOCKS.get(blockEntity).getValue();
 
-                                if (targetEntity.getNoDamageTicks() == 0 && attackBlocks.get(blockEntity) != null
-                                        && Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
-                                                2.0 * attackBlocks.get(blockEntity).getKey())) {
-                                    targetEntity.setNoDamageTicks(0);
-                                    anthroIterator.remove();
-                                    blockEntity.remove();
-                                }
-                            }
-                        }
+                blockEntity.setVelocity(
+                    entity.getLocation()
+                        .add(playerDir.multiply(.75))
+                        .subtract(blockEntity.getLocation())
+                        .toVector()
+                        .multiply(0.25)
+                );
+
+                if (!targetEntity.getLocation().getWorld().equals(blockEntity.getLocation().getWorld())) {
+                    continue;
+                }
+
+                if (targetEntity.getLocation().distance(blockEntity.getLocation()) < 1.2
+                    && blockEntity.hasMetadata("ze.anthrothrower")
+                ) {
+                    Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
+
+                    if (targetEntity.getNoDamageTicks() == 0 && ATTACK_BLOCKS.get(blockEntity) != null
+                        && Storage.COMPATIBILITY_ADAPTER.attackEntity(targetEntity, attacker,
+                        2.0 * ATTACK_BLOCKS.get(blockEntity).getKey()
+                    )) {
+                        targetEntity.setNoDamageTicks(0);
+                        iterator.remove();
+                        blockEntity.remove();
                     }
                 }
             }
         }
+
         // Move passive Anthropomorphism Blocks around
         fallBool = !fallBool;
-        for (FallingBlock b : idleBlocks.keySet()) {
-            if (anthVortex.contains(idleBlocks.get(b))) {
-                Location loc = idleBlocks.get(b).getLocation();
-                Vector v;
-                if (b.getLocation().getWorld().equals(idleBlocks.get(b).getLocation().getWorld())) {
-                    if (fallBool && b.getLocation().distance(idleBlocks.get(b).getLocation()) < 10) {
-                        v = b.getLocation().subtract(loc).toVector();
-                    } else {
-                        double x = 6f * Math.sin(b.getTicksLived() / 10f);
-                        double z = 6f * Math.cos(b.getTicksLived() / 10f);
-                        Location tLoc = loc.clone();
-                        tLoc.setX(tLoc.getX() + x);
-                        tLoc.setZ(tLoc.getZ() + z);
-                        v = tLoc.subtract(b.getLocation()).toVector();
-                    }
-                    v.multiply(.05);
-                    boolean close = false;
-                    for (int x = -3; x < 0; x++) {
-                        if (b.getLocation().getBlock().getRelative(0, x, 0).getType() != AIR) {
-                            close = true;
-                        }
-                    }
-                    if (close) {
-                        v.setY(Math.abs(Math.sin(b.getTicksLived() / 10f)));
-                    } else {
-                        v.setY(0);
-                    }
-                    b.setVelocity(v);
+
+        for (FallingBlock block : IDLE_BLOCKS.keySet()) {
+            if (!VORTEX.contains(IDLE_BLOCKS.get(block))) {
+                continue;
+            }
+
+            Location location = IDLE_BLOCKS.get(block).getLocation();
+            Vector vector;
+
+            if (!block.getLocation().getWorld().equals(IDLE_BLOCKS.get(block).getLocation().getWorld())) {
+                continue;
+            }
+
+            if (fallBool && block.getLocation().distance(IDLE_BLOCKS.get(block).getLocation()) < 10) {
+                vector = block.getLocation().subtract(location).toVector();
+            } else {
+                double x = 6f * Math.sin(block.getTicksLived() / 10f);
+                double z = 6f * Math.cos(block.getTicksLived() / 10f);
+                Location tLoc = location.clone();
+                tLoc.setX(tLoc.getX() + x);
+                tLoc.setZ(tLoc.getZ() + z);
+                vector = tLoc.subtract(block.getLocation()).toVector();
+            }
+
+            vector.multiply(.05);
+            boolean close = false;
+
+            for (int x = -3; x < 0; x++) {
+                if (block.getLocation().getBlock().getRelative(0, x, 0).getType() != AIR) {
+                    close = true;
                 }
             }
+
+            if (close) {
+                vector.setY(Math.abs(Math.sin(block.getTicksLived() / 10f)));
+            } else {
+                vector.setY(0);
+            }
+
+            block.setVelocity(vector);
         }
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        Player player = evt.getPlayer();
-        ItemStack hand = Utilities.usedStack(player, usedHand);
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        Player player = event.getPlayer();
+        ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
 
-        if (evt.getAction() == RIGHT_CLICK_AIR || evt.getAction() == RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
             if (player.isSneaking()) {
-                if (!anthVortex.contains(player)) {
-                    anthVortex.add(player);
+                if (!VORTEX.contains(player)) {
+                    VORTEX.add(player);
                 }
+
                 int counter = 0;
-                for (Entity p : idleBlocks.values()) {
+                for (Entity p : IDLE_BLOCKS.values()) {
                     if (p.equals(player)) {
                         counter++;
                     }
                 }
+
                 if (counter < 64 && player.getInventory().contains(COBBLESTONE)) {
-                    Utilities.removeItem(player, COBBLESTONE, 1);
-                    Utilities.damageTool(player, 2, usedHand);
-                    Location loc = player.getLocation();
-                    FallingBlock blockEntity
-                            = loc.getWorld().spawnFallingBlock(loc, Bukkit.createBlockData(MAT[Storage.rnd.nextInt(4)]));
+                    Utilities.removeMaterialsFromPlayer(player, COBBLESTONE, 1);
+                    Utilities.damageItemStack(player, 2, usedHand);
+
+                    Location location = player.getLocation();
+                    FallingBlock blockEntity = location.getWorld().spawnFallingBlock(
+                        location,
+                        this.getPlugin().getServer().createBlockData(MATERIALS[ThreadLocalRandom.current().nextInt(4)])
+                    );
+
                     blockEntity.setDropItem(false);
                     blockEntity.setGravity(false);
-                    blockEntity
-                            .setMetadata("ze.anthrothrower", new FixedMetadataValue(Storage.zenchantments, player));
-                    idleBlocks.put(blockEntity, player);
+                    blockEntity.setMetadata("ze.anthrothrower", new FixedMetadataValue(this.getPlugin(), player));
+                    IDLE_BLOCKS.put(blockEntity, player);
                     return true;
                 }
             }
+
             return false;
-        } else if ((evt.getAction() == LEFT_CLICK_AIR || evt.getAction() == LEFT_CLICK_BLOCK)
-                || hand.getType() == AIR) {
-            anthVortex.remove(player);
+        } else if ((event.getAction() == LEFT_CLICK_AIR || event.getAction() == LEFT_CLICK_BLOCK) || hand.getType() == AIR) {
+            VORTEX.remove(player);
+
             List<FallingBlock> toRemove = new ArrayList<>();
-            for (FallingBlock blk : idleBlocks.keySet()) {
-                if (idleBlocks.get(blk).equals(player)) {
-                    attackBlocks.put(blk, new Pair<>(power, player.getLocation().getDirection()));
-                    toRemove.add(blk);
-                    Block targetBlock = player.getTargetBlock(null, 7);
-                    blk.setVelocity(targetBlock
-                            .getLocation().subtract(player.getLocation()).toVector().multiply(.25));
+
+            for (FallingBlock block : IDLE_BLOCKS.keySet()) {
+                if (IDLE_BLOCKS.get(block).equals(player)) {
+                    ATTACK_BLOCKS.put(block, new Pair<>(this.getPower(), player.getLocation().getDirection()));
+                    toRemove.add(block);
+                    block.setVelocity(
+                        player.getTargetBlock(null, 7)
+                            .getLocation()
+                            .subtract(player.getLocation())
+                            .toVector()
+                            .multiply(.25)
+                    );
                 }
             }
-            for (FallingBlock blk : toRemove) {
-                idleBlocks.remove(blk);
-                blk.setGravity(true);
-                blk.setGlowing(true);
+
+            for (FallingBlock block : toRemove) {
+                IDLE_BLOCKS.remove(block);
+                block.setGravity(true);
+                block.setGlowing(true);
             }
         }
+
         return false;
     }
 
-    private class Pair<K, V> {
+    private static class Pair<K, V> {
+        private final K key;
+        private final V value;
 
-        private K key;
-        private V value;
-
-        public Pair(K k, V v) {
-            this.key = k;
-            this.value = v;
+        public Pair(final K key, final V value) {
+            this.key = key;
+            this.value = value;
         }
 
         public K getKey() {
             return key;
         }
 
-        public void setKey(K key) {
-            this.key = key;
-        }
-
         public V getValue() {
             return value;
         }
-
-        public void setValue(V value) {
-            this.value = value;
-        }
     }
-
 }

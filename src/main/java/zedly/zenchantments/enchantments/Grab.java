@@ -1,50 +1,86 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.bukkit.entity.Player;
 
-import static zedly.zenchantments.enums.Tool.*;
+public final class Grab extends Zenchantment {
+    public static final String KEY = "grab";
 
-public class Grab extends CustomEnchantment {
+    public static final Map<Block, Player> GRAB_LOCATIONS = new HashMap<>();
 
-	// Locations where Grab has been used on a block and are waiting for the Watcher to handle their teleportation
-	public static final Map<Block, Player> grabLocs     = new HashMap<>();
-	public static final int                  ID           = 23;
+    private static final String                             NAME        = "Grab";
+    private static final String                             DESCRIPTION = "Teleports mined items and XP directly to the player";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-	@Override
-	public Builder<Grab> defaults() {
-		return new Builder<>(Grab::new, ID)
-			.maxLevel(1)
-			.loreName("Grab")
-			.probability(0)
-			.enchantable(new Tool[]{PICKAXE, SHOVEL, AXE})
-			.conflicting(new Class[]{})
-			.description("Teleports mined items and XP directly to the player")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.LEFT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockBreak(final BlockBreakEvent evt, int level, boolean usedHand) {
-		grabLocs.put(evt.getBlock(), evt.getPlayer());
-		final Block block = evt.getBlock();
-		//ADAPTER.breakBlockNMS(evt.getBlock(), evt.getPlayer());
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			grabLocs.remove(block);
-		}, 3);
-		return true;
-	}
+    public Grab(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        Block block = event.getBlock();
+
+        GRAB_LOCATIONS.put(block, event.getPlayer());
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+            this.getPlugin(),
+            () -> GRAB_LOCATIONS.remove(block),
+            3
+        );
+
+        return true;
+    }
 }

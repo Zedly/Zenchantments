@@ -1,56 +1,94 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.arrows.enchanted.ReaperArrow;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+import zedly.zenchantments.arrows.ReaperArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
+
+import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.BLINDNESS;
-import static zedly.zenchantments.enums.Tool.BOW;
-import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Reaper extends CustomEnchantment {
+public final class Reaper extends Zenchantment {
+    public static final String KEY = "reaper";
 
-	public static final int ID = 49;
+    private static final String                             NAME        = "Reaper";
+    private static final String                             DESCRIPTION = "Gives the target temporary wither effect and blindness";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.BOTH;
 
-	@Override
-	public Builder<Reaper> defaults() {
-		return new Builder<>(Reaper::new, ID)
-			.maxLevel(4)
-			.loreName("Reaper")
-			.probability(0)
-			.enchantable(new Tool[]{BOW, SWORD})
-			.conflicting(new Class[]{})
-			.description("Gives the target temporary wither effect and blindness")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.BOTH);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		ReaperArrow arrow = new ReaperArrow((Arrow) evt.getProjectile(), level, power);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
-		return true;
-	}
+    public Reaper(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@Override
-	public boolean onEntityHit(EntityDamageByEntityEvent evt, int level, boolean usedHand) {
-		if (evt.getEntity() instanceof LivingEntity &&
-			ADAPTER.attackEntity((LivingEntity) evt.getEntity(), (Player) evt.getDamager(), 0)) {
-			int pow = (int) Math.round(level * power);
-			int dur = (int) Math.round(10 + level * 20 * power);
-			Utilities.addPotion((LivingEntity) evt.getEntity(), PotionEffectType.WITHER, dur, pow);
-			Utilities.addPotion((LivingEntity) evt.getEntity(), BLINDNESS, dur, pow);
-		}
-		return true;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+        if (!(event.getEntity() instanceof LivingEntity)
+            || !ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
+        ) {
+            return true;
+        }
+
+        int pow = (int) Math.round(level * this.getPower());
+        int dur = (int) Math.round(10 + level * 20 * this.getPower());
+        Utilities.addPotionEffect((LivingEntity) event.getEntity(), PotionEffectType.WITHER, dur, pow);
+        Utilities.addPotionEffect((LivingEntity) event.getEntity(), BLINDNESS, dur, pow);
+
+        return true;
+    }
+
+    @Override
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        ReaperArrow arrow = new ReaperArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        return true;
+    }
 }

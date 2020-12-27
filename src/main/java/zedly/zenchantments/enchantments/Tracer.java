@@ -1,83 +1,132 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.arrows.enchanted.TracerArrow;
-import zedly.zenchantments.enums.Frequency;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.TracerArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
+import zedly.zenchantments.task.EffectTask;
+import zedly.zenchantments.task.Frequency;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import static zedly.zenchantments.enums.Tool.BOW;
+public final class Tracer extends Zenchantment {
+    public static final String KEY = "tracer";
 
-public class Tracer extends CustomEnchantment {
+    public static final Map<Arrow, Integer> TRACERS = new HashMap<>();
 
-	// Map of tracer arrows to their expected accuracy
-	public static final Map<Arrow, Integer> tracer = new HashMap<>();
-	public static final int                 ID     = 63;
+    private static final String                             NAME        = "Tracer";
+    private static final String                             DESCRIPTION = "Guides the arrow to targets and then attacks";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public Builder<Tracer> defaults() {
-		return new Builder<>(Tracer::new, ID)
-			.maxLevel(4)
-			.loreName("Tracer")
-			.probability(0)
-			.enchantable(new Tool[]{BOW})
-			.conflicting(new Class[]{})
-			.description("Guides the arrow to targets and then attacks")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.RIGHT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		TracerArrow arrow = new TracerArrow((Arrow) evt.getProjectile(), level, power);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
-		return true;
-	}
+    public Tracer(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@EffectTask(Frequency.HIGH)
-	// Moves Tracer arrows towards a target
-	public static void tracer() {
-		for (Arrow e : tracer.keySet()) {
-			Entity close = null;
-			double distance = 100;
-			int level = tracer.get(e);
-			level += 2;
-			for (Entity e1 : e.getNearbyEntities(level, level, level)) {
-				if (e1.getLocation().getWorld().equals(e.getLocation().getWorld())) {
-					double d = e1.getLocation().distance(e.getLocation());
-					if (e.getLocation().getWorld().equals(((Entity) e.getShooter()).getLocation().getWorld())) {
-						if (d < distance && e1 instanceof LivingEntity
-							&& !e1.equals(e.getShooter())
-							&& e.getLocation().distance(((Entity) e.getShooter()).getLocation()) > 15) {
-							distance = d;
-							close = e1;
-						}
-					}
-				}
-			}
-			if (close != null) {
-				Location location = close.getLocation();
-				org.bukkit.util.Vector v = new org.bukkit.util.Vector(0D, 0D, 0D);
-				Location pos = e.getLocation();
-				double its = location.distance(pos);
-				if (its == 0) {
-					its = 1;
-				}
-				v.setX((location.getX() - pos.getX()) / its);
-				v.setY((location.getY() - pos.getY()) / its);
-				v.setZ((location.getZ() - pos.getZ()) / its);
-				v.add(e.getLocation().getDirection().multiply(.1));
-				e.setVelocity(v.multiply(2));
-			}
-		}
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        TracerArrow arrow = new TracerArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        return true;
+    }
+
+    @EffectTask(Frequency.HIGH)
+    public static void moveArrows() {
+        for (Arrow arrow : TRACERS.keySet()) {
+            Entity close = null;
+            double distance = 100;
+            int level = TRACERS.get(arrow);
+            level += 2;
+            for (Entity entity : arrow.getNearbyEntities(level, level, level)) {
+                if (!entity.getWorld().equals(arrow.getWorld())) {
+                    continue;
+                }
+
+                double d = entity.getLocation().distance(arrow.getLocation());
+                Entity shooter = (Entity) arrow.getShooter();
+
+                if (arrow.getWorld().equals(shooter.getWorld())) {
+                    if (d < distance && entity instanceof LivingEntity
+                        && !entity.equals(arrow.getShooter())
+                        && arrow.getLocation().distance(shooter.getLocation()) > 15
+                    ) {
+                        distance = d;
+                        close = entity;
+                    }
+                }
+            }
+
+            if (close != null) {
+                Location location = close.getLocation();
+                Location pos = arrow.getLocation();
+                double its = location.distance(pos);
+
+                if (its == 0) {
+                    its = 1;
+                }
+
+                Vector vector = new Vector(0D, 0D, 0D);
+                vector.setX((location.getX() - pos.getX()) / its);
+                vector.setY((location.getY() - pos.getY()) / its);
+                vector.setZ((location.getZ() - pos.getZ()) / its);
+                vector.add(arrow.getLocation().getDirection().multiply(0.1));
+
+                arrow.setVelocity(vector.multiply(2));
+            }
+        }
+    }
 }

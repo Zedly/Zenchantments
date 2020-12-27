@@ -1,69 +1,125 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import static org.bukkit.Material.*;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.bukkit.Material.AIR;
 import static org.bukkit.block.BlockFace.DOWN;
-import static zedly.zenchantments.enums.Tool.SHEAR;
 
-public class Rainbow extends CustomEnchantment {
+public final class Rainbow extends Zenchantment {
+    public static final String KEY = "rainbow";
 
-	public static final int ID = 47;
+    private static final String                             NAME        = "Rainbow";
+    private static final String                             DESCRIPTION = "Drops random flowers and wool colors when used";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.BOTH;
 
-	@Override
-	public Builder<Rainbow> defaults() {
-		return new Builder<>(Rainbow::new, ID)
-			.maxLevel(1)
-			.loreName("Rainbow")
-			.probability(0)
-			.enchantable(new Tool[]{SHEAR})
-			.conflicting(new Class[]{})
-			.description("Drops random flowers and wool colors when used")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.BOTH);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		Material dropMaterial;
-		if (Storage.COMPATIBILITY_ADAPTER.SmallFlowers().contains(evt.getBlock().getType())) {
-			dropMaterial = Storage.COMPATIBILITY_ADAPTER.SmallFlowers().getRandom();
-		} else if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(evt.getBlock().getType())) {
-			dropMaterial = Storage.COMPATIBILITY_ADAPTER.LargeFlowers().getRandom();
-		} else {
-			return false;
-		}
-		evt.setCancelled(true);
-		if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(evt.getBlock().getRelative(DOWN).getType())) {
-			evt.getBlock().getRelative(DOWN).setType(AIR);
-		}
-		evt.getBlock().setType(AIR);
-		Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-		evt.getPlayer().getWorld().dropItem(Utilities.getCenter(evt.getBlock()), new ItemStack(dropMaterial, 1));
-		return true;
-	}
+    public Rainbow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@Override
-	public boolean onShear(PlayerShearEntityEvent evt, int level, boolean usedHand) {
-		Sheep sheep = (Sheep) evt.getEntity();
-		if (!sheep.isSheared()) {
-			int count = Storage.rnd.nextInt(3) + 1;
-			Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-			evt.setCancelled(true);
-			sheep.setSheared(true);
-			evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(),
-				new ItemStack(Storage.COMPATIBILITY_ADAPTER.Wools().getRandom(), count));
-		}
-		return true;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        Block block = event.getBlock();
+        Material blockType = block.getType();
+
+        Material dropMaterial;
+
+        if (Storage.COMPATIBILITY_ADAPTER.SmallFlowers().contains(blockType)) {
+            dropMaterial = Storage.COMPATIBILITY_ADAPTER.SmallFlowers().getRandom();
+        } else if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(blockType)) {
+            dropMaterial = Storage.COMPATIBILITY_ADAPTER.LargeFlowers().getRandom();
+        } else {
+            return false;
+        }
+
+        event.setCancelled(true);
+
+        Block relative = block.getRelative(DOWN);
+        if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(relative.getType())) {
+            relative.setType(AIR);
+        }
+
+        block.setType(AIR);
+
+        event.getPlayer().getWorld().dropItem(Utilities.getCenter(block), new ItemStack(dropMaterial, 1));
+
+        Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
+
+        return true;
+    }
+
+    @Override
+    public boolean onShear(@NotNull PlayerShearEntityEvent event, int level, boolean usedHand) {
+        Sheep sheep = (Sheep) event.getEntity();
+        if (sheep.isSheared()) {
+            return true;
+        }
+
+        int count = ThreadLocalRandom.current().nextInt(3) + 1;
+
+        Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
+
+        sheep.setSheared(true);
+
+        event.setCancelled(true);
+
+        event.getEntity().getWorld().dropItemNaturally(
+            event.getEntity().getLocation(),
+            new ItemStack(Storage.COMPATIBILITY_ADAPTER.Wools().getRandom(), count)
+        );
+
+        return true;
+    }
 }

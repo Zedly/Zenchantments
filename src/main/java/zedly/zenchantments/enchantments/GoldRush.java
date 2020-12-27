@@ -1,42 +1,83 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.GOLD_NUGGET;
 import static org.bukkit.Material.SAND;
-import static zedly.zenchantments.enums.Tool.SHOVEL;
 
-public class GoldRush extends CustomEnchantment {
+public final class GoldRush extends Zenchantment {
+    public static final String KEY = "gold_rush";
 
-	public static final int ID = 22;
+    private static final String                             NAME        = "Gold Rush";
+    private static final String                             DESCRIPTION = "Randomly drops gold nuggets when mining sand";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-	@Override
-	public Builder<GoldRush> defaults() {
-		return new Builder<>(GoldRush::new, ID)
-			.maxLevel(3)
-			.loreName("Gold Rush")
-			.probability(0)
-			.enchantable(new Tool[]{SHOVEL})
-			.conflicting(new Class[]{})
-			.description("Randomly drops gold nuggets when mining sand")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.LEFT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockBreak(BlockBreakEvent evt, int level, boolean usedHand) {
-		if (evt.getBlock().getType() == SAND && Storage.rnd.nextInt(100) >= (100 - (level * power * 3))) {
-			evt.getBlock().getWorld()
-			   .dropItemNaturally(evt.getBlock().getLocation(), new ItemStack(GOLD_NUGGET));
-			return true;
-		}
-		return false;
-	}
+    public GoldRush(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+        Block block = event.getBlock();
+
+        if (block.getType() == SAND && ThreadLocalRandom.current().nextInt(100) >= (100 - (level * this.getPower() * 3))) {
+            block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(GOLD_NUGGET));
+            return true;
+        }
+
+        return false;
+    }
 }

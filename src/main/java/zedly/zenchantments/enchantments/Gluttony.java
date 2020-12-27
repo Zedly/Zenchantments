@@ -1,51 +1,94 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.enums.Tool.HELMET;
 
-public class Gluttony extends CustomEnchantment {
+public final class Gluttony extends Zenchantment {
+    public static final String KEY = "gluttony";
 
-	public static final int ID = 21;
+    private static final String                             NAME        = "Gluttony";
+    private static final String                             DESCRIPTION = "Automatically eats for the player";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public Builder<Gluttony> defaults() {
-		return new Builder<>(Gluttony::new, ID)
-			.maxLevel(1)
-			.loreName("Gluttony")
-			.probability(0)
-			.enchantable(new Tool[]{HELMET})
-			.conflicting(new Class[]{})
-			.description("Automatically eats for the player")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onScan(Player player, int level, boolean usedHand) {
-		for (int i = 0; i < Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems().length; i++) {
-			if (player.getInventory().containsAtLeast(
-				new ItemStack(Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i]), 1)
-				&& player.getFoodLevel() <= 20 - Storage.COMPATIBILITY_ADAPTER.GluttonyFoodLevels()[i]) {
-				Utilities.removeItem(player, Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i], 1);
-				player.setFoodLevel(player.getFoodLevel() + Storage.COMPATIBILITY_ADAPTER.GluttonyFoodLevels()[i]);
-				player.setSaturation(
-					(float) (player.getSaturation() + Storage.COMPATIBILITY_ADAPTER.GluttonySaturations()[i]));
-				if (Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i] == RABBIT_STEW
-					|| Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i] == MUSHROOM_STEW
-					|| Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i] == BEETROOT_SOUP) {
-					player.getInventory().addItem(new ItemStack(BOWL));
-				}
-			}
-		}
-		return true;
-	}
+    public Gluttony(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+        for (int i = 0; i < Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems().length; i++) {
+            Material foodMaterial = Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i];
+            int foodLevel = Storage.COMPATIBILITY_ADAPTER.GluttonyFoodLevels()[i];
+
+            if (!player.getInventory().containsAtLeast(new ItemStack(foodMaterial), 1)
+                || player.getFoodLevel() > 20 - foodLevel
+            ) {
+                continue;
+            }
+
+            Utilities.removeMaterialsFromPlayer(player, foodMaterial, 1);
+
+            player.setFoodLevel(player.getFoodLevel() + foodLevel);
+            player.setSaturation((float) (player.getSaturation() + Storage.COMPATIBILITY_ADAPTER.GluttonySaturations()[i]));
+
+            if (foodMaterial == RABBIT_STEW
+                || foodMaterial == MUSHROOM_STEW
+                || foodMaterial == BEETROOT_SOUP
+            ) {
+                player.getInventory().addItem(new ItemStack(BOWL));
+            }
+        }
+
+        return true;
+    }
 }

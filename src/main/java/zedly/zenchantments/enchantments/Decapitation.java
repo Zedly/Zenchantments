@@ -1,66 +1,120 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.*;
-import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Decapitation extends CustomEnchantment {
+public final class Decapitation extends Zenchantment {
+    public static final String KEY = "decapitation";
 
-	private static final int BASE_PLAYER_DROP_CHANCE = 150;
-	private static final int BASE_MOB_DROP_CHANCE    = 150;
-	public static final  int ID                      = 11;
+    private static final String                             NAME        = "Decapitation";
+    private static final String                             DESCRIPTION = "Increases the chance for dropping the enemy's head on death";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.LEFT;
 
-	@Override
-	public Builder<Decapitation> defaults() {
-		return new Builder<>(Decapitation::new, ID)
-			.maxLevel(4)
-			.loreName("Decapitation")
-			.probability(0)
-			.enchantable(new Tool[]{SWORD})
-			.conflicting(new Class[]{})
-			.description("Increases the chance for dropping the enemies head on death")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.LEFT);
-	}
+    private static final int          BASE_PLAYER_DROP_CHANCE = 150;
+    private static final int          BASE_MOB_DROP_CHANCE    = 150;
+    private static final EntityType[] APPLICABLE_ENTITIES     = new EntityType[] {
+        PLAYER,
+        SKELETON,
+        WITHER_SKULL,
+        ZOMBIE,
+        CREEPER
+    };
+    private static final Material[]   HEAD_MATERIALS          = new Material[] {
+        PLAYER_HEAD,
+        SKELETON_SKULL,
+        WITHER_SKELETON_SKULL,
+        ZOMBIE_HEAD,
+        CREEPER_HEAD
+    };
 
-	private static EntityType[] entities = new EntityType[]{PLAYER, SKELETON, WITHER_SKULL, ZOMBIE, CREEPER};
-	private static Material[]   skulls   =
-		new Material[]{Material.PLAYER_HEAD, Material.SKELETON_SKULL, Material.WITHER_SKELETON_SKULL,
-			Material.ZOMBIE_HEAD, Material.CREEPER_HEAD};
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onEntityKill(EntityDeathEvent evt, int level, boolean usedHand) {
+    public Decapitation(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-		short id = (short) ArrayUtils.indexOf(entities, evt.getEntityType());
-		if (id == -1) {
-			return false;
-		}
-		ItemStack stk = new ItemStack(skulls[id], 1);
-		if (id == 0) {
-			if (Storage.rnd.nextInt(Math.max((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * power)), 1)) == 0) {
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
 
-				SkullMeta meta = (SkullMeta) stk.getItemMeta();
-				meta.setOwningPlayer(Bukkit.getOfflinePlayer(evt.getEntity().getUniqueId()));
-				stk.setItemMeta(meta);
-				evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(), stk);
-				return true;
-			}
-		} else if (Storage.rnd.nextInt(Math.max((int) Math.round(BASE_MOB_DROP_CHANCE / (level * power)), 1)) == 0) {
-			evt.getEntity().getWorld().dropItemNaturally(evt.getEntity().getLocation(), stk);
-			return true;
-		}
-		return false;
-	}
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityKill(@NotNull EntityDeathEvent event, int level, boolean usedHand) {
+        int id = ArrayUtils.indexOf(APPLICABLE_ENTITIES, event.getEntityType());
+        if (id == -1) {
+            return false;
+        }
+
+        ItemStack itemStack = new ItemStack(HEAD_MATERIALS[id], 1);
+
+        if (id == 0) {
+            int bound = Math.max((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * this.getPower())), 1);
+            if (ThreadLocalRandom.current().nextInt(bound) == 0) {
+                SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                meta.setOwningPlayer(this.getPlugin().getServer().getOfflinePlayer(event.getEntity().getUniqueId()));
+                itemStack.setItemMeta(meta);
+                event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), itemStack);
+                return true;
+            }
+        } else {
+            int bound = Math.max((int) Math.round(BASE_MOB_DROP_CHANCE / (level * this.getPower())), 1);
+            if (ThreadLocalRandom.current().nextInt(bound) == 0) {
+                event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), itemStack);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

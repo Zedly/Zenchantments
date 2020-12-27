@@ -1,62 +1,105 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.Config;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import static zedly.zenchantments.enums.Tool.ALL;
+public final class Bind extends Zenchantment {
+    public static final String KEY = "bind";
 
-public class Bind extends CustomEnchantment {
+    private static final String                             NAME        = "Bind";
+    private static final String                             DESCRIPTION = "Keeps items with the enchantment in your inventory after death";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	public static final int ID = 4;
+    private final NamespacedKey key;
 
-	@Override
-	public Builder<Bind> defaults() {
-		return new Builder<>(Bind::new, ID)
-			.maxLevel(1)
-			.loreName("Bind")
-			.probability(0)
-			.enchantable(new Tool[]{ALL})
-			.conflicting(new Class[]{})
-			.description("Keeps items with this enchantment in your inventory after death")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.NONE);
-	}
+    public Bind(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@Override
-	public boolean onPlayerDeath(final PlayerDeathEvent evt, int level, boolean usedHand) {
-		if (evt.getKeepInventory()) {
-			return false;
-		}
-		final Player player = evt.getEntity();
-		Config config = Config.get(player.getWorld());
-		final ItemStack[] contents = player.getInventory().getContents().clone();
-		final List<ItemStack> removed = new ArrayList<>();
-		for (int i = 0; i < contents.length; i++) {
-			if (!CustomEnchantment.getEnchants(contents[i], config.getWorld()).containsKey(this)) {
-				contents[i] = null;
-			} else {
-				removed.add(contents[i]);
-				evt.getDrops().remove(contents[i]);
-			}
-		}
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			if (evt.getKeepInventory()) {
-				evt.getDrops().addAll(removed);
-			} else {
-				player.getInventory().setContents(contents);
-			}
-		}, 1);
-		return true;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onPlayerDeath(@NotNull PlayerDeathEvent event, int level, boolean usedHand) {
+        if (event.getKeepInventory()) {
+            return false;
+        }
+
+        Player player = event.getEntity();
+        final ItemStack[] contents = player.getInventory().getContents().clone();
+        final List<ItemStack> removed = new ArrayList<>();
+
+        for (int i = 0; i < contents.length; i++) {
+            if (
+                !Zenchantment.getZenchantmentsOnItemStack(
+                    contents[i],
+                    this.getPlugin().getGlobalConfiguration(),
+                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                ).containsKey(this)
+            ) {
+                contents[i] = null;
+            } else {
+                removed.add(contents[i]);
+                event.getDrops().remove(contents[i]);
+            }
+        }
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+            if (event.getKeepInventory()) {
+                event.getDrops().addAll(removed);
+            } else {
+                player.getInventory().setContents(contents);
+            }
+        }, 1);
+
+        return true;
+    }
 }

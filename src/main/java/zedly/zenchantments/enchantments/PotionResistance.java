@@ -1,51 +1,98 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Map;
+import java.util.Set;
 
-import static zedly.zenchantments.enums.Tool.*;
+public final class PotionResistance extends Zenchantment {
+    public static final String KEY = "potion_resistance";
 
-public class PotionResistance extends CustomEnchantment {
+    private static final String                             NAME        = "Potion Resistance";
+    private static final String                             DESCRIPTION = "Lessens the effects of all potions on players";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	public static final int ID = 45;
+    private final NamespacedKey key;
 
-	@Override
-	public Builder<PotionResistance> defaults() {
-		return new Builder<>(PotionResistance::new, ID)
-			.maxLevel(4)
-			.loreName("Potion Resistance")
-			.probability(0)
-			.enchantable(new Tool[]{HELMET, CHESTPLATE, LEGGINGS, BOOTS})
-			.conflicting(new Class[]{})
-			.description("Lessens the effects of all potions on players")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.NONE);
-	}
+    public PotionResistance(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@Override
-	public boolean onPotionSplash(PotionSplashEvent evt, int level, boolean usedHand) {
-		for (LivingEntity ent : evt.getAffectedEntities()) {
-			if (ent instanceof Player) {
-				int effect = 0;
-				for (ItemStack stk : ((Player) ent).getInventory().getArmorContents()) {
-					Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(stk, ent.getWorld());
-					for (CustomEnchantment e : map.keySet()) {
-						if (e.equals(this)) {
-							effect += map.get(e);
-						}
-					}
-				}
-				evt.setIntensity(ent, evt.getIntensity(ent) / ((effect * power + 1.3) / 2));
-			}
-		}
-		return true;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onPotionSplash(@NotNull PotionSplashEvent event, int level, boolean usedHand) {
+        for (LivingEntity entity : event.getAffectedEntities()) {
+            if (!(entity instanceof Player)) {
+                continue;
+            }
+
+            int effect = 0;
+
+            for (ItemStack stack : ((Player) entity).getInventory().getArmorContents()) {
+                final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
+                    stack,
+                    this.getPlugin().getGlobalConfiguration(),
+                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(entity.getWorld())
+                );
+
+                for (Zenchantment zenchantment : map.keySet()) {
+                    if (zenchantment.equals(this)) {
+                        effect += map.get(zenchantment);
+                    }
+                }
+            }
+
+            event.setIntensity(entity, event.getIntensity(entity) / ((effect * this.getPower() + 1.3) / 2));
+        }
+
+        return true;
+    }
 }

@@ -1,61 +1,107 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+
+import java.util.Set;
 
 import static org.bukkit.Material.AIR;
-import static zedly.zenchantments.enums.Tool.CHESTPLATE;
 
-public class Stock extends CustomEnchantment {
+public final class Stock extends Zenchantment {
+    public static final String KEY = "stock";
 
-	public static final int ID = 59;
+    private static final String                             NAME        = "Stock";
+    private static final String                             DESCRIPTION = "Refills the player's item in hand when they run out";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public Builder<Stock> defaults() {
-		return new Builder<>(Stock::new, ID)
-			.maxLevel(1)
-			.loreName("Stock")
-			.probability(0)
-			.enchantable(new Tool[]{CHESTPLATE})
-			.conflicting(new Class[]{})
-			.description("Refills the player's item in hand when they run out")
-			.cooldown(-1)
-			.power(-1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockInteract(final PlayerInteractEvent evt, int level, boolean usedHand) {
-		final ItemStack stk = evt.getPlayer().getInventory().getItemInMainHand().clone();
-		if (stk == null || stk.getType() == AIR) {
-			return false;
-		}
-		final Player player = evt.getPlayer();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-			int current = -1;
-			ItemStack newHandItem = evt.getPlayer().getInventory().getItemInMainHand();
-			if (newHandItem != null && newHandItem.getType() != AIR) {
-				return;
-			}
-			for (int i = 0; i < evt.getPlayer().getInventory().getContents().length; i++) {
-				ItemStack s = player.getInventory().getContents()[i];
-				if (s != null && s.getType().equals(stk.getType())) {
-					current = i;
-					break;
-				}
-			}
-			if (current != -1) {
-				evt.getPlayer().getInventory()
-				   .setItemInMainHand(evt.getPlayer().getInventory().getContents()[current]);
-				evt.getPlayer().getInventory().setItem(current, new ItemStack(AIR));
-			}
-		}, 1);
-		return false;
-	}
+    public Stock(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        PlayerInventory inventory = event.getPlayer().getInventory();
+        ItemStack handItem = inventory.getItemInMainHand();
+
+        if (handItem.getType() == AIR) {
+            return false;
+        }
+
+        Player player = event.getPlayer();
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+            ItemStack newHandItem = inventory.getItemInMainHand();
+
+            if (newHandItem.getType() != AIR) {
+                return;
+            }
+
+            int current = -1;
+
+            for (int i = 0; i < event.getPlayer().getInventory().getContents().length; i++) {
+                ItemStack stack = player.getInventory().getContents()[i];
+                if (stack.getType() == handItem.getType()) {
+                    current = i;
+                    break;
+                }
+            }
+
+            if (current != -1) {
+                inventory.setItemInMainHand(event.getPlayer().getInventory().getContents()[current]);
+                inventory.setItem(current, new ItemStack(AIR));
+            }
+        }, 1);
+
+        return false;
+    }
 }

@@ -1,40 +1,76 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.arrows.enchanted.PotionArrow;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.PotionArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
-import static zedly.zenchantments.enums.Tool.BOW;
+import java.util.Set;
 
-public class Potion extends CustomEnchantment {
+public final class Potion extends Zenchantment {
+    public static final String KEY = "potion";
 
-	public static final int ID = 44;
-	PotionEffectType[] potions;
+    private static final String                             NAME        = "Potion";
+    private static final String                             DESCRIPTION = "Gives the shooter random positive potion effects when attacking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public Builder<Potion> defaults() {
-		return new Builder<>(Potion::new, ID)
-			.maxLevel(3)
-			.loreName("Potion")
-			.probability(0)
-			.enchantable(new Tool[]{BOW})
-			.conflicting(new Class[]{})
-			.description("Gives the shooter random positive potion effects when attacking")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.RIGHT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		PotionArrow arrow = new PotionArrow((Arrow) evt.getProjectile(), level, power);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
-		return true;
-	}
+    public Potion(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        PotionArrow arrow = new PotionArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        return true;
+    }
 }

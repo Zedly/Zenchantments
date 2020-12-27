@@ -1,65 +1,97 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.arrows.enchanted.VortexArrow;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+import zedly.zenchantments.arrows.VortexArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import static zedly.zenchantments.enums.Tool.BOW;
-import static zedly.zenchantments.enums.Tool.SWORD;
+public final class Vortex extends Zenchantment {
+    public static final String KEY = "vortex";
 
-public class Vortex extends CustomEnchantment {
+    public static final Map<Block, Player> VORTEX_LOCATIONS = new HashMap<>();
 
-    // Locations where Vortex has been used on a block and are waiting for the Watcher to handle their teleportation
-    public static final Map<Block, Player> vortexLocs = new HashMap<>();
-    public static final int ID = 66;
+    private static final String                             NAME        = "Vortex";
+    private static final String                             DESCRIPTION = "Teleports mob loot and XP directly to the player";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.BOTH;
 
-    @Override
-    public Builder<Vortex> defaults() {
-        return new Builder<>(Vortex::new, ID)
-                .maxLevel(1)
-                .loreName("Vortex")
-                .probability(0)
-                .enchantable(new Tool[]{BOW, SWORD})
-                .conflicting(new Class[]{})
-                .description("Teleports mob loot and XP directly to the player")
-                .cooldown(0)
-                .power(-1.0)
-                .handUse(Hand.BOTH);
+    private final NamespacedKey key;
+
+    public Vortex(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
-    public boolean onEntityKill(final EntityDeathEvent evt, int level, boolean usedHand) {
-        final Block deathBlock = evt.getEntity().getLocation().getBlock();
-        vortexLocs.put(deathBlock, evt.getEntity().getKiller());
-        
-        int i = evt.getDroppedExp();
-        evt.setDroppedExp(0);
-        Storage.COMPATIBILITY_ADAPTER.collectXP(evt.getEntity().getKiller(), i);
-        
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-            vortexLocs.remove(deathBlock);
-        }, 3);
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityKill(@NotNull EntityDeathEvent event, int level, boolean usedHand) {
+        Block deathBlock = event.getEntity().getLocation().getBlock();
+        Player killer = event.getEntity().getKiller();
+
+        VORTEX_LOCATIONS.put(deathBlock, killer);
+
+        int experience = event.getDroppedExp();
+
+        event.setDroppedExp(0);
+
+        Storage.COMPATIBILITY_ADAPTER.collectXP(killer, experience);
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> VORTEX_LOCATIONS.remove(deathBlock), 3);
+
         return true;
     }
 
     @Override
-    public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-        VortexArrow arrow = new VortexArrow((Arrow) evt.getProjectile());
-        EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        VortexArrow arrow = new VortexArrow(this.getPlugin(), (Arrow) event.getProjectile());
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
-
 }

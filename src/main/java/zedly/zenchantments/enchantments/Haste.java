@@ -1,39 +1,72 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
-import static zedly.zenchantments.enums.Tool.*;
 
-public class Haste extends CustomEnchantment {
+public final class Haste extends Zenchantment {
+    public static final String KEY = "haste";
 
-	public static final int ID = 27;
+    private static final String                             NAME        = "Haste";
+    private static final String                             DESCRIPTION = "Gives the player a mining boost";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public Builder<Haste> defaults() {
-		return new Builder<>(Haste::new, ID)
-			.maxLevel(4)
-			.loreName("Haste")
-			.probability(0)
-			.enchantable(new Tool[]{PICKAXE, AXE, SHOVEL})
-			.conflicting(new Class[]{})
-			.description("Gives the player a mining boost")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onScanHands(Player player, int level, boolean usedHand) {
-		Utilities.addPotion(player, FAST_DIGGING, 610, (int) Math.round(level * power));
-		player.setMetadata("ze.haste", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
-		return false;
-	}
+    public Haste(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onScanHands(@NotNull Player player, int level, boolean usedHand) {
+        Utilities.addPotionEffect(player, FAST_DIGGING, 610, (int) Math.round(level * this.getPower()));
+        player.setMetadata("ze.haste", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));
+        return false;
+    }
 }

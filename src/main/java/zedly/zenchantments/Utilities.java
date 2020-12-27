@@ -1,610 +1,714 @@
 package zedly.zenchantments;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
-import org.bukkit.block.data.Waterlogged;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.compatibility.EnumStorage;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.player.PlayerData;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static org.bukkit.GameMode.CREATIVE;
-import static org.bukkit.Material.AIR;
-import static org.bukkit.inventory.EquipmentSlot.HAND;
+import static java.util.Objects.requireNonNull;
+import static org.bukkit.ChatColor.COLOR_CHAR;
 
-public class Utilities {
+public final class Utilities {
+    private static final int[][] DEFAULT_SEARCH_FACES = new int[27][3];
 
-	// Returns true for main hand slots, false otherwise
-	public static boolean isMainHand(EquipmentSlot preferred) {
-		return preferred == HAND;
-	}
+    static {
+        int i = 0;
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
+                    DEFAULT_SEARCH_FACES[i++] = new int[] {x, y, z};
+                }
+            }
+        }
+    }
 
-	// Returns an ArrayList of ItemStacks of the player's held item and armor
-	public static List<ItemStack> getArmorAndMainHandItems(Player player, boolean mainHand) {
-		List<ItemStack> stk = new ArrayList<>(Arrays.asList(player.getInventory().getArmorContents()));
-		stk.add(mainHand ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand());
-		stk.removeIf((ItemStack is) -> is == null || is.getType() == Material.AIR);
-		return stk;
-	}
+    private Utilities() {
+        throw new IllegalStateException();
+    }
 
-	// Removes the given ItemStack's durability by the given 'damage' and then sets the item direction the given
-	// players hand.
-	//      This also takes into account the unbreaking enchantment
-	public static void damageTool(Player player, int damage, boolean handUsed) {
-		if (!player.getGameMode().equals(CREATIVE)) {
-			ItemStack hand =
-				handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
-			for (int i = 0; i < damage; i++) {
-				if (Storage.rnd.nextInt(100) <= (100 / (
-					hand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-					setDamage(hand, getDamage(hand) + 1);
-				}
-			}
-			if (handUsed) {
-				player.getInventory().setItemInMainHand(
-					getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
-			} else {
-				player.getInventory().setItemInOffHand(
-					getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
-			}
-		}
-	}
+    // Maybe inline usages of this?
+    public static boolean isMainHand(final @NotNull EquipmentSlot preferred) {
+        return preferred == EquipmentSlot.HAND;
+    }
 
-	// Displays a particle with the given data
-	public static void display(Location loc, Particle particle, int amount, double speed, double xO, double yO,
-		double zO) {
-		loc.getWorld().spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), amount, (float) xO, (float) yO,
-			(float) zO, (float) speed);
-	}
+    @NotNull
+    public static List<ItemStack> getArmorAndHandItems(final @NotNull Player player, final boolean mainHand) {
+        requireNonNull(player);
 
-	// Removes the given ItemStack's durability by the given 'damage'
-	//      This also takes into account the unbreaking enchantment
-	public static void addUnbreaking(Player player, ItemStack is, int damage) {
-		if (!player.getGameMode().equals(CREATIVE)) {
-			for (int i = 0; i < damage; i++) {
-				if (Storage.rnd.nextInt(100) <= (100 / (
-					is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-					setDamage(is, getDamage(is) + 1);
-				}
-			}
-		}
-	}
+        final PlayerInventory inventory = player.getInventory();
+        final List<ItemStack> stack = Arrays.asList(inventory.getArmorContents());
 
-	public static void setDamage(ItemStack is, int damage) {
-		if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
-			org.bukkit.inventory.meta.Damageable dm = ((Damageable) is.getItemMeta());
-			dm.setDamage(damage);
-			is.setItemMeta((ItemMeta) dm);
-		}
-	}
+        stack.add(mainHand ? inventory.getItemInMainHand() : inventory.getItemInOffHand());
+        stack.removeIf(itemStack -> itemStack == null || itemStack.getType() == Material.AIR);
 
-	public static int getDamage(ItemStack is) {
-		if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
-			org.bukkit.inventory.meta.Damageable dm = ((Damageable) is.getItemMeta());
-			return dm.getDamage();
-		}
-		return 0;
-	}
+        return stack;
+    }
 
-	// Returns the item stack direction the player's main or off hand, determinted by 'handUsed'
-	public static ItemStack usedStack(Player player, boolean handUsed) {
-		return handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
-	}
+    public static void damageItemStack(final @NotNull Player player, final int damage, final boolean handUsed) {
+        requireNonNull(player);
 
-	// Sets the hand the player to the given item stack, determined by 'handUsed'
-	public static void setHand(Player player, ItemStack stk, boolean handUsed) {
-		if (handUsed) {
-			player.getInventory().setItemInMainHand(stk);
-		} else {
-			player.getInventory().setItemInOffHand(stk);
-		}
-	}
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
 
-	// Removes an item stack of the given description from the players inventory
-	public static boolean removeItem(Player player, Material mat) {
-		return removeItem(player, mat, 1);
-	}
+        final PlayerInventory inventory = player.getInventory();
+        final ItemStack heldItem = handUsed
+            ? inventory.getItemInMainHand()
+            : inventory.getItemInOffHand();
 
-	// Removes an item stack of the given description from the players inventory
-	public static boolean removeItem(Player player, ItemStack is) {
-		return removeItem(player, is.getType(), is.getAmount());
-	}
+        for (int i = 0; i < damage; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (heldItem.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
+                setItemStackDamage(heldItem, getItemStackDamage(heldItem) + 1);
+            }
+        }
 
-	// Removes a certain number of an item stack of the given description from the players inventory and returns true
-	//      if the item stack was direction their inventory
-	public static boolean removeItem(Player player, Material mat, int amount) {
-		if (player.getGameMode().equals(CREATIVE)) {
-			return true;
-		}
-		Inventory inv = player.getInventory();
+        final int maxDurability = heldItem.getType().getMaxDurability();
+        final ItemStack item = getItemStackDamage(heldItem) > maxDurability ? new ItemStack(Material.AIR) : heldItem;
 
-		if (!hasItem(player, mat, amount)) {
-			return false;
-		}
+        if (handUsed) {
+            inventory.setItemInMainHand(item);
+        } else {
+            inventory.setItemInOffHand(item);
+        }
+    }
 
-		for (int i = 0; i < inv.getSize(); i++) {
-			if (inv.getItem(i) != null && inv.getItem(i).getType() == mat) {
-				if (inv.getItem(i).getAmount() > amount) {
-					int res = inv.getItem(i).getAmount() - amount;
-					ItemStack rest = inv.getItem(i);
-					rest.setAmount(res);
-					inv.setItem(i, rest);
-					return true;
-				} else {
-					amount -= inv.getItem(i).getAmount();
-					inv.setItem(i, null);
-				}
-			}
-		}
-		return true;
-	}
+    public static void displayParticle(
+        final @NotNull Location location,
+        final @NotNull Particle particle,
+        final int amount,
+        final double speed,
+        final double xOffset,
+        final double yOffset,
+        final double zOffset
+    ) {
+        requireNonNull(location);
+        requireNonNull(location.getWorld());
+        requireNonNull(particle);
 
-	// Removes a certain number of an item stack of the given description from the players inventory and returns true
-	//      if the item stack was direction their inventory
-	public static boolean hasItem(Player player, Material mat, int amount) {
-		if (player.getGameMode().equals(CREATIVE)) {
-			return true;
-		}
-		Inventory inv = player.getInventory();
+        location.getWorld().spawnParticle(
+            particle,
+            location.getX(),
+            location.getY(),
+            location.getZ(),
+            amount,
+            (float) xOffset,
+            (float) yOffset,
+            (float) zOffset,
+            (float) speed
+        );
+    }
 
-		for (int i = 0; i < inv.getSize(); i++) {
-			if (inv.getItem(i) != null && inv.getItem(i).getType() == mat) {
-				if (inv.getItem(i).getAmount() >= amount) {
-					amount = 0;
-				} else {
-					amount -= inv.getItem(i).getAmount();
-				}
-			}
-		}
+    public static void addUnbreaking(
+        final @NotNull Player player,
+        final @NotNull ItemStack itemStack,
+        final int damage
+    ) {
+        requireNonNull(player);
+        requireNonNull(itemStack);
 
-		return amount == 0;
-	}
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
 
-	// Returns a level for the enchant event given the XP level and the enchantments max level
-	public static int getEnchantLevel(int maxlevel, int levels) {
-		if (maxlevel == 1) {
-			return 1;
-		}
-		int sectionsize = 32 / (maxlevel - 1);
-		int position = levels / sectionsize;
-		int mod = levels - position * sectionsize;
-		if (Storage.rnd.nextInt(2 * sectionsize) >= mod) {
-			return position + 1;
-		} else {
-			return position + 2;
-		}
-	}
+        for (int i = 0; i < damage; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (itemStack.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
+                setItemStackDamage(itemStack, getItemStackDamage(itemStack) + 1);
+            }
+        }
+    }
 
-	// Returns the english number representation of the given roman number string
-	public static int getNumber(String numeral) {
-		switch (numeral.toUpperCase()) {
-			case "-":
-				return 0;
-			case "I":
-				return 1;
-			case "II":
-				return 2;
-			case "III":
-				return 3;
-			case "IV":
-				return 4;
-			case "V":
-				return 5;
-			case "VI":
-				return 6;
-			case "VII":
-				return 7;
-			case "VIII":
-				return 8;
-			case "IX":
-				return 9;
-			case "X":
-				return 10;
-			default:
-				return 1;
-		}
-	}
+    public static void setItemStackDamage(final @NotNull ItemStack itemStack, final int damage) {
+        requireNonNull(itemStack);
 
-	// Returns the roman number string representation of the given english number
-	public static String getRomanString(int number) {
-		switch (number) {
-			case 0:
-				return "-";
-			case 1:
-				return "I";
-			case 2:
-				return "II";
-			case 3:
-				return "III";
-			case 4:
-				return "IV";
-			case 5:
-				return "V";
-			case 6:
-				return "VI";
-			case 7:
-				return "VII";
-			case 8:
-				return "VIII";
-			case 9:
-				return "IX";
-			case 10:
-				return "X";
-			default:
-				return "I";
-		}
-	}
+        if (itemStack.getItemMeta() instanceof Damageable) {
+            final Damageable damageable = (Damageable) itemStack.getItemMeta();
+            damageable.setDamage(damage);
+            itemStack.setItemMeta((ItemMeta) damageable);
+        }
+    }
 
-	// Returns the roman number string representation of the given english number, capped at the int 'limit'
-	public static String getRomanString(int number, int limit) {
-		if (number > limit) {
-			return getRomanString(limit);
-		} else {
-			return getRomanString(number);
-		}
-	}
+    public static int getItemStackDamage(final @NotNull ItemStack itemStack) {
+        requireNonNull(itemStack);
 
-	// Returns the exact center of a block of a given location
-	public static Location getCenter(Location loc) {
-		return getCenter(loc, false);
-	}
+        if (itemStack.getItemMeta() instanceof Damageable) {
+            final Damageable damageable = (Damageable) itemStack.getItemMeta();
+            return damageable.getDamage();
+        }
 
-	// Returns the exact center of a block of a given location
-	public static Location getCenter(Location loc, boolean centerVertical) {
-		double x = loc.getX();
-		double y = loc.getY();
-		double z = loc.getZ();
-		if (x >= 0) {
-			x += .5;
-		} else {
-			x += .5;
-		}
-		if (centerVertical) {
-			y = (int) y + .5;
-		}
-		if (z >= 0) {
-			z += .5;
-		} else {
-			z += .5;
-		}
-		Location lo = loc.clone();
-		lo.setX(x);
-		lo.setY(y);
-		lo.setZ(z);
-		return lo;
-	}
+        return 0;
+    }
 
-	// Returns the exact center of a block of a given block
-	public static Location getCenter(Block blk) {
-		return getCenter(blk.getLocation());
-	}
+    @NotNull
+    public static ItemStack getUsedItemStack(final @NotNull Player player, final boolean handUsed) {
+        requireNonNull(player);
 
-	// Returns the exact center of a block of a given block
-	public static Location getCenter(Block blk, boolean centerVertical) {
-		return getCenter(blk.getLocation(), centerVertical);
-	}
+        return handUsed
+            ? player.getInventory().getItemInMainHand()
+            : player.getInventory().getItemInOffHand();
+    }
 
-	// Returns the nearby entities at any loction within the given range
-	// Returns a direction integer, 0-8, for the given player's pitch and yaw
-	public static BlockFace getDirection(Player player) {
-		float yaw = player.getLocation().getYaw();
-		BlockFace direction = BlockFace.SELF;
-		if (yaw < 0) {
-			yaw += 360;
-		}
-		yaw %= 360;
-		double i = (double) ((yaw + 8) / 18);
-		if (i >= 19 || i < 1) {
-			direction = BlockFace.SOUTH;
-		} else if (i < 3) {
-			direction = BlockFace.SOUTH_WEST;
-		} else if (i < 6) {
-			direction = BlockFace.WEST;
-		} else if (i < 8) {
-			direction = BlockFace.NORTH_WEST;
-		} else if (i < 11) {
+    public static void setItemStackInHand(
+        final @NotNull Player player,
+        final @NotNull ItemStack itemStack,
+        final boolean handUsed
+    ) {
+        requireNonNull(player);
+        requireNonNull(itemStack);
 
-			direction = BlockFace.NORTH;
-		} else if (i < 13) {
-			direction = BlockFace.NORTH_EAST;
-		} else if (i < 16) {
-			direction = BlockFace.EAST;
-		} else if (i < 18) {
-			direction = BlockFace.SOUTH_EAST;
-		}
-		return direction;
-	}
+        if (handUsed) {
+            player.getInventory().setItemInMainHand(itemStack);
+        } else {
+            player.getInventory().setItemInOffHand(itemStack);
+        }
+    }
 
-	// Returns a more simple direction integer, 0-6, for the given player's pitch and yaw
-	public static BlockFace getCardinalDirection(float yaw, float pitch) {
-		BlockFace direction;
-		if (yaw < 0) {
-			yaw += 360;
-		}
-		yaw %= 360;
-		double i = (double) ((yaw + 8) / 18);
-		if (i >= 18 || i < 3) {
-			direction = BlockFace.SOUTH;
-		} else if (i < 8) {
-			direction = BlockFace.WEST;
-		} else if (i < 13) {
-			direction = BlockFace.NORTH;
-		} else {
-			direction = BlockFace.EAST;
-		}
-		if (pitch < -50) {
-			direction = BlockFace.UP;
-		} else if (pitch > 50) {
-			direction = BlockFace.DOWN;
-		}
-		return direction;
-	}
+    public static boolean removeMaterialsFromPlayer(
+        final @NotNull Player player,
+        final @NotNull Material material,
+        int amount
+    ) {
+        requireNonNull(player);
+        requireNonNull(material);
 
-	// Returns true if a player can use a certain enchantment at a certain time (permissions and cooldowns),
-	//      otherwise false
-	public static boolean canUse(Player player, int enchantmentID) {
-		if (!player.hasPermission("zenchantments.enchant.use")) {
-			return false;
-		}
-		if (EnchantPlayer.matchPlayer(player).getCooldown(enchantmentID) != 0) {
-			return false;
-		}
-		return !EnchantPlayer.matchPlayer(player).isDisabled(enchantmentID);
-	}
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return true;
+        }
 
-	// Adds a potion effect of given length and intensity to the given entity.
-	public static void addPotion(LivingEntity ent, PotionEffectType type, int length, int intensity) {
-		for (PotionEffect eff : ent.getActivePotionEffects()) {
-			if (eff.getType().equals(type)) {
-				if (eff.getAmplifier() > intensity) {
-					return;
-				} else if (eff.getDuration() > length) {
-					return;
-				} else {
-					ent.removePotionEffect(type);
-				}
-			}
-		}
-		ent.addPotionEffect(new PotionEffect(type, length, intensity));
-	}
+        final Inventory inventory = player.getInventory();
 
-	// Encodes a given string to be invisible to players surrounded by the escape sequence "\< \>"
-	public static String toInvisibleString(String str) {
-		str = "\\<" + str + "\\>" + ChatColor.COLOR_CHAR + 'F';
-		StringBuilder builder = new StringBuilder();
-		for (char c : str.toCharArray()) {
-			builder.append(ChatColor.COLOR_CHAR);
-			builder.append(c);
-		}
-		return builder.toString();
-	}
+        if (!playerHasMaterial(player, material, amount)) {
+            return false;
+        }
 
-	// Returns a map of strings to booleans, where the boolean represents visibility
-	public static Map<String, Boolean> fromInvisibleString(String str) {
-		Map<String, Boolean> strs = new LinkedHashMap<>();
+        for (int i = 0; i < inventory.getSize(); i++) {
+            final ItemStack item = inventory.getItem(i);
 
-		int state = 0; // 0 = close, 1 = waiting for next to open, 2 = open, 3 = waiting for next to close
-		StringBuilder builder = new StringBuilder();
-		for (char c : str.toCharArray()) {
-			switch (state) {
-				case 0: // Visible, waiting for '§'
-					if (c == ChatColor.COLOR_CHAR) {
-						state = 1;
-					} else {
-						builder.append(c);
-					}
-					break;
-				case 1: // Got a '§', waiting for '\'
-					if (c == '\\') {
-						state = 2;
-					} else if (c == ChatColor.COLOR_CHAR) {
-						builder.append(ChatColor.COLOR_CHAR);
-					} else {
-						builder.append(ChatColor.COLOR_CHAR);
-						builder.append(c);
-						state = 0;
-					}
-					break;
-				case 2: // Got a '\', waiting for '§'
-					if (c == ChatColor.COLOR_CHAR) {
-						state = 3;
-					} else {
-						builder.append(ChatColor.COLOR_CHAR);
-						builder.append('\\');
-						builder.append(c);
-						state = 0;
-					}
-					break;
-				case 3: // Got a '§', waiting for '<'
-					if (c == '<') {
-						state = 4;
-						if (builder.length() != 0) {
-							strs.put(builder.toString(), true);
-							builder = new StringBuilder();
-						}
-					} else if (c == ChatColor.COLOR_CHAR) {
-						builder.append(ChatColor.COLOR_CHAR);
-						builder.append('\\');
-						state = 1;
-					} else {
-						builder.append(ChatColor.COLOR_CHAR);
-						builder.append('\\');
-						builder.append(ChatColor.COLOR_CHAR);
-						builder.append(c);
-						state = 0;
-					}
-					break;
-				case 4: // Invisible, ignore '§'
-					state = 5;
-					break;
-				case 5: // Invisible, waiting for '\'
-					if (c == '\\') {
-						state = 6;
-					} else {
-						builder.append(c);
-						state = 4;
-					}
-					break;
-				case 6: // Got '\', waiting for '§'
-					if (c == ChatColor.COLOR_CHAR) {
-						state = 7;
-					} else {
-						builder.append('\\');
-						state = 5;
-					}
-					break;
-				case 7: // Got '§', waiting for '>'
-					if (c == '>') {
-						state = 0;
-						if (builder.length() != 0) {
-							strs.put(builder.toString(), false);
-							builder = new StringBuilder();
-						}
-					} else {
-						builder.append('\\');
-						builder.append(c);
-						state = 4;
-					}
-					break;
-			}
-		}
-		if (builder.length() != 0) {
-			strs.put(builder.toString(), true);
-		}
-		return strs;
-	}
+            if (item == null || item.getType() != material) {
+                continue;
+            }
 
-	public static void selfRemovingArea(Material fill, Material check, int radius, Block center, Player player,
-		Map<Location, Long> placed) {
-		for (int x = -radius; x <= radius; x++) {
-			for (int z = -radius; z <= radius; z++) {
+            if (item.getAmount() > amount) {
+                item.setAmount(item.getAmount() - amount);
+                inventory.setItem(i, item);
+                return true;
+            }
 
-				Block possiblePlatformBlock = center.getRelative(x, -1, z);
-				Location possiblePlatformLoc = possiblePlatformBlock.getLocation();
-				if (possiblePlatformLoc.distanceSquared(center.getLocation()) < radius * radius - 2) {
-					if (placed.containsKey(possiblePlatformLoc)) {
-						placed.put(possiblePlatformLoc, System.nanoTime());
-					} else if (possiblePlatformBlock.getType() == check
-						&& Storage.COMPATIBILITY_ADAPTER.Airs().contains( possiblePlatformBlock.getRelative(0, 1, 0).getType())) {
+            amount -= item.getAmount();
+            inventory.setItem(i, null);
+        }
 
+        return true;
+    }
 
-						if (possiblePlatformBlock.getBlockData() instanceof Levelled) {
-							if (((Levelled) possiblePlatformBlock.getBlockData()).getLevel() != 0) {
-								continue;
-							}
-						}
+    public static boolean playerHasMaterial(
+        final @NotNull Player player,
+        final @NotNull Material material,
+        int amount
+    ) {
+        requireNonNull(player);
+        requireNonNull(material);
 
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return true;
+        }
 
+        final Inventory inventory = player.getInventory();
 
+        for (int i = 0; i < inventory.getSize(); i++) {
+            final ItemStack item = inventory.getItem(i);
 
-						if (Storage.COMPATIBILITY_ADAPTER.formBlock(possiblePlatformBlock, fill, player)) {
-							placed.put(possiblePlatformLoc, System.nanoTime());
-						}
-					}
-				}
-			}
-		}
-	}
+            if (item == null || item.getType() != material) {
+                continue;
+            }
 
-	// Returns a list of blocks found using the BFS algorithm given the passed search parameters
-	//
-	// startBlock: The starting position of the BFS algorithm
-	// maxBlocks: The max number of blocks to found (will return empty list if strict is true)
-	// maxDistFromOrigin: The max distance the center of a found block can be from the center of startBlock to be a valid find
-	// strictMax: true -> return nothing if maxBlocks num is exceeded; false -> return current find if maxBlock num is exceeded
-	// searchFaces: The block faces to search
-	// validFind: valid materials for a found block
-	// validSearch: valid materials for a searched block; Will return empty list if not one of these
-	// strictValidSearch: true -> return nothing if blacklist block is found; false -> return current find if blacklist block is found
-	// flipValidSearch: true -> validSearch is a blacklist; false -> validSearch is a whitelist
-	public static List<Block> BFS(Block startBlock, int maxBlocks, boolean strictMax, float maxDistFromOrigin, int[][] searchFaces,
-		EnumStorage<Material> validFind, EnumStorage<Material> validSearch,  boolean strictValidSearch, boolean flipValidSearch) {
+            if (item.getAmount() >= amount) {
+                amount = 0;
+            } else {
+                amount -= item.getAmount();
+            }
+        }
 
-		// Ensure the search list is in the whitelist
-		if (!flipValidSearch) {
-			validSearch = new EnumStorage<>(new Material[]{}, validSearch, validFind);
-		}
+        return amount == 0;
+    }
 
-		// BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large
+    public static int getEnchantmentLevel(final int maxLevel, final int levels) {
+        if (maxLevel == 1) {
+            return 1;
+        }
 
-		// Searched blocks
-		Set<Block> searchedBlocks = new LinkedHashSet<>();
+        final int sectionSize = 32 / (maxLevel - 1);
+        final int position = levels / sectionSize;
+        final int mod = levels - position * sectionSize;
 
-		// Searched blocks that match the whitelist
-		List<Block> foundBlocks = new ArrayList<>();
+        if (ThreadLocalRandom.current().nextInt(2 * sectionSize) >= mod) {
+            return position + 1;
+        } else {
+            return position + 2;
+        }
+    }
 
-		// Blocks that still need to be searched
-		List<Block> toSearch = new ArrayList<>();
+    public static int convertNumeralToInt(final @NotNull String numeral) {
+        requireNonNull(numeral);
 
-		// Add the origin block
-		searchedBlocks.add(startBlock);
-		toSearch.add(startBlock);
+        switch (numeral.toUpperCase()) {
+            case "-":
+                return 0;
+            case "II":
+                return 2;
+            case "III":
+                return 3;
+            case "IV":
+                return 4;
+            case "V":
+                return 5;
+            case "VI":
+                return 6;
+            case "VII":
+                return 7;
+            case "VIII":
+                return 8;
+            case "IX":
+                return 9;
+            case "X":
+                return 10;
+            case "I":
+            default:
+                return 1;
+        }
+    }
 
-		// Keep searching as long as there's more blocks to search
-		while (!toSearch.isEmpty()) {
-			// Get the next block to search
-			Block searchBlock = toSearch.remove(0);
+    @NotNull
+    public static String convertIntToNumeral(final int number) {
+        switch (number) {
+            case 0:
+                return "-";
+            case 2:
+                return "II";
+            case 3:
+                return "III";
+            case 4:
+                return "IV";
+            case 5:
+                return "V";
+            case 6:
+                return "VI";
+            case 7:
+                return "VII";
+            case 8:
+                return "VIII";
+            case 9:
+                return "IX";
+            case 10:
+                return "X";
+            case 1:
+            default:
+                return "I";
+        }
+    }
 
-			// If block is in the search list, add adjacent blocks to search perimeter
-			if (validFind.contains(searchBlock.getType())) {
-				foundBlocks.add(searchBlock);
+    @NotNull
+    public static Location getCenter(final @NotNull Location location) {
+        return getCenter(location, false);
+    }
 
-				for (int[] blockFace : searchFaces) {
-					// Add the adjacent block
-					Block nextBlock = searchBlock.getRelative(blockFace[0], blockFace[1], blockFace[2]);
+    @NotNull
+    public static Location getCenter(final @NotNull Location location, final boolean centerVertical) {
+        requireNonNull(location);
 
-					// See if its been searched before
-					if (!searchedBlocks.contains(nextBlock)) {
+        final Location centered = location.clone();
+        centered.setX(location.getX() + 0.5);
+        centered.setY(centerVertical ? location.getY() + 0.5 : location.getY());
+        centered.setZ(location.getZ() + 0.5);
 
-						// Determine if the block is in the whitelist and flip the condition if flipValidSearch
-						boolean check = validSearch.contains(nextBlock.getType());
-						if (flipValidSearch) {
-							check = !check;
-						}
+        return centered;
+    }
 
-						// Add to search body if it meets the condition, else return
-						if (check) {
+    @NotNull
+    public static Location getCenter(final @NotNull Block block) {
+        return getCenter(block, false);
+    }
 
-							if (nextBlock.getLocation().distance(startBlock.getLocation()) > maxDistFromOrigin) {
-								continue;
-							}
+    @NotNull
+    public static Location getCenter(final @NotNull Block block, final boolean centerVertical) {
+        requireNonNull(block);
 
-							toSearch.add(nextBlock);
-							searchedBlocks.add(nextBlock);
-						} else {
-							// Adjacent to a forbidden block. Nothing more to do
-							if (strictValidSearch) {
-								return new ArrayList<>();
-							} else {
-								return foundBlocks;
-							}
-						}
-					}
-				}
-			}
+        return getCenter(block.getLocation(), centerVertical);
+    }
 
-			if (foundBlocks.size() > maxBlocks) {
-				// Allowed size exceeded
-				if (strictMax) {
-					return new ArrayList<>();
-				} else {
-					return foundBlocks;
-				}
-			}
-		}
+    public static BlockFace getCardinalDirection(float yaw, final float pitch) {
+        if (yaw < 0) {
+            yaw += 360;
+        }
 
-		return foundBlocks;
-	}
+        yaw %= 360;
 
+        final double i = (yaw + 8) / 18;
+        final BlockFace direction;
+
+        if (pitch < -50) {
+            direction = BlockFace.UP;
+        } else if (pitch > 50) {
+            direction = BlockFace.DOWN;
+        } else if (i >= 18 || i < 3) {
+            direction = BlockFace.SOUTH;
+        } else if (i < 8) {
+            direction = BlockFace.WEST;
+        } else if (i < 13) {
+            direction = BlockFace.NORTH;
+        } else {
+            direction = BlockFace.EAST;
+        }
+
+        return direction;
+    }
+
+    public static boolean playerCanUseZenchantment(
+        final @NotNull Player player,
+        final @NotNull PlayerData playerData,
+        final @NotNull NamespacedKey zenchantmentKey
+    ) {
+        requireNonNull(player);
+        requireNonNull(playerData);
+        requireNonNull(zenchantmentKey);
+
+        if (!player.hasPermission("zenchantments.enchant.use")) {
+            return false;
+        }
+
+        if (playerData.getCooldownForZenchantment(zenchantmentKey) != 0) {
+            return false;
+        }
+
+        return !playerData.isDisabled(zenchantmentKey);
+    }
+
+    public static void addPotionEffect(
+        final @NotNull LivingEntity entity,
+        final @NotNull PotionEffectType effectType,
+        final int length,
+        final int intensity
+    ) {
+        requireNonNull(entity);
+        requireNonNull(effectType);
+
+        // Examine existing potion effects to see what operations need to be performed.
+        for (final PotionEffect effect : entity.getActivePotionEffects()) {
+            if (effect.getType() != effectType) {
+                continue;
+            }
+
+            if (effect.getAmplifier() > intensity || effect.getDuration() > length) {
+                return;
+            }
+
+            entity.removePotionEffect(effectType);
+        }
+
+        entity.addPotionEffect(new PotionEffect(effectType, length, intensity));
+    }
+
+    @NotNull
+    public static String makeStringInvisible(@NotNull String string) {
+        requireNonNull(string);
+
+        string = "\\<" + string + "\\>" + COLOR_CHAR + 'F';
+
+        final StringBuilder builder = new StringBuilder();
+
+        for (final char c : string.toCharArray()) {
+            builder.append(COLOR_CHAR);
+            builder.append(c);
+        }
+
+        return builder.toString();
+    }
+
+    @NotNull
+    public static Map<String, Boolean> fromInvisibleString(final @NotNull String string) {
+        requireNonNull(string);
+
+        final Map<String, Boolean> strings = new HashMap<>();
+
+        // Reassigned in the loop below when a section is completed.
+        StringBuilder builder = new StringBuilder();
+
+        int state = 0;
+
+        for (final char c : string.toCharArray()) {
+            switch (state) {
+                // Visible, waiting for '§'.
+                case 0:
+                    if (c == COLOR_CHAR) {
+                        state = 1;
+                    } else {
+                        builder.append(c);
+                    }
+                    break;
+                // Got a '§', waiting for '\'.
+                case 1:
+                    if (c == '\\') {
+                        state = 2;
+                    } else if (c == COLOR_CHAR) {
+                        builder.append(COLOR_CHAR);
+                    } else {
+                        builder.append(COLOR_CHAR);
+                        builder.append(c);
+                        state = 0;
+                    }
+                    break;
+                // Got a '\', waiting for '§'.
+                case 2:
+                    if (c == COLOR_CHAR) {
+                        state = 3;
+                    } else {
+                        builder.append(COLOR_CHAR);
+                        builder.append('\\');
+                        builder.append(c);
+                        state = 0;
+                    }
+                    break;
+                // Got a '§', waiting for '<'.
+                case 3:
+                    if (c == '<') {
+                        state = 4;
+                        if (builder.length() != 0) {
+                            strings.put(builder.toString(), true);
+                            builder = new StringBuilder();
+                        }
+                    } else if (c == COLOR_CHAR) {
+                        builder.append(COLOR_CHAR);
+                        builder.append('\\');
+                        state = 1;
+                    } else {
+                        builder.append(COLOR_CHAR);
+                        builder.append('\\');
+                        builder.append(COLOR_CHAR);
+                        builder.append(c);
+                        state = 0;
+                    }
+                    break;
+                // Invisible, ignore '§'.
+                case 4:
+                    state = 5;
+                    break;
+                // Invisible, waiting for '\'.
+                case 5:
+                    if (c == '\\') {
+                        state = 6;
+                    } else {
+                        builder.append(c);
+                        state = 4;
+                    }
+                    break;
+                // Got '\', waiting for '§'.
+                case 6:
+                    if (c == COLOR_CHAR) {
+                        state = 7;
+                    } else {
+                        builder.append('\\');
+                        state = 5;
+                    }
+                    break;
+                // Got '§', waiting for '>'.
+                case 7:
+                    if (c == '>') {
+                        state = 0;
+                        if (builder.length() != 0) {
+                            strings.put(builder.toString(), false);
+                            builder = new StringBuilder();
+                        }
+                    } else {
+                        builder.append('\\');
+                        builder.append(c);
+                        state = 4;
+                    }
+                    break;
+            }
+        }
+
+        if (builder.length() != 0) {
+            strings.put(builder.toString(), true);
+        }
+
+        return strings;
+    }
+
+    public static void selfRemovingArea(
+        final @NotNull Material fill,
+        final @NotNull Material check,
+        final int radius,
+        final @NotNull Block center,
+        final @NotNull Player player,
+        final @NotNull Map<Location, Long> placed
+    ) {
+        requireNonNull(fill);
+        requireNonNull(check);
+        requireNonNull(center);
+        requireNonNull(player);
+        requireNonNull(placed);
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                final Block possiblePlatformBlock = center.getRelative(x, -1, z);
+                final Location possiblePlatformLocation = possiblePlatformBlock.getLocation();
+
+                if (!(possiblePlatformLocation.distanceSquared(center.getLocation()) < radius * radius - 2)) {
+                    continue;
+                }
+
+                if (placed.containsKey(possiblePlatformLocation)) {
+                    placed.put(possiblePlatformLocation, System.nanoTime());
+                } else if (possiblePlatformBlock.getType() == check
+                    && Storage.COMPATIBILITY_ADAPTER.Airs().contains(possiblePlatformBlock.getRelative(0, 1, 0).getType())
+                ) {
+                    if (possiblePlatformBlock.getBlockData() instanceof Levelled
+                        && ((Levelled) possiblePlatformBlock.getBlockData()).getLevel() != 0
+                    ) {
+                        continue;
+                    }
+
+                    if (Storage.COMPATIBILITY_ADAPTER.formBlock(possiblePlatformBlock, fill, player)) {
+                        placed.put(possiblePlatformLocation, System.nanoTime());
+                    }
+                }
+            }
+        }
+    }
+
+    // Returns a list of blocks found using the BFS algorithm given the passed search parameters.
+    //
+    // startBlock: The starting position of the BFS algorithm
+    // maxBlocks: The max number of blocks to found (will return empty list if strict is true)
+    // maxDistFromOrigin: The max distance the center of a found block can be from the center of startBlock to be a valid find
+    // strictMax: true -> return nothing if maxBlocks num is exceeded; false -> return current find if maxBlock num is exceeded
+    // searchFaces: The block faces to search
+    // validFind: valid materials for a found block
+    // validSearch: valid materials for a searched block; Will return empty list if not one of these
+    // strictValidSearch: true -> return nothing if blacklist block is found; false -> return current find if blacklist block is found
+    // flipValidSearch: true -> validSearch is a blacklist; false -> validSearch is a whitelist
+    @NotNull
+    public static List<Block> bfs(
+        final @NotNull Block startBlock,
+        final int maxBlocks,
+        final boolean strictMax,
+        final float maxDistFromOrigin,
+        final int[][] searchFaces,
+        final @NotNull EnumSet<Material> validFind,
+        @NotNull EnumSet<Material> validSearch,
+        final boolean strictValidSearch,
+        final boolean flipValidSearch
+    ) {
+        requireNonNull(startBlock);
+        requireNonNull(validFind);
+        requireNonNull(validSearch);
+
+        // Ensure the search list is in the whitelist.
+        if (!flipValidSearch) {
+            validSearch.addAll(validFind);
+        }
+
+        // BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large.
+
+        final Set<Block> searchedBlocks = new LinkedHashSet<>();
+        final List<Block> foundBlocks = new ArrayList<>();
+        final List<Block> toSearch = new ArrayList<>();
+
+        // Add the origin block.
+        searchedBlocks.add(startBlock);
+        toSearch.add(startBlock);
+
+        // Keep searching as long as there's more blocks to search.
+        while (!toSearch.isEmpty()) {
+            final Block searchBlock = toSearch.remove(0);
+
+            // If block is in the search list, add adjacent blocks to search perimeter.
+            if (validFind.contains(searchBlock.getType())) {
+                foundBlocks.add(searchBlock);
+
+                for (final int[] blockFace : searchFaces) {
+                    // Add the adjacent block.
+                    final Block nextBlock = searchBlock.getRelative(blockFace[0], blockFace[1], blockFace[2]);
+
+                    // Check if it's already been searched.
+                    if (searchedBlocks.contains(nextBlock)) {
+                        continue;
+                    }
+
+                    // Determine if the block is in the whitelist and flip the condition if flipValidSearch == true.
+                    boolean check = validSearch.contains(nextBlock.getType());
+                    if (flipValidSearch) {
+                        check = !check;
+                    }
+
+                    // Add to search body if it meets the condition, else return.
+                    if (check) {
+                        if (nextBlock.getLocation().distance(startBlock.getLocation()) > maxDistFromOrigin) {
+                            continue;
+                        }
+
+                        toSearch.add(nextBlock);
+                        searchedBlocks.add(nextBlock);
+                    } else {
+                        // Adjacent to a forbidden block. Nothing more to do.
+                        if (strictValidSearch) {
+                            return Collections.emptyList();
+                        } else {
+                            return foundBlocks;
+                        }
+                    }
+                }
+            }
+
+            if (foundBlocks.size() > maxBlocks) {
+                // Allowed size exceeded.
+                if (strictMax) {
+                    return Collections.emptyList();
+                } else {
+                    return foundBlocks;
+                }
+            }
+        }
+
+        return foundBlocks;
+    }
+
+    @NotNull
+    public static List<Block> bfs(
+        final @NotNull Block startBlock,
+        final int maxBlocks,
+        final boolean strictMax,
+        final float maxDistFromOrigin,
+        final @NotNull EnumSet<Material> validFind,
+        final @NotNull EnumSet<Material> validSearch,
+        final boolean strictValidSearch,
+        final boolean flipValidSearch
+    ) {
+        return Utilities.bfs(
+            startBlock,
+            maxBlocks,
+            strictMax,
+            maxDistFromOrigin,
+            DEFAULT_SEARCH_FACES,
+            validFind,
+            validSearch,
+            strictValidSearch,
+            flipValidSearch
+        );
+    }
 }

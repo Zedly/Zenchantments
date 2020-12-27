@@ -1,90 +1,139 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.enums.Tool.HOE;
 
-public class Harvest extends CustomEnchantment {
+public final class Harvest extends Zenchantment {
+    public static final String KEY = "harvest";
 
-    public static final int ID = 26;
+    private static final String                             NAME        = "Harvest";
+    private static final String                             DESCRIPTION = "Harvests fully grown crops within a radius when clicked";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-    @Override
-    public Builder<Harvest> defaults() {
-        return new Builder<>(Harvest::new, ID)
-                .maxLevel(3)
-                .loreName("Harvest")
-                .probability(0)
-                .enchantable(new Tool[]{HOE})
-                .conflicting(new Class[]{})
-                .description("Harvests fully grown crops within a radius when clicked")
-                .cooldown(0)
-                .power(1.0)
-                .handUse(Hand.RIGHT);
+    private final NamespacedKey key;
+
+    public Harvest(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
     }
 
     @Override
-    public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-        if (evt.getAction() != RIGHT_CLICK_BLOCK) {
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
-        Location loc = evt.getClickedBlock().getLocation();
-        int radiusXZ = (int) Math.round(power * level + 2);
-        int radiusY = 1;
+
+        Location location = event.getClickedBlock().getLocation();
+        int radiusXZ = (int) Math.round(this.getPower() * level + 2);
         boolean success = false;
 
         for (int x = -radiusXZ; x <= radiusXZ; x++) {
-            for (int y = -radiusY - 1; y <= radiusY - 1; y++) {
+            for (int y = -2; y <= 0; y++) {
                 for (int z = -radiusXZ; z <= radiusXZ; z++) {
 
-                    final Block block = loc.getBlock().getRelative(x, y, z);
-                    if (block.getLocation().distanceSquared(loc) < radiusXZ * radiusXZ) {
+                    final Block block = location.getBlock().getRelative(x, y, z);
 
-                        if (!Storage.COMPATIBILITY_ADAPTER.GrownCrops().contains(block.getType())
-                                && !Storage.COMPATIBILITY_ADAPTER.GrownMelon().contains(block.getType())) {
-                            continue;
-                        }
-
-                        BlockData cropState = block.getBlockData();
-                        boolean harvestReady = !(cropState instanceof Ageable); // Is this block the crop's mature form?
-                        if (!harvestReady) { // Is the mature form not a separate Material but just a particular data value?
-                            Ageable ag = (Ageable) cropState;
-                            harvestReady = ag.getAge() == ag.getMaximumAge();
-                        }
-                        if (!harvestReady) {
-                            harvestReady = block.getType() == Material.SWEET_BERRY_BUSH;
-                        }
-
-                        if (harvestReady) {
-                            boolean blockAltered;
-                            if (block.getType() == Material.SWEET_BERRY_BUSH) {
-                                blockAltered = Storage.COMPATIBILITY_ADAPTER.pickBerries(block, evt.getPlayer());
-                            } else {
-                                blockAltered = ADAPTER.breakBlockNMS(block, evt.getPlayer());
-                            }
-
-                            if (blockAltered) {
-                                Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-                                Grab.grabLocs.put(block, evt.getPlayer());
-                                Bukkit.getServer().getScheduler()
-                                        .scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-                                            Grab.grabLocs.remove(block);
-                                        }, 3);
-                                success = true;
-                            }
-                        }
+                    if (!(block.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
+                        continue;
                     }
+
+                    if (!Storage.COMPATIBILITY_ADAPTER.GrownCrops().contains(block.getType())
+                        && !Storage.COMPATIBILITY_ADAPTER.GrownMelon().contains(block.getType())
+                    ) {
+                        continue;
+                    }
+
+                    BlockData cropState = block.getBlockData();
+
+                    // Is this block the crop's mature form?
+                    boolean harvestReady = !(cropState instanceof Ageable);
+
+                    // Is the mature form not a separate Material but just a particular data value?
+                    if (!harvestReady) {
+                        Ageable ageable = (Ageable) cropState;
+                        harvestReady = ageable.getAge() == ageable.getMaximumAge();
+                    }
+
+                    if (!harvestReady) {
+                        harvestReady = block.getType() == Material.SWEET_BERRY_BUSH;
+                    }
+
+                    if (!harvestReady) {
+                        continue;
+                    }
+
+                    boolean blockAltered;
+                    if (block.getType() == Material.SWEET_BERRY_BUSH) {
+                        blockAltered = Storage.COMPATIBILITY_ADAPTER.pickBerries(block, event.getPlayer());
+                    } else {
+                        blockAltered = ADAPTER.breakBlockNMS(block, event.getPlayer());
+                    }
+
+                    if (!blockAltered) {
+                        continue;
+                    }
+
+                    Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
+
+                    Grab.GRAB_LOCATIONS.put(block, event.getPlayer());
+
+                    this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+                        this.getPlugin(),
+                        () -> Grab.GRAB_LOCATIONS.remove(block),
+                        3
+                    );
+
+                    success = true;
                 }
             }
         }

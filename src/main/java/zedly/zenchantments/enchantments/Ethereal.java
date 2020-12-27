@@ -1,59 +1,102 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import java.util.Map;
+import java.util.Set;
 
-import static zedly.zenchantments.enums.Tool.ALL;
+public final class Ethereal extends Zenchantment {
+    public static final String KEY = "ethereal";
 
-public class Ethereal extends CustomEnchantment {
+    private static final String                             NAME        = "Ethereal";
+    private static final String                             DESCRIPTION = "Prevents tools from breaking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	public static final int ID = 70;
+    private final NamespacedKey key;
 
-	@Override
-	public Builder<Ethereal> defaults() {
-		return new Builder<>(Ethereal::new, ID)
-			.maxLevel(1)
-			.loreName("Ethereal")
-			.probability(0)
-			.enchantable(new Tool[]{ALL})
-			.conflicting(new Class[]{})
-			.description("Prevents tools from breaking")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.NONE);
-	}
+    public Ethereal(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@Override
-	public boolean onScanHands(Player player, int level, boolean usedHand) {
-		ItemStack stk = Utilities.usedStack(player, usedHand);
-		int dura = Utilities.getDamage(stk);
-		Utilities.setDamage(stk, 0);
-		if (dura != 0) {
-			if (usedHand) {
-				player.getInventory().setItemInMainHand(stk);
-			} else {
-				player.getInventory().setItemInOffHand(stk);
-			}
-		}
-		return dura != 0;
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
 
-	@Override
-	public boolean onScan(Player player, int level, boolean usedHand) {
-		for (ItemStack s : player.getInventory().getArmorContents()) {
-			if (s != null) {
-				Map<CustomEnchantment, Integer> map = CustomEnchantment.getEnchants(s, player.getWorld());
-				if (map.containsKey(zedly.zenchantments.enchantments.Ethereal.this)) {
-					Utilities.setDamage(s, 0);
-				}
-			}
-		}
-		return true;
-	}
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onScanHands(@NotNull Player player, int level, boolean usedHand) {
+        ItemStack stack = Utilities.getUsedItemStack(player, usedHand);
+        int durability = Utilities.getItemStackDamage(stack);
+
+        Utilities.setItemStackDamage(stack, 0);
+
+        if (durability != 0) {
+            if (usedHand) {
+                player.getInventory().setItemInMainHand(stack);
+            } else {
+                player.getInventory().setItemInOffHand(stack);
+            }
+        }
+
+        return durability != 0;
+    }
+
+    @Override
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+        for (ItemStack stack : player.getInventory().getArmorContents()) {
+            if (stack == null) {
+                continue;
+            }
+
+            if (
+                Zenchantment.getZenchantmentsOnItemStack(
+                    stack,
+                    this.getPlugin().getGlobalConfiguration(),
+                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                ).containsKey(this)
+            ) {
+                Utilities.setItemStackDamage(stack, 0);
+            }
+        }
+
+        return true;
+    }
 }

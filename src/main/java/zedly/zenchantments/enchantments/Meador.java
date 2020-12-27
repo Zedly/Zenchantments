@@ -1,40 +1,79 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
+
+import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.JUMP;
-import static zedly.zenchantments.enums.Tool.BOOTS;
 
-public class Meador extends CustomEnchantment {
+public final class Meador extends Zenchantment {
+    public static final String KEY = "meador";
 
-	public static final int ID = 36;
+    private static final String                             NAME        = "Meador";
+    private static final String                             DESCRIPTION = "Gives the player both a speed and jump boost";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Weight.class, Speed.class, Jump.class);
+    private static final Hand                               HAND_USE    = Hand.NONE;
 
-	@Override
-	public Builder<Meador> defaults() {
-		return new Builder<>(Meador::new, ID)
-			.maxLevel(1)
-			.loreName("Meador")
-			.probability(0)
-			.enchantable(new Tool[]{BOOTS})
-			.conflicting(new Class[]{Weight.class, Speed.class, Jump.class})
-			.description("Gives the player both a speed and jump boost")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.NONE);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onScan(Player player, int level, boolean usedHand) {
-		player.setWalkSpeed((float) Math.min(.5f + level * power * .05f, 1));
-		player.setFlySpeed((float) Math.min(.5f + level * power * .05f, 1));
-		player.setMetadata("ze.speed", new FixedMetadataValue(Storage.zenchantments, System.currentTimeMillis()));
-		Utilities.addPotion(player, JUMP, 610, (int) Math.round(power * level + 2));
-		return true;
-	}
+    public Meador(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+        float speed = (float) Math.min(0.5f + level * this.getPower() * 0.05f, 1);
+
+        player.setWalkSpeed(speed);
+        player.setFlySpeed(speed);
+
+        player.setMetadata("ze.speed", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));
+
+        Utilities.addPotionEffect(player, JUMP, 610, (int) Math.round(this.getPower() * level + 2));
+
+        return true;
+    }
 }

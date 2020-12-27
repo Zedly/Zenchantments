@@ -1,58 +1,101 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.enums.Tool.SWORD;
 
-public class Gust extends CustomEnchantment {
+public final class Gust extends Zenchantment {
+    public static final String KEY = "gust";
 
-	public static final int ID = 25;
+    private static final String                             NAME        = "Gust";
+    private static final String                             DESCRIPTION = "Pushes the user through the air at the cost of their health";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Force.class, RainbowSlam.class);
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public Builder<Gust> defaults() {
-		return new Builder<>(Gust::new, ID)
-			.maxLevel(1)
-			.loreName("Gust")
-			.probability(0)
-			.enchantable(new Tool[]{SWORD})
-			.conflicting(new Class[]{Force.class, RainbowSlam.class})
-			.description("Pushes the user through the air at the cost of their health")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.RIGHT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onBlockInteract(final PlayerInteractEvent evt, int level, final boolean usedHand) {
-		final Player player = evt.getPlayer();
-		if (evt.getAction().equals(RIGHT_CLICK_AIR) || evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-			if (player.getHealth() > 2 && (evt.getClickedBlock() == null ||
-				evt.getClickedBlock().getLocation().distance(player.getLocation()) > 2)) {
-				final Block blk = player.getTargetBlock(null, 10);
-				player.setVelocity(blk.getLocation().toVector().subtract(player.getLocation().toVector())
-				                      .multiply(.25 * power));
-				player.setFallDistance(-40);
-				ADAPTER.damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-					Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-				}, 1);
-				return true;
-			}
-		}
-		return false;
-	}
+    public Gust(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() != RIGHT_CLICK_AIR && event.getAction() != RIGHT_CLICK_BLOCK) {
+            return false;
+        }
+
+        Player player = event.getPlayer();
+
+        if (player.getHealth() <= 2
+            || (event.getClickedBlock() != null && !(event.getClickedBlock().getLocation().distance(player.getLocation()) > 2))
+        ) {
+            return false;
+        }
+
+        player.setFallDistance(-40);
+        player.setVelocity(
+            player.getTargetBlock(null, 10)
+                .getLocation()
+                .toVector()
+                .subtract(player.getLocation().toVector())
+                .multiply(.25 * this.getPower())
+        );
+
+        ADAPTER.damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+            this.getPlugin(),
+            () -> Utilities.damageItemStack(event.getPlayer(), 1, usedHand),
+            1
+        );
+
+        return true;
+    }
 }

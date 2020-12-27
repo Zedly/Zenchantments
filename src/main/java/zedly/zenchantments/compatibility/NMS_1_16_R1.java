@@ -1,35 +1,20 @@
 package zedly.zenchantments.compatibility;
 
+import net.minecraft.server.v1_16_R2.*;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftCreeper;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftSheep;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import net.minecraft.server.v1_16_R2.BlockPosition;
-import net.minecraft.server.v1_16_R2.DataWatcher;
-import net.minecraft.server.v1_16_R2.DataWatcherObject;
-import net.minecraft.server.v1_16_R2.DataWatcherRegistry;
-import net.minecraft.server.v1_16_R2.DataWatcherSerializer;
-import net.minecraft.server.v1_16_R2.EntityCreeper;
-import net.minecraft.server.v1_16_R2.EntityExperienceOrb;
-import net.minecraft.server.v1_16_R2.EntityHuman;
-import net.minecraft.server.v1_16_R2.EntityMushroomCow;
-import net.minecraft.server.v1_16_R2.EntityPlayer;
-import net.minecraft.server.v1_16_R2.EntitySheep;
-import net.minecraft.server.v1_16_R2.EntityTypes;
-import net.minecraft.server.v1_16_R2.EnumHand;
-import net.minecraft.server.v1_16_R2.EnumInteractionResult;
-import net.minecraft.server.v1_16_R2.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_16_R2.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_16_R2.PacketPlayOutSpawnEntityLiving;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftSheep;
-
-import org.bukkit.block.Block;
-import org.bukkit.entity.*;
-import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftCreeper;
 
 public class NMS_1_16_R1 extends CompatibilityAdapter {
 

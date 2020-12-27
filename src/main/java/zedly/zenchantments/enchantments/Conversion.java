@@ -1,57 +1,108 @@
 package zedly.zenchantments.enchantments;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
-import static zedly.zenchantments.enums.Tool.SWORD;
+import java.util.Set;
 
-public class Conversion extends CustomEnchantment {
+import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-	public static final int ID = 10;
+public final class Conversion extends Zenchantment {
+    public static final String KEY = "conversion";
 
-	@Override
-	public Builder<Conversion> defaults() {
-		return new Builder<>(Conversion::new, ID)
-			.maxLevel(4)
-			.loreName("Conversion")
-			.probability(0)
-			.enchantable(new Tool[]{SWORD})
-			.conflicting(new Class[]{})
-			.description("Converts XP to health when right clicking and sneaking")
-			.cooldown(0)
-			.power(1.0)
-			.handUse(Hand.RIGHT);
-	}
+    private static final String                             NAME        = "Conversion";
+    private static final String                             DESCRIPTION = "Converts XP to health when right clicking and sneaking";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		if (evt.getAction() == Action.RIGHT_CLICK_AIR || evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			final Player player = evt.getPlayer();
-			if (player.isSneaking()) {
-				if (player.getLevel() > 1) {
-					if (player.getHealth() < 20) {
-						player.setLevel((player.getLevel() - 1));
-						player.setHealth(Math.min(20, player.getHealth() + 2 * power * level));
-						for (int i = 0; i < 3; i++) {
-							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storage.zenchantments, () -> {
-								Utilities
-									.display(Utilities.getCenter(player.getLocation()), Particle.HEART, 10, .1f,
-										.5f, .5f, .5f);
-							}, ((i * 5) + 1));
-						}
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
+    private final NamespacedKey key;
+
+    public Conversion(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        if (event.getAction() != RIGHT_CLICK_AIR && event.getAction() != RIGHT_CLICK_BLOCK) {
+            return false;
+        }
+
+        final Player player = event.getPlayer();
+        if (!player.isSneaking()) {
+            return false;
+        }
+
+        if (player.getLevel() <= 1) {
+            return false;
+        }
+
+        if (!(player.getHealth() < 20)) {
+            return false;
+        }
+
+        player.setLevel((player.getLevel() - 1));
+        player.setHealth(Math.min(20, player.getHealth() + 2 * this.getPower() * level));
+
+        for (int i = 0; i < 3; i++) {
+            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+                this.getPlugin(),
+                () -> Utilities.displayParticle(
+                    Utilities.getCenter(player.getLocation()),
+                    Particle.HEART,
+                    10,
+                    0.1f,
+                    0.5f,
+                    0.5f,
+                    0.5f
+                ),
+                i * 5 + 1
+            );
+        }
+
+        return true;
+    }
 }

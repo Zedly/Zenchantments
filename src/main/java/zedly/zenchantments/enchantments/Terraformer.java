@@ -1,79 +1,129 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.compatibility.EnumStorage;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.*;
 
+import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static org.bukkit.Material.*;
+import static org.bukkit.Material.AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
-import static zedly.zenchantments.enums.Tool.SHOVEL;
 
-public class Terraformer extends CustomEnchantment {
+public final class Terraformer extends Zenchantment {
+    public static final String KEY = "terraformer";
 
-	public static int[][] SEARCH_FACES = new int[][]{new int[]{-1, 0, 0}, new int[]{1, 0, 0}, new int[]{0, -1, 0}, new int[]{0, 0, -1}, new int[]{0, 0, 1}};
+    private static final String                             NAME        = "Terraformer";
+    private static final String                             DESCRIPTION = "Places the leftmost blocks in the players inventory within a 7 block radius";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	private static final int MAX_BLOCKS = 64;
+    private static final int[][] SEARCH_FACES = {{-1, 0, 0}, {1, 0, 0}, {0, -1, 0}, {0, 0, -1}, {0, 0, 1}};
+    private static final int     MAX_BLOCKS   = 64;
 
-	public static final int ID = 61;
+    private final NamespacedKey key;
 
-	@Override
-	public Builder<Terraformer> defaults() {
-		return new Builder<>(Terraformer::new, ID)
-			.maxLevel(1)
-			.loreName("Terraformer")
-			.probability(0)
-			.enchantable(new Tool[]{SHOVEL})
-			.conflicting(new Class[]{})
-			.description("Places the leftmost blocks in the players inventory within a 7 block radius")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.RIGHT);
-	}
+    public Terraformer(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	@Override
-	public boolean onBlockInteract(PlayerInteractEvent evt, int level, boolean usedHand) {
-		if (evt.getPlayer().isSneaking()) {
-			if (evt.getAction().equals(RIGHT_CLICK_BLOCK)) {
-				Block start = evt.getClickedBlock().getRelative(evt.getBlockFace());
-				Material mat = AIR;
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
 
-				for (int i = 0; i < 9; i++) {
-					if (evt.getPlayer().getInventory().getItem(i) != null) {
-						if (evt.getPlayer().getInventory().getItem(i).getType().isBlock() &&
-							Storage.COMPATIBILITY_ADAPTER.TerraformerMaterials().contains(
-								evt.getPlayer().getInventory().getItem(i).getType())) {
-							mat = evt.getPlayer().getInventory().getItem(i).getType();
-							break;
-						}
-					}
-				}
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
 
-				for (Block b : Utilities.BFS(start, MAX_BLOCKS, false, 5.f, SEARCH_FACES,
-					Storage.COMPATIBILITY_ADAPTER.Airs(), new EnumStorage<>(new Material[]{}), false, true)) {
-					if (b.getType().equals(AIR)) {
-						if (Utilities.hasItem(evt.getPlayer(), mat, 1)) {
-							if (Storage.COMPATIBILITY_ADAPTER.placeBlock(b, evt.getPlayer(), mat, null)) {
-								Utilities.removeItem(evt.getPlayer(), mat, 1);
-								if (Storage.rnd.nextInt(10) == 5) {
-									Utilities.damageTool(evt.getPlayer(), 1, usedHand);
-								}
-							}
-						}
-					}
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
 
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+        if (!event.getPlayer().isSneaking() || !event.getAction().equals(RIGHT_CLICK_BLOCK)) {
+            return false;
+        }
+
+        Block start = event.getClickedBlock().getRelative(event.getBlockFace());
+        Inventory inventory = event.getPlayer().getInventory();
+        Material material = AIR;
+
+        for (int i = 0; i < 9; i++) {
+            ItemStack item = inventory.getItem(i);
+
+            if (item == null) {
+                continue;
+            }
+
+            if (item.getType().isBlock() && Storage.COMPATIBILITY_ADAPTER.TerraformerMaterials().contains(item.getType())) {
+                material = item.getType();
+                break;
+            }
+        }
+
+        Iterable<Block> blocks = Utilities.bfs(
+            start,
+            MAX_BLOCKS,
+            false,
+            5f,
+            SEARCH_FACES,
+            Storage.COMPATIBILITY_ADAPTER.Airs(),
+            EnumSet.noneOf(Material.class),
+            false,
+            true
+        );
+
+        for (Block block : blocks) {
+            if (block.getType() != AIR) {
+                continue;
+            }
+
+            if (!Utilities.playerHasMaterial(event.getPlayer(), material, 1)) {
+                continue;
+            }
+
+            if (Storage.COMPATIBILITY_ADAPTER.placeBlock(block, event.getPlayer(), material, null)) {
+                Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);
+                if (ThreadLocalRandom.current().nextInt(10) == 5) {
+                    Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
+                }
+            }
+        }
+
+        return true;
+    }
 }

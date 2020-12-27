@@ -1,79 +1,119 @@
 package zedly.zenchantments.enchantments;
 
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
-import zedly.zenchantments.CustomEnchantment;
-import zedly.zenchantments.Storage;
-import zedly.zenchantments.annotations.EffectTask;
-import zedly.zenchantments.arrows.EnchantedArrow;
-import zedly.zenchantments.arrows.admin.SingularityArrow;
-import zedly.zenchantments.enums.Frequency;
-import zedly.zenchantments.enums.Hand;
-import zedly.zenchantments.enums.Tool;
+import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.SingularityArrow;
+import zedly.zenchantments.arrows.ZenchantedArrow;
+import zedly.zenchantments.task.EffectTask;
+import zedly.zenchantments.task.Frequency;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static org.bukkit.GameMode.CREATIVE;
-import static zedly.zenchantments.enums.Tool.BOW;
+public final class Singularity extends Zenchantment {
+    public static final String KEY = "singularity";
 
-public class Singularity extends CustomEnchantment {
+    public static final Map<Location, Boolean> SINGULARITIES = new HashMap<>();
 
-	// Locations of black holes from the singularity enchantment and whether or not they are attracting or repelling
-	public static final Map<Location, Boolean> blackholes = new HashMap<>();
-	public static final int                    ID         = 72;
+    private static final String                             NAME        = "Singularity";
+    private static final String                             DESCRIPTION = "Creates a black hole that attracts nearby entities and then discharges them";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-	@Override
-	public Builder<Singularity> defaults() {
-		return new Builder<>(Singularity::new, ID)
-			.maxLevel(1)
-			.loreName("Singularity")
-			.probability(0)
-			.enchantable(new Tool[]{BOW})
-			.conflicting(new Class[]{})
-			.description("Creates a black hole that attracts nearby entities and then discharges them")
-			.cooldown(0)
-			.power(-1.0)
-			.handUse(Hand.RIGHT);
-	}
+    private final NamespacedKey key;
 
-	@Override
-	public boolean onEntityShootBow(EntityShootBowEvent evt, int level, boolean usedHand) {
-		SingularityArrow arrow = new SingularityArrow((Arrow) evt.getProjectile(), level);
-		EnchantedArrow.putArrow((Arrow) evt.getProjectile(), arrow, (Player) evt.getEntity());
-		return true;
-	}
+    public Singularity(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Set<Tool> enchantable,
+        final int maxLevel,
+        final int cooldown,
+        final double power,
+        final float probability
+    ) {
+        super(plugin, enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(plugin, KEY);
+    }
 
-	// Moves entities towards the black hole from the Singularity enchantment in pull state
-	// Throws entities in the black hole out in reverse state
-	@EffectTask(Frequency.HIGH)
-	public static void blackholes() {
-		for (Location l : blackholes.keySet()) {
-			for (Entity e : l.getWorld().getNearbyEntities(l, 10, 10, 10)) {
-				if (e instanceof Player) {
-					if (((Player) e).getGameMode().equals(CREATIVE)) {
-						continue;
-					}
-				}
-				if (blackholes.get(l)) {
-					Vector v = l.clone().subtract(e.getLocation()).toVector();
-					v.setX(v.getX() + (-.5f + Storage.rnd.nextFloat()) * 10);
-					v.setY(v.getY() + (-.5f + Storage.rnd.nextFloat()) * 10);
-					v.setZ(v.getZ() + (-.5f + Storage.rnd.nextFloat()) * 10);
-					e.setVelocity(v.multiply(.35f));
-					e.setFallDistance(0);
-				} else {
-					Vector v = e.getLocation().subtract(l.clone()).toVector();
-					v.setX(v.getX() + (-.5f + Storage.rnd.nextFloat()) * 2);
-					v.setY(v.getY() + Storage.rnd.nextFloat());
-					v.setZ(v.getZ() + (-.5f + Storage.rnd.nextFloat()) * 2);
-					e.setVelocity(v.multiply(.35f));
-				}
-			}
-		}
-	}
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    @NotNull
+    public Set<Class<? extends Zenchantment>> getConflicting() {
+        return CONFLICTING;
+    }
+
+    @Override
+    @NotNull
+    public Hand getHandUse() {
+        return HAND_USE;
+    }
+
+    @Override
+    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
+        SingularityArrow arrow = new SingularityArrow(this.getPlugin(), (Arrow) event.getProjectile(), level);
+        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        return true;
+    }
+
+    @EffectTask(Frequency.HIGH)
+    public static void singularityPhysics() {
+        for (Location location : SINGULARITIES.keySet()) {
+            for (Entity entity : location.getWorld().getNearbyEntities(location, 10, 10, 10)) {
+                if (entity instanceof Player) {
+                    if (((Player) entity).getGameMode() == GameMode.CREATIVE) {
+                        continue;
+                    }
+                }
+
+                ThreadLocalRandom random = ThreadLocalRandom.current();
+
+                if (SINGULARITIES.get(location)) {
+                    Vector vector = location.clone().subtract(entity.getLocation()).toVector();
+                    vector.setX(vector.getX() + (-0.5f + random.nextFloat()) * 10);
+                    vector.setY(vector.getY() + (-0.5f + random.nextFloat()) * 10);
+                    vector.setZ(vector.getZ() + (-0.5f + random.nextFloat()) * 10);
+
+                    entity.setVelocity(vector.multiply(.35f));
+                    entity.setFallDistance(0);
+                } else {
+                    Vector vector = entity.getLocation().subtract(location.clone()).toVector();
+                    vector.setX(vector.getX() + (-0.5f + random.nextFloat()) * 2);
+                    vector.setY(vector.getY() + random.nextFloat());
+                    vector.setZ(vector.getZ() + (-0.5f + random.nextFloat()) * 2);
+
+                    entity.setVelocity(vector.multiply(.35f));
+                }
+            }
+        }
+    }
 }
