@@ -124,7 +124,7 @@ public final class Laser extends Zenchantment {
             }
         }
 
-        if (ADAPTER.isBlockSafeToBreak(block) && !ADAPTER.LaserBlackListBlocks().contains(block.getType())) {
+        if (ADAPTER.isBlockSafeToBreak(block) && !MaterialList.LASER_BLACKLIST_BLOCKS.contains(block.getType())) {
             ADAPTER.breakBlockNMS(block, player);
         }
     }

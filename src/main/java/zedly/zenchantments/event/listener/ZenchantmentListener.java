@@ -66,7 +66,7 @@ public class ZenchantmentListener implements Listener {
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null
-            || !Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(event.getClickedBlock().getType())
+            || !MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
         ) {
             Player player = event.getPlayer();
             boolean isMainHand = Utilities.isMainHand(event.getHand());
@@ -84,7 +84,7 @@ public class ZenchantmentListener implements Listener {
     @EventHandler
     public void onBlockInteractInteractable(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null
-            || Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(event.getClickedBlock().getType())
+            || MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
         ) {
             Player player = event.getPlayer();
             boolean isMainHand = Utilities.isMainHand(event.getHand());
@@ -101,7 +101,7 @@ public class ZenchantmentListener implements Listener {
 
     @EventHandler
     public void onEntityInteract(PlayerInteractEntityEvent event) {
-        EntityType[] badEntities = {HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER};
+        EntityType[] badEntities = { HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER };
 
         if (ArrayUtils.contains(badEntities, event.getRightClicked().getType())) {
             return;
@@ -156,7 +156,8 @@ public class ZenchantmentListener implements Listener {
                         player,
                         this.plugin.getPlayerDataProvider().getDataForPlayer(player),
                         usedStack,
-                        (ench, level) -> ench.onEntityHit(event, level, usedHand));
+                        (ench, level) -> ench.onEntityHit(event, level, usedHand)
+                    );
                 }
             }
         }
@@ -387,7 +388,8 @@ public class ZenchantmentListener implements Listener {
                     });
 
                     return ench.onScan(player, level, true);
-                });
+                }
+            );
         }
 
         Zenchantment.applyForTool(
@@ -408,7 +410,8 @@ public class ZenchantmentListener implements Listener {
                 });
 
                 return ench.onScanHands(player, level, true);
-            });
+            }
+        );
 
         Zenchantment.applyForTool(
             player,
@@ -428,7 +431,8 @@ public class ZenchantmentListener implements Listener {
                 });
 
                 return ench.onScanHands(player, level, false);
-            });
+            }
+        );
 
         long currentTime = System.currentTimeMillis();
         if (player.hasMetadata("ze.speed") && (player.getMetadata("ze.speed").get(0).asLong() < currentTime - 1000)) {

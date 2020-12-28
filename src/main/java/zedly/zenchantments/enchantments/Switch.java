@@ -88,9 +88,9 @@ public final class Switch extends Zenchantment {
             if (switchItem != null
                 && switchItem.getType() != AIR
                 && switchItem.getType().isSolid()
-                && !Storage.COMPATIBILITY_ADAPTER.UnbreakableBlocks().contains(switchItem.getType())
-                && !Storage.COMPATIBILITY_ADAPTER.InteractableBlocks().contains(switchItem.getType())
-                && !Storage.COMPATIBILITY_ADAPTER.ShulkerBoxes().contains(switchItem.getType())
+                && !MaterialList.UNBREAKABLE_BLOCKS.contains(switchItem.getType())
+                && !MaterialList.INTERACTABLE_BLOCKS.contains(switchItem.getType())
+                && !MaterialList.SHULKER_BOXES.contains(switchItem.getType())
             ) {
                 c = i;
                 break;

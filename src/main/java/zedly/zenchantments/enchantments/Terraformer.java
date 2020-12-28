@@ -88,7 +88,7 @@ public final class Terraformer extends Zenchantment {
                 continue;
             }
 
-            if (item.getType().isBlock() && Storage.COMPATIBILITY_ADAPTER.TerraformerMaterials().contains(item.getType())) {
+            if (item.getType().isBlock() && MaterialList.TERRAFORMER_MATERIALS.contains(item.getType())) {
                 material = item.getType();
                 break;
             }
