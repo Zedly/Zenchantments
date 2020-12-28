@@ -94,7 +94,7 @@ public final class Reveal extends Zenchantment {
 
                     boolean exposed = false;
 
-                    for (BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
+                    for (BlockFace face : Utilities.CARDINAL_BLOCK_FACES) {
                         if (Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(face).getType())) {
                             exposed = true;
                         }
