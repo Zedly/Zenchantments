@@ -19,10 +19,10 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 public final class Persephone extends Zenchantment {
     public static final String KEY = "persephone";
 
-    private static final String                             NAME        = "Persephone";
+    private static final String                             NAME = "Persephone";
     private static final String                             DESCRIPTION = "Plants seeds from the player's inventory around them";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
+    private static final Hand                               HAND_USE = Hand.RIGHT;
 
     private final NamespacedKey key;
 
@@ -78,7 +78,7 @@ public final class Persephone extends Zenchantment {
         Location location = event.getClickedBlock().getLocation();
         int radiusXZ = (int) Math.round(this.getPower() * level + 2);
 
-        if (!Storage.COMPATIBILITY_ADAPTER.PersephoneCrops().contains(event.getClickedBlock().getType())) {
+        if (!MaterialList.PERSEPHONE_CROPS.contains(event.getClickedBlock().getType())) {
             return false;
         }
 
@@ -91,7 +91,7 @@ public final class Persephone extends Zenchantment {
                     }
 
                     if (block.getRelative(x, y, z).getType() == FARMLAND
-                        && Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(x, y + 1, z).getType())
+                        && MaterialList.AIR.contains(block.getRelative(x, y + 1, z).getType())
                     ) {
                         Inventory inventory = player.getInventory();
                         if (inventory.contains(CARROT)) {
@@ -112,11 +112,12 @@ public final class Persephone extends Zenchantment {
                             }
                         }
                     } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
-                        && Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(x, y + 1, z).getType())
+                        && MaterialList.AIR.contains(block.getRelative(x, y + 1, z).getType())
                     ) {
                         if (event.getPlayer().getInventory().contains(NETHER_WART)) {
                             if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART,
-                                null)) {
+                                null
+                            )) {
                                 Utilities.removeMaterialsFromPlayer(player, NETHER_WART, 1);
                             }
                         }
