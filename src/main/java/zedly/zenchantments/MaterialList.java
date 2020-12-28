@@ -874,15 +874,15 @@ public final class MaterialList extends AbstractList<Material> {
 
     private final Material[] values;
 
-    private MaterialList(final @NotNull Material... values) {
+    public MaterialList(final @NotNull Material... values) {
         this(values, new MaterialList[0]);
     }
 
-    private MaterialList(final @NotNull MaterialList... listsToAdd) {
+    public MaterialList(final @NotNull MaterialList... listsToAdd) {
         this(new Material[0], listsToAdd);
     }
 
-    private MaterialList(final @NotNull Material[] values, final @NotNull MaterialList... listsToAdd) {
+    public MaterialList(final @NotNull Material[] values, final @NotNull MaterialList... listsToAdd) {
         // Calculate total array length needed for all values.
         int totalLength = values.length;
         for (final MaterialList other : listsToAdd) {
