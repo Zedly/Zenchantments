@@ -18,6 +18,7 @@ import java.util.Set;
 
 import static org.bukkit.Material.*;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
+import static zedly.zenchantments.MaterialList.*;
 
 public final class Shred extends Zenchantment {
     public static final String KEY = "shred";
@@ -75,9 +76,7 @@ public final class Shred extends Zenchantment {
     public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
         Block block = event.getBlock();
 
-        if (!Storage.COMPATIBILITY_ADAPTER.ShredPicks().contains(block.getType())
-            && !Storage.COMPATIBILITY_ADAPTER.ShredShovels().contains(block.getType())
-        ) {
+        if (!SHRED_PICKS.contains(block.getType()) && !SHRED_SHOVELS.contains(block.getType())) {
             return false;
         }
 
@@ -111,14 +110,14 @@ public final class Shred extends Zenchantment {
         @NotNull Material itemType,
         boolean usedHand
     ) {
-        if (Storage.COMPATIBILITY_ADAPTER.Airs().contains(relativeBlock.getType()) || used.contains(relativeBlock)) {
+        if (MaterialList.AIR.contains(relativeBlock.getType()) || used.contains(relativeBlock)) {
             return;
         }
 
         Material originalType = relativeBlock.getType();
 
-        if ((Tool.PICKAXE.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.ShredPicks().contains(relativeBlock.getType()))
-            || (Tool.SHOVEL.contains(itemType) && !Storage.COMPATIBILITY_ADAPTER.ShredShovels().contains(relativeBlock.getType()))
+        if ((Tool.PICKAXE.contains(itemType) && !SHRED_PICKS.contains(relativeBlock.getType()))
+            || (Tool.SHOVEL.contains(itemType) && !SHRED_SHOVELS.contains(relativeBlock.getType()))
         ) {
             return;
         }
@@ -136,11 +135,11 @@ public final class Shred extends Zenchantment {
             if (config.areShredDropsEnabled() == 1) {
                 if (relativeBlock.getType().equals(NETHER_QUARTZ_ORE)) {
                     relativeBlock.setType(NETHERRACK);
-                } else if (Storage.COMPATIBILITY_ADAPTER.Ores().contains(relativeBlock.getType())) {
+                } else if (MaterialList.ORES.contains(relativeBlock.getType())) {
                     relativeBlock.setType(STONE);
                 }
 
-                if (event.isCancelled() || event.getBlock().getType() == AIR) {
+                if (event.isCancelled() || event.getBlock().getType() == Material.AIR) {
                     return;
                 }
 
@@ -160,7 +159,7 @@ public final class Shred extends Zenchantment {
 
                 relativeBlock.breakNaturally();
             } else {
-                relativeBlock.setType(AIR);
+                relativeBlock.setType(Material.AIR);
             }
         }
 
