@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
@@ -13,9 +14,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 import static org.bukkit.Material.*;
+import static org.bukkit.block.Biome.*;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.*;
@@ -30,6 +33,31 @@ public final class BlazesCurse extends Zenchantment {
     private static final String                             DESCRIPTION = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.NONE;
+
+    private static final EnumSet<Biome> DRY_BIOMES = EnumSet.of(
+        DESERT,
+        FROZEN_OCEAN,
+        FROZEN_RIVER,
+        SNOWY_TUNDRA,
+        SNOWY_MOUNTAINS,
+        DESERT_HILLS,
+        SNOWY_BEACH,
+        SNOWY_TAIGA,
+        SNOWY_TAIGA_HILLS,
+        SAVANNA,
+        SAVANNA_PLATEAU,
+        BADLANDS,
+        WOODED_BADLANDS_PLATEAU,
+        BADLANDS_PLATEAU,
+        DESERT_LAKES,
+        ICE_SPIKES,
+        SNOWY_TAIGA_MOUNTAINS,
+        SHATTERED_SAVANNA,
+        SHATTERED_SAVANNA_PLATEAU,
+        ERODED_BADLANDS,
+        MODIFIED_WOODED_BADLANDS_PLATEAU,
+        MODIFIED_BADLANDS_PLATEAU
+    );
 
     private final NamespacedKey key;
 
@@ -118,9 +146,7 @@ public final class BlazesCurse extends Zenchantment {
             return true;
         }
 
-        if (player.getWorld().hasStorm()
-            && !Storage.COMPATIBILITY_ADAPTER.DryBiomes().contains(player.getLocation().getBlock().getBiome())
-        ) {
+        if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
             Location checkLocation = player.getLocation();
             while (checkLocation.getBlockY() < 256) {
                 if (!Storage.COMPATIBILITY_ADAPTER.Airs().contains(checkLocation.getBlock().getType())) {
