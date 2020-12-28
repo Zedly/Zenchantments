@@ -493,6 +493,10 @@ public final class MaterialList extends AbstractList<Material> {
         RED_MUSHROOM_BLOCK
     );
 
+    public static final MaterialList CACTUS = new MaterialList(Material.CACTUS);
+
+    public static final MaterialList CHORUS_PLANTS = new MaterialList(CHORUS_PLANT, CHORUS_FLOWER);
+
     public static final MaterialList SHORT_GRASS = new MaterialList(GRASS, DEAD_BUSH, FERN);
 
     public static final MaterialList BUTTONS = new MaterialList(new Material[] { STONE_BUTTON }, WOODEN_BUTTONS);
