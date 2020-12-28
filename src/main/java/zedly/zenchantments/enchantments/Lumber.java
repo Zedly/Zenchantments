@@ -83,8 +83,8 @@ public final class Lumber extends Zenchantment {
             true,
             Float.MAX_VALUE,
             SEARCH_FACES,
-            Storage.COMPATIBILITY_ADAPTER.TrunkBlocks(),
-            Storage.COMPATIBILITY_ADAPTER.LumberWhitelist(),
+            MaterialList.TRUNKS,
+            MaterialList.LUMBER_WHITELIST,
             true,
             false
         );

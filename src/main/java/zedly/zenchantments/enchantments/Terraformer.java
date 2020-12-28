@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -25,7 +24,7 @@ public final class Terraformer extends Zenchantment {
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-    private static final int[][] SEARCH_FACES = {{-1, 0, 0}, {1, 0, 0}, {0, -1, 0}, {0, 0, -1}, {0, 0, 1}};
+    private static final int[][] SEARCH_FACES = { { -1, 0, 0 }, { 1, 0, 0 }, { 0, -1, 0 }, { 0, 0, -1 }, { 0, 0, 1 } };
     private static final int     MAX_BLOCKS   = 64;
 
     private final NamespacedKey key;
@@ -101,8 +100,8 @@ public final class Terraformer extends Zenchantment {
             false,
             5f,
             SEARCH_FACES,
-            Storage.COMPATIBILITY_ADAPTER.Airs(),
-            EnumSet.noneOf(Material.class),
+            MaterialList.AIR,
+            MaterialList.EMPTY,
             false,
             true
         );

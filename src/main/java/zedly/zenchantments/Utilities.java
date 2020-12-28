@@ -41,7 +41,7 @@ public final class Utilities {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
-                    DEFAULT_SEARCH_FACES[i++] = new int[] {x, y, z};
+                    DEFAULT_SEARCH_FACES[i++] = new int[] { x, y, z };
                 }
             }
         }
@@ -618,8 +618,8 @@ public final class Utilities {
         final boolean strictMax,
         final float maxDistFromOrigin,
         final int[][] searchFaces,
-        final @NotNull EnumSet<Material> validFind,
-        @NotNull EnumSet<Material> validSearch,
+        final @NotNull MaterialList validFind,
+        @NotNull MaterialList validSearch,
         final boolean strictValidSearch,
         final boolean flipValidSearch
     ) {
@@ -703,8 +703,8 @@ public final class Utilities {
         final int maxBlocks,
         final boolean strictMax,
         final float maxDistFromOrigin,
-        final @NotNull EnumSet<Material> validFind,
-        final @NotNull EnumSet<Material> validSearch,
+        final @NotNull MaterialList validFind,
+        final @NotNull MaterialList validSearch,
         final boolean strictValidSearch,
         final boolean flipValidSearch
     ) {

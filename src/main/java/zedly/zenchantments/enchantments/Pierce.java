@@ -3,7 +3,6 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -13,7 +12,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -188,8 +186,8 @@ public final class Pierce extends Zenchantment {
                     false,
                     Float.MAX_VALUE,
                     SEARCH_FACES,
-                    EnumSet.of(event.getBlock().getType()),
-                    EnumSet.noneOf(Material.class),
+                    new MaterialList(event.getBlock().getType()),
+                    MaterialList.EMPTY,
                     false,
                     true
                 )

@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -164,8 +163,8 @@ public final class Fire extends Zenchantment {
             false,
             256,
             SEARCH_FACES_CACTUS,
-            EnumSet.of(CACTUS),
-            EnumSet.noneOf(Material.class),
+            MaterialList.CACTUS,
+            MaterialList.EMPTY,
             false,
             true
         );
@@ -201,8 +200,8 @@ public final class Fire extends Zenchantment {
             false,
             256,
             SEARCH_FACES_CHORUS,
-            EnumSet.of(CHORUS_PLANT, CHORUS_FLOWER),
-            EnumSet.noneOf(Material.class),
+            MaterialList.CHORUS_PLANTS,
+            MaterialList.EMPTY,
             false,
             true
         );
