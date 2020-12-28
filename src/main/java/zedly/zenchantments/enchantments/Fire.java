@@ -100,10 +100,8 @@ public final class Fire extends Zenchantment {
         Material material = AIR;
 
         if (Tool.PICKAXE.contains(hand.getType())) {
-            if (Storage.COMPATIBILITY_ADAPTER.FireRaw().contains(original)) {
-                material = Storage.COMPATIBILITY_ADAPTER.FireCooked().get(
-                    Storage.COMPATIBILITY_ADAPTER.FireRaw().indexOf(original)
-                );
+            if (MaterialList.FIRE_RAW.contains(original)) {
+                material = MaterialList.FIRE_COOKED.get(MaterialList.FIRE_RAW.indexOf(original));
             }
             if (original == GOLD_ORE || original == IRON_ORE) {
                 ExperienceOrb experienceOrb = (ExperienceOrb) block.getWorld().spawnEntity(
@@ -117,12 +115,12 @@ public final class Fire extends Zenchantment {
 
         if (original == WET_SPONGE) {
             material = SPONGE;
-        } else if (Storage.COMPATIBILITY_ADAPTER.Sands().contains(original)) {
+        } else if (MaterialList.SAND.contains(original)) {
             material = GLASS;
-        } else if (Storage.COMPATIBILITY_ADAPTER.Logs().contains(original)
-            || Storage.COMPATIBILITY_ADAPTER.StrippedLogs().contains(original)
-            || Storage.COMPATIBILITY_ADAPTER.StrippedWoods().contains(original)
-            || Storage.COMPATIBILITY_ADAPTER.Woods().contains(original)
+        } else if (MaterialList.LOGS.contains(original)
+            || MaterialList.STRIPPED_LOGS.contains(original)
+            || MaterialList.STRIPPED_WOOD.contains(original)
+            || MaterialList.WOOD.contains(original)
         ) {
             material = CHARCOAL;
         } else if (original == CLAY) {
@@ -133,7 +131,7 @@ public final class Fire extends Zenchantment {
             return this.handleChorusPlant(block, event.getPlayer());
         }
 
-        if (material != AIR) {
+        if (material != Material.AIR) {
             return this.handleEverythingElse(block, material);
         }
 
@@ -179,10 +177,10 @@ public final class Fire extends Zenchantment {
 
             block.getWorld().dropItemNaturally(
                 Utilities.getCenter(bfsBlock.getLocation()),
-                new ItemStack(Storage.COMPATIBILITY_ADAPTER.Dyes().get(13), 1)
+                new ItemStack(MaterialList.DYES.get(13), 1)
             );
 
-            bfsBlock.setType(AIR);
+            bfsBlock.setType(Material.AIR);
 
             CANCELLED_ITEM_DROPS.add(bfsBlock);
 
