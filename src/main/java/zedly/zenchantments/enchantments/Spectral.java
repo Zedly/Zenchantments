@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -248,98 +249,134 @@ public final class Spectral extends Zenchantment {
                 block.setType(newMaterial, false);
 
                 if (blockData instanceof Bisected) {
-                    Bisected newBlockData = (Bisected) block.getBlockData();
-                    newBlockData.setHalf(((Bisected) blockData).getHalf());
+                    final Bisected oldBlockData = (Bisected) blockData;
+                    final Bisected newBlockData = (Bisected) block.getBlockData();
+                    newBlockData.setHalf(oldBlockData.getHalf());
                     block.setBlockData(newBlockData, false);
 
                     // Set the second half's data.
-                    if (block.getRelative(BlockFace.UP).getType().equals(original)) {
+                    if (block.getRelative(BlockFace.UP).getType() == original) {
                         newBlockData.setHalf(Bisected.Half.TOP);
                         block.getRelative(BlockFace.UP).setBlockData(newBlockData, false);
                     }
-                    if (block.getRelative(BlockFace.DOWN).getType().equals(original)) {
+                    if (block.getRelative(BlockFace.DOWN).getType() == original) {
                         newBlockData.setHalf(Bisected.Half.BOTTOM);
                         block.getRelative(BlockFace.DOWN).setBlockData(newBlockData, false);
                     }
                 }
 
                 if (blockData instanceof Bed) {
-                    Bed newBlockData = (Bed) block.getBlockData();
-                    newBlockData.setPart(((Bed) blockData).getPart());
+                    final Bed oldBlockData = (Bed) blockData;
+                    final Bed newBlockData = (Bed) block.getBlockData();
+
+                    newBlockData.setPart(oldBlockData.getPart());
+
                     block.setBlockData(newBlockData, false);
 
                     // Set the second bed's part.
-                    BlockFace facing = !newBlockData.getPart().equals(Bed.Part.HEAD)
-                        ? ((Bed) blockData).getFacing()
-                        : ((Bed) blockData).getFacing().getOppositeFace();
-                    newBlockData.setPart(((Bed) block.getRelative(facing).getBlockData()).getPart());
-                    block.getRelative(facing).setBlockData(newBlockData, false);
+                    final BlockFace facing = newBlockData.getPart() != Bed.Part.HEAD
+                        ? oldBlockData.getFacing()
+                        : oldBlockData.getFacing().getOppositeFace();
+                    final Block relative = block.getRelative(facing);
+                    final Bed relativeData = (Bed) relative.getBlockData();
+
+                    newBlockData.setPart(relativeData.getPart());
+                    relative.setBlockData(newBlockData, false);
 
                     // Set the second bed's direction since we never do that later on.
-                    Directional secondaryBlockData = (Directional) block.getRelative(facing).getBlockData();
-                    secondaryBlockData.setFacing(((Directional) blockData).getFacing());
-                    block.getRelative(facing).setBlockData(secondaryBlockData, true);
+                    relativeData.setFacing(oldBlockData.getFacing());
+                    relative.setBlockData(relativeData, true);
                 }
 
                 if (blockData instanceof Gate) {
-                    Gate newBlockData = (Gate) block.getBlockData();
-                    newBlockData.setInWall(((Gate) blockData).isInWall());
+                    final Gate oldBlockData = (Gate) blockData;
+                    final Gate newBlockData = (Gate) block.getBlockData();
+
+                    newBlockData.setInWall(oldBlockData.isInWall());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Door) {
-                    Door newBlockData = (Door) block.getBlockData();
-                    newBlockData.setHinge(((Door) blockData).getHinge());
+                    final Door oldBlockData = (Door) blockData;
+                    final Door newBlockData = (Door) block.getBlockData();
+
+                    newBlockData.setHinge(oldBlockData.getHinge());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Orientable) {
-                    Orientable newBlockData = (Orientable) block.getBlockData();
-                    newBlockData.setAxis(((Orientable) blockData).getAxis());
+                    final Orientable oldBlockData = (Orientable) blockData;
+                    final Orientable newBlockData = (Orientable) block.getBlockData();
+
+                    newBlockData.setAxis(oldBlockData.getAxis());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Powerable) {
-                    Powerable newBlockData = (Powerable) block.getBlockData();
-                    newBlockData.setPowered(((Powerable) blockData).isPowered());
+                    final Powerable oldBlockData = (Powerable) blockData;
+                    final Powerable newBlockData = (Powerable) block.getBlockData();
+
+                    newBlockData.setPowered(oldBlockData.isPowered());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Openable) {
-                    Openable newBlockData = (Openable) block.getBlockData();
-                    newBlockData.setOpen(((Openable) blockData).isOpen());
+                    final Openable oldBlockData = (Openable) blockData;
+                    final Openable newBlockData = (Openable) block.getBlockData();
+
+                    newBlockData.setOpen(oldBlockData.isOpen());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Stairs) {
-                    Stairs newBlockData = (Stairs) block.getBlockData();
-                    newBlockData.setShape(((Stairs) blockData).getShape());
+                    final Stairs oldBlockData = (Stairs) blockData;
+                    final Stairs newBlockData = (Stairs) block.getBlockData();
+
+                    newBlockData.setShape(oldBlockData.getShape());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Slab) {
-                    Slab newBlockData = (Slab) block.getBlockData();
-                    newBlockData.setType(((Slab) blockData).getType());
+                    final Slab oldBlockData = (Slab) blockData;
+                    final Slab newBlockData = (Slab) block.getBlockData();
+
+                    newBlockData.setType(oldBlockData.getType());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof MultipleFacing) {
-                    MultipleFacing newBlockData = (MultipleFacing) block.getBlockData();
-                    for (BlockFace bf : ((MultipleFacing) blockData).getFaces()) {
-                        newBlockData.setFace(bf, true);
+                    final MultipleFacing oldBlockData = (MultipleFacing) blockData;
+                    final MultipleFacing newBlockData = (MultipleFacing) block.getBlockData();
+
+                    for (final BlockFace face : oldBlockData.getFaces()) {
+                        newBlockData.setFace(face, true);
                     }
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Directional) {
-                    Directional newBlockData = (Directional) block.getBlockData();
-                    newBlockData.setFacing(((Directional) blockData).getFacing());
+                    final Directional oldBlockData = (Directional) blockData;
+                    final Directional newBlockData = (Directional) block.getBlockData();
+
+                    newBlockData.setFacing(oldBlockData.getFacing());
+
                     block.setBlockData(newBlockData, true);
                 }
 
                 if (blockData instanceof Waterlogged) {
-                    Waterlogged newBlockData = (Waterlogged) block.getBlockData();
-                    newBlockData.setWaterlogged(((Waterlogged) blockData).isWaterlogged());
+                    final Waterlogged oldBlockData = (Waterlogged) blockData;
+                    final Waterlogged newBlockData = (Waterlogged) block.getBlockData();
+
+                    newBlockData.setWaterlogged(oldBlockData.isWaterlogged());
+
                     block.setBlockData(newBlockData, true);
                 }
             }, 0);
