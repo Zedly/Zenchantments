@@ -9,6 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.bukkit.Material.*;
 
 public final class MaterialList extends AbstractList<Material> {
+    public static final MaterialList EMPTY = new MaterialList(new Material[0]);
+
     public static final MaterialList BEDS = new MaterialList(
         WHITE_BED,
         ORANGE_BED,
@@ -468,7 +470,7 @@ public final class MaterialList extends AbstractList<Material> {
         DEAD_TUBE_CORAL_FAN
     );
 
-    public static final MaterialList DEAD_CORAL = new MaterialList(new Material[0]);
+    public static final MaterialList DEAD_CORAL = EMPTY;
 
     public static final MaterialList DEAD_CORAL_WALL_FANS = new MaterialList(
         DEAD_BRAIN_CORAL_WALL_FAN,
@@ -607,7 +609,7 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_PRISMARINE_SLAB
     );
 
-    public static final MaterialList STONE_STAIRS = new MaterialList(new Material[0]);
+    public static final MaterialList STONE_STAIRS = EMPTY;
 
     public static final MaterialList SANDSTONE_STAIRS = new MaterialList(
         Material.SANDSTONE_STAIRS,
@@ -628,18 +630,18 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_PRISMARINE_STAIRS
     );
 
-    public static final MaterialList STONE_WALLS = new MaterialList(new Material[0]);
+    public static final MaterialList STONE_WALLS = EMPTY;
 
-    public static final MaterialList STONE_BRICK_WALLS = new MaterialList(new Material[0]);
+    public static final MaterialList STONE_BRICK_WALLS = EMPTY;
 
     public static final MaterialList COBBLESTONE_WALLS = new MaterialList(
         COBBLESTONE_WALL,
         MOSSY_COBBLESTONE_WALL
     );
 
-    public static final MaterialList SANDSTONE_WALLS = new MaterialList(new Material[0]);
+    public static final MaterialList SANDSTONE_WALLS = EMPTY;
 
-    public static final MaterialList NETHER_BRICK_WALLS = new MaterialList(new Material[0]);
+    public static final MaterialList NETHER_BRICK_WALLS = EMPTY;
 
     public static final MaterialList UNBREAKABLE_BLOCKS = new MaterialList(
         new Material[] {
