@@ -206,7 +206,7 @@ public class GeneralListener implements Listener {
 
     @EventHandler
     public void onOreUncover(final @NotNull BlockBreakEvent event) {
-        for (final BlockFace face : Storage.CARDINAL_BLOCK_FACES) {
+        for (final BlockFace face : Utilities.CARDINAL_BLOCK_FACES) {
             if (!Reveal.GLOWING_BLOCKS.containsKey(event.getBlock().getRelative(face))) {
                 continue;
             }

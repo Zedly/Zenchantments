@@ -1,7 +1,6 @@
 package zedly.zenchantments.task;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +28,7 @@ public class TaskRunner implements Runnable {
         this.tasks = new HashSet<>();
 
         new FastClasspathScanner(plugin.getClass().getPackage().getName())
-            .overrideClasspath(Storage.pluginPath)
+            .overrideClasspath("") // TODO: Try to remove this.
             .matchClassesWithMethodAnnotation(
                 EffectTask.class,
                 (clazz, method) -> {

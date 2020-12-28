@@ -25,6 +25,15 @@ import static java.util.Objects.requireNonNull;
 import static org.bukkit.ChatColor.COLOR_CHAR;
 
 public final class Utilities {
+    public static final BlockFace[] CARDINAL_BLOCK_FACES = {
+        BlockFace.UP,
+        BlockFace.DOWN,
+        BlockFace.NORTH,
+        BlockFace.EAST,
+        BlockFace.SOUTH,
+        BlockFace.WEST
+    };
+
     private static final int[][] DEFAULT_SEARCH_FACES = new int[27][3];
 
     static {

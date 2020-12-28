@@ -1067,16 +1067,6 @@ public class CompatibilityAdapter {
     }
     //endregion
 
-    //region Potion Potions
-    private final Set<PotionEffectType> POTION_POTIONS_E = new HashSet<>(Arrays.asList(ABSORPTION,
-        DAMAGE_RESISTANCE, FIRE_RESISTANCE, SPEED, JUMP, INVISIBILITY, INCREASE_DAMAGE, HEALTH_BOOST, HEAL,
-        REGENERATION, NIGHT_VISION, SATURATION, FAST_DIGGING, WATER_BREATHING, DOLPHINS_GRACE));
-
-    public Set<PotionEffectType> PotionPotions() {
-        return POTION_POTIONS_E;
-    }
-    //endregion
-
     //endregion
     //endregion
     //region Gluttony
