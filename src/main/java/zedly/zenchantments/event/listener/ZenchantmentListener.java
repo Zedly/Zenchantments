@@ -56,7 +56,9 @@ public class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onBlockBreak(event, level, usedHand)
         );
@@ -73,7 +75,9 @@ public class ZenchantmentListener implements Listener {
             for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
                 Zenchantment.applyForTool(
                     player,
-                    this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                    this.plugin.getPlayerDataProvider(),
+                    this.plugin.getGlobalConfiguration(),
+                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> ench.onBlockInteract(event, level, isMainHand)
                 );
@@ -91,7 +95,9 @@ public class ZenchantmentListener implements Listener {
             for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
                 Zenchantment.applyForTool(
                     player,
-                    this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                    this.plugin.getPlayerDataProvider(),
+                    this.plugin.getGlobalConfiguration(),
+                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> ench.onBlockInteractInteractable(event, level, isMainHand)
                 );
@@ -112,7 +118,9 @@ public class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityInteract(event, level, usedHand)
         );
@@ -135,7 +143,9 @@ public class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityKill(event, level, usedHand)
         );
@@ -154,7 +164,9 @@ public class ZenchantmentListener implements Listener {
                 for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, usedHand)) {
                     Zenchantment.applyForTool(
                         player,
-                        this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                        this.plugin.getPlayerDataProvider(),
+                        this.plugin.getGlobalConfiguration(),
+                        this.plugin.getWorldConfigurationProvider(),
                         usedStack,
                         (ench, level) -> ench.onEntityHit(event, level, usedHand)
                     );
@@ -168,7 +180,9 @@ public class ZenchantmentListener implements Listener {
             for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
                 Zenchantment.applyForTool(
                     player,
-                    this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                    this.plugin.getPlayerDataProvider(),
+                    this.plugin.getGlobalConfiguration(),
+                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> ench.onBeingHit(event, level, true)
                 );
@@ -186,7 +200,9 @@ public class ZenchantmentListener implements Listener {
         for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, false)) {
             Zenchantment.applyForTool(
                 player,
-                this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                this.plugin.getPlayerDataProvider(),
+                this.plugin.getGlobalConfiguration(),
+                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onEntityDamage(event, level, false)
             );
@@ -205,7 +221,9 @@ public class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onPlayerFish(event, level, true)
         );
@@ -221,7 +239,9 @@ public class ZenchantmentListener implements Listener {
         for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
             Zenchantment.applyForTool(
                 player,
-                this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                this.plugin.getPlayerDataProvider(),
+                this.plugin.getGlobalConfiguration(),
+                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onHungerChange(event, level, true)
             );
@@ -244,7 +264,9 @@ public class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onShear(event, level, true)
         );
@@ -266,7 +288,9 @@ public class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityShootBow(event, level, true)
         );
@@ -288,7 +312,9 @@ public class ZenchantmentListener implements Listener {
                 // Yes, I am bored
                 Zenchantment.applyForTool(
                     player,
-                    this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                    this.plugin.getPlayerDataProvider(),
+                    this.plugin.getGlobalConfiguration(),
+                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, false), false)
                 );
@@ -314,7 +340,9 @@ public class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onProjectileLaunch(event, level, usedHand)
         );
@@ -328,7 +356,9 @@ public class ZenchantmentListener implements Listener {
         for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
             Zenchantment.applyForTool(
                 player,
-                this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                this.plugin.getPlayerDataProvider(),
+                this.plugin.getGlobalConfiguration(),
+                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onPlayerDeath(event, level, true)
             );
@@ -347,7 +377,9 @@ public class ZenchantmentListener implements Listener {
         for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
             Zenchantment.applyForTool(
                 player,
-                this.plugin.getPlayerDataProvider().getDataForPlayer(player),
+                this.plugin.getPlayerDataProvider(),
+                this.plugin.getGlobalConfiguration(),
+                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onCombust(event, level, true)
             );
