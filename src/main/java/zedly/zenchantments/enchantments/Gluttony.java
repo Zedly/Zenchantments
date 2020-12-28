@@ -20,6 +20,53 @@ public final class Gluttony extends Zenchantment {
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.NONE;
 
+    private static final int[] GLUTTONY_FOOD_LEVELS = { 4, 5, 1, 6, 5, 3, 1, 6, 5, 6, 8, 5, 6, 2, 1, 2, 6, 8, 10, 8 };
+
+    private static final float[] GLUTTONY_SATURATIONS = {
+        2.4f,
+        6,
+        1.2f,
+        7.2f,
+        6,
+        3.6f,
+        0.2f,
+        7.2f,
+        6,
+        9.6f,
+        12.8f,
+        6,
+        9.6f,
+        0.4f,
+        0.6f,
+        1.2f,
+        7.2f,
+        4.8f,
+        12,
+        12.8f
+    };
+
+    private static final Material[] GLUTTONY_FOOD_ITEMS = {
+        APPLE,
+        BAKED_POTATO,
+        BEETROOT,
+        BEETROOT_SOUP,
+        BREAD, CARROT,
+        TROPICAL_FISH,
+        COOKED_CHICKEN,
+        COOKED_COD,
+        COOKED_MUTTON,
+        COOKED_PORKCHOP,
+        COOKED_RABBIT,
+        COOKED_SALMON,
+        COOKIE,
+        DRIED_KELP,
+        MELON_SLICE,
+        MUSHROOM_STEW,
+        PUMPKIN_PIE,
+        RABBIT_STEW,
+        COOKED_BEEF
+    };
+
     private final NamespacedKey key;
 
     public Gluttony(
@@ -66,9 +113,9 @@ public final class Gluttony extends Zenchantment {
 
     @Override
     public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
-        for (int i = 0; i < Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems().length; i++) {
-            Material foodMaterial = Storage.COMPATIBILITY_ADAPTER.GluttonyFoodItems()[i];
-            int foodLevel = Storage.COMPATIBILITY_ADAPTER.GluttonyFoodLevels()[i];
+        for (int i = 0; i < GLUTTONY_FOOD_ITEMS.length; i++) {
+            Material foodMaterial = GLUTTONY_FOOD_ITEMS[i];
+            int foodLevel = GLUTTONY_FOOD_LEVELS[i];
 
             if (!player.getInventory().containsAtLeast(new ItemStack(foodMaterial), 1)
                 || player.getFoodLevel() > 20 - foodLevel
@@ -79,7 +126,7 @@ public final class Gluttony extends Zenchantment {
             Utilities.removeMaterialsFromPlayer(player, foodMaterial, 1);
 
             player.setFoodLevel(player.getFoodLevel() + foodLevel);
-            player.setSaturation((float) (player.getSaturation() + Storage.COMPATIBILITY_ADAPTER.GluttonySaturations()[i]));
+            player.setSaturation(player.getSaturation() + GLUTTONY_SATURATIONS[i]);
 
             if (foodMaterial == RABBIT_STEW
                 || foodMaterial == MUSHROOM_STEW
