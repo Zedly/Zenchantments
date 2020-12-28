@@ -26,6 +26,7 @@ import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -36,29 +37,28 @@ import static org.bukkit.inventory.EquipmentSlot.HAND;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.Tool.BOW;
 
-public class ZenchantmentListener implements Listener {
+public final class ZenchantmentListener implements Listener {
     private static final HighFrequencyRunnableCache CACHE = new HighFrequencyRunnableCache(ZenchantmentListener::feedEnchCache, 5);
+
+    private static final EntityType[] ENTITY_INTERACT_BAD_ENTITIES = { HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER };
 
     private final ZenchantmentsPlugin plugin;
 
-    public ZenchantmentListener(@NotNull ZenchantmentsPlugin plugin) {
+    public ZenchantmentListener(final @NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
+    private void onBlockBreak(final @NotNull BlockBreakEvent event) {
         if (event.isCancelled() || event instanceof BlockShredEvent || event.getBlock().getType() == AIR) {
             return;
         }
 
-        Player player = event.getPlayer();
-        boolean usedHand = Utilities.isMainHand(HAND);
+        final Player player = event.getPlayer();
+        final boolean usedHand = Utilities.isMainHand(HAND);
 
-        Zenchantment.applyForTool(
+        this.applyZenchantmentForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
-            this.plugin.getGlobalConfiguration(),
-            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onBlockBreak(event, level, usedHand)
         );
@@ -66,18 +66,16 @@ public class ZenchantmentListener implements Listener {
 
 
     @EventHandler
-    public void onBlockInteract(PlayerInteractEvent event) {
+    private void onBlockInteract(final @NotNull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null
             || !MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
         ) {
-            Player player = event.getPlayer();
-            boolean isMainHand = Utilities.isMainHand(event.getHand());
-            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
-                Zenchantment.applyForTool(
+            final Player player = event.getPlayer();
+            final boolean isMainHand = Utilities.isMainHand(event.getHand());
+
+            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
+                this.applyZenchantmentForTool(
                     player,
-                    this.plugin.getPlayerDataProvider(),
-                    this.plugin.getGlobalConfiguration(),
-                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> ench.onBlockInteract(event, level, isMainHand)
                 );
@@ -86,18 +84,16 @@ public class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockInteractInteractable(PlayerInteractEvent event) {
+    private void onBlockInteractInteractable(final @NotNull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null
             || MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
         ) {
-            Player player = event.getPlayer();
-            boolean isMainHand = Utilities.isMainHand(event.getHand());
-            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
-                Zenchantment.applyForTool(
+            final Player player = event.getPlayer();
+            final boolean isMainHand = Utilities.isMainHand(event.getHand());
+
+            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
+                this.applyZenchantmentForTool(
                     player,
-                    this.plugin.getPlayerDataProvider(),
-                    this.plugin.getGlobalConfiguration(),
-                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> ench.onBlockInteractInteractable(event, level, isMainHand)
                 );
@@ -106,67 +102,56 @@ public class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityInteract(PlayerInteractEntityEvent event) {
-        EntityType[] badEntities = { HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER };
-
-        if (ArrayUtils.contains(badEntities, event.getRightClicked().getType())) {
+    private void onEntityInteract(final @NotNull PlayerInteractEntityEvent event) {
+        if (ArrayUtils.contains(ENTITY_INTERACT_BAD_ENTITIES, event.getRightClicked().getType())) {
             return;
         }
 
-        Player player = event.getPlayer();
-        boolean usedHand = Utilities.isMainHand(HAND);
+        final Player player = event.getPlayer();
+        final boolean usedHand = Utilities.isMainHand(HAND);
 
-        Zenchantment.applyForTool(
+        this.applyZenchantmentForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
-            this.plugin.getGlobalConfiguration(),
-            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityInteract(event, level, usedHand)
         );
     }
 
     @EventHandler
-    public void onEntityKill(EntityDeathEvent event) {
+    private void onEntityKill(final @NotNull EntityDeathEvent event) {
         if (event.getEntity().getKiller() == null) {
             return;
         }
 
-        Player player = event.getEntity().getKiller();
-        PlayerInventory inventory = player.getInventory();
-        EquipmentSlot slot = event.getEntity().getLastDamageCause().getCause() == PROJECTILE
+        final Player player = event.getEntity().getKiller();
+        final PlayerInventory inventory = player.getInventory();
+        final EquipmentSlot slot = event.getEntity().getLastDamageCause().getCause() == PROJECTILE
             && Tool.fromItemStack(inventory.getItemInOffHand()) == BOW
             && Tool.fromItemStack(inventory.getItemInMainHand()) != BOW
             ? EquipmentSlot.OFF_HAND
             : EquipmentSlot.HAND;
-        boolean usedHand = Utilities.isMainHand(slot);
+        final boolean usedHand = Utilities.isMainHand(slot);
 
-        Zenchantment.applyForTool(
+        this.applyZenchantmentForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
-            this.plugin.getGlobalConfiguration(),
-            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityKill(event, level, usedHand)
         );
     }
 
     @EventHandler
-    public void onEntityHit(EntityDamageByEntityEvent event) {
+    private void onEntityHit(final @NotNull EntityDamageByEntityEvent event) {
         if (event.getDamage() <= 0) {
             return;
         }
 
         if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
-            boolean usedHand = Utilities.isMainHand(HAND);
+            final Player player = (Player) event.getDamager();
+            final boolean usedHand = Utilities.isMainHand(HAND);
             if (event.getEntity() instanceof LivingEntity) {
-                for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, usedHand)) {
-                    Zenchantment.applyForTool(
+                for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, usedHand)) {
+                    this.applyZenchantmentForTool(
                         player,
-                        this.plugin.getPlayerDataProvider(),
-                        this.plugin.getGlobalConfiguration(),
-                        this.plugin.getWorldConfigurationProvider(),
                         usedStack,
                         (ench, level) -> ench.onEntityHit(event, level, usedHand)
                     );
@@ -175,14 +160,11 @@ public class ZenchantmentListener implements Listener {
         }
 
         if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+            final Player player = (Player) event.getEntity();
             // Only check main hand for some reason.
-            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
-                Zenchantment.applyForTool(
+            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
+                this.applyZenchantmentForTool(
                     player,
-                    this.plugin.getPlayerDataProvider(),
-                    this.plugin.getGlobalConfiguration(),
-                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> ench.onBeingHit(event, level, true)
                 );
@@ -191,18 +173,15 @@ public class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityDamage(EntityDamageEvent event) {
+    private void onEntityDamage(final @NotNull EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
 
-        Player player = (Player) event.getEntity();
-        for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, false)) {
-            Zenchantment.applyForTool(
+        final Player player = (Player) event.getEntity();
+        for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, false)) {
+            this.applyZenchantmentForTool(
                 player,
-                this.plugin.getPlayerDataProvider(),
-                this.plugin.getGlobalConfiguration(),
-                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onEntityDamage(event, level, false)
             );
@@ -210,38 +189,32 @@ public class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerFish(PlayerFishEvent event) {
-        Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
-        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
-        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        boolean usedHand = Utilities.isMainHand(
+    private void onPlayerFish(final @NotNull PlayerFishEvent event) {
+        final Player player = event.getPlayer();
+        final PlayerInventory inventory = player.getInventory();
+        final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        final boolean usedHand = Utilities.isMainHand(
             main != Tool.ROD && off == Tool.ROD ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        Zenchantment.applyForTool(
+        this.applyZenchantmentForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
-            this.plugin.getGlobalConfiguration(),
-            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onPlayerFish(event, level, true)
         );
     }
 
     @EventHandler
-    public void onHungerChange(FoodLevelChangeEvent event) {
+    private void onHungerChange(final @NotNull FoodLevelChangeEvent event) {
         if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
             return;
         }
 
-        Player player = (Player) event.getEntity();
-        for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
-            Zenchantment.applyForTool(
+        final Player player = (Player) event.getEntity();
+        for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
+            this.applyZenchantmentForTool(
                 player,
-                this.plugin.getPlayerDataProvider(),
-                this.plugin.getGlobalConfiguration(),
-                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onHungerChange(event, level, true)
             );
@@ -249,72 +222,63 @@ public class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
-    public void onShear(PlayerShearEntityEvent event) {
+    private void onShear(final @NotNull PlayerShearEntityEvent event) {
         if (event.isCancelled()) {
             return;
         }
 
-        Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
-        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
-        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        boolean usedHand = Utilities.isMainHand(
+        final Player player = event.getPlayer();
+        final PlayerInventory inventory = player.getInventory();
+        final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        final boolean usedHand = Utilities.isMainHand(
             main != Tool.SHEAR && off == Tool.SHEAR ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        Zenchantment.applyForTool(
+        this.applyZenchantmentForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
-            this.plugin.getGlobalConfiguration(),
-            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onShear(event, level, true)
         );
     }
 
     @EventHandler
-    public void onEntityShootBow(EntityShootBowEvent event) {
+    private void onEntityShootBow(final @NotNull EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
 
-        Player player = (Player) event.getEntity();
-        PlayerInventory inventory = player.getInventory();
-        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
-        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        final Player player = (Player) event.getEntity();
+        final PlayerInventory inventory = player.getInventory();
+        final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
         boolean usedHand = Utilities.isMainHand(
             main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        Zenchantment.applyForTool(
+        this.applyZenchantmentForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
-            this.plugin.getGlobalConfiguration(),
-            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onEntityShootBow(event, level, true)
         );
     }
 
     @EventHandler
-    public void onPotionSplash(PotionSplashEvent event) {
-        for (LivingEntity entity : event.getAffectedEntities()) {
+    private void onPotionSplash(final @NotNull PotionSplashEvent event) {
+        for (final LivingEntity entity : event.getAffectedEntities()) {
             if (!(entity instanceof Player)) {
                 continue;
             }
 
-            Player player = (Player) entity;
-            AtomicBoolean apply = new AtomicBoolean(true);
+            final Player player = (Player) entity;
+            final AtomicBoolean apply = new AtomicBoolean(true);
 
-            for (ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
+            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
                 // Only apply one enchantment, which in practice is Potion Resistance.
                 // This will always skip execution of the Lambda and return false after a Lambda returned true once
                 // Yes, I am bored
-                Zenchantment.applyForTool(
+                this.applyZenchantmentForTool(
                     player,
-                    this.plugin.getPlayerDataProvider(),
-                    this.plugin.getGlobalConfiguration(),
-                    this.plugin.getWorldConfigurationProvider(),
                     usedStack,
                     (ench, level) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, false), false)
                 );
@@ -323,42 +287,36 @@ public class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
-    public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        Entity shooter = (Entity) event.getEntity().getShooter();
+    private void onProjectileLaunch(final @NotNull ProjectileLaunchEvent event) {
+        final Entity shooter = (Entity) event.getEntity().getShooter();
 
         if (!(shooter instanceof Player)) {
             return;
         }
 
-        Player player = (Player) shooter;
-        PlayerInventory inventory = player.getInventory();
-        Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
-        Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        boolean usedHand = Utilities.isMainHand(
+        final Player player = (Player) shooter;
+        final PlayerInventory inventory = player.getInventory();
+        final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
+        final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
+        final boolean usedHand = Utilities.isMainHand(
             main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
         );
 
-        Zenchantment.applyForTool(
+        this.applyZenchantmentForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
-            this.plugin.getGlobalConfiguration(),
-            this.plugin.getWorldConfigurationProvider(),
             Utilities.getUsedItemStack(player, usedHand),
             (ench, level) -> ench.onProjectileLaunch(event, level, usedHand)
         );
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        PlayerInventory inventory = player.getInventory();
+    private void onDeath(final @NotNull PlayerDeathEvent event) {
+        final Player player = event.getEntity();
+        final PlayerInventory inventory = player.getInventory();
 
-        for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
-            Zenchantment.applyForTool(
+        for (final ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
+            this.applyZenchantmentForTool(
                 player,
-                this.plugin.getPlayerDataProvider(),
-                this.plugin.getGlobalConfiguration(),
-                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onPlayerDeath(event, level, true)
             );
@@ -366,30 +324,42 @@ public class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
-    public void onCombust(EntityCombustByEntityEvent event) {
+    private void onCombust(final @NotNull EntityCombustByEntityEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
 
-        Player player = (Player) event.getEntity();
-        PlayerInventory inventory = player.getInventory();
+        final Player player = (Player) event.getEntity();
+        final PlayerInventory inventory = player.getInventory();
 
-        for (ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
-            Zenchantment.applyForTool(
+        for (final ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
+            this.applyZenchantmentForTool(
                 player,
-                this.plugin.getPlayerDataProvider(),
-                this.plugin.getGlobalConfiguration(),
-                this.plugin.getWorldConfigurationProvider(),
                 usedStack,
                 (ench, level) -> ench.onCombust(event, level, true)
             );
         }
     }
 
+    private void applyZenchantmentForTool(
+        final @NotNull Player player,
+        final @NotNull ItemStack tool,
+        final @NotNull BiPredicate<Zenchantment, Integer> action
+    ) {
+        Zenchantment.applyForTool(
+            player,
+            this.plugin.getPlayerDataProvider(),
+            this.plugin.getGlobalConfiguration(),
+            this.plugin.getWorldConfigurationProvider(),
+            tool,
+            action
+        );
+    }
+
     // Fast Scan of Player's Armor and their hand to register enchantments
     @EffectTask(Frequency.HIGH)
     public static void scanPlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (final Player player : Bukkit.getOnlinePlayers()) {
             // TODO: Replace this.
             PlayerData.matchPlayer(player).tick();
         }
@@ -399,9 +369,9 @@ public class ZenchantmentListener implements Listener {
     }
 
     // Implicitly scheduled MEDIUM_HIGH due to being called by HighFrequencyEnchCache with interval 5
-    private static void feedEnchCache(Player player, Consumer<Supplier<Boolean>> consumer) {
-        PlayerInventory inventory = player.getInventory();
-        for (ItemStack itemStack : inventory.getArmorContents()) {
+    private static void feedEnchCache(final @NotNull Player player, final @NotNull Consumer<Supplier<Boolean>> consumer) {
+        final PlayerInventory inventory = player.getInventory();
+        for (final ItemStack itemStack : inventory.getArmorContents()) {
             Zenchantment.applyForTool(
                 player,
                 null, // TODO: Pass an instance in.
@@ -466,7 +436,7 @@ public class ZenchantmentListener implements Listener {
             }
         );
 
-        long currentTime = System.currentTimeMillis();
+        final long currentTime = System.currentTimeMillis();
         if (player.hasMetadata("ze.speed") && (player.getMetadata("ze.speed").get(0).asLong() < currentTime - 1000)) {
             player.removeMetadata("ze.speed", Storage.zenchantments);
             player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
