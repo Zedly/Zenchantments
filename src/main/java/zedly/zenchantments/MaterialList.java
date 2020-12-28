@@ -416,6 +416,456 @@ public final class MaterialList extends AbstractList<Material> {
 
     public static final MaterialList GROWN_CROP_BLOCKS = new MaterialList(MELON, PUMPKIN);
 
+    public static final MaterialList TRUNKS = new MaterialList(
+        new Material[] {
+            MUSHROOM_STEM,
+            BROWN_MUSHROOM_BLOCK,
+            RED_MUSHROOM_BLOCK
+        },
+        LOGS,
+        WOOD,
+        STRIPPED_WOOD,
+        STRIPPED_LOGS
+    );
+
+    public static final MaterialList CORAL_BLOCKS = new MaterialList(
+        BRAIN_CORAL_BLOCK,
+        BUBBLE_CORAL_BLOCK,
+        FIRE_CORAL_BLOCK,
+        HORN_CORAL_BLOCK,
+        TUBE_CORAL_BLOCK
+    );
+
+    public static final MaterialList DEAD_CORAL_BLOCKS = new MaterialList(
+        DEAD_BRAIN_CORAL_BLOCK,
+        DEAD_BUBBLE_CORAL_BLOCK,
+        DEAD_FIRE_CORAL_BLOCK,
+        DEAD_HORN_CORAL_BLOCK,
+        DEAD_TUBE_CORAL_BLOCK
+    );
+
+    public static final MaterialList CORAL = new MaterialList(
+        BRAIN_CORAL,
+        BUBBLE_CORAL,
+        FIRE_CORAL,
+        HORN_CORAL,
+        TUBE_CORAL
+    );
+
+    public static final MaterialList CORAL_FANS = new MaterialList(
+        BRAIN_CORAL_FAN,
+        BUBBLE_CORAL_FAN,
+        FIRE_CORAL_FAN,
+        HORN_CORAL_FAN,
+        TUBE_CORAL_FAN
+    );
+
+    public static final MaterialList DEAD_CORAL_FANS = new MaterialList(
+        DEAD_BRAIN_CORAL_FAN,
+        DEAD_BUBBLE_CORAL_FAN,
+        DEAD_FIRE_CORAL_FAN,
+        DEAD_HORN_CORAL_FAN,
+        DEAD_TUBE_CORAL_FAN
+    );
+
+    public static final MaterialList DEAD_CORAL = new MaterialList(new Material[0]);
+
+    public static final MaterialList DEAD_CORAL_WALL_FANS = new MaterialList(
+        DEAD_BRAIN_CORAL_WALL_FAN,
+        DEAD_BUBBLE_CORAL_WALL_FAN,
+        DEAD_FIRE_CORAL_WALL_FAN,
+        DEAD_HORN_CORAL_WALL_FAN,
+        DEAD_TUBE_CORAL_WALL_FAN
+    );
+
+    public static final MaterialList MUSHROOMS = new MaterialList(
+        RED_MUSHROOM,
+        BROWN_MUSHROOM,
+        CRIMSON_FUNGUS,
+        WARPED_FUNGUS
+    );
+
+    public static final MaterialList MUSHROOM_BLOCKS = new MaterialList(
+        BROWN_MUSHROOM_BLOCK,
+        MUSHROOM_STEM,
+        RED_MUSHROOM_BLOCK
+    );
+
+    public static final MaterialList SHORT_GRASS = new MaterialList(GRASS, DEAD_BUSH, FERN);
+
+    public static final MaterialList BUTTONS = new MaterialList(new Material[] { STONE_BUTTON }, WOODEN_BUTTONS);
+
+    public static final MaterialList DOORS = new MaterialList(new Material[] { IRON_DOOR }, WOODEN_DOORS);
+
+    public static final MaterialList TRAPDOORS = new MaterialList(new Material[] { IRON_TRAPDOOR }, WOODEN_TRAPDOORS);
+
+    public static final MaterialList PRESSURE_PLATES = new MaterialList(
+        new Material[] {
+            STONE_PRESSURE_PLATE,
+            LIGHT_WEIGHTED_PRESSURE_PLATE,
+            HEAVY_WEIGHTED_PRESSURE_PLATE
+        },
+        WOODEN_PRESSURE_PLATES
+    );
+
+    public static final MaterialList AIR = new MaterialList(Material.AIR, CAVE_AIR, VOID_AIR);
+
+    public static final MaterialList COMMAND_BLOCKS = new MaterialList(
+        COMMAND_BLOCK,
+        CHAIN_COMMAND_BLOCK,
+        REPEATING_COMMAND_BLOCK
+    );
+
+    public static final MaterialList ORES = new MaterialList(
+        COAL_ORE,
+        REDSTONE_ORE,
+        DIAMOND_ORE,
+        GOLD_ORE,
+        IRON_ORE,
+        LAPIS_ORE,
+        GLOWSTONE,
+        NETHER_QUARTZ_ORE,
+        EMERALD_ORE,
+        NETHER_GOLD_ORE,
+        ANCIENT_DEBRIS
+    );
+
+    public static final MaterialList SAND = new MaterialList(Material.SAND, RED_SAND);
+
+    public static final MaterialList ICE = new MaterialList(Material.ICE, BLUE_ICE, PACKED_ICE);
+
+    public static final MaterialList DIRT = new MaterialList(
+        Material.DIRT,
+        COARSE_DIRT,
+        MYCELIUM,
+        PODZOL,
+        GRASS_BLOCK,
+        GRASS_PATH
+    );
+
+    public static final MaterialList STONES = new MaterialList(Material.STONE, GRANITE, ANDESITE, DIORITE);
+
+    public static final MaterialList COBBLESTONES = new MaterialList(COBBLESTONE, MOSSY_COBBLESTONE);
+
+    public static final MaterialList NETHER_BRICKS = new MaterialList(Material.NETHER_BRICKS, RED_NETHER_BRICKS);
+
+    public static final MaterialList STONE_BRICKS = new MaterialList(
+        Material.STONE_BRICKS,
+        CRACKED_STONE_BRICKS,
+        MOSSY_STONE_BRICKS,
+        CHISELED_STONE_BRICKS
+    );
+
+    public static final MaterialList QUARTZ_BLOCKS = new MaterialList(
+        QUARTZ_BLOCK,
+        CHISELED_QUARTZ_BLOCK,
+        QUARTZ_PILLAR
+    );
+
+    public static final MaterialList POLISHED_STONES = new MaterialList(
+        POLISHED_ANDESITE,
+        POLISHED_DIORITE,
+        POLISHED_GRANITE
+    );
+
+    public static final MaterialList PRISMARINE = new MaterialList(
+        Material.PRISMARINE,
+        PRISMARINE_BRICKS,
+        DARK_PRISMARINE
+    );
+
+    public static final MaterialList END_STONES = new MaterialList(END_STONE, END_STONE_BRICKS);
+
+    public static final MaterialList PURPUR = new MaterialList(PURPUR_BLOCK, PURPUR_PILLAR);
+
+    public static final MaterialList SANDSTONE = new MaterialList(
+        Material.SANDSTONE,
+        CUT_SANDSTONE,
+        CHISELED_SANDSTONE,
+        SMOOTH_SANDSTONE,
+        RED_SANDSTONE,
+        CUT_RED_SANDSTONE,
+        CHISELED_RED_SANDSTONE,
+        SMOOTH_RED_SANDSTONE
+    );
+
+    public static final MaterialList STONE_SLABS = new MaterialList(STONE_SLAB);
+
+    public static final MaterialList SANDSTONE_SLABS = new MaterialList(SANDSTONE_SLAB, RED_SANDSTONE_SLAB);
+
+    public static final MaterialList STONE_BRICK_SLABS = new MaterialList(STONE_BRICK_SLAB);
+
+    public static final MaterialList COBBLESTONE_SLABS = new MaterialList(COBBLESTONE_SLAB);
+
+    public static final MaterialList QUARTZ_SLABS = new MaterialList(QUARTZ_SLAB);
+
+    public static final MaterialList NETHER_BRICK_SLABS = new MaterialList(NETHER_BRICK_SLAB);
+
+    public static final MaterialList PRISMARINE_SLABS = new MaterialList(
+        PRISMARINE_SLAB,
+        PRISMARINE_BRICK_SLAB,
+        DARK_PRISMARINE_SLAB
+    );
+
+    public static final MaterialList STONE_STAIRS = new MaterialList(new Material[0]);
+
+    public static final MaterialList SANDSTONE_STAIRS = new MaterialList(
+        Material.SANDSTONE_STAIRS,
+        RED_SANDSTONE_STAIRS
+    );
+
+    public static final MaterialList STONE_BRICK_STAIRS = new MaterialList(Material.STONE_BRICK_STAIRS);
+
+    public static final MaterialList COBBLESTONE_STAIRS = new MaterialList(Material.COBBLESTONE_STAIRS);
+
+    public static final MaterialList QUARTZ_STAIRS = new MaterialList(Material.QUARTZ_STAIRS);
+
+    public static final MaterialList NETHER_BRICK_STAIRS = new MaterialList(Material.NETHER_BRICK_STAIRS);
+
+    public static final MaterialList PRISMARINE_STAIRS = new MaterialList(
+        Material.PRISMARINE_STAIRS,
+        PRISMARINE_BRICK_STAIRS,
+        DARK_PRISMARINE_STAIRS
+    );
+
+    public static final MaterialList STONE_WALLS = new MaterialList(new Material[0]);
+
+    public static final MaterialList STONE_BRICK_WALLS = new MaterialList(new Material[0]);
+
+    public static final MaterialList COBBLESTONE_WALLS = new MaterialList(
+        COBBLESTONE_WALL,
+        MOSSY_COBBLESTONE_WALL
+    );
+
+    public static final MaterialList SANDSTONE_WALLS = new MaterialList(new Material[0]);
+
+    public static final MaterialList NETHER_BRICK_WALLS = new MaterialList(new Material[0]);
+
+    public static final MaterialList UNBREAKABLE_BLOCKS = new MaterialList(
+        new Material[] {
+            BARRIER,
+            BEDROCK,
+            BUBBLE_COLUMN,
+            DRAGON_BREATH,
+            DRAGON_EGG,
+            END_CRYSTAL,
+            END_GATEWAY,
+            END_PORTAL,
+            END_PORTAL_FRAME,
+            LAVA,
+            STRUCTURE_VOID,
+            STRUCTURE_BLOCK,
+            WATER,
+            PISTON_HEAD,
+            MOVING_PISTON
+        },
+        AIR,
+        COMMAND_BLOCKS
+    );
+
+    public static final MaterialList LASER_BLACKLIST_BLOCKS = new MaterialList(OBSIDIAN);
+
+    public static final MaterialList STORAGE_BLOCKS = new MaterialList(
+        new Material[] {
+            DISPENSER,
+            SPAWNER,
+            CHEST,
+            FURNACE,
+            JUKEBOX,
+            ENDER_CHEST,
+            BEACON,
+            TRAPPED_CHEST,
+            HOPPER,
+            DROPPER,
+            BREWING_STAND,
+            ANVIL
+        },
+        SHULKER_BOXES
+    );
+
+    public static final MaterialList INTERACTABLE_BLOCKS = new MaterialList(
+        new Material[] {
+            NOTE_BLOCK,
+            CRAFTING_TABLE,
+            LEVER,
+            REPEATER,
+            ENCHANTING_TABLE,
+            COMPARATOR,
+            DAYLIGHT_DETECTOR,
+            PISTON,
+            OBSERVER,
+            CARTOGRAPHY_TABLE,
+            GRINDSTONE,
+            SMITHING_TABLE
+        },
+        BEDS,
+        DOORS,
+        TRAPDOORS,
+        FENCE_GATES,
+        COMMAND_BLOCKS,
+        BUTTONS,
+        STORAGE_BLOCKS
+    );
+
+    public static final MaterialList TERRAFORMER_MATERIALS = new MaterialList(
+        new Material[] {
+            STONE,
+            GRASS_BLOCK,
+            Material.DIRT,
+            COBBLESTONE,
+            Material.SAND,
+            RED_SAND,
+            GRAVEL,
+            Material.SANDSTONE,
+            BRICK,
+            TNT,
+            BOOKSHELF,
+            MOSSY_COBBLESTONE,
+            Material.ICE,
+            SNOW_BLOCK,
+            CLAY,
+            NETHERRACK,
+            SOUL_SAND,
+            Material.STONE_BRICKS,
+            MYCELIUM,
+            NETHER_BRICK,
+            END_STONE,
+            EMERALD_ORE,
+            QUARTZ_BLOCK,
+            SLIME_BLOCK,
+            Material.PRISMARINE,
+            PACKED_ICE,
+            RED_SANDSTONE
+        },
+        ORES,
+        TERRACOTTA,
+        GLAZED_TERRACOTTA,
+        WOOL,
+        WOOD,
+        WOODEN_PLANKS,
+        STRIPPED_LOGS,
+        LOGS,
+        CONCRETE,
+        CONCRETE_POWDER,
+        STAINED_GLASS,
+        STRIPPED_WOOD
+    );
+
+    public static final MaterialList LUMBER_WHITELIST = new MaterialList(
+        new Material[] {
+            Material.DIRT,
+            GRASS,
+            VINE,
+            SNOW,
+            COCOA,
+            GRAVEL,
+            STONE,
+            DIORITE,
+            GRANITE,
+            ANDESITE,
+            WATER,
+            LAVA,
+            Material.SAND,
+            RED_SAND,
+            BROWN_MUSHROOM,
+            RED_MUSHROOM,
+            MOSSY_COBBLESTONE,
+            CLAY,
+            BROWN_MUSHROOM,
+            RED_MUSHROOM,
+            MYCELIUM,
+            TORCH,
+            SUGAR_CANE,
+            GRASS_BLOCK,
+            PODZOL,
+            FERN,
+            GRASS,
+            MELON,
+            PUMPKIN
+        },
+        TRUNKS,
+        LEAVES,
+        SMALL_FLOWERS,
+        LARGE_FLOWERS,
+        SAPLINGS,
+        AIR,
+        DEADLY_PLANTS
+    );
+
+    public static final MaterialList FIRE_RAW = new MaterialList(
+        new Material[] {
+            STONE,
+            DIORITE,
+            ANDESITE,
+            GRANITE,
+            IRON_ORE,
+            GOLD_ORE,
+            COBBLESTONE,
+            MOSSY_COBBLESTONE,
+            NETHERRACK,
+            Material.STONE_BRICKS
+        },
+        TERRACOTTA
+    );
+
+    public static final MaterialList FIRE_COOKED = new MaterialList(
+        new Material[] {
+            Material.STONE_BRICKS,
+            POLISHED_DIORITE,
+            POLISHED_ANDESITE,
+            POLISHED_GRANITE,
+            IRON_INGOT,
+            GOLD_INGOT,
+            STONE,
+            MOSSY_STONE_BRICKS,
+            NETHER_BRICK,
+            CRACKED_STONE_BRICKS
+        },
+        GLAZED_TERRACOTTA
+    );
+
+    public static final MaterialList SHRED_PICKS = new MaterialList(
+        new Material[] {
+            STONE,
+            GRANITE,
+            ANDESITE,
+            DIORITE,
+            NETHERRACK,
+            GLOWSTONE,
+            Material.SANDSTONE,
+            RED_SANDSTONE,
+            Material.ICE,
+            PACKED_ICE,
+            BLUE_ICE
+        },
+        ORES,
+        TERRACOTTA
+    );
+
+    public static final MaterialList SHRED_SHOVELS = new MaterialList(
+        new Material[] {
+            GRASS_BLOCK,
+            PODZOL,
+            Material.DIRT,
+            MYCELIUM,
+            SOUL_SAND,
+            GRAVEL,
+            SOUL_SAND,
+            CLAY
+        },
+        SAND
+    );
+
+    public static final MaterialList PERSEPHONE_CROPS = new MaterialList(
+        WHEAT,
+        POTATO,
+        CARROT,
+        BEETROOT,
+        NETHER_WART,
+        SOUL_SAND,
+        FARMLAND
+    );
+
     private final Material[] values;
 
     private MaterialList(final @NotNull Material... values) {
