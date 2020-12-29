@@ -73,14 +73,14 @@ public final class Shred extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
-        Block block = event.getBlock();
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+        final Block block = event.getBlock();
 
         if (!SHRED_PICKS.contains(block.getType()) && !SHRED_SHOVELS.contains(block.getType())) {
             return false;
         }
 
-        ItemStack hand = Utilities.getUsedItemStack(event.getPlayer(), usedHand);
+        final ItemStack hand = Utilities.getUsedItemStack(event.getPlayer(), usedHand);
 
         this.shred(
             block,
@@ -99,22 +99,22 @@ public final class Shred extends Zenchantment {
     }
 
     private void shred(
-        @NotNull Block centerBlock,
-        @NotNull Block relativeBlock,
-        int[] coordinates,
-        int time,
-        double size,
-        @NotNull Set<Block> used,
-        @NotNull Player player,
-        @NotNull WorldConfiguration config,
-        @NotNull Material itemType,
-        boolean usedHand
+        final @NotNull Block centerBlock,
+        final @NotNull Block relativeBlock,
+        final int[] coordinates,
+        final int time,
+        final double size,
+        final @NotNull Set<Block> used,
+        final @NotNull Player player,
+        final @NotNull WorldConfiguration config,
+        final @NotNull Material itemType,
+        final boolean usedHand
     ) {
         if (MaterialList.AIR.contains(relativeBlock.getType()) || used.contains(relativeBlock)) {
             return;
         }
 
-        Material originalType = relativeBlock.getType();
+        final Material originalType = relativeBlock.getType();
 
         if ((Tool.PICKAXE.contains(itemType) && !SHRED_PICKS.contains(relativeBlock.getType()))
             || (Tool.SHOVEL.contains(itemType) && !SHRED_SHOVELS.contains(relativeBlock.getType()))
@@ -125,7 +125,7 @@ public final class Shred extends Zenchantment {
         if (config.areShredDropsEnabled() == 0) {
             ADAPTER.breakBlockNMS(relativeBlock, player);
         } else {
-            BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
+            final BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
             this.getPlugin().getServer().getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
@@ -133,7 +133,7 @@ public final class Shred extends Zenchantment {
             }
 
             if (config.areShredDropsEnabled() == 1) {
-                if (relativeBlock.getType().equals(NETHER_QUARTZ_ORE)) {
+                if (relativeBlock.getType() == NETHER_QUARTZ_ORE) {
                     relativeBlock.setType(NETHERRACK);
                 } else if (MaterialList.ORES.contains(relativeBlock.getType())) {
                     relativeBlock.setType(STONE);
@@ -143,13 +143,14 @@ public final class Shred extends Zenchantment {
                     return;
                 }
 
-                Player eventPlayer = event.getPlayer();
-                boolean eventUsedHand = Utilities.isMainHand(HAND);
+                final boolean eventUsedHand = Utilities.isMainHand(HAND);
 
                 Zenchantment.applyForTool(
-                    eventPlayer,
-                    this.getPlugin().getPlayerDataProvider().getDataForPlayer(player),
-                    Utilities.getUsedItemStack(eventPlayer, eventUsedHand),
+                    player,
+                    this.getPlugin().getPlayerDataProvider(),
+                    this.getPlugin().getGlobalConfiguration(),
+                    this.getPlugin().getWorldConfigurationProvider(),
+                    Utilities.getUsedItemStack(player, eventUsedHand),
                     (ench, level) -> ench.onBlockBreak(event, level, eventUsedHand)
                 );
 
@@ -184,7 +185,10 @@ public final class Shred extends Zenchantment {
         }
 
         if (sound != null) {
-            relativeBlock.getLocation().getWorld().playSound(relativeBlock.getLocation(), sound, 1, 1);
+            relativeBlock
+                .getLocation()
+                .getWorld()
+                .playSound(relativeBlock.getLocation(), sound, 1, 1);
         }
 
         Utilities.damageItemStack(player, 1, usedHand);
@@ -195,8 +199,8 @@ public final class Shred extends Zenchantment {
             if (coordinates[i] > 0) {
                 coordinates[i] -= 1;
 
-                Block block1 = relativeBlock.getRelative(i == 0 ? -1 : 0, i == 1 ? -1 : 0, i == 2 ? -1 : 0);
-                Block block2 = relativeBlock.getRelative(i == 0 ? 1 : 0, i == 1 ? 1 : 0, i == 2 ? 1 : 0);
+                final Block block1 = relativeBlock.getRelative(i == 0 ? -1 : 0, i == 1 ? -1 : 0, i == 2 ? -1 : 0);
+                final Block block2 = relativeBlock.getRelative(i == 0 ? 1 : 0, i == 1 ? 1 : 0, i == 2 ? 1 : 0);
 
                 if (block1.getLocation().distanceSquared(centerBlock.getLocation()) < size + (-1 + 2 * Math.random())) {
                     this.shred(centerBlock, block1, coordinates, time + 2, size, used, player, config, itemType, usedHand);
