@@ -89,7 +89,7 @@ public final class Plough extends Zenchantment {
                     if (((relative.getType() != DIRT
                         && relative.getType() != GRASS_BLOCK
                         && relative.getType() != MYCELIUM))
-                        || !Storage.COMPATIBILITY_ADAPTER.Airs().contains(relative.getRelative(0, 1, 0).getType())
+                        || !MaterialList.AIR.contains(relative.getRelative(0, 1, 0).getType())
                     ) {
                         continue;
                     }

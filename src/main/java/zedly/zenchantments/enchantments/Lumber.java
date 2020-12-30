@@ -73,7 +73,7 @@ public final class Lumber extends Zenchantment {
 
         Block startBlock = event.getBlock();
 
-        if (!Storage.COMPATIBILITY_ADAPTER.TrunkBlocks().contains(startBlock.getType())) {
+        if (!MaterialList.TRUNKS.contains(startBlock.getType())) {
             return false;
         }
 

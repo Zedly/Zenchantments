@@ -16,6 +16,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.block.BlockFace.DOWN;
+import static zedly.zenchantments.MaterialList.LARGE_FLOWERS;
+import static zedly.zenchantments.MaterialList.SMALL_FLOWERS;
 
 public final class Rainbow extends Zenchantment {
     public static final String KEY = "rainbow";
@@ -76,10 +78,10 @@ public final class Rainbow extends Zenchantment {
 
         Material dropMaterial;
 
-        if (Storage.COMPATIBILITY_ADAPTER.SmallFlowers().contains(blockType)) {
-            dropMaterial = Storage.COMPATIBILITY_ADAPTER.SmallFlowers().getRandom();
-        } else if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(blockType)) {
-            dropMaterial = Storage.COMPATIBILITY_ADAPTER.LargeFlowers().getRandom();
+        if (SMALL_FLOWERS.contains(blockType)) {
+            dropMaterial = SMALL_FLOWERS.getRandom();
+        } else if (LARGE_FLOWERS.contains(blockType)) {
+            dropMaterial = LARGE_FLOWERS.getRandom();
         } else {
             return false;
         }
@@ -87,7 +89,7 @@ public final class Rainbow extends Zenchantment {
         event.setCancelled(true);
 
         Block relative = block.getRelative(DOWN);
-        if (Storage.COMPATIBILITY_ADAPTER.LargeFlowers().contains(relative.getType())) {
+        if (LARGE_FLOWERS.contains(relative.getType())) {
             relative.setType(AIR);
         }
 
@@ -117,7 +119,7 @@ public final class Rainbow extends Zenchantment {
 
         event.getEntity().getWorld().dropItemNaturally(
             event.getEntity().getLocation(),
-            new ItemStack(Storage.COMPATIBILITY_ADAPTER.Wools().getRandom(), count)
+            new ItemStack(MaterialList.WOOL.getRandom(), count)
         );
 
         return true;

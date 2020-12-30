@@ -149,7 +149,7 @@ public final class BlazesCurse extends Zenchantment {
         if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
             Location checkLocation = player.getLocation();
             while (checkLocation.getBlockY() < 256) {
-                if (!Storage.COMPATIBILITY_ADAPTER.Airs().contains(checkLocation.getBlock().getType())) {
+                if (!MaterialList.AIR.contains(checkLocation.getBlock().getType())) {
                     break;
                 }
 

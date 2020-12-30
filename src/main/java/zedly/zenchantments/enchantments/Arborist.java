@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
+import static zedly.zenchantments.MaterialList.*;
 
 public final class Arborist extends Zenchantment {
     public static final String KEY = "arborist";
@@ -71,18 +72,18 @@ public final class Arborist extends Zenchantment {
         Block block = event.getBlock();
         Material material = block.getType();
 
-        if (!Storage.COMPATIBILITY_ADAPTER.Leaves().contains(material)) {
+        if (!LEAVES.contains(material)) {
             return false;
         }
 
         // Crudely get the index in the array of materials.
         // TODO: Make this not awful.
         int index = Math.max(
-            Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(material),
-            Storage.COMPATIBILITY_ADAPTER.Leaves().indexOf(material)
+            LEAVES.indexOf(material),
+            LEAVES.indexOf(material)
         );
 
-        ItemStack stack = new ItemStack(Storage.COMPATIBILITY_ADAPTER.Saplings().get(index), 1);
+        ItemStack stack = new ItemStack(SAPLINGS.get(index), 1);
 
         if (!(ThreadLocalRandom.current().nextInt(10) >= (9 - level) / (this.getPower() + 0.001))) {
             return false;

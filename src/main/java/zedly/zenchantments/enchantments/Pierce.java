@@ -175,7 +175,7 @@ public final class Pierce extends Zenchantment {
                 }
             }
         } else if (mode == 5) {
-            if (!Storage.COMPATIBILITY_ADAPTER.Ores().contains(event.getBlock().getType())) {
+            if (!MaterialList.ORES.contains(event.getBlock().getType())) {
                 return false;
             }
 

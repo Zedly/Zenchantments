@@ -12,6 +12,7 @@ import zedly.zenchantments.*;
 import java.util.Set;
 
 import static org.bukkit.Material.AIR;
+import static zedly.zenchantments.MaterialList.*;
 
 public final class Variety extends Zenchantment {
     public static final String KEY = "variety";
@@ -70,19 +71,19 @@ public final class Variety extends Zenchantment {
         Block block = event.getBlock();
         Material material = block.getType();
 
-        if (Storage.COMPATIBILITY_ADAPTER.Logs().contains(material)) {
+        if (LOGS.contains(material)) {
             block.setType(AIR);
             block.getWorld().dropItemNaturally(
                 block.getLocation(),
-                new ItemStack(Storage.COMPATIBILITY_ADAPTER.Logs().getRandom())
+                new ItemStack(LOGS.getRandom())
             );
 
             Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
-        } else if (Storage.COMPATIBILITY_ADAPTER.Leaves().contains(material)) {
+        } else if (LEAVES.contains(material)) {
             block.setType(AIR);
             block.getWorld().dropItemNaturally(
                 block.getLocation(),
-                new ItemStack(Storage.COMPATIBILITY_ADAPTER.Leaves().getRandom())
+                new ItemStack(LEAVES.getRandom())
             );
             Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
         }

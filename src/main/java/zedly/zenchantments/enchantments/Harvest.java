@@ -87,8 +87,8 @@ public final class Harvest extends Zenchantment {
                         continue;
                     }
 
-                    if (!Storage.COMPATIBILITY_ADAPTER.GrownCrops().contains(block.getType())
-                        && !Storage.COMPATIBILITY_ADAPTER.GrownMelon().contains(block.getType())
+                    if (!MaterialList.GROWN_CROPS.contains(block.getType())
+                        && !MaterialList.GROWN_CROP_BLOCKS.contains(block.getType())
                     ) {
                         continue;
                     }

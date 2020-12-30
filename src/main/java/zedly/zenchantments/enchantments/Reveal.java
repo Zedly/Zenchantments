@@ -88,14 +88,14 @@ public final class Reveal extends Zenchantment {
                 for (int z = -radius; z <= radius; z++) {
                     Block block = player.getLocation().getBlock().getRelative(x, y, z);
 
-                    if (!Storage.COMPATIBILITY_ADAPTER.Ores().contains(block.getType())) {
+                    if (!MaterialList.ORES.contains(block.getType())) {
                         continue;
                     }
 
                     boolean exposed = false;
 
                     for (BlockFace face : Utilities.CARDINAL_BLOCK_FACES) {
-                        if (Storage.COMPATIBILITY_ADAPTER.Airs().contains(block.getRelative(face).getType())) {
+                        if (MaterialList.AIR.contains(block.getRelative(face).getType())) {
                             exposed = true;
                         }
                     }

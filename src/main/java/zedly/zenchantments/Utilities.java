@@ -584,7 +584,7 @@ public final class Utilities {
                 if (placed.containsKey(possiblePlatformLocation)) {
                     placed.put(possiblePlatformLocation, System.nanoTime());
                 } else if (possiblePlatformBlock.getType() == check
-                    && Storage.COMPATIBILITY_ADAPTER.Airs().contains(possiblePlatformBlock.getRelative(0, 1, 0).getType())
+                    && MaterialList.AIR.contains(possiblePlatformBlock.getRelative(0, 1, 0).getType())
                 ) {
                     if (possiblePlatformBlock.getBlockData() instanceof Levelled
                         && ((Levelled) possiblePlatformBlock.getBlockData()).getLevel() != 0
