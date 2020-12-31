@@ -6,6 +6,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
@@ -70,33 +71,54 @@ public final class Spread extends Zenchantment {
     }
 
     @Override
-    public boolean onProjectileLaunch(@NotNull ProjectileLaunchEvent event, int level, boolean usedHand) {
-        Arrow originalArrow = (Arrow) event.getEntity();
-        Player player = (Player) originalArrow.getShooter();
-        ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
+        final Arrow originalArrow = (Arrow) event.getEntity();
+        final Player player = (Player) originalArrow.getShooter();
+        final ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
 
-        MultiArrow multiArrow = new MultiArrow(this.getPlugin(), originalArrow);
+        final MultiArrow multiArrow = new MultiArrow(this.getPlugin(), originalArrow);
         ZenchantedArrow.putArrow(originalArrow, multiArrow, player);
 
         this.getPlugin().getServer().getPluginManager().callEvent(
-            new EntityShootBowEvent(player, hand, originalArrow, (float) originalArrow.getVelocity().length())
+            new EntityShootBowEvent(
+                player,
+                hand,
+                null,
+                originalArrow,
+                usedHand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND,
+                (float) originalArrow.getVelocity().length(),
+                false
+            )
         );
 
         Utilities.damageItemStack(player, (int) Math.round(level / 2.0 + 1), usedHand);
 
         for (int i = 0; i < (int) Math.round(this.getPower() * level * 4); i++) {
-            Vector vector = originalArrow.getVelocity();
+            final Vector vector = originalArrow.getVelocity();
 
             vector.setX(vector.getX() + Math.max(Math.min(ThreadLocalRandom.current().nextGaussian() / 8, 0.75), -0.75));
             vector.setZ(vector.getZ() + Math.max(Math.min(ThreadLocalRandom.current().nextGaussian() / 8, 0.75), -0.75));
 
-            Arrow arrow = player.getWorld().spawnArrow(player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)), vector, 1, 0);
+            final Arrow arrow = player.getWorld().spawnArrow(
+                player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)),
+                vector,
+                1,
+                0
+            );
             arrow.setShooter(player);
             arrow.setVelocity(vector.normalize().multiply(originalArrow.getVelocity().length()));
             arrow.setFireTicks(originalArrow.getFireTicks());
             arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
 
-            EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(player, hand, arrow, (float) originalArrow.getVelocity().length());
+            final EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(
+                player,
+                hand,
+                null,
+                arrow,
+                usedHand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND,
+                (float) originalArrow.getVelocity().length(),
+                false
+            );
 
             this.getPlugin().getServer().getPluginManager().callEvent(entityShootBowEvent);
 
