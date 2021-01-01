@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zedly.zenchantments.compatibility.CompatibilityAdapter;
 import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;

@@ -10,6 +10,7 @@ import org.bukkit.craftbukkit.v1_16_R2.entity.CraftSheep;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import zedly.zenchantments.CompatibilityAdapter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

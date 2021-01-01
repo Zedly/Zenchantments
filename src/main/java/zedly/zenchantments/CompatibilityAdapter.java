@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.zenchantments.compatibility;
+package zedly.zenchantments;
 
 import org.bukkit.*;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -25,16 +24,12 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffectType;
-import zedly.zenchantments.MaterialList;
 
 import java.util.*;
 
-import static org.bukkit.Material.TROPICAL_FISH;
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.PUFFERFISH;
 import static org.bukkit.entity.EntityType.*;
-import static org.bukkit.potion.PotionEffectType.*;
 
 public class CompatibilityAdapter {
     private static final CompatibilityAdapter INSTANCE = new CompatibilityAdapter();
