@@ -39,9 +39,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         "§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)"
     );
 
-    @Deprecated // Deprecation warnings from Storage don't appear when using this field.
-    protected static final CompatibilityAdapter ADAPTER = Storage.COMPATIBILITY_ADAPTER;
-
     private final ZenchantmentsPlugin plugin;
     private final Set<Tool>           enchantable;
     private final int                 maxLevel;

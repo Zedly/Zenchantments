@@ -74,7 +74,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Make sure clicked block is okay to break.
-        if (!ADAPTER.isBlockSafeToBreak(event.getClickedBlock())) {
+        if (!this.getPlugin().getCompatibilityAdapter().isBlockSafeToBreak(event.getClickedBlock())) {
             return false;
         }
 
@@ -103,7 +103,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Block has been selected, attempt breaking.
-        if (!ADAPTER.breakBlock(event.getClickedBlock(), event.getPlayer())) {
+        if (!this.getPlugin().getCompatibilityAdapter().breakBlock(event.getClickedBlock(), event.getPlayer())) {
             return false;
         }
 
@@ -121,7 +121,7 @@ public final class Switch extends Zenchantment {
         }, 3);
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
-            ADAPTER.placeBlock(clickedBlock, player, material, null); // TODO: BlockData - whatever that means.
+            this.getPlugin().getCompatibilityAdapter().placeBlock(clickedBlock, player, material, null); // TODO: BlockData - whatever that means.
         }, 1);
 
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);

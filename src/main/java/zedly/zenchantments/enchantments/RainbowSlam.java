@@ -73,7 +73,7 @@ public final class RainbowSlam extends Zenchantment {
     @Override
     public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, boolean usedHand) {
         if (!(event.getRightClicked() instanceof LivingEntity)
-            || !ADAPTER.attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
+            || !this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
         ) {
             return false;
         }
@@ -132,7 +132,7 @@ public final class RainbowSlam extends Zenchantment {
 
                 RAINBOW_SLAM_ENTITIES.remove(entity);
 
-                ADAPTER.attackEntity(entity, event.getPlayer(), level * this.getPower());
+                this.getPlugin().getCompatibilityAdapter().attackEntity(entity, event.getPlayer(), level * this.getPower());
 
                 for (int c = 0; c < 1000; c++) {
                     entity.getWorld().spawnParticle(

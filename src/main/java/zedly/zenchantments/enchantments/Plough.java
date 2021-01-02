@@ -94,7 +94,10 @@ public final class Plough extends Zenchantment {
                         continue;
                     }
 
-                    ADAPTER.placeBlock(block.getRelative(x, y, z), event.getPlayer(), Material.FARMLAND, null);
+                    this.getPlugin()
+                        .getCompatibilityAdapter()
+                        .placeBlock(block.getRelative(x, y, z), event.getPlayer(), Material.FARMLAND, null);
+
                     if (ThreadLocalRandom.current().nextBoolean()) {
                         Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
                     }

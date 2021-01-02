@@ -135,14 +135,14 @@ public final class BlazesCurse extends Zenchantment {
         Material material = block.getType();
 
         if (material == WATER) {
-            ADAPTER.damagePlayer(player, SUBMERGE_DAMAGE, DROWNING);
+            this.getPlugin().getCompatibilityAdapter().damagePlayer(player, SUBMERGE_DAMAGE, DROWNING);
             return true;
         }
 
         material = block.getRelative(BlockFace.DOWN).getType();
 
         if (material == ICE || material == FROSTED_ICE) {
-            ADAPTER.damagePlayer(player, RAIN_DAMAGE, MELTING);
+            this.getPlugin().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
             return true;
         }
 
@@ -157,7 +157,7 @@ public final class BlazesCurse extends Zenchantment {
             }
 
             if (checkLocation.getBlockY() == 256) {
-                ADAPTER.damagePlayer(player, RAIN_DAMAGE, CUSTOM);
+                this.getPlugin().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, CUSTOM);
             }
         }
 

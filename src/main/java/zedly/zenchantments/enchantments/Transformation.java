@@ -209,7 +209,7 @@ public final class Transformation extends Zenchantment {
             return true;
         }
 
-        if (!ADAPTER.attackEntity(entity, (Player) event.getDamager(), 0)) {
+        if (!this.getPlugin().getCompatibilityAdapter().attackEntity(entity, (Player) event.getDamager(), 0)) {
             return true;
         }
 

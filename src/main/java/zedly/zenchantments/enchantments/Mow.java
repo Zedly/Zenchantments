@@ -95,13 +95,13 @@ public final class Mow extends Zenchantment {
             if (entity instanceof Sheep) {
                 Sheep sheep = (Sheep) entity;
                 if (sheep.isAdult()) {
-                    ADAPTER.shearEntityNMS(sheep, player, usedHand);
+                    this.getPlugin().getCompatibilityAdapter().shearEntityNMS(sheep, player, usedHand);
                     shearedEntity = true;
                 }
             } else if (entity instanceof MushroomCow) {
                 MushroomCow mooshroom = (MushroomCow) entity;
                 if (mooshroom.isAdult()) {
-                    ADAPTER.shearEntityNMS(mooshroom, player, usedHand);
+                    this.getPlugin().getCompatibilityAdapter().shearEntityNMS(mooshroom, player, usedHand);
                     shearedEntity = true;
                 }
             }

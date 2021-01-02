@@ -113,12 +113,12 @@ public final class Reveal extends Zenchantment {
                         GLOWING_BLOCKS.put(block, 1);
                     }
 
-                    if (!ADAPTER.showShulker(block, entityId, player)) {
+                    if (!this.getPlugin().getCompatibilityAdapter().showShulker(block, entityId, player)) {
                         return false;
                     }
 
                     this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
-                        ADAPTER.hideShulker(entityId, player);
+                        this.getPlugin().getCompatibilityAdapter().hideShulker(entityId, player);
                         if (GLOWING_BLOCKS.containsKey(block) && GLOWING_BLOCKS.get(block) > 1) {
                             GLOWING_BLOCKS.put(block, GLOWING_BLOCKS.get(block) - 1);
                         } else {

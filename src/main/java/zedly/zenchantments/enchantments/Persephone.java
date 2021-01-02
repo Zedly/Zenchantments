@@ -94,20 +94,21 @@ public final class Persephone extends Zenchantment {
                         && MaterialList.AIR.contains(block.getRelative(x, y + 1, z).getType())
                     ) {
                         Inventory inventory = player.getInventory();
+                        final CompatibilityAdapter compatibilityAdapter = this.getPlugin().getCompatibilityAdapter();
                         if (inventory.contains(CARROT)) {
-                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS, null)) {
+                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, CARROT, 1);
                             }
                         } else if (inventory.contains(POTATO)) {
-                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, POTATOES, null)) {
+                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, POTATOES, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, POTATO, 1);
                             }
                         } else if (inventory.contains(WHEAT_SEEDS)) {
-                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, null)) {
+                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, WHEAT_SEEDS, 1);
                             }
                         } else if (inventory.contains(BEETROOT_SEEDS)) {
-                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOTS, null)) {
+                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOTS, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, BEETROOT_SEEDS, 1);
                             }
                         }
@@ -115,9 +116,7 @@ public final class Persephone extends Zenchantment {
                         && MaterialList.AIR.contains(block.getRelative(x, y + 1, z).getType())
                     ) {
                         if (event.getPlayer().getInventory().contains(NETHER_WART)) {
-                            if (ADAPTER.placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART,
-                                null
-                            )) {
+                            if (this.getPlugin().getCompatibilityAdapter().placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, NETHER_WART, 1);
                             }
                         }

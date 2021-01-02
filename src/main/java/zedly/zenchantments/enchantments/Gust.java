@@ -88,7 +88,7 @@ public final class Gust extends Zenchantment {
                 .multiply(.25 * this.getPower())
         );
 
-        ADAPTER.damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
+        this.getPlugin().getCompatibilityAdapter().damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
             this.getPlugin(),

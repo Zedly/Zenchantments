@@ -88,7 +88,7 @@ public final class Germination extends Zenchantment {
 
                     if (!(relativeBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)
                         || !Utilities.playerHasMaterial(player, Material.BONE_MEAL, 1)
-                        || !ADAPTER.grow(relativeBlock, player)
+                        || !this.getPlugin().getCompatibilityAdapter().grow(relativeBlock, player)
                     ) {
                         continue;
                     }
@@ -96,7 +96,7 @@ public final class Germination extends Zenchantment {
                     applied = true;
 
                     if (ThreadLocalRandom.current().nextBoolean()) {
-                        ADAPTER.grow(relativeBlock, player);
+                        this.getPlugin().getCompatibilityAdapter().grow(relativeBlock, player);
                     }
 
                     Utilities.displayParticle(

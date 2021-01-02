@@ -118,14 +118,18 @@ public final class Laser extends Zenchantment {
 
             for (Entity entity : playerLocation.getWorld().getNearbyEntities(particleLocation, 0.3, 0.3, 0.3)) {
                 if (entity instanceof LivingEntity && entity != player) {
-                    ADAPTER.attackEntity((LivingEntity) entity, player, 1 + (level + this.getPower() * 2));
+                    this.getPlugin()
+                        .getCompatibilityAdapter()
+                        .attackEntity((LivingEntity) entity, player, 1 + (level + this.getPower() * 2));
                     return;
                 }
             }
         }
 
-        if (ADAPTER.isBlockSafeToBreak(block) && !MaterialList.LASER_BLACKLIST_BLOCKS.contains(block.getType())) {
-            ADAPTER.breakBlock(block, player);
+        if (this.getPlugin().getCompatibilityAdapter().isBlockSafeToBreak(block)
+            && !MaterialList.LASER_BLACKLIST_BLOCKS.contains(block.getType())
+        ) {
+            this.getPlugin().getCompatibilityAdapter().breakBlock(block, player);
         }
     }
 }

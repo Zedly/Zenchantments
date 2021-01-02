@@ -128,7 +128,9 @@ public final class Force extends Zenchantment {
             vector.multiply((0.1f + (this.getPower() * level * 0.2f)));
             vector.setY(vector.getY() > 1 ? 1 : -1);
 
-            if (entity instanceof LivingEntity && ADAPTER.attackEntity((LivingEntity) entity, player, 0)) {
+            if (entity instanceof LivingEntity
+                && this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, 0)
+            ) {
                 entity.setVelocity(vector);
             }
         }

@@ -80,11 +80,13 @@ public final class Combustion extends Zenchantment {
             entity = event.getDamager();
         }
 
-        return ADAPTER.igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
+        return this.getPlugin()
+            .getCompatibilityAdapter()
+            .igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
     }
 
     public boolean onCombust(@NotNull EntityCombustByEntityEvent event, int level, boolean usedHand) {
-        if (ADAPTER.isZombie(event.getCombuster())) {
+        if (this.getPlugin().getCompatibilityAdapter().isZombie(event.getCombuster())) {
             event.setDuration(0);
         }
 

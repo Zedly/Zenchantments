@@ -69,7 +69,7 @@ public final class Stationary extends Zenchantment {
     @Override
     public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
         if (event.getEntity() instanceof LivingEntity
-            && !ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
+            && !this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
             return true;
         }

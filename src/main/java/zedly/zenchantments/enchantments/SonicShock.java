@@ -75,7 +75,7 @@ public final class SonicShock extends Zenchantment {
         for (Entity entity : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
             if (entity instanceof Monster) {
                 double damage = player.getVelocity().length() * 1.5 * level * this.getPower();
-                ADAPTER.attackEntity((LivingEntity) entity, player, damage);
+                this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, damage);
             }
         }
 
