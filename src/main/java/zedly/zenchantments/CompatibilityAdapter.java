@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package zedly.zenchantments;
 
 import org.bukkit.*;
@@ -25,15 +20,16 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static org.bukkit.Material.*;
-import static org.bukkit.entity.EntityType.PUFFERFISH;
+import static org.bukkit.Material.AIR;
+import static org.bukkit.Material.BAMBOO;
 import static org.bukkit.entity.EntityType.*;
 
 public class CompatibilityAdapter {
     private static final CompatibilityAdapter INSTANCE = new CompatibilityAdapter();
-    private static final Random RND = new Random();
 
     private final EnumSet<EntityType> TRANSFORMATION_ENTITY_TYPES_FROM_E = EnumSet.of(
         HUSK, WITCH, EntityType.COD, PHANTOM, HORSE, SKELETON, EntityType.CHICKEN, SQUID, OCELOT, POLAR_BEAR, COW, PIG,
@@ -41,7 +37,8 @@ public class CompatibilityAdapter {
         EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW, ZOMBIFIED_PIGLIN, CAVE_SPIDER,
         MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN, IRON_GOLEM, ZOMBIE, EVOKER,
         PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, ZOMBIE_VILLAGER, VILLAGER, EntityType.TROPICAL_FISH, GHAST,
-        LLAMA, CREEPER);
+        LLAMA, CREEPER
+    );
 
     public EnumSet<EntityType> TransformationEntityTypesFrom() {
         return TRANSFORMATION_ENTITY_TYPES_FROM_E;
@@ -53,7 +50,8 @@ public class CompatibilityAdapter {
         IRON_GOLEM, ZOMBIE, EVOKER, PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, OCELOT, POLAR_BEAR, COW, PIG,
         SPIDER, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, SHULKER, SNOWMAN, ZOMBIE_VILLAGER,
         VILLAGER, EntityType.TROPICAL_FISH, GHAST, LLAMA, SKELETON, EntityType.CHICKEN, SQUID, HUSK, WITCH,
-        EntityType.COD, PHANTOM, HORSE, CREEPER);
+        EntityType.COD, PHANTOM, HORSE, CREEPER
+    );
 
     public EnumSet<EntityType> TransformationEntityTypesTo() {
         return TRANSFORMATION_ENTITY_TYPES_TO_E;
@@ -81,7 +79,7 @@ public class CompatibilityAdapter {
                 break;
             case VILLAGER:
                 ((Villager) newEnt).setProfession(
-                        Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)]);
+                    Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)]);
                 ((Villager) newEnt).setVillagerType(Villager.Type.values()[rnd.nextInt(Villager.Type.values().length)]);
                 break;
             case LLAMA:
@@ -91,7 +89,7 @@ public class CompatibilityAdapter {
                 ((TropicalFish) newEnt).setBodyColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
                 ((TropicalFish) newEnt).setPatternColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
                 ((TropicalFish) newEnt).setPattern(
-                        TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
+                    TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
                 break;
             case PARROT:
                 ((Parrot) newEnt).setVariant(Parrot.Variant.values()[rnd.nextInt(Parrot.Variant.values().length)]);
@@ -107,7 +105,7 @@ public class CompatibilityAdapter {
                 break;
             case MUSHROOM_COW:
                 ((MushroomCow) newEnt).setVariant(
-                        MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
+                    MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
                 break;
             case FOX:
                 ((Fox) newEnt).setFoxType(Fox.Type.values()[rnd.nextInt(Fox.Type.values().length)]);
@@ -133,27 +131,30 @@ public class CompatibilityAdapter {
     public static void damageTool(Player player, int damage, boolean handUsed) {
         if (!player.getGameMode().equals(GameMode.CREATIVE)) {
             ItemStack hand
-                    = handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+                = handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
             for (int i = 0; i < damage; i++) {
-                if (RND.nextInt(100) <= (100 / (hand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                if (ThreadLocalRandom.current().nextInt(100) <= (100 / (hand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
                     setDamage(hand, getDamage(hand) + 1);
                 }
             }
             if (handUsed) {
                 player.getInventory().setItemInMainHand(
-                        getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
+                    getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
             } else {
                 player.getInventory().setItemInOffHand(
-                        getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
+                    getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
             }
         }
     }
 
     // Displays a particle with the given data
-    public static void display(Location loc, Particle particle, int amount, double speed, double xO, double yO,
-            double zO) {
+    public static void display(
+        Location loc, Particle particle, int amount, double speed, double xO, double yO,
+        double zO
+    ) {
         loc.getWorld().spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), amount, (float) xO, (float) yO,
-                (float) zO, (float) speed);
+            (float) zO, (float) speed
+        );
     }
 
     // Removes the given ItemStack's durability by the given 'damage'
@@ -161,7 +162,7 @@ public class CompatibilityAdapter {
     public static void addUnbreaking(Player player, ItemStack is, int damage) {
         if (!player.getGameMode().equals(GameMode.CREATIVE)) {
             for (int i = 0; i < damage; i++) {
-                if (RND.nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
+                if (ThreadLocalRandom.current().nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
                     setDamage(is, getDamage(is) + 1);
                 }
             }
@@ -208,10 +209,14 @@ public class CompatibilityAdapter {
      * of the action and to communicate to other plugins where the block is
      * coming from.
      *
-     * @param blockPlaced the block to be changed
-     * @param player the player whose identity to use
-     * @param mat the material to set the block to, if allowed
-     * @param data the block data to set for the block, if allowed
+     * @param blockPlaced
+     *     the block to be changed
+     * @param player
+     *     the player whose identity to use
+     * @param mat
+     *     the material to set the block to, if allowed
+     * @param data
+     *     the block data to set for the block, if allowed
      *
      * @return true if the block placement has been successful
      */
@@ -219,8 +224,9 @@ public class CompatibilityAdapter {
         Block blockAgainst = blockPlaced.getRelative((blockPlaced.getY() == 0) ? BlockFace.UP : BlockFace.DOWN);
         ItemStack itemHeld = new ItemStack(mat);
         BlockPlaceEvent placeEvent
-                = new BlockPlaceEvent(blockPlaced, blockPlaced.getState(), blockAgainst, itemHeld, player, true,
-                        EquipmentSlot.HAND);
+            = new BlockPlaceEvent(blockPlaced, blockPlaced.getState(), blockAgainst, itemHeld, player, true,
+            EquipmentSlot.HAND
+        );
 
         Bukkit.getPluginManager().callEvent(placeEvent);
         if (!placeEvent.isCancelled()) {
@@ -242,7 +248,7 @@ public class CompatibilityAdapter {
 
     public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
         EntityDamageByEntityEvent damageEvent
-                = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
+            = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
         Bukkit.getPluginManager().callEvent(damageEvent);
         if (damage == 0) {
             return !damageEvent.isCancelled();
@@ -263,8 +269,10 @@ public class CompatibilityAdapter {
             if (!evt.isCancelled()) {
                 if (target instanceof Sheep) {
                     Sheep sheep = (Sheep) target;
-                    sheep.getLocation().getWorld().dropItem(sheep.getLocation(),
-                            new ItemStack(MaterialList.WOOL.get(sheep.getColor().ordinal()), RND.nextInt(3) + 1));
+                    sheep.getLocation().getWorld().dropItem(
+                        sheep.getLocation(),
+                        new ItemStack(MaterialList.WOOL.get(sheep.getColor().ordinal()), ThreadLocalRandom.current().nextInt(3) + 1)
+                    );
                     ((Sheep) target).setSheared(true);
 
                     // TODO: Apply damage to tool
@@ -291,8 +299,9 @@ public class CompatibilityAdapter {
         ItemStack stack = new ItemStack(state.getType(), 1);
         from.setType(AIR);
         BlockPlaceEvent placeEvent = new BlockPlaceEvent(to, to.getRelative(face.getOppositeFace()).getState(),
-                to.getRelative(face.getOppositeFace()), stack, player, true,
-                EquipmentSlot.HAND);
+            to.getRelative(face.getOppositeFace()), stack, player, true,
+            EquipmentSlot.HAND
+        );
         Bukkit.getPluginManager().callEvent(placeEvent);
         if (placeEvent.isCancelled()) {
             from.getWorld().dropItem(from.getLocation(), stack);
@@ -547,11 +556,13 @@ public class CompatibilityAdapter {
             PlayerInteractEvent pie = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getInventory().getItemInMainHand(), berryBlock, player.getFacing());
             Bukkit.getPluginManager().callEvent(pie);
             if (!pie.isCancelled()) {
-                int numDropped = (a.getAge() == 3 ? 2 : 1) + (RND.nextBoolean() ? 1 : 0); // Natural drop rate. Age 2 -> 1-2 berries, Age 3 -> 2-3 berries
+                int numDropped = (a.getAge() == 3 ? 2 : 1) + (ThreadLocalRandom.current().nextBoolean() ? 1 : 0); // Natural drop rate. Age 2 -> 1-2 berries, Age 3 -> 2-3 berries
                 a.setAge(1); // Picked adult berry bush
                 berryBlock.setBlockData(a);
-                berryBlock.getWorld().dropItem(berryBlock.getLocation(),
-                        new ItemStack(Material.SWEET_BERRIES, numDropped));
+                berryBlock.getWorld().dropItem(
+                    berryBlock.getLocation(),
+                    new ItemStack(Material.SWEET_BERRIES, numDropped)
+                );
                 return true;
             }
         }
