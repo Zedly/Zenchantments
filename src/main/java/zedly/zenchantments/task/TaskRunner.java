@@ -1,7 +1,9 @@
 package zedly.zenchantments.task;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import zedly.zenchantments.ZenchantmentFactory;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.arrows.ZenchantedArrow;
+import zedly.zenchantments.event.listener.ZenchantmentListener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,8 +16,16 @@ import java.util.logging.Level;
  * A runnable class that will execute all events of the specified frequency.
  */
 public class TaskRunner implements Runnable {
+    private static final Set<Class<?>> TASK_CLASSES = new HashSet<>();
+
     private final ZenchantmentsPlugin plugin;
     private final Set<Method>         tasks;
+
+    static {
+        TASK_CLASSES.addAll(ZenchantmentFactory.getZenchantmentClasses());
+        TASK_CLASSES.add(ZenchantmentListener.class);
+        TASK_CLASSES.add(ZenchantedArrow.class);
+    }
 
     /**
      * Initializes this EventRunner by collecting all methods with an
@@ -27,27 +37,26 @@ public class TaskRunner implements Runnable {
         this.plugin = plugin;
         this.tasks = new HashSet<>();
 
-        new FastClasspathScanner(plugin.getClass().getPackage().getName())
-            .overrideClasspath("") // TODO: Try to remove this.
-            .matchClassesWithMethodAnnotation(
-                EffectTask.class,
-                (clazz, method) -> {
-                    if (!Modifier.isStatic(method.getModifiers())) {
-                        this.plugin.getLogger().warning(
-                            "EffectTask on non-static method '" + method.getName() + "' in class '" + clazz.getName() + "'."
-                        );
-                    }
-
-                    if (method.getAnnotation(EffectTask.class).value() == frequency) {
-                        if (!(method instanceof Method)) {
-                            throw new IllegalStateException("EffectTask annotation not valid on constructors.");
-                        }
-
-                        tasks.add((Method) method);
-                    }
+        for (final Class<?> taskClass : TASK_CLASSES) {
+            // Use getDeclaredMethods over getMethods to include private methods.
+            for (final Method method : taskClass.getDeclaredMethods()) {
+                if (!method.isAnnotationPresent(EffectTask.class)) {
+                    // Skip all methods without @EffectTask annotation.
+                    continue;
                 }
-            )
-            .scan();
+
+                if (!Modifier.isStatic(method.getModifiers())) {
+                    this.plugin.getLogger().warning(
+                        "EffectTask on non-static method '" + method.getName() + "' in class '" + taskClass.getName() + "'."
+                    );
+                    continue;
+                }
+
+                if (method.getAnnotation(EffectTask.class).value() == frequency) {
+                    tasks.add(method);
+                }
+            }
+        }
     }
 
     /**
