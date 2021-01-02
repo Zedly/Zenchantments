@@ -81,7 +81,7 @@ public final class Vortex extends Zenchantment {
 
         event.setDroppedExp(0);
 
-        Storage.COMPATIBILITY_ADAPTER.collectXP(killer, experience);
+        Storage.COMPATIBILITY_ADAPTER.collectExp(killer, experience);
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> VORTEX_LOCATIONS.remove(deathBlock), 3);
 

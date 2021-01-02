@@ -26,13 +26,13 @@ public class NMS_1_16_R1 extends CompatibilityAdapter {
     }    
     
     @Override
-    public boolean breakBlockNMS(Block block, Player player) {
+    public boolean breakBlock(Block block, Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 
     @Override
-    public void collectXP(Player player, int amount) {
+    public void collectExp(Player player, int amount) {
         EntityExperienceOrb eOrb = new EntityExperienceOrb(((CraftWorld) player.getWorld()).getHandle(),
                 player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), amount);
         EntityHuman ePlayer = ((CraftPlayer) player).getHandle();

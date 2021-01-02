@@ -219,7 +219,7 @@ public final class Fire extends Zenchantment {
 
                 bfsBlock.setType(AIR);
             } else {
-                if (!Storage.COMPATIBILITY_ADAPTER.breakBlockNMS(bfsBlock, player)) {
+                if (!Storage.COMPATIBILITY_ADAPTER.breakBlock(bfsBlock, player)) {
                     return false;
                 }
             }

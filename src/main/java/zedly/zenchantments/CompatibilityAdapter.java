@@ -8,6 +8,7 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -18,9 +19,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
@@ -33,71 +37,88 @@ public class CompatibilityAdapter {
         this.plugin = plugin;
     }
 
-    // Removes the given ItemStack's durability by the given 'damage' and then sets the item direction the given
-    // players hand.
-    //      This also takes into account the unbreaking enchantment
-    public static void damageTool(Player player, int damage, boolean handUsed) {
-        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-            ItemStack hand
-                = handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
-            for (int i = 0; i < damage; i++) {
-                if (ThreadLocalRandom.current().nextInt(100) <= (100 / (hand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-                    setDamage(hand, getDamage(hand) + 1);
-                }
+    public static void damageTool(final @NotNull Player player, final int damage, final boolean handUsed) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+
+        final PlayerInventory inventory = player.getInventory();
+        final ItemStack hand = handUsed ? inventory.getItemInMainHand() : inventory.getItemInOffHand();
+        for (int i = 0; i < damage; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (hand.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
+                setDamage(hand, getDamage(hand) + 1);
             }
-            if (handUsed) {
-                player.getInventory().setItemInMainHand(
-                    getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
-            } else {
-                player.getInventory().setItemInOffHand(
-                    getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand);
-            }
+        }
+
+        if (handUsed) {
+            player.getInventory().setItemInMainHand(
+                getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand
+            );
+        } else {
+            player.getInventory().setItemInOffHand(
+                getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand
+            );
         }
     }
 
-    // Displays a particle with the given data
-    public static void display(
-        Location loc, Particle particle, int amount, double speed, double xO, double yO,
-        double zO
+    public static void displayParticle(
+        final @NotNull Location location,
+        final @NotNull Particle particle,
+        final int amount,
+        final double speed,
+        final double x,
+        final double y,
+        final double z
     ) {
-        loc.getWorld().spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), amount, (float) xO, (float) yO,
-            (float) zO, (float) speed
+        Objects.requireNonNull(location.getWorld()).spawnParticle(
+            particle,
+            location.getX(),
+            location.getY(),
+            location.getZ(),
+            amount,
+            (float) x,
+            (float) y,
+            (float) z,
+            (float) speed
         );
     }
 
-    // Removes the given ItemStack's durability by the given 'damage'
-    //      This also takes into account the unbreaking enchantment
-    public static void addUnbreaking(Player player, ItemStack is, int damage) {
-        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-            for (int i = 0; i < damage; i++) {
-                if (ThreadLocalRandom.current().nextInt(100) <= (100 / (is.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DURABILITY) + 1))) {
-                    setDamage(is, getDamage(is) + 1);
-                }
+    public static void addUnbreaking(final @NotNull Player player, final @NotNull ItemStack itemStack, final int damage) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+
+        for (int i = 0; i < damage; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (itemStack.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
+                setDamage(itemStack, getDamage(itemStack) + 1);
             }
         }
     }
 
-    public static void setDamage(ItemStack is, int damage) {
-        if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
-            org.bukkit.inventory.meta.Damageable dm = ((org.bukkit.inventory.meta.Damageable) is.getItemMeta());
-            dm.setDamage(damage);
-            is.setItemMeta((ItemMeta) dm);
+    public static void setDamage(final @NotNull ItemStack itemStack, final int damage) {
+        if (!(itemStack.getItemMeta() instanceof Damageable)) {
+            return;
         }
+
+        final org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) itemStack.getItemMeta();
+        damageable.setDamage(damage);
+        itemStack.setItemMeta((ItemMeta) damageable);
     }
 
-    public static int getDamage(ItemStack is) {
-        if (is.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable) {
-            org.bukkit.inventory.meta.Damageable dm = ((org.bukkit.inventory.meta.Damageable) is.getItemMeta());
-            return dm.getDamage();
+    public static int getDamage(final @NotNull ItemStack itemStack) {
+        if (!(itemStack.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable)) {
+            return 0;
         }
-        return 0;
+
+        final org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) itemStack.getItemMeta();
+        return damageable.getDamage();
     }
 
-    public void collectXP(Player player, int amount) {
+    public void collectExp(final @NotNull Player player, final int amount) {
         player.giveExp(amount);
     }
 
-    public boolean breakBlockNMS(Block block, Player player) {
+    public boolean breakBlock(final @NotNull Block block, final @NotNull Player player) {
         BlockBreakEvent evt = new BlockBreakEvent(block, player);
         Bukkit.getPluginManager().callEvent(evt);
         if (!evt.isCancelled()) {
@@ -108,66 +129,79 @@ public class CompatibilityAdapter {
         return false;
     }
 
-    /**
-     * Places a block on the given player's behalf. Fires a BlockPlaceEvent with
-     * (nearly) appropriate parameters to probe the legitimacy (permissions etc)
-     * of the action and to communicate to other plugins where the block is
-     * coming from.
-     *
-     * @param blockPlaced
-     *     the block to be changed
-     * @param player
-     *     the player whose identity to use
-     * @param mat
-     *     the material to set the block to, if allowed
-     * @param data
-     *     the block data to set for the block, if allowed
-     *
-     * @return true if the block placement has been successful
-     */
-    public boolean placeBlock(Block blockPlaced, Player player, Material mat, BlockData d) {
-        Block blockAgainst = blockPlaced.getRelative((blockPlaced.getY() == 0) ? BlockFace.UP : BlockFace.DOWN);
-        ItemStack itemHeld = new ItemStack(mat);
-        BlockPlaceEvent placeEvent
-            = new BlockPlaceEvent(blockPlaced, blockPlaced.getState(), blockAgainst, itemHeld, player, true,
+    public boolean placeBlock(
+        final @NotNull Block blockPlaced,
+        final @NotNull Player player,
+        final @NotNull Material material,
+        final @Nullable BlockData blockData
+    ) {
+        final Block blockAgainst = blockPlaced.getRelative(blockPlaced.getY() == 0 ? BlockFace.UP : BlockFace.DOWN);
+        final ItemStack itemHeld = new ItemStack(material);
+        final BlockPlaceEvent placeEvent = new BlockPlaceEvent(
+            blockPlaced,
+            blockPlaced.getState(),
+            blockAgainst,
+            itemHeld,
+            player,
+            true,
             EquipmentSlot.HAND
         );
 
-        Bukkit.getPluginManager().callEvent(placeEvent);
-        if (!placeEvent.isCancelled()) {
-            blockPlaced.setType(mat);
-            BlockData data = blockPlaced.getBlockData();
-            if (MaterialList.LEAVES.contains(mat)) {
-                Leaves l = (Leaves) data;
-                l.setPersistent(true);
-                blockPlaced.setBlockData(l);
-            }
-            return true;
+        this.plugin.getServer().getPluginManager().callEvent(placeEvent);
+
+        if (placeEvent.isCancelled()) {
+            return false;
         }
-        return false;
+
+        blockPlaced.setType(material);
+
+        if (MaterialList.LEAVES.contains(material)) {
+            final Leaves leaves = (Leaves) blockPlaced.getBlockData();
+            leaves.setPersistent(true);
+            blockPlaced.setBlockData(leaves);
+        }
+
+        return true;
     }
 
-    public boolean placeBlock(Block blockPlaced, Player player, ItemStack is) {
-        return placeBlock(blockPlaced, player, is.getType(), (BlockData) is.getData());
+    public boolean placeBlock(
+        final @NotNull Block blockPlaced,
+        final @NotNull Player player,
+        final @NotNull ItemStack itemStack
+    ) {
+        return placeBlock(blockPlaced, player, itemStack.getType(), (BlockData) itemStack.getData());
     }
 
-    public boolean attackEntity(LivingEntity target, Player attacker, double damage) {
-        EntityDamageByEntityEvent damageEvent
-            = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
-        Bukkit.getPluginManager().callEvent(damageEvent);
+    public boolean attackEntity(
+        final @NotNull LivingEntity target,
+        final @NotNull Player attacker,
+        final double damage
+    ) {
+        final EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
+
+        this.plugin.getServer().getPluginManager().callEvent(damageEvent);
+
         if (damage == 0) {
             return !damageEvent.isCancelled();
         }
-        if (!damageEvent.isCancelled()) {
-            target.damage(damage, attacker);
-            target.setLastDamageCause(damageEvent);
-            damageTool(attacker, 1, true);
-            return true;
+
+        if (damageEvent.isCancelled()) {
+            return false;
         }
-        return false;
+
+        target.damage(damage, attacker);
+        target.setLastDamageCause(damageEvent);
+
+        damageTool(attacker, 1, true);
+
+        return true;
     }
 
-    public boolean shearEntityNMS(Entity target, Player player, boolean mainHand) {
+    public boolean shearEntityNMS(
+        final @NotNull Entity target,
+        final @NotNull Player player,
+        final boolean mainHand
+    ) {
         if ((target instanceof Sheep && !((Sheep) target).isSheared()) || target instanceof MushroomCow) {
             PlayerShearEntityEvent evt = new PlayerShearEntityEvent(player, target);
             Bukkit.getPluginManager().callEvent(evt);
@@ -191,119 +225,155 @@ public class CompatibilityAdapter {
         return false;
     }
 
-    public boolean haulOrBreakBlock(Block from, Block to, BlockFace face, Player player) {
-        BlockState state = from.getState();
+    public boolean haulOrBreakBlock(
+        final @NotNull Block from,
+        final @NotNull Block to,
+        final @NotNull BlockFace face,
+        final @NotNull Player player
+    ) {
+        final BlockState state = from.getState();
         if (state.getClass().getName().endsWith("CraftBlockState")) {
             return false;
         }
-        BlockBreakEvent breakEvent = new BlockBreakEvent(from, player);
-        Bukkit.getPluginManager().callEvent(breakEvent);
+
+        final BlockBreakEvent breakEvent = new BlockBreakEvent(from, player);
+
+        this.plugin.getServer().getPluginManager().callEvent(breakEvent);
+
         if (breakEvent.isCancelled()) {
             return false;
         }
-        ItemStack stack = new ItemStack(state.getType(), 1);
+
+        final ItemStack stack = new ItemStack(state.getType(), 1);
+
         from.setType(AIR);
-        BlockPlaceEvent placeEvent = new BlockPlaceEvent(to, to.getRelative(face.getOppositeFace()).getState(),
+
+        final BlockPlaceEvent placeEvent = new BlockPlaceEvent(
+            to,
+            to.getRelative(face.getOppositeFace()).getState(),
             to.getRelative(face.getOppositeFace()), stack, player, true,
             EquipmentSlot.HAND
         );
-        Bukkit.getPluginManager().callEvent(placeEvent);
+
+        this.plugin.getServer().getPluginManager().callEvent(placeEvent);
+
         if (placeEvent.isCancelled()) {
             from.getWorld().dropItem(from.getLocation(), stack);
             return true;
         }
+
         to.setType(state.getType());
         return true;
     }
 
-    public boolean igniteEntity(Entity target, Player player, int duration) {
-        EntityCombustByEntityEvent evt = new EntityCombustByEntityEvent(target, player, duration);
-        Bukkit.getPluginManager().callEvent(evt);
-        if (!evt.isCancelled()) {
-            target.setFireTicks(duration);
-            return true;
+    public boolean igniteEntity(final @NotNull Entity target, final @NotNull Player player, final int duration) {
+        final EntityCombustByEntityEvent event = new EntityCombustByEntityEvent(target, player, duration);
+
+        this.plugin.getServer().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            return false;
         }
-        return false;
+
+        target.setFireTicks(duration);
+        return true;
+
     }
 
-    public boolean damagePlayer(Player player, double damage, DamageCause cause) {
-        EntityDamageEvent evt = new EntityDamageEvent(player, cause, damage);
-        Bukkit.getPluginManager().callEvent(evt);
+    public boolean damagePlayer(final @NotNull Player player, final double damage, final @NotNull DamageCause cause) {
+        final EntityDamageEvent event = new EntityDamageEvent(player, cause, damage);
+
+        this.plugin.getServer().getPluginManager().callEvent(event);
+
         if (damage == 0) {
-            return !evt.isCancelled();
+            return !event.isCancelled();
         }
-        if (!evt.isCancelled()) {
-            player.setLastDamageCause(evt);
-            player.damage(damage);
-            return true;
+
+        if (event.isCancelled()) {
+            return false;
         }
-        return false;
+
+        player.setLastDamageCause(event);
+        player.damage(damage);
+        return true;
     }
 
-    public boolean explodeCreeper(Creeper c, boolean damage) {
-        float power;
-        Location l = c.getLocation();
-        if (c.isPowered()) {
+    public boolean explodeCreeper(final @NotNull Creeper creeper, final boolean damage) {
+        final Location location = creeper.getLocation();
+        final float power;
+
+        if (creeper.isPowered()) {
             power = 6f;
         } else {
             power = 3.1f;
         }
+
         if (damage) {
-            c.getWorld().createExplosion(l, power);
+            creeper.getWorld().createExplosion(location, power);
         } else {
-            c.getWorld().createExplosion(l.getX(), l.getY(), l.getZ(), power, false, false);
+            creeper.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), power, false, false);
         }
-        c.remove();
+
+        creeper.remove();
 
         return true;
     }
 
-    public boolean formBlock(Block block, Material mat, Player player) {
-        BlockState bs = block.getState();
-        bs.setType(mat);
-        EntityBlockFormEvent evt = new EntityBlockFormEvent(player, block, bs);
-        Bukkit.getPluginManager().callEvent(evt);
-        if (!evt.isCancelled()) {
-            block.setType(mat);
-            return true;
+    public boolean formBlock(final @NotNull Block block, final @NotNull Material material, final @NotNull Player player) {
+        final BlockState state = block.getState();
+        state.setType(material);
+
+        final EntityBlockFormEvent event = new EntityBlockFormEvent(player, block, state);
+
+        this.plugin.getServer().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            return false;
         }
-        return false;
+
+        block.setType(material);
+
+        return true;
     }
 
-    public boolean showShulker(Block blockToHighlight, int entityId, Player player) {
+    public boolean showShulker(final @NotNull Block blockToHighlight, final int entityId, final @NotNull Player player) {
         // This cannot be done without NMS
         return false;
     }
 
-    public boolean hideShulker(int entityId, Player player) {
+    public boolean hideShulker(final int entityId, final @NotNull Player player) {
         // This cannot be done without NMS
         return false;
     }
 
-    public Entity spawnGuardian(Location loc, boolean elderGuardian) {
-        return loc.getWorld().spawnEntity(loc, elderGuardian ? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN);
+    public Entity spawnGuardian(final @NotNull Location location, final boolean elderGuardian) {
+        return Objects.requireNonNull(location.getWorld()).spawnEntity(
+            location,
+            elderGuardian ? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN
+        );
     }
 
-    public boolean isZombie(Entity e) {
-        return e.getType() == EntityType.ZOMBIE || e.getType() == EntityType.ZOMBIE_VILLAGER || e.getType() == EntityType.HUSK;
+    public boolean isZombie(final @NotNull Entity entity) {
+        return entity.getType() == EntityType.ZOMBIE
+            || entity.getType() == EntityType.ZOMBIE_VILLAGER
+            || entity.getType() == EntityType.HUSK;
     }
 
-    public boolean isBlockSafeToBreak(Block b) {
-        Material mat = b.getType();
-        return mat.isSolid()
-            && !b.isLiquid()
-            && !MaterialList.INTERACTABLE_BLOCKS.contains(mat)
-            && !MaterialList.UNBREAKABLE_BLOCKS.contains(mat)
-            && !MaterialList.STORAGE_BLOCKS.contains(mat);
+    public boolean isBlockSafeToBreak(final @NotNull Block block) {
+        final Material material = block.getType();
+        return material.isSolid()
+            && !block.isLiquid()
+            && !MaterialList.INTERACTABLE_BLOCKS.contains(material)
+            && !MaterialList.UNBREAKABLE_BLOCKS.contains(material)
+            && !MaterialList.STORAGE_BLOCKS.contains(material);
     }
 
-    //endregion
-    //endregion
-    public boolean grow(Block cropBlock, Player player) {
-        Material mat = cropBlock.getType();
+    public boolean grow(@NotNull Block cropBlock, final @NotNull Player player) {
+        final Material material = cropBlock.getType();
+
         BlockData data = cropBlock.getBlockData();
 
-        switch (mat) {
+        switch (material) {
             case PUMPKIN_STEM:
             case MELON_STEM:
             case CARROTS:
@@ -313,89 +383,96 @@ public class CompatibilityAdapter {
             case NETHER_WART:
             case BEETROOTS:
             case SWEET_BERRY_BUSH:
-
-                BlockData cropState = cropBlock.getBlockData();
+                final BlockData cropState = cropBlock.getBlockData();
                 if (cropState instanceof Ageable) {
-                    Ageable ag = (Ageable) cropState;
-                    if (ag.getAge() >= ag.getMaximumAge()) {
+                    final Ageable ageable = (Ageable) cropState;
+
+                    if (ageable.getAge() >= ageable.getMaximumAge()) {
                         return false;
                     }
-                    ag.setAge(ag.getAge() + 1);
-                    data = ag;
+
+                    ageable.setAge(ageable.getAge() + 1);
+                    data = ageable;
                 }
                 break;
             case BAMBOO_SAPLING: {
-                if (player != null) {
-                    boolean result = placeBlock(cropBlock, player, BAMBOO, null);
-                    if (!result) {
-                        return false;
-                    }
+                if (!this.placeBlock(cropBlock, player, BAMBOO, null)) {
+                    return false;
                 }
 
-                Bamboo bamboo = (Bamboo) cropBlock.getBlockData();
-                cropBlock = cropBlock.getRelative(BlockFace.UP);
-                bamboo.setLeaves(Bamboo.Leaves.SMALL);
-                data = bamboo;
+                final Bamboo bamboo = (Bamboo) cropBlock.getBlockData();
 
+                cropBlock = cropBlock.getRelative(BlockFace.UP);
+
+                bamboo.setLeaves(Bamboo.Leaves.SMALL);
+
+                data = bamboo;
                 break;
             }
             case BAMBOO: {
-                Bamboo bamboo = (Bamboo) cropBlock.getBlockData();
+                final Bamboo bamboo = (Bamboo) cropBlock.getBlockData();
 
-                int height = 1;
-                if (cropBlock.getRelative(BlockFace.DOWN).getType() == mat) { // Only grow if argument is the base
-                    // block
+                // Only grow if argument is the base block.
+                if (cropBlock.getRelative(BlockFace.DOWN).getType() == material) {
                     return false;
                 }
+
+                int height = 1;
+
                 Block testBlock = cropBlock;
-                while ((testBlock = testBlock.getRelative(BlockFace.UP)).getType() == mat) {
-                    if (++height >= 16) { // Cancel if cactus/cane is fully grown
+                while ((testBlock = testBlock.getRelative(BlockFace.UP)).getType() == material) {
+                    // Cancel if cactus/cane is fully grown.
+                    if (++height >= 16) {
                         return false;
                     }
                 }
+
                 height++;
 
-                boolean result;
-                if (player != null) {
-                    result = placeBlock(testBlock, player, mat, null);
+                boolean result = this.placeBlock(testBlock, player, material, null);
 
-                    if (!result) {
-                        return false;
-                    }
+                if (!result) {
+                    return false;
                 }
+
                 bamboo.setAge(0);
 
                 if (height == 4) {
-                    // Top piece
+                    // Top piece.
                     bamboo.setLeaves(Bamboo.Leaves.LARGE);
                     bamboo.setAge(1);
-                    result = placeBlock(cropBlock.getRelative(0, 3, 0), player, mat, bamboo);
+
+                    result = this.placeBlock(cropBlock.getRelative(0, 3, 0), player, material, bamboo);
 
                     if (!result) {
                         return false;
                     }
                 }
+
                 if (height == 3 || height == 4) {
-                    // Top piece (height = 3) or second from top (height = 4)
+                    // Top piece (height = 3) or second from top (height = 4).
                     bamboo.setLeaves(Bamboo.Leaves.SMALL);
                     bamboo.setAge(height == 4 ? 1 : 0);
-                    result = placeBlock(cropBlock.getRelative(0, 2, 0), player, mat, bamboo);
+
+                    result = this.placeBlock(cropBlock.getRelative(0, 2, 0), player, material, bamboo);
 
                     if (!result) {
                         return false;
                     }
 
-                    // Second from bottom piece
+                    // Second from bottom piece.
                     bamboo.setAge(0);
                     bamboo.setLeaves(Bamboo.Leaves.NONE);
-                    result = placeBlock(cropBlock, player, mat, bamboo);
+
+                    result = this.placeBlock(cropBlock, player, material, bamboo);
 
                     if (!result) {
                         return false;
                     }
 
                     bamboo.setLeaves(Bamboo.Leaves.SMALL);
-                    result = placeBlock(cropBlock.getRelative(0, 1, 0), player, mat, bamboo);
+
+                    result = this.placeBlock(cropBlock.getRelative(0, 1, 0), player, material, bamboo);
 
                     if (!result) {
                         return false;
@@ -403,33 +480,45 @@ public class CompatibilityAdapter {
 
                 }
 
-                if (height > 4) {
-                    for (int i = height - 1; i >= 0; i--) {
-                        Bamboo.Leaves leaves = i < height - 3 ? Bamboo.Leaves.NONE : i == height - 3 ? Bamboo.Leaves.SMALL : Bamboo.Leaves.LARGE;
-                        bamboo.setLeaves(leaves);
-                        bamboo.setAge(height == 5 && i < 2 ? 0 : 1);
-                        result = placeBlock(cropBlock.getRelative(0, i, 0), player, mat, bamboo);
+                if (height <= 4) {
+                    return true;
+                }
 
-                        if (!result) {
-                            return false;
-                        }
+                for (int i = height - 1; i >= 0; i--) {
+                    final Bamboo.Leaves leaves = i < height - 3 ? Bamboo.Leaves.NONE : i == height - 3
+                        ? Bamboo.Leaves.SMALL
+                        : Bamboo.Leaves.LARGE;
+
+                    bamboo.setLeaves(leaves);
+                    bamboo.setAge(height == 5 && i < 2 ? 0 : 1);
+
+                    result = this.placeBlock(cropBlock.getRelative(0, i, 0), player, material, bamboo);
+
+                    if (!result) {
+                        return false;
                     }
                 }
+
                 return true;
             }
             case CACTUS:
             case SUGAR_CANE:
-                int height = 1;
-                if (cropBlock.getRelative(BlockFace.DOWN).getType() == mat) { // Only grow if argument is the base
-                    // block
+                // Only grow if argument is the base block.
+                if (cropBlock.getRelative(BlockFace.DOWN).getType() == material) {
                     return false;
                 }
-                while ((cropBlock = cropBlock.getRelative(BlockFace.UP)).getType() == mat) {
-                    if (++height >= 3) { // Cancel if cactus/cane is fully grown
+
+                int height = 1;
+
+                while ((cropBlock = cropBlock.getRelative(BlockFace.UP)).getType() == material) {
+                    // Cancel if cactus/cane is fully grown.
+                    if (++height >= 3) {
                         return false;
                     }
                 }
-                if (!MaterialList.AIR.contains(cropBlock.getType())) { // Only grow if argument is the base block
+
+                // Only grow if argument is the base block.
+                if (!MaterialList.AIR.contains(cropBlock.getType())) {
                     return false;
                 }
 
@@ -438,39 +527,45 @@ public class CompatibilityAdapter {
                 return false;
         }
 
-        if (player != null) {
-            return placeBlock(cropBlock, player, mat, data);
-        }
-
-        BlockState bs = cropBlock.getState();
-        bs.setType(mat);
-        BlockGrowEvent evt = new BlockGrowEvent(cropBlock, bs);
-        Bukkit.getPluginManager().callEvent(evt);
-        if (!evt.isCancelled()) {
-            cropBlock.setType(mat);
-            cropBlock.setBlockData(data);
-            return true;
-        }
-        return false;
+        return this.placeBlock(cropBlock, player, material, data);
     }
 
-    public boolean pickBerries(Block berryBlock, Player player) {
-        BlockData data = berryBlock.getBlockData();
-        Ageable a = (Ageable) data;
-        if (a.getAge() > 1) { // Age of ripe Berries
-            PlayerInteractEvent pie = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getInventory().getItemInMainHand(), berryBlock, player.getFacing());
-            Bukkit.getPluginManager().callEvent(pie);
-            if (!pie.isCancelled()) {
-                int numDropped = (a.getAge() == 3 ? 2 : 1) + (ThreadLocalRandom.current().nextBoolean() ? 1 : 0); // Natural drop rate. Age 2 -> 1-2 berries, Age 3 -> 2-3 berries
-                a.setAge(1); // Picked adult berry bush
-                berryBlock.setBlockData(a);
-                berryBlock.getWorld().dropItem(
-                    berryBlock.getLocation(),
-                    new ItemStack(Material.SWEET_BERRIES, numDropped)
-                );
-                return true;
-            }
+    public boolean pickBerries(final @NotNull Block berryBlock, final @NotNull Player player) {
+        final BlockData data = berryBlock.getBlockData();
+        final Ageable ageable = (Ageable) data;
+
+        // Age of ripe Berries.
+        if (ageable.getAge() <= 1) {
+            return false;
         }
-        return false;
+
+        final PlayerInteractEvent event = new PlayerInteractEvent(
+            player,
+            Action.RIGHT_CLICK_BLOCK,
+            player.getInventory().getItemInMainHand(),
+            berryBlock,
+            player.getFacing()
+        );
+
+        this.plugin.getServer().getPluginManager().callEvent(event);
+
+        // TODO: Fix deprecation warning.
+        if (event.isCancelled()) {
+            return false;
+        }
+
+        // Natural drop rate. Age 2 -> 1-2 berries, Age 3 -> 2-3 berries
+        final int numDropped = (ageable.getAge() == 3 ? 2 : 1) + (ThreadLocalRandom.current().nextBoolean() ? 1 : 0);
+
+        // Picked adult berry bush
+        ageable.setAge(1);
+
+        berryBlock.setBlockData(ageable);
+        berryBlock.getWorld().dropItem(
+            berryBlock.getLocation(),
+            new ItemStack(Material.SWEET_BERRIES, numDropped)
+        );
+
+        return true;
     }
 }

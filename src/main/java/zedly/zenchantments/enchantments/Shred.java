@@ -123,7 +123,7 @@ public final class Shred extends Zenchantment {
         }
 
         if (config.areShredDropsEnabled() == 0) {
-            ADAPTER.breakBlockNMS(relativeBlock, player);
+            ADAPTER.breakBlock(relativeBlock, player);
         } else {
             final BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
             this.getPlugin().getServer().getPluginManager().callEvent(event);

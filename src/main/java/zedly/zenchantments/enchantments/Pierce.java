@@ -196,7 +196,7 @@ public final class Pierce extends Zenchantment {
 
         for (Block block : total) {
             if (ADAPTER.isBlockSafeToBreak(block)) {
-                ADAPTER.breakBlockNMS(block, event.getPlayer());
+                ADAPTER.breakBlock(block, event.getPlayer());
             }
         }
 

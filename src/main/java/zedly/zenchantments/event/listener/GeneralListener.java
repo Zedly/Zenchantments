@@ -168,7 +168,7 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                        Storage.COMPATIBILITY_ADAPTER.collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
                 }
@@ -188,7 +188,7 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        Storage.COMPATIBILITY_ADAPTER.collectXP(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                        Storage.COMPATIBILITY_ADAPTER.collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
                 }

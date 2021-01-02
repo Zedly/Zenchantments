@@ -103,7 +103,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Block has been selected, attempt breaking.
-        if (!ADAPTER.breakBlockNMS(event.getClickedBlock(), event.getPlayer())) {
+        if (!ADAPTER.breakBlock(event.getClickedBlock(), event.getPlayer())) {
             return false;
         }
 

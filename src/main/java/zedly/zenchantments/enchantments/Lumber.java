@@ -90,7 +90,7 @@ public final class Lumber extends Zenchantment {
         );
 
         for (Block block : blocks) {
-            ADAPTER.breakBlockNMS(block, event.getPlayer());
+            ADAPTER.breakBlock(block, event.getPlayer());
         }
 
         return !blocks.isEmpty();
