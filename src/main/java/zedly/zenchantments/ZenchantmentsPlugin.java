@@ -33,6 +33,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     private final WorldConfigurationProvider worldConfigurationProvider = new WorldConfigurationProvider(this);
     private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
     private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
+    private final CompatibilityAdapter       compatibilityAdapter       = new CompatibilityAdapter(this);
 
     @Override
     public void onEnable() {
@@ -109,5 +110,10 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @NotNull
     public ZenchantmentFactory getZenchantmentFactory() {
         return this.zenchantmentFactory;
+    }
+
+    @NotNull
+    public CompatibilityAdapter getCompatibilityAdapter() {
+        return this.compatibilityAdapter;
     }
 }

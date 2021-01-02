@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -26,10 +27,10 @@ import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.BAMBOO;
 
 public class CompatibilityAdapter {
-    private static final CompatibilityAdapter INSTANCE = new CompatibilityAdapter();
+    private final ZenchantmentsPlugin plugin;
 
-    public static CompatibilityAdapter getInstance() {
-        return INSTANCE;
+    public CompatibilityAdapter(final @NotNull ZenchantmentsPlugin plugin) {
+        this.plugin = plugin;
     }
 
     // Removes the given ItemStack's durability by the given 'damage' and then sets the item direction the given
@@ -90,9 +91,6 @@ public class CompatibilityAdapter {
             return dm.getDamage();
         }
         return 0;
-    }
-
-    protected CompatibilityAdapter() {
     }
 
     public void collectXP(Player player, int amount) {
