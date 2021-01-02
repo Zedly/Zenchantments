@@ -99,6 +99,11 @@ public class ZenchantmentFactory {
     }
 
     @NotNull
+    public static Set<Class<? extends Zenchantment>> getZenchantmentClasses() {
+        return CONSTRUCTOR_MAP.keySet();
+    }
+
+    @NotNull
     @SuppressWarnings("unchecked")
     public static <T extends Zenchantment> Constructor<T> getConstructor(final @NotNull Class<T> zenchantmentClass) {
         return (Constructor<T>) CONSTRUCTOR_MAP.get(zenchantmentClass);
