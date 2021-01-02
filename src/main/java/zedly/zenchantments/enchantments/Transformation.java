@@ -188,21 +188,24 @@ public final class Transformation extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
         if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return false;
         }
+
         if (event.getEntity() instanceof Tameable) {
-            if (((Tameable) event.getEntity()).isTamed()) {
+            final Tameable tameable = (Tameable) event.getEntity();
+            if (tameable.isTamed()) {
                 return false;
             }
         }
+
         if (!(event.getEntity() instanceof LivingEntity)) {
             return true;
         }
 
-        LivingEntity entity = (LivingEntity) event.getEntity();
-        if (this.hasValuableItems(entity)) {
+        final LivingEntity entity = (LivingEntity) event.getEntity();
+        if (hasValuableItems(entity)) {
             return true;
         }
 
@@ -214,31 +217,47 @@ public final class Transformation extends Zenchantment {
             return true;
         }
 
-        LivingEntity newEntity = transformationCycle(entity, ThreadLocalRandom.current());
+        final LivingEntity newEntity = transformationCycle(entity, ThreadLocalRandom.current());
 
         if (newEntity == null) {
             return true;
         }
 
-        if (event.getDamage() > (entity).getHealth()) {
+        if (event.getDamage() > entity.getHealth()) {
             event.setCancelled(true);
         }
 
-        Utilities.displayParticle(Utilities.getCenter(event.getEntity().getLocation()), Particle.HEART, 70, 0.1f, 0.5f, 2, 0.5f);
+        Utilities.displayParticle(
+            Utilities.getCenter(event.getEntity().getLocation()),
+            Particle.HEART,
+            70,
+            0.1f,
+            0.5f,
+            2,
+            0.5f
+        );
 
-        double originalHealth = (entity).getHealth();
-        newEntity.setHealth(Math.max(1, Math.min(originalHealth, newEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
+        newEntity.setHealth(
+            Math.max(
+                1,
+                Math.min(
+                    entity.getHealth(),
+                    newEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()
+                )
+            )
+        );
+
         event.getEntity().remove();
 
         return true;
     }
 
-    private boolean hasValuableItems(LivingEntity entity) {
+    private static boolean hasValuableItems(final @NotNull LivingEntity entity) {
         if (entity.getEquipment() == null) {
             return false;
         }
 
-        for (ItemStack stack : entity.getEquipment().getArmorContents()) {
+        for (final ItemStack stack : entity.getEquipment().getArmorContents()) {
             if (stack.hasItemMeta() && stack.getItemMeta().hasEnchants()) {
                 return true;
             }
