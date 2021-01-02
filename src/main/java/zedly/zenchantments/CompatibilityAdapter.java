@@ -20,106 +20,13 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.EnumSet;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.BAMBOO;
-import static org.bukkit.entity.EntityType.*;
 
 public class CompatibilityAdapter {
     private static final CompatibilityAdapter INSTANCE = new CompatibilityAdapter();
-
-    private final EnumSet<EntityType> TRANSFORMATION_ENTITY_TYPES_FROM_E = EnumSet.of(
-        HUSK, WITCH, EntityType.COD, PHANTOM, HORSE, SKELETON, EntityType.CHICKEN, SQUID, OCELOT, POLAR_BEAR, COW, PIG,
-        SPIDER, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, SHULKER, SNOWMAN, DROWNED, VINDICATOR,
-        EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW, ZOMBIFIED_PIGLIN, CAVE_SPIDER,
-        MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN, IRON_GOLEM, ZOMBIE, EVOKER,
-        PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, ZOMBIE_VILLAGER, VILLAGER, EntityType.TROPICAL_FISH, GHAST,
-        LLAMA, CREEPER
-    );
-
-    public EnumSet<EntityType> TransformationEntityTypesFrom() {
-        return TRANSFORMATION_ENTITY_TYPES_FROM_E;
-    }
-
-    private final EnumSet<EntityType> TRANSFORMATION_ENTITY_TYPES_TO_E = EnumSet.of(
-        DROWNED, VINDICATOR, EntityType.SALMON, BLAZE, DONKEY, STRAY, PARROT, DOLPHIN, WOLF, SHEEP, MUSHROOM_COW,
-        ZOMBIFIED_PIGLIN, CAVE_SPIDER, MAGMA_CUBE, ELDER_GUARDIAN, SILVERFISH, ZOMBIE_HORSE, EntityType.RABBIT, ENDERMAN,
-        IRON_GOLEM, ZOMBIE, EVOKER, PUFFERFISH, VEX, MULE, WITHER_SKELETON, BAT, TURTLE, OCELOT, POLAR_BEAR, COW, PIG,
-        SPIDER, SLIME, GUARDIAN, ENDERMITE, SKELETON_HORSE, EntityType.RABBIT, SHULKER, SNOWMAN, ZOMBIE_VILLAGER,
-        VILLAGER, EntityType.TROPICAL_FISH, GHAST, LLAMA, SKELETON, EntityType.CHICKEN, SQUID, HUSK, WITCH,
-        EntityType.COD, PHANTOM, HORSE, CREEPER
-    );
-
-    public EnumSet<EntityType> TransformationEntityTypesTo() {
-        return TRANSFORMATION_ENTITY_TYPES_TO_E;
-    }
-
-    public LivingEntity TransformationCycle(LivingEntity ent, Random rnd) {
-        int newTypeID = TransformationEntityTypesFrom().indexOf(ent.getType());
-        if (newTypeID == -1) {
-            return null;
-        }
-        EntityType newType = TransformationEntityTypesTo().get(newTypeID);
-        LivingEntity newEnt = (LivingEntity) ent.getWorld().spawnEntity(ent.getLocation(), newType);
-
-        switch (newType) {
-            case HORSE:
-                ((Horse) newEnt).setColor(Horse.Color.values()[rnd.nextInt(Horse.Color.values().length)]);
-                ((Horse) newEnt).setStyle(Horse.Style.values()[rnd.nextInt(Horse.Style.values().length)]);
-                break;
-            case RABBIT:
-                if (((Rabbit) ent).getRabbitType().equals(Rabbit.Type.THE_KILLER_BUNNY)) {
-                    ((Rabbit) newEnt).setRabbitType(Rabbit.Type.values()[rnd.nextInt(Rabbit.Type.values().length - 1)]);
-                } else {
-                    ((Rabbit) newEnt).setRabbitType(Rabbit.Type.THE_KILLER_BUNNY);
-                }
-                break;
-            case VILLAGER:
-                ((Villager) newEnt).setProfession(
-                    Villager.Profession.values()[rnd.nextInt(Villager.Profession.values().length)]);
-                ((Villager) newEnt).setVillagerType(Villager.Type.values()[rnd.nextInt(Villager.Type.values().length)]);
-                break;
-            case LLAMA:
-                ((Llama) newEnt).setColor(Llama.Color.values()[rnd.nextInt(Llama.Color.values().length)]);
-                break;
-            case TROPICAL_FISH:
-                ((TropicalFish) newEnt).setBodyColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
-                ((TropicalFish) newEnt).setPatternColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
-                ((TropicalFish) newEnt).setPattern(
-                    TropicalFish.Pattern.values()[rnd.nextInt(TropicalFish.Pattern.values().length)]);
-                break;
-            case PARROT:
-                ((Parrot) newEnt).setVariant(Parrot.Variant.values()[rnd.nextInt(Parrot.Variant.values().length)]);
-                break;
-            case CAT:
-                ((Cat) newEnt).setCatType(Cat.Type.values()[rnd.nextInt(Cat.Type.values().length)]);
-                break;
-            case SHEEP:
-                ((Sheep) newEnt).setColor(DyeColor.values()[rnd.nextInt(DyeColor.values().length)]);
-                break;
-            case CREEPER:
-                ((Creeper) newEnt).setPowered(!((Creeper) ent).isPowered());
-                break;
-            case MUSHROOM_COW:
-                ((MushroomCow) newEnt).setVariant(
-                    MushroomCow.Variant.values()[rnd.nextInt(MushroomCow.Variant.values().length)]);
-                break;
-            case FOX:
-                ((Fox) newEnt).setFoxType(Fox.Type.values()[rnd.nextInt(Fox.Type.values().length)]);
-                break;
-            case ILLUSIONER:
-                ((Panda) newEnt).setHiddenGene(Panda.Gene.values()[rnd.nextInt(Panda.Gene.values().length)]);
-                ((Panda) newEnt).setMainGene(Panda.Gene.values()[rnd.nextInt(Panda.Gene.values().length)]);
-                break;
-        }
-
-        newEnt.setCustomName(ent.getCustomName());
-        newEnt.setCustomNameVisible(ent.isCustomNameVisible());
-        return ent;
-    }
 
     public static CompatibilityAdapter getInstance() {
         return INSTANCE;
