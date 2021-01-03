@@ -37,6 +37,8 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
 
     @Override
     public void onEnable() {
+        Utilities.setPlugin(this);
+
         this.globalConfiguration.loadGlobalConfiguration();
         this.worldConfigurationProvider.loadWorldConfigurations();
 

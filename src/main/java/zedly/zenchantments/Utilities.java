@@ -36,6 +36,8 @@ public final class Utilities {
 
     private static final int[][] DEFAULT_SEARCH_FACES = new int[27][3];
 
+    private static ZenchantmentsPlugin plugin;
+
     static {
         int i = 0;
         for (int x = -1; x <= 1; x++) {
@@ -49,6 +51,14 @@ public final class Utilities {
 
     private Utilities() {
         throw new IllegalStateException();
+    }
+
+    public static void setPlugin(final @NotNull ZenchantmentsPlugin plugin) {
+        if (Utilities.plugin != null) {
+            throw new IllegalStateException();
+        }
+
+        Utilities.plugin = plugin;
     }
 
     // Maybe inline usages of this?
@@ -592,7 +602,7 @@ public final class Utilities {
                         continue;
                     }
 
-                    if (Storage.COMPATIBILITY_ADAPTER.formBlock(possiblePlatformBlock, fill, player)) {
+                    if (plugin.getCompatibilityAdapter().formBlock(possiblePlatformBlock, fill, player)) {
                         placed.put(possiblePlatformLocation, System.nanoTime());
                     }
                 }
