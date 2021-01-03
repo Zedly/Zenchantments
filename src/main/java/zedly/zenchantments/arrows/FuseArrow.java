@@ -9,7 +9,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -60,14 +59,14 @@ public final class FuseArrow extends ZenchantedArrow {
 
     @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
-        if (!Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
+        if (!this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             this.die();
             return true;
         }
 
         if (event.getEntity().getType() == EntityType.CREEPER) {
             Creeper creeper = (Creeper) event.getEntity();
-            Storage.COMPATIBILITY_ADAPTER.explodeCreeper(
+            this.getPlugin().getCompatibilityAdapter().explodeCreeper(
                 creeper,
                 this.getPlugin()
                     .getWorldConfigurationProvider()

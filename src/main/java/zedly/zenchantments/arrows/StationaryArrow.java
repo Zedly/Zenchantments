@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class StationaryArrow extends ZenchantedArrow {
@@ -17,7 +16,7 @@ public final class StationaryArrow extends ZenchantedArrow {
 
     @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
-        if (Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
+        if (this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             LivingEntity entity = (LivingEntity) event.getEntity();
             if (event.getDamage() < entity.getHealth()) {
                 event.setCancelled(true);
@@ -31,7 +30,7 @@ public final class StationaryArrow extends ZenchantedArrow {
                     if (!combustByEntityEvent.isCancelled()) {
                         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
                             this.getPlugin(),
-                            () -> Storage.COMPATIBILITY_ADAPTER.igniteEntity(entity, (Player) this.getArrow().getShooter(), 300),
+                            () -> this.getPlugin().getCompatibilityAdapter().igniteEntity(entity, (Player) this.getArrow().getShooter(), 300),
                             1
                         );
                     }

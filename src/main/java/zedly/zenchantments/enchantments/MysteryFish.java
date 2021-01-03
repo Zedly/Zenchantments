@@ -88,7 +88,7 @@ public final class MysteryFish extends Zenchantment {
         if (ThreadLocalRandom.current().nextBoolean()) {
             event.getPlayer().getWorld().spawnEntity(location, SQUID);
         } else {
-            Guardian guardian = (Guardian) Storage.COMPATIBILITY_ADAPTER.spawnGuardian(location, ThreadLocalRandom.current().nextBoolean());
+            Guardian guardian = (Guardian) this.getPlugin().getCompatibilityAdapter().spawnGuardian(location, ThreadLocalRandom.current().nextBoolean());
             GUARDIANS_AND_PLAYERS.put(guardian, event.getPlayer());
         }
 

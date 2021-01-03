@@ -115,7 +115,7 @@ public final class Terraformer extends Zenchantment {
                 continue;
             }
 
-            if (Storage.COMPATIBILITY_ADAPTER.placeBlock(block, event.getPlayer(), material, null)) {
+            if (this.getPlugin().getCompatibilityAdapter().placeBlock(block, event.getPlayer(), material, null)) {
                 Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);
                 if (ThreadLocalRandom.current().nextInt(10) == 5) {
                     Utilities.damageItemStack(event.getPlayer(), 1, usedHand);

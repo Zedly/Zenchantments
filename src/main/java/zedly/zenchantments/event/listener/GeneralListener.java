@@ -28,7 +28,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
@@ -168,7 +167,9 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        Storage.COMPATIBILITY_ADAPTER.collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                        this.plugin
+                            .getCompatibilityAdapter()
+                            .collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
                 }
@@ -188,7 +189,7 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        Storage.COMPATIBILITY_ADAPTER.collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                        this.plugin.getCompatibilityAdapter().collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
                 }
@@ -214,7 +215,7 @@ public class GeneralListener implements Listener {
             final int entityId = 2000000000 + event.getBlock().getRelative(face).hashCode() % 10000000;
             for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
                 if (player.getWorld().equals(event.getBlock().getWorld())) {
-                    Storage.COMPATIBILITY_ADAPTER.hideShulker(entityId, player);
+                    this.plugin.getCompatibilityAdapter().hideShulker(entityId, player);
                 }
             }
 

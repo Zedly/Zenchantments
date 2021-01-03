@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Storage;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Objects;
@@ -20,7 +19,7 @@ public final class SiphonArrow extends ZenchantedArrow {
     @Override
     public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof LivingEntity
-            && Storage.COMPATIBILITY_ADAPTER.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
+            && this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
         ) {
             Player player = (Player) Objects.requireNonNull(((Projectile) event.getDamager()).getShooter());
             int difference = (int) Math.round(0.17 * this.getLevel() * this.getPower() * event.getDamage());
