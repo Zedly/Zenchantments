@@ -6,12 +6,17 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class LevelArrow extends ZenchantedArrow {
-    public LevelArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+    public LevelArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow entity,
+        final int level,
+        final double power
+    ) {
         super(plugin, entity, level, power);
     }
 
     @Override
-    public void onKill(@NotNull EntityDeathEvent event) {
+    public void onKill(final @NotNull EntityDeathEvent event) {
         this.die(true);
     }
 

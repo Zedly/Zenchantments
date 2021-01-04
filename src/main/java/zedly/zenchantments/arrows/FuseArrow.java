@@ -18,16 +18,16 @@ import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.TNT;
 
 public final class FuseArrow extends ZenchantedArrow {
-    public FuseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+    public FuseArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
         super(plugin, entity);
     }
 
     @Override
     public void onImpact() {
-        Location location = this.getArrow().getLocation();
+        final Location location = this.getArrow().getLocation();
         for (int i = 1; i < 5; i++) {
-            Vector vector = this.getArrow().getVelocity().multiply(0.25 * i);
-            Location hitLocation = new Location(
+            final Vector vector = this.getArrow().getVelocity().multiply(0.25 * i);
+            final Location hitLocation = new Location(
                 location.getWorld(),
                 location.getX() + vector.getX(),
                 location.getY() + vector.getY(),
@@ -38,7 +38,7 @@ public final class FuseArrow extends ZenchantedArrow {
                 continue;
             }
 
-            BlockBreakEvent event = new BlockBreakEvent(
+            final BlockBreakEvent event = new BlockBreakEvent(
                 hitLocation.getBlock(),
                 (Player) Objects.requireNonNull(this.getArrow().getShooter())
             );
@@ -58,14 +58,14 @@ public final class FuseArrow extends ZenchantedArrow {
     }
 
     @Override
-    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         if (!this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             this.die();
             return true;
         }
 
         if (event.getEntity().getType() == EntityType.CREEPER) {
-            Creeper creeper = (Creeper) event.getEntity();
+            final Creeper creeper = (Creeper) event.getEntity();
             this.getPlugin().getCompatibilityAdapter().explodeCreeper(
                 creeper,
                 this.getPlugin()
@@ -74,10 +74,10 @@ public final class FuseArrow extends ZenchantedArrow {
                     .isExplosionBlockBreakEnabled()
             );
         } else if (event.getEntity().getType() == EntityType.MUSHROOM_COW) {
-            MushroomCow mooshroom = (MushroomCow) event.getEntity();
+            final MushroomCow mooshroom = (MushroomCow) event.getEntity();
 
             if (mooshroom.isAdult()) {
-                Location location = event.getEntity().getLocation();
+                final Location location = event.getEntity().getLocation();
 
                 Utilities.displayParticle(location, Particle.EXPLOSION_LARGE, 1, 1f, 0, 0, 0);
                 event.getEntity().remove();

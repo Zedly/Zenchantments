@@ -9,12 +9,12 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.List;
 
 public final class QuickArrow extends ZenchantedArrow {
-    public QuickArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+    public QuickArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
         super(plugin, entity);
     }
 
     @Override
-    public void onLaunch(@NotNull LivingEntity player, @Nullable List<String> lore) {
+    public void onLaunch(final @NotNull LivingEntity player, final @Nullable List<String> lore) {
         this.getArrow().setVelocity(this.getArrow().getVelocity().normalize().multiply(3.5f));
     }
 }

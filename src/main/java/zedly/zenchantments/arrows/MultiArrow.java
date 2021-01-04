@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class MultiArrow extends ZenchantedArrow {
-    public MultiArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+    public MultiArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
         super(plugin, entity);
     }
 
     @Override
-    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
-        LivingEntity entity = (LivingEntity) event.getEntity();
-        int temp = entity.getMaximumNoDamageTicks();
+    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
+        final LivingEntity entity = (LivingEntity) event.getEntity();
+        final int temp = entity.getMaximumNoDamageTicks();
 
         entity.setMaximumNoDamageTicks(0);
         entity.setNoDamageTicks(0);
@@ -28,7 +28,7 @@ public final class MultiArrow extends ZenchantedArrow {
 
     @Override
     public void onImpact() {
-        Arrow arrow = this.getArrow().getWorld().spawnArrow(
+        final Arrow arrow = this.getArrow().getWorld().spawnArrow(
             this.getArrow().getLocation(),
             this.getArrow().getVelocity(),
             (float) (this.getArrow().getVelocity().length() / 10),

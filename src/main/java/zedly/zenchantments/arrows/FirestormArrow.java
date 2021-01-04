@@ -10,7 +10,12 @@ import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class FirestormArrow extends ZenchantedArrow {
-    public FirestormArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+    public FirestormArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow entity,
+        final int level,
+        final double power
+    ) {
         super(plugin, entity, level, power);
     }
 
@@ -26,8 +31,8 @@ public final class FirestormArrow extends ZenchantedArrow {
             this.getLevel()
         );
 
-        double radius = 1 + this.getLevel() * this.getPower();
-        for (Entity entity : this.getArrow().getNearbyEntities(radius, radius, radius)) {
+        final double radius = 1 + this.getLevel() * this.getPower();
+        for (final Entity entity : this.getArrow().getNearbyEntities(radius, radius, radius)) {
             if (!(entity instanceof LivingEntity)
                 || entity.equals(this.getArrow().getShooter())
                 || !this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, (Player) this.getArrow().getShooter(), 0)

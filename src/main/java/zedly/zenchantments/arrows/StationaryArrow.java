@@ -10,20 +10,20 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class StationaryArrow extends ZenchantedArrow {
-    public StationaryArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+    public StationaryArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
         super(plugin, entity);
     }
 
     @Override
-    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         if (this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
-            LivingEntity entity = (LivingEntity) event.getEntity();
+            final LivingEntity entity = (LivingEntity) event.getEntity();
             if (event.getDamage() < entity.getHealth()) {
                 event.setCancelled(true);
 
                 // Imitate Flame arrows after cancelling the original event.
                 if (this.getArrow().getFireTicks() > 0) {
-                    EntityCombustByEntityEvent combustByEntityEvent = new EntityCombustByEntityEvent(this.getArrow(), entity, 5);
+                    final EntityCombustByEntityEvent combustByEntityEvent = new EntityCombustByEntityEvent(this.getArrow(), entity, 5);
 
                     this.getPlugin().getServer().getPluginManager().callEvent(combustByEntityEvent);
 

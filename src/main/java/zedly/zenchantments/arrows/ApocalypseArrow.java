@@ -14,31 +14,33 @@ import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
 public final class ApocalypseArrow extends ZenchantedArrow {
-    public ApocalypseArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+    public ApocalypseArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
         super(plugin, entity);
     }
 
     @Override
     public void onImpact() {
-        WorldConfiguration config = this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(this.getArrow().getWorld());
+        final WorldConfiguration config = this.getPlugin()
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(this.getArrow().getWorld());
 
-        Location clone = this.getArrow().getLocation().clone();
+        final Location clone = this.getArrow().getLocation().clone();
         clone.setY(clone.getY() + 1);
 
         this.getArrow().getWorld().strikeLightning(clone);
 
-        Location[] locations = {this.getArrow().getLocation(), clone};
+        final Location[] locations = { this.getArrow().getLocation(), clone };
         for (int l = 0; l < locations.length; l++) {
-            Location location = locations[l];
-            int finalLs = l;
+            final Location location = locations[l];
+            final int finalLs = l;
             for (int i = 0; i <= 45; i++) {
                 int c = i + 1;
                 this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
                     this.getPlugin(),
                     () -> {
-                        Entity entity = location.getWorld().spawnFallingBlock(location, this.getPlugin().getServer().createBlockData(FIRE));
+                        final Entity entity = location.getWorld().spawnFallingBlock(location, this.getPlugin().getServer().createBlockData(FIRE));
 
-                        Vector vector = location.toVector();
+                        final Vector vector = location.toVector();
                         vector.setY(Math.abs(Math.sin(c)));
 
                         if (finalLs % 2 == 0) {
@@ -51,16 +53,16 @@ public final class ApocalypseArrow extends ZenchantedArrow {
 
                         entity.setVelocity(vector.multiply(1.5));
 
-                        TNTPrimed prime = (TNTPrimed) this.getArrow().getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
+                        final TNTPrimed prime = (TNTPrimed) this.getArrow().getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
                         prime.setFuseTicks(200);
                         prime.setYield(config.isExplosionBlockBreakEnabled() ? 4 : 0);
 
-                        Blaze blaze = (Blaze) this.getArrow().getWorld().spawnEntity(location, BLAZE);
+                        final Blaze blaze = (Blaze) this.getArrow().getWorld().spawnEntity(location, BLAZE);
                         blaze.addPotionEffect(new PotionEffect(ABSORPTION, 150, 100000));
                         blaze.addPotionEffect(new PotionEffect(HARM, 10000, 1));
 
                         if (config.isExplosionBlockBreakEnabled()) {
-                            Entity crystal = this.getArrow().getWorld().spawnEntity(location, EntityType.ENDER_CRYSTAL);
+                            final Entity crystal = this.getArrow().getWorld().spawnEntity(location, EntityType.ENDER_CRYSTAL);
                             entity.addPassenger(prime);
                             crystal.addPassenger(blaze);
                             prime.addPassenger(crystal);

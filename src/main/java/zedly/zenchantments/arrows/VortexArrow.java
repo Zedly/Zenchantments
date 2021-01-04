@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class VortexArrow extends ZenchantedArrow {
-    public VortexArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+    public VortexArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
         super(plugin, entity);
     }
 

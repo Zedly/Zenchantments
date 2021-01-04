@@ -13,14 +13,18 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import static org.bukkit.FireworkEffect.Type.*;
 
 public final class FireworkArrow extends ZenchantedArrow {
-    public FireworkArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level) {
+    public FireworkArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow entity,
+        final int level
+    ) {
         super(plugin, entity, level);
     }
 
     @Override
     public void onImpact() {
-        FireworkEffect.Type[] type = {BALL, BURST, STAR, BALL_LARGE};
-        FireworkEffect.Builder builder = FireworkEffect.builder()
+        final FireworkEffect.Type[] type = { BALL, BURST, STAR, BALL_LARGE };
+        final FireworkEffect.Builder builder = FireworkEffect.builder()
             .withColor(Color.LIME)
             .withColor(Color.RED)
             .withColor(Color.BLUE)
@@ -31,10 +35,10 @@ public final class FireworkArrow extends ZenchantedArrow {
             .trail(true)
             .with(type[(Math.min(this.getLevel(), 4)) - 1]);
 
-        Location location = this.getArrow().getLocation();
-        Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+        final Location location = this.getArrow().getLocation();
+        final Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
 
-        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+        final FireworkMeta fireworkMeta = firework.getFireworkMeta();
         fireworkMeta.setPower(0);
         fireworkMeta.addEffect(builder.build());
 

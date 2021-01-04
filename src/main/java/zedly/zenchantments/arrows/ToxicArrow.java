@@ -13,14 +13,19 @@ import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
 
 public final class ToxicArrow extends ZenchantedArrow {
-    public ToxicArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+    public ToxicArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow entity,
+        final int level,
+        final double power
+    ) {
         super(plugin, entity, level, power);
     }
 
     @Override
     public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         if (this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
-            int value = (int) Math.round(this.getLevel() * this.getPower());
+            final int value = (int) Math.round(this.getLevel() * this.getPower());
 
             Utilities.addPotionEffect((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
             Utilities.addPotionEffect((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
@@ -32,7 +37,7 @@ public final class ToxicArrow extends ZenchantedArrow {
                         ((LivingEntity) event.getEntity()).removePotionEffect(HUNGER);
                         Utilities.addPotionEffect((LivingEntity) event.getEntity(), HUNGER, 60 + 40 * value, 0);
                     },
-                    20 + 60 * value
+                    20 + 60L * value
                 );
 
                 Toxic.HUNGER_PLAYERS.put((Player) event.getEntity(), (1 + value) * 100);

@@ -32,12 +32,17 @@ public final class PotionArrow extends ZenchantedArrow {
         DOLPHINS_GRACE
     };
 
-    public PotionArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+    public PotionArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow entity,
+        final int level,
+        final double power
+    ) {
         super(plugin, entity, level, power);
     }
 
     @Override
-    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         if (ThreadLocalRandom.current().nextInt((int) Math.round(10 / (this.getLevel() * this.getPower() + 1))) == 1) {
             Utilities.addPotionEffect(
                 (LivingEntity) Objects.requireNonNull(this.getArrow().getShooter()),

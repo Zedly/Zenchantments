@@ -10,13 +10,17 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.enchantments.Singularity;
 
 public final class SingularityArrow extends ZenchantedArrow {
-    public SingularityArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level) {
+    public SingularityArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow entity,
+        final int level
+    ) {
         super(plugin, entity, level);
     }
 
     @Override
     public void onImpact() {
-        Location location = this.getArrow().getLocation().clone();
+        final Location location = this.getArrow().getLocation().clone();
 
         Singularity.SINGULARITIES.put(location, true);
 

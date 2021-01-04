@@ -27,23 +27,32 @@ public class ZenchantedArrow {
 
     private int tick;
 
-    public ZenchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level, double power) {
+    public ZenchantedArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow arrow,
+        final int level,
+        final double power
+    ) {
         this.plugin = plugin;
         this.arrow = arrow;
         this.level = level;
         this.power = power;
     }
 
-    public ZenchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow, int level) {
+    public ZenchantedArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow arrow, final int level) {
         this(plugin, arrow, level, 1);
     }
 
-    public ZenchantedArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow arrow) {
+    public ZenchantedArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow arrow) {
         this(plugin, arrow, 0);
     }
 
-    public static void putArrow(@NotNull Arrow arrow, @NotNull ZenchantedArrow zenchantedArrow, @NotNull Player player) {
-        Set<ZenchantedArrow> arrows;
+    public static void putArrow(
+        final @NotNull Arrow arrow,
+        final @NotNull ZenchantedArrow zenchantedArrow,
+        final @NotNull Player player
+    ) {
+        final Set<ZenchantedArrow> arrows;
 
         if (ADVANCED_PROJECTILES.containsKey(arrow)) {
             arrows = ADVANCED_PROJECTILES.get(arrow);
@@ -57,32 +66,32 @@ public class ZenchantedArrow {
     }
 
     @NotNull
-    public ZenchantmentsPlugin getPlugin() {
+    public final ZenchantmentsPlugin getPlugin() {
         return this.plugin;
     }
 
     @NotNull
-    public Arrow getArrow() {
+    public final Arrow getArrow() {
         return this.arrow;
     }
 
-    public int getLevel() {
+    public final int getLevel() {
         return this.level;
     }
 
-    public double getPower() {
+    public final double getPower() {
         return this.power;
     }
 
-    public int getTick() {
+    public final int getTick() {
         return this.tick;
     }
 
-    protected void die() {
+    protected final void die() {
         this.die(true);
     }
 
-    protected void die(boolean removeArrow) {
+    protected final void die(boolean removeArrow) {
         this.onDie();
 
         if (removeArrow) {
@@ -104,43 +113,39 @@ public class ZenchantedArrow {
         this.onTick();
     }
 
-    public void onLaunch(@NotNull LivingEntity player, @Nullable List<String> lore) {
-    }
+    public void onLaunch(final @NotNull LivingEntity player, final @Nullable List<String> lore) { }
 
-    protected void onTick() {
-    }
+    protected void onTick() { }
 
     public void onImpact() {
         this.die(true);
     }
 
-    public void onKill(@NotNull EntityDeathEvent event) {
-    }
+    public void onKill(final @NotNull EntityDeathEvent event) { }
 
-    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         this.onImpact();
         return true;
     }
 
-    protected void onDie() {
-    }
+    protected void onDie() { }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
     public static void scanAndReap() {
         synchronized (ADVANCED_PROJECTILES) {
-            for (Arrow arrow : ADVANCED_PROJECTILES.keySet()) {
+            for (final Arrow arrow : ADVANCED_PROJECTILES.keySet()) {
                 if (arrow.isDead()) {
                     DIE_QUEUE.addAll(ADVANCED_PROJECTILES.get(arrow));
                 }
 
-                for (ZenchantedArrow zenchantedArrow : ADVANCED_PROJECTILES.get(arrow)) {
+                for (final ZenchantedArrow zenchantedArrow : ADVANCED_PROJECTILES.get(arrow)) {
                     if (zenchantedArrow.getTick() > 600) {
                         DIE_QUEUE.add(zenchantedArrow);
                     }
                 }
             }
 
-            for (ZenchantedArrow zenchantedArrow : DIE_QUEUE) {
+            for (final ZenchantedArrow zenchantedArrow : DIE_QUEUE) {
                 zenchantedArrow.die();
             }
 

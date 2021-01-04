@@ -12,16 +12,21 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Objects;
 
 public final class SiphonArrow extends ZenchantedArrow {
-    public SiphonArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity, int level, double power) {
+    public SiphonArrow(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Arrow entity,
+        final int level,
+        final double power
+    ) {
         super(plugin, entity, level, power);
     }
 
     @Override
-    public boolean onImpact(@NotNull EntityDamageByEntityEvent event) {
+    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof LivingEntity
             && this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
         ) {
-            Player player = (Player) Objects.requireNonNull(((Projectile) event.getDamager()).getShooter());
+            final Player player = (Player) Objects.requireNonNull(((Projectile) event.getDamager()).getShooter());
             int difference = (int) Math.round(0.17 * this.getLevel() * this.getPower() * event.getDamage());
             while (difference > 0) {
                 if (player.getHealth() <= player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {

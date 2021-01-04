@@ -16,33 +16,35 @@ import java.util.List;
 import static org.bukkit.Material.AIR;
 
 public final class MissileArrow extends ZenchantedArrow {
-    public MissileArrow(@NotNull ZenchantmentsPlugin plugin, @NotNull Arrow entity) {
+    public MissileArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
         super(plugin, entity);
     }
 
     @Override
-    public void onLaunch(@NotNull LivingEntity player, @Nullable List<String> lore) {
-        WorldConfiguration config = this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld());
+    public void onLaunch(final @NotNull LivingEntity player, final @Nullable List<String> lore) {
+        final WorldConfiguration config = this.getPlugin()
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(player.getWorld());
 
-        Location target = Utilities.getCenter(player.getTargetBlock(null, 220));
+        final Location target = Utilities.getCenter(player.getTargetBlock(null, 220));
         target.setY(target.getY() + .5);
 
-        Location playerLocation = player.getLocation();
+        final Location playerLocation = player.getLocation();
         playerLocation.setY(playerLocation.getY() + 1.1);
 
-        double distance = target.distance(playerLocation);
+        final double distance = target.distance(playerLocation);
 
         for (int i = 9; i <= ((int) (distance * 5) + 9); i++) {
-            int finalI = i;
+            final int finalI = i;
             this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
                 this.getPlugin(),
                 () -> {
-                    Location location1 = target.clone();
+                    final Location location1 = target.clone();
                     location1.setX(playerLocation.getX() + (finalI * ((target.getX() - playerLocation.getX()) / (distance * 5))));
                     location1.setY(playerLocation.getY() + (finalI * ((target.getY() - playerLocation.getY()) / (distance * 5))));
                     location1.setZ(playerLocation.getZ() + (finalI * ((target.getZ() - playerLocation.getZ()) / (distance * 5))));
 
-                    Location location2 = target.clone();
+                    final Location location2 = target.clone();
                     location2.setX(playerLocation.getX() + ((finalI + 10) * ((target.getX() - playerLocation.getX()) / (distance * 5))));
                     location2.setY(playerLocation.getY() + ((finalI + 10) * ((target.getY() - playerLocation.getY()) / (distance * 5))));
                     location2.setZ(playerLocation.getZ() + ((finalI + 10) * ((target.getZ() - playerLocation.getZ()) / (distance * 5))));
