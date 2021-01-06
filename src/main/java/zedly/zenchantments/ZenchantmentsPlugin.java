@@ -29,15 +29,22 @@ import static org.bukkit.Material.WATER;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
 public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
+    private static ZenchantmentsPlugin instance;
+
     private final GlobalConfiguration        globalConfiguration        = new GlobalConfiguration(this);
     private final WorldConfigurationProvider worldConfigurationProvider = new WorldConfigurationProvider(this);
     private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
     private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
     private final CompatibilityAdapter       compatibilityAdapter       = new CompatibilityAdapter(this);
 
+    @NotNull
+    public static ZenchantmentsPlugin getInstance() {
+        return instance;
+    }
+
     @Override
     public void onEnable() {
-        Utilities.setPlugin(this);
+        ZenchantmentsPlugin.instance = this;
 
         this.globalConfiguration.loadGlobalConfiguration();
         this.worldConfigurationProvider.loadWorldConfigurations();
