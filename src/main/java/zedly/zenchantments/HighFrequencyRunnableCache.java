@@ -2,20 +2,13 @@ package zedly.zenchantments;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/**
- * @author wicden
- * <p>
- * Helper class for efficient execution of fast continuous item effects.
- * This class scans the list of online players for effects to be performed and keeps them
- * in a cache where the executions are repeated without re-scanning player inventory.
- * Inventory scans are also staggered across the configured time period, smoothing out lag spikes.
- */
 public class HighFrequencyRunnableCache implements Runnable {
     private final int                                             refreshPeriodTicks;
     private final BiConsumer<Player, Consumer<Supplier<Boolean>>> cacheFeeder;
@@ -25,15 +18,9 @@ public class HighFrequencyRunnableCache implements Runnable {
 
     private int feedFraction = 0;
 
-    /**
-     * Create a cache for continuous player-based effects
-     *
-     * @param cacheFeeder        a function that determines the set of tasks to be executed for each player and inserts them into the provided Collection
-     * @param refreshPeriodTicks the number of ticks over which spread out the player sweep
-     */
     public HighFrequencyRunnableCache(
-        BiConsumer<Player, Consumer<Supplier<Boolean>>> cacheFeeder,
-        int refreshPeriodTicks
+        final @NotNull BiConsumer<Player, Consumer<Supplier<Boolean>>> cacheFeeder,
+        final int refreshPeriodTicks
     ) {
         this.cacheFeeder = cacheFeeder;
         this.refreshPeriodTicks = refreshPeriodTicks;
@@ -47,19 +34,19 @@ public class HighFrequencyRunnableCache implements Runnable {
             this.players.clear();
             this.players.addAll(Bukkit.getOnlinePlayers());
 
-            ArrayList<Supplier<Boolean>> cache2 = this.cache0;
+            final ArrayList<Supplier<Boolean>> cache2 = this.cache0;
 
             this.cache0 = cache1;
             this.cache1 = cache2;
             this.cache1.clear();
         }
 
-        int listStart = this.players.size() * this.feedFraction / this.refreshPeriodTicks;
-        int listEnd = this.players.size() * (this.feedFraction + 1) / this.refreshPeriodTicks;
+        final int listStart = this.players.size() * this.feedFraction / this.refreshPeriodTicks;
+        final int listEnd = this.players.size() * (this.feedFraction + 1) / this.refreshPeriodTicks;
 
 
         for (int i = listStart; i < listEnd; i++) {
-            Player player = this.players.get(i);
+            final Player player = this.players.get(i);
 
             if (!player.isOnline()) {
                 continue;
