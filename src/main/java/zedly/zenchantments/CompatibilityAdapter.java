@@ -1,6 +1,10 @@
 package zedly.zenchantments;
 
-import org.bukkit.*;
+import net.minecraft.server.v1_16_R3.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -8,15 +12,23 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftCreeper;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftSheep;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.*;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -24,7 +36,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
@@ -115,18 +131,21 @@ public class CompatibilityAdapter {
     }
 
     public void collectExp(final @NotNull Player player, final int amount) {
-        player.giveExp(amount);
+        final EntityExperienceOrb orb = new EntityExperienceOrb(
+            ((CraftWorld) player.getWorld()).getHandle(),
+            player.getLocation().getX(),
+            player.getLocation().getY(),
+            player.getLocation().getZ(),
+            amount
+        );
+        final EntityHuman human = ((CraftPlayer) player).getHandle();
+        orb.pickup(human); // XP Orb Entity handles mending. Don't blame me, I didn't code it.
+        human.bu = 0; // Reset XP Pickup Timer.
     }
 
     public boolean breakBlock(final @NotNull Block block, final @NotNull Player player) {
-        BlockBreakEvent evt = new BlockBreakEvent(block, player);
-        Bukkit.getPluginManager().callEvent(evt);
-        if (!evt.isCancelled()) {
-            block.breakNaturally(player.getInventory().getItemInMainHand());
-            damageTool(player, 1, true);
-            return true;
-        }
-        return false;
+        final EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 
     public boolean placeBlock(
@@ -202,26 +221,16 @@ public class CompatibilityAdapter {
         final @NotNull Player player,
         final boolean mainHand
     ) {
-        if ((target instanceof Sheep && !((Sheep) target).isSheared()) || target instanceof MushroomCow) {
-            PlayerShearEntityEvent evt = new PlayerShearEntityEvent(player, target);
-            Bukkit.getPluginManager().callEvent(evt);
-            if (!evt.isCancelled()) {
-                if (target instanceof Sheep) {
-                    Sheep sheep = (Sheep) target;
-                    sheep.getLocation().getWorld().dropItem(
-                        sheep.getLocation(),
-                        new ItemStack(MaterialList.WOOL.get(sheep.getColor().ordinal()), ThreadLocalRandom.current().nextInt(3) + 1)
-                    );
-                    ((Sheep) target).setSheared(true);
-
-                    // TODO: Apply damage to tool
-                } else if (target instanceof MushroomCow) {
-                    MushroomCow cow = (MushroomCow) target;
-                    // TODO: DO
-                }
-                return true;
-            }
+        if (target instanceof CraftSheep) {
+            final EntitySheep entitySheep = ((CraftSheep) target).getHandle();
+            final EnumInteractionResult result = entitySheep.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+            return result == EnumInteractionResult.SUCCESS;
+        } else if (target instanceof CraftMushroomCow) {
+            final EntityMushroomCow entityMushroomCow = ((CraftMushroomCow) target).getHandle();
+            final EnumInteractionResult result = entityMushroomCow.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+            return result == EnumInteractionResult.SUCCESS;
         }
+
         return false;
     }
 
@@ -299,23 +308,8 @@ public class CompatibilityAdapter {
     }
 
     public boolean explodeCreeper(final @NotNull Creeper creeper, final boolean damage) {
-        final Location location = creeper.getLocation();
-        final float power;
-
-        if (creeper.isPowered()) {
-            power = 6f;
-        } else {
-            power = 3.1f;
-        }
-
-        if (damage) {
-            creeper.getWorld().createExplosion(location, power);
-        } else {
-            creeper.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), power, false, false);
-        }
-
-        creeper.remove();
-
+        final EntityCreeper nmsCreeper = ((CraftCreeper) creeper).getHandle();
+        nmsCreeper.explode();
         return true;
     }
 
@@ -337,13 +331,14 @@ public class CompatibilityAdapter {
     }
 
     public boolean showShulker(final @NotNull Block blockToHighlight, final int entityId, final @NotNull Player player) {
-        // This cannot be done without NMS
-        return false;
+        return showHighlightBlock(blockToHighlight, player);
     }
 
     public boolean hideShulker(final int entityId, final @NotNull Player player) {
-        // This cannot be done without NMS
-        return false;
+        final PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityId);
+        final EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        ep.playerConnection.networkManager.sendPacket(packet);
+        return true;
     }
 
     public Entity spawnGuardian(final @NotNull Location location, final boolean elderGuardian) {
@@ -567,5 +562,116 @@ public class CompatibilityAdapter {
         );
 
         return true;
+    }
+
+    private boolean showHighlightBlock(final @NotNull Block block, final @NotNull Player player) {
+        int entityId = 2000000000 + (block.hashCode()) % 10000000;
+        return showHighlightBlock(block.getX(), block.getY(), block.getZ(), entityId, player);
+    }
+
+    private boolean showHighlightBlock(
+        final int x,
+        final int y,
+        final int z,
+        final int entityId,
+        final @NotNull Player player
+    ) {
+        final PacketPlayOutSpawnEntityLiving spawnPacket = generateShulkerSpawnPacket(x, y, z, entityId);
+        final PacketPlayOutEntityMetadata metadataPacket = generateShulkerGlowPacket(entityId);
+
+        final EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        ep.playerConnection.networkManager.sendPacket(spawnPacket);
+        ep.playerConnection.networkManager.sendPacket(metadataPacket);
+        return true;
+    }
+
+    @NotNull
+    private static PacketPlayOutEntityMetadata generateShulkerGlowPacket(final int entityId) {
+        final PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
+        final Class<? extends PacketPlayOutEntityMetadata> clazz = packet.getClass();
+
+        try {
+            Field field = clazz.getDeclaredField("a");
+            field.setAccessible(true);
+            field.setInt(packet, entityId);
+
+            // Build data structure for Entity Metadata. Requires an index, a type and a value.
+            // As of 1.15.2, an invisible + glowing LivingEntity is set by Index 0 Type Byte Value 0x60
+            final DataWatcherSerializer<Byte> dws = DataWatcherRegistry.a; // Type (Byte)
+            final DataWatcherObject<Byte> dwo = new DataWatcherObject<>(0, dws); // Index (0)
+            final DataWatcher.Item<Byte> dwi = new DataWatcher.Item<>(dwo, (byte) 0x60); // Value (0x60)
+            final List<DataWatcher.Item<Byte>> list = new ArrayList<>();
+            list.add(dwi); // Pack it in a list
+
+            field = clazz.getDeclaredField("b");
+            field.setAccessible(true);
+            field.set(packet, list);
+        } catch (final NoSuchFieldException | IllegalAccessException ex) {
+            // Realistically, provided the plugin is running on the correct server version,
+            // this should never happen.
+
+            // Still, this should probably be improved.
+            // TODO: pls
+            ex.printStackTrace();
+            return null;
+        }
+        return packet;
+    }
+
+    @NotNull
+    private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(
+        final int x,
+        final int y,
+        final int z,
+        final int entityId
+    ) {
+        final PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving();
+        final int mobTypeId = IRegistry.ENTITY_TYPE.a(EntityTypes.SHULKER);
+        final Class<? extends PacketPlayOutSpawnEntityLiving> clazz = packet.getClass();
+
+        try {
+            Field field = clazz.getDeclaredField("a");
+            field.setAccessible(true);
+            field.setInt(packet, entityId);
+            field = clazz.getDeclaredField("b");
+            field.setAccessible(true);
+            field.set(packet, new UUID(0xFF00FF00FF00FF00L, 0xFF00FF00FF00FF00L));
+            field = clazz.getDeclaredField("c");
+            field.setAccessible(true);
+            field.setInt(packet, mobTypeId);
+            field = clazz.getDeclaredField("d");
+            field.setAccessible(true);
+            field.setDouble(packet, x + 0.5);
+            field = clazz.getDeclaredField("e");
+            field.setAccessible(true);
+            field.setDouble(packet, y);
+            field = clazz.getDeclaredField("f");
+            field.setAccessible(true);
+            field.setDouble(packet, z + 0.5);
+            field = clazz.getDeclaredField("g");
+            field.setAccessible(true);
+            field.setInt(packet, 0);
+            field = clazz.getDeclaredField("h");
+            field.setAccessible(true);
+            field.setInt(packet, 0);
+            field = clazz.getDeclaredField("i");
+            field.setAccessible(true);
+            field.setInt(packet, 0);
+            field = clazz.getDeclaredField("j");
+            field.setAccessible(true);
+            field.setByte(packet, (byte) 0);
+            field = clazz.getDeclaredField("k");
+            field.setAccessible(true);
+            field.setByte(packet, (byte) 0);
+            field = clazz.getDeclaredField("l");
+            field.setAccessible(true);
+            field.setByte(packet, (byte) 0);
+        } catch (final NoSuchFieldException | IllegalAccessException ex) {
+            // TODO: As described in generateShulkerGlowPacket(int).
+            ex.printStackTrace();
+            return null;
+        }
+
+        return packet;
     }
 }
