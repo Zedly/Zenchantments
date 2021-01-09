@@ -33,7 +33,6 @@ import java.util.function.Supplier;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.entity.EntityType.*;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
-import static org.bukkit.inventory.EquipmentSlot.HAND;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.Tool.BOW;
 
@@ -59,12 +58,11 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-        final boolean usedHand = Utilities.isMainHand(HAND);
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand),
-            (ench, level) -> ench.onBlockBreak(event, level, usedHand)
+            Utilities.getUsedItemStack(player, true),
+            (ench, level) -> ench.onBlockBreak(event, level, true)
         );
     }
 
@@ -112,12 +110,11 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-        final boolean usedHand = Utilities.isMainHand(HAND);
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand),
-            (ench, level) -> ench.onEntityInteract(event, level, usedHand)
+            Utilities.getUsedItemStack(player, true),
+            (ench, level) -> ench.onEntityInteract(event, level, true)
         );
     }
 
@@ -151,13 +148,13 @@ public final class ZenchantmentListener implements Listener {
 
         if (event.getDamager() instanceof Player) {
             final Player player = (Player) event.getDamager();
-            final boolean usedHand = Utilities.isMainHand(HAND);
+
             if (event.getEntity() instanceof LivingEntity) {
-                for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, usedHand)) {
+                for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
                     this.applyZenchantmentForTool(
                         player,
                         usedStack,
-                        (ench, level) -> ench.onEntityHit(event, level, usedHand)
+                        (ench, level) -> ench.onEntityHit(event, level, true)
                     );
                 }
             }

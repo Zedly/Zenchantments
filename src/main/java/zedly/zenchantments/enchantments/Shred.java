@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.bukkit.Material.*;
-import static org.bukkit.inventory.EquipmentSlot.HAND;
-import static zedly.zenchantments.MaterialList.*;
+import static zedly.zenchantments.MaterialList.SHRED_PICKS;
+import static zedly.zenchantments.MaterialList.SHRED_SHOVELS;
 
 public final class Shred extends Zenchantment {
     public static final String KEY = "shred";
@@ -143,15 +143,13 @@ public final class Shred extends Zenchantment {
                     return;
                 }
 
-                final boolean eventUsedHand = Utilities.isMainHand(HAND);
-
                 Zenchantment.applyForTool(
                     player,
                     this.getPlugin().getPlayerDataProvider(),
                     this.getPlugin().getGlobalConfiguration(),
                     this.getPlugin().getWorldConfigurationProvider(),
-                    Utilities.getUsedItemStack(player, eventUsedHand),
-                    (ench, level) -> ench.onBlockBreak(event, level, eventUsedHand)
+                    Utilities.getUsedItemStack(player, true),
+                    (ench, level) -> ench.onBlockBreak(event, level, true)
                 );
 
                 if (event.isCancelled()) {
