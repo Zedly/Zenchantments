@@ -73,7 +73,7 @@ public final class ZenchantmentListener implements Listener {
             || !MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
         ) {
             final Player player = event.getPlayer();
-            final boolean isMainHand = Utilities.isMainHand(event.getHand());
+            final boolean isMainHand = event.getHand() == EquipmentSlot.HAND;
 
             for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
                 this.applyZenchantmentForTool(
@@ -91,7 +91,7 @@ public final class ZenchantmentListener implements Listener {
             || MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
         ) {
             final Player player = event.getPlayer();
-            final boolean isMainHand = Utilities.isMainHand(event.getHand());
+            final boolean isMainHand = event.getHand() == EquipmentSlot.HAND;
 
             for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
                 this.applyZenchantmentForTool(
@@ -131,7 +131,8 @@ public final class ZenchantmentListener implements Listener {
             && Tool.fromItemStack(inventory.getItemInMainHand()) != BOW
             ? EquipmentSlot.OFF_HAND
             : EquipmentSlot.HAND;
-        final boolean usedHand = Utilities.isMainHand(slot);
+
+        final boolean usedHand = slot == EquipmentSlot.HAND;
 
         this.applyZenchantmentForTool(
             player,
@@ -195,13 +196,11 @@ public final class ZenchantmentListener implements Listener {
         final PlayerInventory inventory = player.getInventory();
         final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
         final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        final boolean usedHand = Utilities.isMainHand(
-            main != Tool.ROD && off == Tool.ROD ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
-        );
+        final EquipmentSlot usedHand = main != Tool.ROD && off == Tool.ROD ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand == EquipmentSlot.HAND),
             (ench, level) -> ench.onPlayerFish(event, level, true)
         );
     }
@@ -232,13 +231,11 @@ public final class ZenchantmentListener implements Listener {
         final PlayerInventory inventory = player.getInventory();
         final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
         final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        final boolean usedHand = Utilities.isMainHand(
-            main != Tool.SHEAR && off == Tool.SHEAR ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
-        );
+        final EquipmentSlot usedHand = main != Tool.SHEAR && off == Tool.SHEAR ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand == EquipmentSlot.HAND),
             (ench, level) -> ench.onShear(event, level, true)
         );
     }
@@ -253,13 +250,11 @@ public final class ZenchantmentListener implements Listener {
         final PlayerInventory inventory = player.getInventory();
         final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
         final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        boolean usedHand = Utilities.isMainHand(
-            main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
-        );
+        final EquipmentSlot usedHand = main != BOW && off == BOW ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand),
+            Utilities.getUsedItemStack(player, usedHand == EquipmentSlot.HAND),
             (ench, level) -> ench.onEntityShootBow(event, level, true)
         );
     }
@@ -299,14 +294,13 @@ public final class ZenchantmentListener implements Listener {
         final PlayerInventory inventory = player.getInventory();
         final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
         final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        final boolean usedHand = Utilities.isMainHand(
-            main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND
-        );
+        final EquipmentSlot usedHand = main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
+        final boolean isMainHand = usedHand == EquipmentSlot.HAND;
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand),
-            (ench, level) -> ench.onProjectileLaunch(event, level, usedHand)
+            Utilities.getUsedItemStack(player, isMainHand),
+            (ench, level) -> ench.onProjectileLaunch(event, level, isMainHand)
         );
     }
 

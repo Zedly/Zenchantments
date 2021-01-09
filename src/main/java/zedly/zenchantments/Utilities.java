@@ -7,7 +7,6 @@ import org.bukkit.block.data.Levelled;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -49,11 +48,6 @@ public final class Utilities {
 
     private Utilities() {
         throw new IllegalStateException();
-    }
-
-    // Maybe inline usages of this?
-    public static boolean isMainHand(final @NotNull EquipmentSlot preferred) {
-        return preferred == EquipmentSlot.HAND;
     }
 
     @NotNull
