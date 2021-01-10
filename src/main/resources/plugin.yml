@@ -1,36 +1,41 @@
-name: Zenchantments
-main: zedly.zenchantments.ZenchantmentsPlugin
-api-version: 1.14
-version: 1.6.2
+name: 'Zenchantments'
+version: '16.4.0'
+description: 'Adds 70+ new enchantments to the game.'
+author: 'Zedly'
+
+main: 'zedly.zenchantments.ZenchantmentsPlugin'
+api-version: '1.16'
+
 commands:
   ench:
-    description: Gives basic access; /ench help.
-    usage: /ench
+    description: 'Access the plugin. Use /ench help for assistance.'
+    usage: '/<command>'
     default: true
+
 permissions:
   zenchantments.enchant.get:
-    description: Allows for obtaining custom enchantments
+    description: 'Allows a player to obtain Zenchantments.'
     default: true
   zenchantments.enchant.use:
-    description: Allows for use of custom enchantments
+    description: 'Allows a player to use Zenchantments.'
     default: true
   zenchantments.command.enchant:
-    description: Enchants the item in hand
+    description: 'Enchants the item in the user''s hand.'
     default: false
   zenchantments.command.give:
-    description: Allows for giving new, enchanted items to selected players
+    description: 'Allows the user to give new, Zenchanted items to selected players.'
     default: false
   zenchantments.command.info:
-    description: Returns descriptions of the enchantments in hand
+    description: 'Returns descriptions of the Zenchantments in the user''s hand.'
     default: true
   zenchantments.command.list:
-    description: Returns a list of enchantments
+    description: 'Returns a list of Zenchantments.'
     default: true
   zenchantments.command.onoff:
-    description: Enables or disables certain custom enchantments for the user
+    description: 'Enables or disables certain Zenchantments for the user.'
     default: true
   zenchantment.command.reload:
-    description: Reloads the plugin config file
+    description: 'Reloads the plugin configuration file.'
     default: false
   zenchantments.*:
     children:
