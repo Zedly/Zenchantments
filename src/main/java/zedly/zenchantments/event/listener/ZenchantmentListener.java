@@ -1,7 +1,6 @@
 package zedly.zenchantments.event.listener;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -354,9 +353,8 @@ public final class ZenchantmentListener implements Listener {
     // Fast Scan of Player's Armor and their hand to register enchantments
     @EffectTask(Frequency.HIGH)
     public static void scanPlayers(final @NotNull ZenchantmentsPlugin plugin) {
-        for (final Player player : Bukkit.getOnlinePlayers()) {
-            // TODO: Replace this.
-            PlayerData.matchPlayer(player).tick();
+        for (final Player player : plugin.getServer().getOnlinePlayers()) {
+            plugin.getPlayerDataProvider().getDataForPlayer(player).tick();
         }
 
         // Sweeping scan over the player list for armor enchants
