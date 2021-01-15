@@ -131,7 +131,7 @@ public class ZenchantedArrow {
     protected void onDie() { }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
-    public static void scanAndReap() {
+    public static void scanAndReap(final @NotNull ZenchantmentsPlugin plugin) {
         synchronized (ADVANCED_PROJECTILES) {
             for (final Arrow arrow : ADVANCED_PROJECTILES.keySet()) {
                 if (arrow.isDead()) {
@@ -154,7 +154,7 @@ public class ZenchantedArrow {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void doTick() {
+    public static void doTick(final @NotNull ZenchantmentsPlugin plugin) {
         synchronized (ADVANCED_PROJECTILES) {
             ADVANCED_PROJECTILES.values().forEach((set) -> set.forEach(ZenchantedArrow::tick));
         }

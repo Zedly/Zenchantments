@@ -353,7 +353,7 @@ public final class ZenchantmentListener implements Listener {
 
     // Fast Scan of Player's Armor and their hand to register enchantments
     @EffectTask(Frequency.HIGH)
-    public static void scanPlayers() {
+    public static void scanPlayers(final @NotNull ZenchantmentsPlugin plugin) {
         for (final Player player : Bukkit.getOnlinePlayers()) {
             // TODO: Replace this.
             PlayerData.matchPlayer(player).tick();

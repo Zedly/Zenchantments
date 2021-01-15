@@ -52,6 +52,11 @@ public class TaskRunner implements Runnable {
                     continue;
                 }
 
+                if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != ZenchantmentsPlugin.class) {
+                    this.plugin.getLogger().warning("EffectTask method doesn't have one parameter type of ZenchantmentsPlugin.");
+                    continue;
+                }
+
                 if (method.getAnnotation(EffectTask.class).value() == frequency) {
                     tasks.add(method);
                 }
@@ -70,7 +75,7 @@ public class TaskRunner implements Runnable {
     public void run() {
         for (Method method : this.tasks) {
             try {
-                method.invoke(null);
+                method.invoke(null, this.plugin);
             } catch (IllegalAccessException | InvocationTargetException ex) {
                 this.plugin.getLogger().log(
                     Level.SEVERE,

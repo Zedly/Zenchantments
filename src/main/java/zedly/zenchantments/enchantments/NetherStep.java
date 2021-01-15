@@ -86,7 +86,7 @@ public final class NetherStep extends Zenchantment {
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
-    public static void updateBlocks() {
+    public static void updateBlocks(final @NotNull ZenchantmentsPlugin plugin) {
         Iterator<Location> iterator = FrozenStep.FROZEN_LOCATIONS.keySet().iterator();
         while (iterator.hasNext()) {
             Location location = iterator.next();

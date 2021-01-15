@@ -85,7 +85,7 @@ public final class Tracer extends Zenchantment {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void moveArrows() {
+    public static void moveArrows(final @NotNull ZenchantmentsPlugin plugin) {
         for (Arrow arrow : TRACERS.keySet()) {
             Entity close = null;
             double distance = 100;

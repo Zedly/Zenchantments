@@ -96,7 +96,7 @@ public final class MysteryFish extends Zenchantment {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void moveGuardians() {
+    public static void moveGuardians(final @NotNull ZenchantmentsPlugin plugin) {
         Iterator<Guardian> iterator = GUARDIANS_AND_PLAYERS.keySet().iterator();
         while (iterator.hasNext()) {
             Guardian guardian = iterator.next();

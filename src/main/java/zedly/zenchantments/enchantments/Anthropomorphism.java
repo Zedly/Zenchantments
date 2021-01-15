@@ -81,7 +81,7 @@ public final class Anthropomorphism extends Zenchantment {
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
-    public static void removeOldBlocks() {
+    public static void removeOldBlocks(final @NotNull ZenchantmentsPlugin plugin) {
         Iterator<FallingBlock> iterator = IDLE_BLOCKS.keySet().iterator();
         while (iterator.hasNext()) {
             if (iterator.next().isDead()) {
@@ -98,7 +98,7 @@ public final class Anthropomorphism extends Zenchantment {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void moveBlocks() {
+    public static void moveBlocks(final @NotNull ZenchantmentsPlugin plugin) {
         // Move aggressive Anthropomorphism Blocks towards a target & attack.
         Iterator<FallingBlock> iterator = ATTACK_BLOCKS.keySet().iterator();
         while (iterator.hasNext()) {

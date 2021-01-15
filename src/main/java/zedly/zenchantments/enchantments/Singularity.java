@@ -86,7 +86,7 @@ public final class Singularity extends Zenchantment {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void singularityPhysics() {
+    public static void singularityPhysics(final @NotNull ZenchantmentsPlugin plugin) {
         for (Location location : SINGULARITIES.keySet()) {
             for (Entity entity : location.getWorld().getNearbyEntities(location, 10, 10, 10)) {
                 if (entity instanceof Player) {

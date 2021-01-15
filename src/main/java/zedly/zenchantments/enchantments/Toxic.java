@@ -113,7 +113,7 @@ public final class Toxic extends Zenchantment {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void hunger() {
+    public static void hunger(final @NotNull ZenchantmentsPlugin plugin) {
         Iterator<Player> iterator = HUNGER_PLAYERS.keySet().iterator();
         while (iterator.hasNext()) {
             Player player = iterator.next();
