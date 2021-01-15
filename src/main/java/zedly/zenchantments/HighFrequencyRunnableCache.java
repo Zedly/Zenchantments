@@ -1,27 +1,28 @@
 package zedly.zenchantments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class HighFrequencyRunnableCache implements Runnable {
-    private final int                                             refreshPeriodTicks;
-    private final BiConsumer<Player, Consumer<Supplier<Boolean>>> cacheFeeder;
-    private final ArrayList<Player>                               players = new ArrayList<>();
-    private       ArrayList<Supplier<Boolean>>                    cache0  = new ArrayList<>();
-    private       ArrayList<Supplier<Boolean>>                    cache1  = new ArrayList<>();
+    private final ZenchantmentsPlugin          plugin;
+    private final ZenchantmentsBiConsumer      cacheFeeder;
+    private final int                          refreshPeriodTicks;
+    private final ArrayList<Player>            players = new ArrayList<>();
+    private       ArrayList<Supplier<Boolean>> cache0  = new ArrayList<>();
+    private       ArrayList<Supplier<Boolean>> cache1  = new ArrayList<>();
 
     private int feedFraction = 0;
 
     public HighFrequencyRunnableCache(
-        final @NotNull BiConsumer<Player, Consumer<Supplier<Boolean>>> cacheFeeder,
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull ZenchantmentsBiConsumer cacheFeeder,
         final int refreshPeriodTicks
     ) {
+        this.plugin = plugin;
         this.cacheFeeder = cacheFeeder;
         this.refreshPeriodTicks = refreshPeriodTicks;
     }
@@ -32,7 +33,7 @@ public class HighFrequencyRunnableCache implements Runnable {
 
         if (this.feedFraction == 0) {
             this.players.clear();
-            this.players.addAll(Bukkit.getOnlinePlayers());
+            this.players.addAll(this.plugin.getServer().getOnlinePlayers());
 
             final ArrayList<Supplier<Boolean>> cache2 = this.cache0;
 
@@ -44,7 +45,6 @@ public class HighFrequencyRunnableCache implements Runnable {
         final int listStart = this.players.size() * this.feedFraction / this.refreshPeriodTicks;
         final int listEnd = this.players.size() * (this.feedFraction + 1) / this.refreshPeriodTicks;
 
-
         for (int i = listStart; i < listEnd; i++) {
             final Player player = this.players.get(i);
 
@@ -52,9 +52,14 @@ public class HighFrequencyRunnableCache implements Runnable {
                 continue;
             }
 
-            this.cacheFeeder.accept(player, this.cache1::add);
+            this.cacheFeeder.accept(this.plugin, player, this.cache1::add);
         }
 
         this.feedFraction = (this.feedFraction + 1) % this.refreshPeriodTicks;
+    }
+
+    @FunctionalInterface
+    public interface ZenchantmentsBiConsumer {
+        void accept(@NotNull ZenchantmentsPlugin plugin, @NotNull Player player, @NotNull Consumer<Supplier<Boolean>> consumer);
     }
 }

@@ -36,7 +36,11 @@ import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 import static zedly.zenchantments.Tool.BOW;
 
 public final class ZenchantmentListener implements Listener {
-    private static final HighFrequencyRunnableCache CACHE = new HighFrequencyRunnableCache(ZenchantmentListener::feedEnchCache, 5);
+    private static final HighFrequencyRunnableCache CACHE = new HighFrequencyRunnableCache(
+        ZenchantmentsPlugin.getInstance(),
+        ZenchantmentListener::feedEnchCache,
+        5
+    );
 
     private static final EntityType[] ENTITY_INTERACT_BAD_ENTITIES = { HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER };
 
@@ -362,7 +366,11 @@ public final class ZenchantmentListener implements Listener {
     }
 
     // Implicitly scheduled MEDIUM_HIGH due to being called by HighFrequencyEnchCache with interval 5
-    private static void feedEnchCache(final @NotNull Player player, final @NotNull Consumer<Supplier<Boolean>> consumer) {
+    private static void feedEnchCache(
+        final @NotNull ZenchantmentsPlugin plugin,
+        final @NotNull Player player,
+        final @NotNull Consumer<Supplier<Boolean>> consumer
+    ) {
         final PlayerInventory inventory = player.getInventory();
         for (final ItemStack itemStack : inventory.getArmorContents()) {
             Zenchantment.applyForTool(
