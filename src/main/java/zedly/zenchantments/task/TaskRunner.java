@@ -31,7 +31,8 @@ public class TaskRunner implements Runnable {
      * Initializes this EventRunner by collecting all methods with an
      * {@link EffectTask} annotation of the specified frequency.
      *
-     * @param frequency The frequency of annotation that we'll be running.
+     * @param frequency
+     *     The frequency of annotation that we'll be running.
      */
     public TaskRunner(ZenchantmentsPlugin plugin, Frequency frequency) {
         this.plugin = plugin;
@@ -77,12 +78,7 @@ public class TaskRunner implements Runnable {
             try {
                 method.invoke(null, this.plugin);
             } catch (IllegalAccessException | InvocationTargetException ex) {
-                this.plugin.getLogger().log(
-                    Level.SEVERE,
-                    "Could not invoke event '" + method.getName() + "' due to " + ex.getCause(),
-                    ex
-                );
-                ex.printStackTrace();
+                this.plugin.getLogger().log(Level.SEVERE, "Could not invoke EffectTask '" + method.getName() + "'.", ex);
             }
         }
     }
