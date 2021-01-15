@@ -80,9 +80,4 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
         this.player.setMetadata("ze." + zenchantmentKey, new FixedMetadataValue(this.plugin, false));
         return false;
     }
-
-    @Deprecated
-    public static PlayerData matchPlayer(Player player) {
-        return null;
-    }
 }

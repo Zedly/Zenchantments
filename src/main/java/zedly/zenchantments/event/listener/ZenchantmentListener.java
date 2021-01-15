@@ -20,7 +20,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.event.BlockShredEvent;
-import zedly.zenchantments.player.PlayerData;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
@@ -44,14 +43,10 @@ public final class ZenchantmentListener implements Listener {
 
     private static final EntityType[] ENTITY_INTERACT_BAD_ENTITIES = { HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER };
 
-    @Deprecated
-    private static ZenchantmentsPlugin staticPlugin;
-
     private final ZenchantmentsPlugin plugin;
 
     public ZenchantmentListener(final @NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
-        staticPlugin = plugin;
     }
 
     @EventHandler
@@ -375,9 +370,9 @@ public final class ZenchantmentListener implements Listener {
         for (final ItemStack itemStack : inventory.getArmorContents()) {
             Zenchantment.applyForTool(
                 player,
-                staticPlugin.getPlayerDataProvider(),
-                staticPlugin.getGlobalConfiguration(),
-                staticPlugin.getWorldConfigurationProvider(),
+                plugin.getPlayerDataProvider(),
+                plugin.getGlobalConfiguration(),
+                plugin.getWorldConfigurationProvider(),
                 itemStack,
                 (ench, level) -> {
                     consumer.accept(() -> {
@@ -386,7 +381,9 @@ public final class ZenchantmentListener implements Listener {
                         }
 
                         if (ench.onFastScan(player, level, true)) {
-                            PlayerData.matchPlayer(player).setCooldown(ench.getKey(), ench.getCooldown());
+                            plugin.getPlayerDataProvider()
+                                .getDataForPlayer(player)
+                                .setCooldown(ench.getKey(), ench.getCooldown());
                         }
 
                         return true;
@@ -399,9 +396,9 @@ public final class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            staticPlugin.getPlayerDataProvider(),
-            staticPlugin.getGlobalConfiguration(),
-            staticPlugin.getWorldConfigurationProvider(),
+            plugin.getPlayerDataProvider(),
+            plugin.getGlobalConfiguration(),
+            plugin.getWorldConfigurationProvider(),
             inventory.getItemInMainHand(),
             (ench, level) -> {
                 consumer.accept(() -> {
@@ -410,7 +407,9 @@ public final class ZenchantmentListener implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, true)) {
-                        PlayerData.matchPlayer(player).setCooldown(ench.getKey(), ench.getCooldown());
+                        plugin.getPlayerDataProvider()
+                            .getDataForPlayer(player)
+                            .setCooldown(ench.getKey(), ench.getCooldown());
                     }
 
                     return true;
@@ -422,9 +421,9 @@ public final class ZenchantmentListener implements Listener {
 
         Zenchantment.applyForTool(
             player,
-            staticPlugin.getPlayerDataProvider(),
-            staticPlugin.getGlobalConfiguration(),
-            staticPlugin.getWorldConfigurationProvider(),
+            plugin.getPlayerDataProvider(),
+            plugin.getGlobalConfiguration(),
+            plugin.getWorldConfigurationProvider(),
             inventory.getItemInOffHand(),
             (ench, level) -> {
                 consumer.accept(() -> {
@@ -433,7 +432,9 @@ public final class ZenchantmentListener implements Listener {
                     }
 
                     if (ench.onFastScanHands(player, level, false)) {
-                        PlayerData.matchPlayer(player).setCooldown(ench.getKey(), ench.getCooldown());
+                        plugin.getPlayerDataProvider()
+                            .getDataForPlayer(player)
+                            .setCooldown(ench.getKey(), ench.getCooldown());
                     }
 
                     return true;
@@ -445,7 +446,7 @@ public final class ZenchantmentListener implements Listener {
 
         final long currentTime = System.currentTimeMillis();
         if (player.hasMetadata("ze.speed") && (player.getMetadata("ze.speed").get(0).asLong() < currentTime - 1000)) {
-            player.removeMetadata("ze.speed", staticPlugin);
+            player.removeMetadata("ze.speed", plugin);
             player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
             player.setFlySpeed(0.1F);
             player.setWalkSpeed(0.2F);
@@ -453,7 +454,7 @@ public final class ZenchantmentListener implements Listener {
 
         if (player.hasMetadata("ze.haste") && (player.getMetadata("ze.haste").get(0).asLong() < currentTime - 1000)) {
             player.removePotionEffect(FAST_DIGGING);
-            player.removeMetadata("ze.haste", staticPlugin);
+            player.removeMetadata("ze.haste", plugin);
         }
     }
 }
