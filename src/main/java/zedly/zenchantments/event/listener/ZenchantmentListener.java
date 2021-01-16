@@ -1,6 +1,7 @@
 package zedly.zenchantments.event.listener;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -368,6 +369,13 @@ public final class ZenchantmentListener implements Listener {
     ) {
         final PlayerInventory inventory = player.getInventory();
         for (final ItemStack itemStack : inventory.getArmorContents()) {
+            // Rather than being an ItemStack of air, armor contents are null if empty.
+            // We technically don't need to test this for the hand/off hand items,
+            // but a NullPointerException would occur here otherwise.
+            if (itemStack == null) {
+                continue;
+            }
+
             Zenchantment.applyForTool(
                 player,
                 plugin.getPlayerDataProvider(),
@@ -394,55 +402,61 @@ public final class ZenchantmentListener implements Listener {
             );
         }
 
-        Zenchantment.applyForTool(
-            player,
-            plugin.getPlayerDataProvider(),
-            plugin.getGlobalConfiguration(),
-            plugin.getWorldConfigurationProvider(),
-            inventory.getItemInMainHand(),
-            (ench, level) -> {
-                consumer.accept(() -> {
-                    if (!player.isOnline()) {
-                        return false;
-                    }
+        final ItemStack hand = inventory.getItemInMainHand();
+        if (hand.getType() != Material.AIR) {
+            Zenchantment.applyForTool(
+                player,
+                plugin.getPlayerDataProvider(),
+                plugin.getGlobalConfiguration(),
+                plugin.getWorldConfigurationProvider(),
+                hand,
+                (ench, level) -> {
+                    consumer.accept(() -> {
+                        if (!player.isOnline()) {
+                            return false;
+                        }
 
-                    if (ench.onFastScanHands(player, level, true)) {
-                        plugin.getPlayerDataProvider()
-                            .getDataForPlayer(player)
-                            .setCooldown(ench.getKey(), ench.getCooldown());
-                    }
+                        if (ench.onFastScanHands(player, level, true)) {
+                            plugin.getPlayerDataProvider()
+                                .getDataForPlayer(player)
+                                .setCooldown(ench.getKey(), ench.getCooldown());
+                        }
 
-                    return true;
-                });
+                        return true;
+                    });
 
-                return ench.onScanHands(player, level, true);
-            }
-        );
+                    return ench.onScanHands(player, level, true);
+                }
+            );
+        }
 
-        Zenchantment.applyForTool(
-            player,
-            plugin.getPlayerDataProvider(),
-            plugin.getGlobalConfiguration(),
-            plugin.getWorldConfigurationProvider(),
-            inventory.getItemInOffHand(),
-            (ench, level) -> {
-                consumer.accept(() -> {
-                    if (!player.isOnline()) {
-                        return false;
-                    }
+        final ItemStack offHand = inventory.getItemInOffHand();
+        if (offHand.getType() != Material.AIR) {
+            Zenchantment.applyForTool(
+                player,
+                plugin.getPlayerDataProvider(),
+                plugin.getGlobalConfiguration(),
+                plugin.getWorldConfigurationProvider(),
+                offHand,
+                (ench, level) -> {
+                    consumer.accept(() -> {
+                        if (!player.isOnline()) {
+                            return false;
+                        }
 
-                    if (ench.onFastScanHands(player, level, false)) {
-                        plugin.getPlayerDataProvider()
-                            .getDataForPlayer(player)
-                            .setCooldown(ench.getKey(), ench.getCooldown());
-                    }
+                        if (ench.onFastScanHands(player, level, false)) {
+                            plugin.getPlayerDataProvider()
+                                .getDataForPlayer(player)
+                                .setCooldown(ench.getKey(), ench.getCooldown());
+                        }
 
-                    return true;
-                });
+                        return true;
+                    });
 
-                return ench.onScanHands(player, level, false);
-            }
-        );
+                    return ench.onScanHands(player, level, false);
+                }
+            );
+        }
 
         final long currentTime = System.currentTimeMillis();
         if (player.hasMetadata("ze.speed") && (player.getMetadata("ze.speed").get(0).asLong() < currentTime - 1000)) {
