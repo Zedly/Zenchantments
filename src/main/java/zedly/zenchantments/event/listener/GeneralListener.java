@@ -189,7 +189,9 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        this.plugin.getCompatibilityAdapter().collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                        this.plugin
+                            .getCompatibilityAdapter()
+                            .collectExp(Vortex.VORTEX_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
                 }
