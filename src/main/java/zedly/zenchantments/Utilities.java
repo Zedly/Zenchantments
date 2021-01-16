@@ -54,13 +54,14 @@ public final class Utilities {
     public static List<ItemStack> getArmorAndHandItems(final @NotNull Player player, final boolean mainHand) {
         requireNonNull(player);
 
+        final List<ItemStack> stacks = new ArrayList<>(5); // Full armor + one hand = max 5 ItemStacks.
         final PlayerInventory inventory = player.getInventory();
-        final List<ItemStack> stack = Arrays.asList(inventory.getArmorContents());
 
-        stack.add(mainHand ? inventory.getItemInMainHand() : inventory.getItemInOffHand());
-        stack.removeIf(itemStack -> itemStack == null || itemStack.getType() == Material.AIR);
+        stacks.addAll(Arrays.asList(inventory.getArmorContents()));
+        stacks.add(mainHand ? inventory.getItemInMainHand() : inventory.getItemInOffHand());
+        stacks.removeIf(itemStack -> itemStack == null || itemStack.getType() == Material.AIR);
 
-        return stack;
+        return stacks;
     }
 
     public static void damageItemStack(final @NotNull Player player, final int damage, final boolean handUsed) {
