@@ -67,12 +67,12 @@ public final class Bounce extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
         if (player.getVelocity().getY() >= 0) {
             return false;
         }
 
-        Block block = player.getLocation().getBlock();
+        final Block block = player.getLocation().getBlock();
         if (block.getRelative(0, -1, 0).getType() == SLIME_BLOCK
             || block.getType() == SLIME_BLOCK
             || block.getRelative(0, -2, 0).getType() == SLIME_BLOCK
@@ -85,6 +85,7 @@ public final class Bounce extends Zenchantment {
 
             player.setFallDistance(0);
         }
+
         return false;
     }
 }

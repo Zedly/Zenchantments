@@ -68,9 +68,9 @@ public final class Arborist extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
-        Block block = event.getBlock();
-        Material material = block.getType();
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+        final Block block = event.getBlock();
+        final Material material = block.getType();
 
         if (!LEAVES.contains(material)) {
             return false;
@@ -83,7 +83,7 @@ public final class Arborist extends Zenchantment {
             LEAVES.indexOf(material)
         );
 
-        ItemStack stack = new ItemStack(SAPLINGS.get(index), 1);
+        final ItemStack stack = new ItemStack(SAPLINGS.get(index), 1);
 
         if (!(ThreadLocalRandom.current().nextInt(10) >= (9 - level) / (this.getPower() + 0.001))) {
             return false;

@@ -104,12 +104,8 @@ public final class BlazesCurse extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityDamage(@NotNull EntityDamageEvent event, int level, boolean usedHand) {
-        if (event.getCause() == LAVA
-            || event.getCause() == FIRE
-            || event.getCause() == FIRE_TICK
-            || event.getCause() == HOT_FLOOR
-        ) {
+    public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final boolean usedHand) {
+        if (event.getCause() == LAVA || event.getCause() == FIRE || event.getCause() == FIRE_TICK || event.getCause() == HOT_FLOOR) {
             event.setCancelled(true);
             return true;
         }
@@ -118,10 +114,8 @@ public final class BlazesCurse extends Zenchantment {
     }
 
     @Override
-    public boolean onBeingHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
-        if (event.getDamager().getType() == EntityType.FIREBALL
-            || event.getDamager().getType() == EntityType.SMALL_FIREBALL
-        ) {
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+        if (event.getDamager().getType() == EntityType.FIREBALL || event.getDamager().getType() == EntityType.SMALL_FIREBALL) {
             event.setDamage(0);
             return true;
         }
@@ -130,8 +124,8 @@ public final class BlazesCurse extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
-        Block block = player.getLocation().getBlock();
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+        final Block block = player.getLocation().getBlock();
         Material material = block.getType();
 
         if (material == WATER) {
@@ -147,7 +141,7 @@ public final class BlazesCurse extends Zenchantment {
         }
 
         if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
-            Location checkLocation = player.getLocation();
+            final Location checkLocation = player.getLocation();
             while (checkLocation.getBlockY() < 256) {
                 if (!MaterialList.AIR.contains(checkLocation.getBlock().getType())) {
                     break;
@@ -157,7 +151,7 @@ public final class BlazesCurse extends Zenchantment {
             }
 
             if (checkLocation.getBlockY() == 256) {
-                this.getPlugin().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, CUSTOM);
+                this.getPlugin().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
             }
         }
 

@@ -68,12 +68,12 @@ public final class Bind extends Zenchantment {
     }
 
     @Override
-    public boolean onPlayerDeath(@NotNull PlayerDeathEvent event, int level, boolean usedHand) {
+    public boolean onPlayerDeath(final @NotNull PlayerDeathEvent event, final int level, final boolean usedHand) {
         if (event.getKeepInventory()) {
             return false;
         }
 
-        Player player = event.getEntity();
+        final Player player = event.getEntity();
         final ItemStack[] contents = player.getInventory().getContents().clone();
         final List<ItemStack> removed = new ArrayList<>();
 

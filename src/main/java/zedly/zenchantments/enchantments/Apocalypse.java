@@ -68,8 +68,8 @@ public final class Apocalypse extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        ApocalypseArrow arrow = new ApocalypseArrow(this.getPlugin(), (Arrow) event.getProjectile());
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final ApocalypseArrow arrow = new ApocalypseArrow(this.getPlugin(), (Arrow) event.getProjectile());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

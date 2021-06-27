@@ -100,21 +100,21 @@ public final class Anthropomorphism extends Zenchantment {
     @EffectTask(Frequency.HIGH)
     public static void moveBlocks(final @NotNull ZenchantmentsPlugin plugin) {
         // Move aggressive Anthropomorphism Blocks towards a target & attack.
-        Iterator<FallingBlock> iterator = ATTACK_BLOCKS.keySet().iterator();
+        final Iterator<FallingBlock> iterator = ATTACK_BLOCKS.keySet().iterator();
         while (iterator.hasNext()) {
-            FallingBlock blockEntity = iterator.next();
+            final FallingBlock blockEntity = iterator.next();
             if (VORTEX.contains(IDLE_BLOCKS.get(blockEntity))) {
                 continue;
             }
 
-            for (Entity entity : blockEntity.getNearbyEntities(7, 7, 7)) {
+            for (final Entity entity : blockEntity.getNearbyEntities(7, 7, 7)) {
                 if (!(entity instanceof Monster)) {
                     continue;
                 }
 
-                LivingEntity targetEntity = (LivingEntity) entity;
+                final LivingEntity targetEntity = (LivingEntity) entity;
 
-                Vector playerDir = ATTACK_BLOCKS.get(blockEntity) == null
+                final Vector playerDir = ATTACK_BLOCKS.get(blockEntity) == null
                     ? new Vector()
                     : ATTACK_BLOCKS.get(blockEntity).getValue();
 
@@ -126,21 +126,24 @@ public final class Anthropomorphism extends Zenchantment {
                         .multiply(0.25)
                 );
 
-                if (!targetEntity.getLocation().getWorld().equals(blockEntity.getLocation().getWorld())) {
+                if (!Objects.equals(targetEntity.getLocation().getWorld(), blockEntity.getLocation().getWorld())) {
                     continue;
                 }
 
-                if (targetEntity.getLocation().distance(blockEntity.getLocation()) < 1.2
-                    && blockEntity.hasMetadata("ze.anthrothrower")
-                ) {
-                    Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
+                if (targetEntity.getLocation().distance(blockEntity.getLocation()) < 1.2 && blockEntity.hasMetadata("ze.anthrothrower")) {
+                    final Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
 
-                    if (targetEntity.getNoDamageTicks() == 0 && ATTACK_BLOCKS.get(blockEntity) != null
-                        && ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity(targetEntity, attacker, 2.0 * ATTACK_BLOCKS.get(blockEntity).getKey()
-                    )) {
-                        targetEntity.setNoDamageTicks(0);
-                        iterator.remove();
-                        blockEntity.remove();
+                    if (targetEntity.getNoDamageTicks() == 0 && ATTACK_BLOCKS.get(blockEntity) != null) {
+                        final boolean result = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity(
+                            targetEntity,
+                            Objects.requireNonNull(attacker),
+                            2.0 * ATTACK_BLOCKS.get(blockEntity).getKey()
+                        );
+                        if (result) {
+                            targetEntity.setNoDamageTicks(0);
+                            iterator.remove();
+                            blockEntity.remove();
+                        }
                     }
                 }
             }
@@ -149,24 +152,24 @@ public final class Anthropomorphism extends Zenchantment {
         // Move passive Anthropomorphism Blocks around
         fallBool = !fallBool;
 
-        for (FallingBlock block : IDLE_BLOCKS.keySet()) {
+        for (final FallingBlock block : IDLE_BLOCKS.keySet()) {
             if (!VORTEX.contains(IDLE_BLOCKS.get(block))) {
                 continue;
             }
 
-            Location location = IDLE_BLOCKS.get(block).getLocation();
-            Vector vector;
+            final Location location = IDLE_BLOCKS.get(block).getLocation();
+            final Vector vector;
 
-            if (!block.getLocation().getWorld().equals(IDLE_BLOCKS.get(block).getLocation().getWorld())) {
+            if (!Objects.equals(block.getLocation().getWorld(), IDLE_BLOCKS.get(block).getLocation().getWorld())) {
                 continue;
             }
 
             if (fallBool && block.getLocation().distance(IDLE_BLOCKS.get(block).getLocation()) < 10) {
                 vector = block.getLocation().subtract(location).toVector();
             } else {
-                double x = 6f * Math.sin(block.getTicksLived() / 10f);
-                double z = 6f * Math.cos(block.getTicksLived() / 10f);
-                Location tLoc = location.clone();
+                final double x = 6f * Math.sin(block.getTicksLived() / 10f);
+                final double z = 6f * Math.cos(block.getTicksLived() / 10f);
+                final Location tLoc = location.clone();
                 tLoc.setX(tLoc.getX() + x);
                 tLoc.setZ(tLoc.getZ() + z);
                 vector = tLoc.subtract(block.getLocation()).toVector();
@@ -175,8 +178,8 @@ public final class Anthropomorphism extends Zenchantment {
             vector.multiply(.05);
             boolean close = false;
 
-            for (int x = -3; x < 0; x++) {
-                if (block.getLocation().getBlock().getRelative(0, x, 0).getType() != AIR) {
+            for (int y = -3; y < 0; y++) {
+                if (block.getLocation().getBlock().getRelative(0, y, 0).getType() != AIR) {
                     close = true;
                 }
             }
@@ -192,9 +195,9 @@ public final class Anthropomorphism extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
-        Player player = event.getPlayer();
-        ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+        final Player player = event.getPlayer();
+        final ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
 
         if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
             if (player.isSneaking()) {
@@ -203,8 +206,8 @@ public final class Anthropomorphism extends Zenchantment {
                 }
 
                 int counter = 0;
-                for (Entity p : IDLE_BLOCKS.values()) {
-                    if (p.equals(player)) {
+                for (final Entity idleBlockPlayer : IDLE_BLOCKS.values()) {
+                    if (idleBlockPlayer.equals(player)) {
                         counter++;
                     }
                 }
@@ -213,8 +216,8 @@ public final class Anthropomorphism extends Zenchantment {
                     Utilities.removeMaterialsFromPlayer(player, COBBLESTONE, 1);
                     Utilities.damageItemStack(player, 2, usedHand);
 
-                    Location location = player.getLocation();
-                    FallingBlock blockEntity = location.getWorld().spawnFallingBlock(
+                    final Location location = player.getLocation();
+                    final FallingBlock blockEntity = Objects.requireNonNull(location.getWorld()).spawnFallingBlock(
                         location,
                         this.getPlugin().getServer().createBlockData(MATERIALS[ThreadLocalRandom.current().nextInt(4)])
                     );
@@ -231,9 +234,9 @@ public final class Anthropomorphism extends Zenchantment {
         } else if ((event.getAction() == LEFT_CLICK_AIR || event.getAction() == LEFT_CLICK_BLOCK) || hand.getType() == AIR) {
             VORTEX.remove(player);
 
-            List<FallingBlock> toRemove = new ArrayList<>();
+            final List<FallingBlock> toRemove = new ArrayList<>();
 
-            for (FallingBlock block : IDLE_BLOCKS.keySet()) {
+            for (final FallingBlock block : IDLE_BLOCKS.keySet()) {
                 if (IDLE_BLOCKS.get(block).equals(player)) {
                     ATTACK_BLOCKS.put(block, new Pair<>(this.getPower(), player.getLocation().getDirection()));
                     toRemove.add(block);
@@ -247,7 +250,7 @@ public final class Anthropomorphism extends Zenchantment {
                 }
             }
 
-            for (FallingBlock block : toRemove) {
+            for (final FallingBlock block : toRemove) {
                 IDLE_BLOCKS.remove(block);
                 block.setGravity(true);
                 block.setGlowing(true);
