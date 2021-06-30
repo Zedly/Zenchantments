@@ -70,15 +70,15 @@ public final class GreenThumb extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
-        Location location = player.getLocation().clone();
-        Block centerBlock = location.getBlock();
-        int radius = (int) Math.round(this.getPower() * level + 2);
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+        final Location location = player.getLocation().clone();
+        final Block centerBlock = location.getBlock();
+        final int radius = (int) Math.round(this.getPower() * level + 2);
 
         for (int x = -(radius); x <= radius; x++) {
             for (int y = -(radius) - 1; y <= radius - 1; y++) {
                 for (int z = -(radius); z <= radius; z++) {
-                    Block relativeBlock = centerBlock.getRelative(x, y, z);
+                    final Block relativeBlock = centerBlock.getRelative(x, y, z);
                     if (!(relativeBlock.getLocation().distance(location) < radius)) {
                         continue;
                     }
@@ -92,7 +92,7 @@ public final class GreenThumb extends Zenchantment {
                         applied = this.getPlugin().getCompatibilityAdapter().grow(centerBlock.getRelative(x, y, z), player);
                     } else {
                         if (MaterialList.AIR.contains(relativeBlock.getRelative(0, 1, 0).getType())) {
-                            Material material;
+                            final Material material;
                             switch (centerBlock.getBiome()) {
                                 case MUSHROOM_FIELD_SHORE:
                                 case MUSHROOM_FIELDS:
@@ -124,12 +124,12 @@ public final class GreenThumb extends Zenchantment {
                             0.3f
                         );
 
-                        int random = ThreadLocalRandom.current().nextInt(50);
+                        final int random = ThreadLocalRandom.current().nextInt(50);
                         if (random <= 42 || level == 10) {
                             continue;
                         }
 
-                        ItemStack[] armour = player.getInventory().getArmorContents();
+                        final ItemStack[] armour = player.getInventory().getArmorContents();
                         for (int i = 0; i < 4; i++) {
                             if (armour[i] != null) {
                                 final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(

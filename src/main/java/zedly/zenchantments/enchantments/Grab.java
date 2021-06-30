@@ -70,8 +70,8 @@ public final class Grab extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
-        Block block = event.getBlock();
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+        final Block block = event.getBlock();
 
         GRAB_LOCATIONS.put(block, event.getPlayer());
 

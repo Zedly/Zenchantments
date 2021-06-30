@@ -122,6 +122,7 @@ public final class Burst extends Zenchantment {
                     1f,
                     false
                 );
+
                 final ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
 
                 this.getPlugin().getServer().getPluginManager().callEvent(shootEvent);

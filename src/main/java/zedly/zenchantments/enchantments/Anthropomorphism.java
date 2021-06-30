@@ -17,6 +17,7 @@ import zedly.zenchantments.task.Frequency;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
 
@@ -136,7 +137,7 @@ public final class Anthropomorphism extends Zenchantment {
                     if (targetEntity.getNoDamageTicks() == 0 && ATTACK_BLOCKS.get(blockEntity) != null) {
                         final boolean result = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity(
                             targetEntity,
-                            Objects.requireNonNull(attacker),
+                            requireNonNull(attacker),
                             2.0 * ATTACK_BLOCKS.get(blockEntity).getKey()
                         );
                         if (result) {
@@ -217,7 +218,7 @@ public final class Anthropomorphism extends Zenchantment {
                     Utilities.damageItemStack(player, 2, usedHand);
 
                     final Location location = player.getLocation();
-                    final FallingBlock blockEntity = Objects.requireNonNull(location.getWorld()).spawnFallingBlock(
+                    final FallingBlock blockEntity = requireNonNull(location.getWorld()).spawnFallingBlock(
                         location,
                         this.getPlugin().getServer().createBlockData(MATERIALS[ThreadLocalRandom.current().nextInt(4)])
                     );

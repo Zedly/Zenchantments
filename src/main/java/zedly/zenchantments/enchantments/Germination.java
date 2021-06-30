@@ -14,6 +14,7 @@ import zedly.zenchantments.*;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public final class Germination extends Zenchantment {
@@ -69,22 +70,23 @@ public final class Germination extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
 
-        Player player = event.getPlayer();
-        Block clickedBlock = event.getClickedBlock();
-        Location location = clickedBlock.getLocation();
-        int radiusXZ = (int) Math.round(this.getPower() * level + 2);
-        int radiusY = 2;
+        final Player player = event.getPlayer();
+        final Block clickedBlock = requireNonNull(event.getClickedBlock());
+        final Location location = clickedBlock.getLocation();
+        final int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+        final int radiusY = 2;
+
         boolean applied = false;
 
         for (int x = -(radiusXZ); x <= radiusXZ; x++) {
             for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {
                 for (int z = -(radiusXZ); z <= radiusXZ; z++) {
-                    Block relativeBlock = clickedBlock.getRelative(x, y, z);
+                    final Block relativeBlock = clickedBlock.getRelative(x, y, z);
 
                     if (!(relativeBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)
                         || !Utilities.playerHasMaterial(player, Material.BONE_MEAL, 1)

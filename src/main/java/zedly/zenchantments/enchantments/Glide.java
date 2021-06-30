@@ -73,9 +73,9 @@ public final class Glide extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
-        UUID uniqueId = player.getUniqueId();
-        Location location = player.getLocation();
+    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
+        final UUID uniqueId = player.getUniqueId();
+        final Location location = player.getLocation();
 
         if (!GLIDE_USERS.containsKey(uniqueId)) {
             GLIDE_USERS.put(uniqueId, location.getY());
@@ -100,20 +100,18 @@ public final class Glide extends Zenchantment {
         }
 
         if (!b) {
-            double sinPitch = Math.sin(Math.toRadians(location.getPitch()));
-            double cosPitch = Math.cos(Math.toRadians(location.getPitch()));
-            double sinYaw = Math.sin(Math.toRadians(location.getYaw()));
-            double cosYaw = Math.cos(Math.toRadians(location.getYaw()));
-            double y = -1 * (sinPitch);
+            final double cosPitch = Math.cos(Math.toRadians(location.getPitch()));
+            final double sinYaw = Math.sin(Math.toRadians(location.getYaw()));
+            final double cosYaw = Math.cos(Math.toRadians(location.getYaw()));
 
-            Vector vector = new Vector(-cosPitch * sinYaw, 0, -1 * (-cosPitch * cosYaw));
+            final Vector vector = new Vector(-cosPitch * sinYaw, 0, -1 * (-cosPitch * cosYaw));
             vector.multiply(level * this.getPower() / 2);
             vector.setY(-1);
 
             player.setVelocity(vector);
             player.setFallDistance((float) (6 - level * this.getPower()) - 4);
 
-            Location particleLocation = location.clone();
+            final Location particleLocation = location.clone();
             particleLocation.setY(particleLocation.getY() - 3);
             Utilities.displayParticle(particleLocation, Particle.CLOUD, 1, 0.1f, 0, 0, 0);
         }

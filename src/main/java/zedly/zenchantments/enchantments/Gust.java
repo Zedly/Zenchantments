@@ -66,12 +66,12 @@ public final class Gust extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() != RIGHT_CLICK_AIR && event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (player.getHealth() <= 2
             || (event.getClickedBlock() != null && !(event.getClickedBlock().getLocation().distance(player.getLocation()) > 2))

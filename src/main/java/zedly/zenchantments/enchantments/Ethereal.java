@@ -62,9 +62,9 @@ public final class Ethereal extends Zenchantment {
     }
 
     @Override
-    public boolean onScanHands(@NotNull Player player, int level, boolean usedHand) {
-        ItemStack stack = Utilities.getUsedItemStack(player, usedHand);
-        int durability = Utilities.getItemStackDamage(stack);
+    public boolean onScanHands(final @NotNull Player player, final int level, final boolean usedHand) {
+        final ItemStack stack = Utilities.getUsedItemStack(player, usedHand);
+        final int durability = Utilities.getItemStackDamage(stack);
 
         Utilities.setItemStackDamage(stack, 0);
 
@@ -80,8 +80,8 @@ public final class Ethereal extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
-        for (ItemStack stack : player.getInventory().getArmorContents()) {
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+        for (final ItemStack stack : player.getInventory().getArmorContents()) {
             if (stack == null) {
                 continue;
             }

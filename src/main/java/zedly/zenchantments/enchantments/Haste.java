@@ -64,7 +64,7 @@ public final class Haste extends Zenchantment {
     }
 
     @Override
-    public boolean onScanHands(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onScanHands(final @NotNull Player player, final int level, final boolean usedHand) {
         Utilities.addPotionEffect(player, FAST_DIGGING, 610, (int) Math.round(level * this.getPower()));
         player.setMetadata("ze.haste", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));
         return false;

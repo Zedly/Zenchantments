@@ -112,10 +112,10 @@ public final class Gluttony extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         for (int i = 0; i < GLUTTONY_FOOD_ITEMS.length; i++) {
-            Material foodMaterial = GLUTTONY_FOOD_ITEMS[i];
-            int foodLevel = GLUTTONY_FOOD_LEVELS[i];
+            final Material foodMaterial = GLUTTONY_FOOD_ITEMS[i];
+            final int foodLevel = GLUTTONY_FOOD_LEVELS[i];
 
             if (!player.getInventory().containsAtLeast(new ItemStack(foodMaterial), 1)
                 || player.getFoodLevel() > 20 - foodLevel

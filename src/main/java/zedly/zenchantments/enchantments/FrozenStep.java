@@ -69,7 +69,7 @@ public final class FrozenStep extends Zenchantment {
         return HAND_USE;
     }
 
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         if (player.isSneaking()
             && player.getLocation().getBlock().getType() == WATER
             && !player.isFlying()
@@ -77,8 +77,8 @@ public final class FrozenStep extends Zenchantment {
             player.setVelocity(player.getVelocity().setY(.4));
         }
 
-        Block block = player.getLocation().getBlock();
-        int radius = (int) Math.round(this.getPower() * level + 2);
+        final Block block = player.getLocation().getBlock();
+        final int radius = (int) Math.round(this.getPower() * level + 2);
 
         Utilities.selfRemovingArea(PACKED_ICE, WATER, radius, block, player, FROZEN_LOCATIONS);
         return true;

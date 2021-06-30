@@ -17,6 +17,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static org.bukkit.entity.EntityType.*;
 
@@ -90,25 +91,25 @@ public final class Decapitation extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityKill(@NotNull EntityDeathEvent event, int level, boolean usedHand) {
-        int id = ArrayUtils.indexOf(APPLICABLE_ENTITIES, event.getEntityType());
+    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final boolean usedHand) {
+        final int id = ArrayUtils.indexOf(APPLICABLE_ENTITIES, event.getEntityType());
         if (id == -1) {
             return false;
         }
 
-        ItemStack itemStack = new ItemStack(HEAD_MATERIALS[id], 1);
+        final ItemStack itemStack = new ItemStack(HEAD_MATERIALS[id], 1);
 
         if (id == 0) {
-            int bound = Math.max((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * this.getPower())), 1);
+            final int bound = Math.max((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * this.getPower())), 1);
             if (ThreadLocalRandom.current().nextInt(bound) == 0) {
-                SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                SkullMeta meta = (SkullMeta) requireNonNull(itemStack.getItemMeta());
                 meta.setOwningPlayer(this.getPlugin().getServer().getOfflinePlayer(event.getEntity().getUniqueId()));
                 itemStack.setItemMeta(meta);
                 event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), itemStack);
                 return true;
             }
         } else {
-            int bound = Math.max((int) Math.round(BASE_MOB_DROP_CHANCE / (level * this.getPower())), 1);
+            final int bound = Math.max((int) Math.round(BASE_MOB_DROP_CHANCE / (level * this.getPower())), 1);
             if (ThreadLocalRandom.current().nextInt(bound) == 0) {
                 event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), itemStack);
                 return true;

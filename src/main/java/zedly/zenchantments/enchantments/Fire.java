@@ -88,14 +88,15 @@ public final class Fire extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             return false;
         }
 
-        ItemStack hand = Utilities.getUsedItemStack(event.getPlayer(), usedHand);
-        Block block = event.getBlock();
-        Material original = block.getType();
+        final ItemStack hand = Utilities.getUsedItemStack(event.getPlayer(), usedHand);
+        final Block block = event.getBlock();
+        final Material original = block.getType();
+
         Material material = AIR;
 
         if (Tool.PICKAXE.contains(hand.getType())) {
@@ -137,10 +138,10 @@ public final class Fire extends Zenchantment {
         return false;
     }
 
-    private boolean handleClay(@NotNull Block block) {
+    private boolean handleClay(final @NotNull Block block) {
         Utilities.displayParticle(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
-        ItemStack brickStack = new ItemStack(BRICK);
+        final ItemStack brickStack = new ItemStack(BRICK);
         for (int x = 0; x < 4; x++) {
             block.getWorld().dropItemNaturally(block.getLocation(), brickStack);
         }
@@ -156,8 +157,8 @@ public final class Fire extends Zenchantment {
         return true;
     }
 
-    private boolean handleCactus(@NotNull Block block) {
-        List<Block> blocks = Utilities.bfs(
+    private boolean handleCactus(final @NotNull Block block) {
+        final List<Block> blocks = Utilities.bfs(
             block,
             MAX_BLOCKS,
             false,
@@ -170,7 +171,7 @@ public final class Fire extends Zenchantment {
         );
 
         for (int i = blocks.size() - 1; i >= 0; i--) {
-            Block bfsBlock = blocks.get(i);
+            final Block bfsBlock = blocks.get(i);
 
             Utilities.displayParticle(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
@@ -193,8 +194,8 @@ public final class Fire extends Zenchantment {
         return true;
     }
 
-    private boolean handleChorusPlant(@NotNull Block block, @NotNull Player player) {
-        List<Block> blocks = Utilities.bfs(
+    private boolean handleChorusPlant(final @NotNull Block block, final @NotNull Player player) {
+        final List<Block> blocks = Utilities.bfs(
             block,
             MAX_BLOCKS,
             false,
@@ -207,7 +208,7 @@ public final class Fire extends Zenchantment {
         );
 
         for (int i = blocks.size() - 1; i >= 0; i--) {
-            Block bfsBlock = blocks.get(i);
+            final Block bfsBlock = blocks.get(i);
 
             Utilities.displayParticle(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
 
@@ -236,7 +237,7 @@ public final class Fire extends Zenchantment {
         return true;
     }
 
-    private boolean handleEverythingElse(@NotNull Block block, @NotNull Material material) {
+    private boolean handleEverythingElse(final @NotNull Block block, final @NotNull Material material) {
         block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(material, 1));
 
         Utilities.displayParticle(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);

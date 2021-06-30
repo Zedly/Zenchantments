@@ -66,11 +66,11 @@ public final class Combustion extends Zenchantment {
     }
 
     @Override
-    public boolean onBeingHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
-        Entity entity;
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+        final Entity entity;
 
         if (event.getDamager().getType() == EntityType.ARROW) {
-            Arrow arrow = (Arrow) event.getDamager();
+            final Arrow arrow = (Arrow) event.getDamager();
             if (!(arrow.getShooter() instanceof LivingEntity)) {
                 return false;
             }
@@ -85,7 +85,7 @@ public final class Combustion extends Zenchantment {
             .igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
     }
 
-    public boolean onCombust(@NotNull EntityCombustByEntityEvent event, int level, boolean usedHand) {
+    public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final boolean usedHand) {
         if (this.getPlugin().getCompatibilityAdapter().isZombie(event.getCombuster())) {
             event.setDuration(0);
         }

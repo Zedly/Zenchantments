@@ -78,8 +78,8 @@ public final class Force extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
-        Player player = event.getPlayer();
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+        final Player player = event.getPlayer();
 
         if (!event.getPlayer().hasMetadata("ze.direction")) {
             player.setMetadata("ze.direction", new FixedMetadataValue(this.getPlugin(), true));
@@ -96,7 +96,7 @@ public final class Force extends Zenchantment {
             return false;
         }
 
-        List<Entity> nearbyEntities = player.getNearbyEntities(5, 5, 5);
+        final List<Entity> nearbyEntities = player.getNearbyEntities(5, 5, 5);
         if (nearbyEntities.isEmpty()) {
             return false;
         }
@@ -106,20 +106,20 @@ public final class Force extends Zenchantment {
         }
 
         if (ThreadLocalRandom.current().nextInt(10) == 5) {
-            FoodLevelChangeEvent foodLevelChangeEvent = new FoodLevelChangeEvent(player, 2);
+            final FoodLevelChangeEvent foodLevelChangeEvent = new FoodLevelChangeEvent(player, 2);
             this.getPlugin().getServer().getPluginManager().callEvent(foodLevelChangeEvent);
             if (!foodLevelChangeEvent.isCancelled()) {
                 player.setFoodLevel(player.getFoodLevel() - 2);
             }
         }
 
-        for (Entity entity : nearbyEntities) {
-            Location playerLocation = player.getLocation();
-            Location entityLocation = entity.getLocation();
-            Location total = player.getMetadata("ze.direction").get(0).asBoolean()
+        for (final Entity entity : nearbyEntities) {
+            final Location playerLocation = player.getLocation();
+            final Location entityLocation = entity.getLocation();
+            final Location total = player.getMetadata("ze.direction").get(0).asBoolean()
                 ? entityLocation.subtract(playerLocation)
                 : playerLocation.subtract(entityLocation);
-            Vector vector = new Vector(
+            final Vector vector = new Vector(
                 total.getX(),
                 total.getY(),
                 total.getZ()

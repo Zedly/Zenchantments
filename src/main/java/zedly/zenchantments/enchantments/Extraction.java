@@ -70,12 +70,12 @@ public final class Extraction extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             return false;
         }
 
-        Block block = event.getBlock();
+        final Block block = event.getBlock();
 
         if (block.getType() != GOLD_ORE && block.getType() != IRON_ORE) {
             return false;
@@ -90,9 +90,12 @@ public final class Extraction extends Zenchantment {
             );
         }
 
-        ExperienceOrb experienceOrb = (ExperienceOrb) block.getWorld().spawnEntity(event.getBlock().getLocation(), EXPERIENCE_ORB);
+        final ExperienceOrb experienceOrb = (ExperienceOrb) block.getWorld().spawnEntity(
+            event.getBlock().getLocation(),
+            EXPERIENCE_ORB
+        );
 
-        int experience = ThreadLocalRandom.current().nextInt(5);
+        final int experience = ThreadLocalRandom.current().nextInt(5);
         experienceOrb.setExperience(block.getType() == IRON_ORE ? experience + 1 : experience + 3);
 
         block.setType(AIR);

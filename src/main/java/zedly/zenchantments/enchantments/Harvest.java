@@ -13,6 +13,7 @@ import zedly.zenchantments.*;
 
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public final class Harvest extends Zenchantment {
@@ -68,13 +69,14 @@ public final class Harvest extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
 
-        Location location = event.getClickedBlock().getLocation();
-        int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+        final Location location = requireNonNull(event.getClickedBlock()).getLocation();
+        final int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+
         boolean success = false;
 
         for (int x = -radiusXZ; x <= radiusXZ; x++) {
@@ -93,7 +95,7 @@ public final class Harvest extends Zenchantment {
                         continue;
                     }
 
-                    BlockData cropState = block.getBlockData();
+                    final BlockData cropState = block.getBlockData();
 
                     // Is this block the crop's mature form?
                     boolean harvestReady = !(cropState instanceof Ageable);
@@ -112,7 +114,7 @@ public final class Harvest extends Zenchantment {
                         continue;
                     }
 
-                    boolean blockAltered;
+                    final boolean blockAltered;
                     if (block.getType() == Material.SWEET_BERRY_BUSH) {
                         blockAltered = this.getPlugin().getCompatibilityAdapter().pickBerries(block, event.getPlayer());
                     } else {
@@ -137,6 +139,7 @@ public final class Harvest extends Zenchantment {
                 }
             }
         }
+
         return success;
     }
 }
