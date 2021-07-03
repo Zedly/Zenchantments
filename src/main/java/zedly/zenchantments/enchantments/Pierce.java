@@ -81,8 +81,8 @@ public final class Pierce extends Zenchantment {
     // 5 = ore
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
-        Player player = event.getPlayer();
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+        final Player player = event.getPlayer();
 
         if (!player.hasMetadata("ze.pierce.mode")) {
             player.setMetadata("ze.pierce.mode", new FixedMetadataValue(this.getPlugin(), 1));
@@ -118,17 +118,17 @@ public final class Pierce extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
-        Player player = event.getPlayer();
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+        final Player player = event.getPlayer();
 
         if (!player.hasMetadata("ze.pierce.mode")) {
             player.setMetadata("ze.pierce.mode", new FixedMetadataValue(this.getPlugin(), 1));
         }
 
-        int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
-        Location blockLocation = event.getBlock().getLocation();
-        Location playerLocation = player.getLocation();
-        Set<Block> total = new HashSet<>();
+        final int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
+        final Location blockLocation = event.getBlock().getLocation();
+        final Location playerLocation = player.getLocation();
+        final Set<Block> total = new HashSet<>();
 
         if (mode != 1 && mode != 5) {
             int add = -1;
@@ -152,7 +152,7 @@ public final class Pierce extends Zenchantment {
                     add = 1;
                     break;
             }
-            int[] rads = ints[mode - 2];
+            final int[] rads = ints[mode - 2];
             if (mode == 3) {
                 if (b) {
                     blockLocation.setZ(blockLocation.getZ() + add);
@@ -194,9 +194,10 @@ public final class Pierce extends Zenchantment {
             );
         }
 
-        for (Block block : total) {
-            if (this.getPlugin().getCompatibilityAdapter().isBlockSafeToBreak(block)) {
-                this.getPlugin().getCompatibilityAdapter().breakBlock(block, event.getPlayer());
+        final CompatibilityAdapter compatibilityAdapter = this.getPlugin().getCompatibilityAdapter();
+        for (final Block block : total) {
+            if (compatibilityAdapter.isBlockSafeToBreak(block)) {
+                compatibilityAdapter.breakBlock(block, event.getPlayer());
             }
         }
 

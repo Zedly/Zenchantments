@@ -10,9 +10,11 @@ import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
@@ -69,20 +71,20 @@ public final class Persephone extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
 
-        Player player = event.getPlayer();
-        Location location = event.getClickedBlock().getLocation();
-        int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+        final Player player = event.getPlayer();
+        final Location location = requireNonNull(event.getClickedBlock()).getLocation();
+        final int radiusXZ = (int) Math.round(this.getPower() * level + 2);
 
         if (!MaterialList.PERSEPHONE_CROPS.contains(event.getClickedBlock().getType())) {
             return false;
         }
 
-        Block block = location.getBlock();
+        final Block block = location.getBlock();
         for (int x = -radiusXZ; x <= radiusXZ; x++) {
             for (int y = -2; y <= 0; y++) {
                 for (int z = -radiusXZ; z <= radiusXZ; z++) {
@@ -90,33 +92,35 @@ public final class Persephone extends Zenchantment {
                         continue;
                     }
 
+                    final Block relativeBlock = block.getRelative(x, y + 1, z);
+
                     if (block.getRelative(x, y, z).getType() == FARMLAND
-                        && MaterialList.AIR.contains(block.getRelative(x, y + 1, z).getType())
+                        && MaterialList.AIR.contains(relativeBlock.getType())
                     ) {
-                        Inventory inventory = player.getInventory();
+                        final Inventory inventory = player.getInventory();
                         final CompatibilityAdapter compatibilityAdapter = this.getPlugin().getCompatibilityAdapter();
                         if (inventory.contains(CARROT)) {
-                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, CARROTS, null)) {
+                            if (compatibilityAdapter.placeBlock(relativeBlock, player, CARROTS, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, CARROT, 1);
                             }
                         } else if (inventory.contains(POTATO)) {
-                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, POTATOES, null)) {
+                            if (compatibilityAdapter.placeBlock(relativeBlock, player, POTATOES, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, POTATO, 1);
                             }
                         } else if (inventory.contains(WHEAT_SEEDS)) {
-                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, WHEAT, null)) {
+                            if (compatibilityAdapter.placeBlock(relativeBlock, player, WHEAT, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, WHEAT_SEEDS, 1);
                             }
                         } else if (inventory.contains(BEETROOT_SEEDS)) {
-                            if (compatibilityAdapter.placeBlock(block.getRelative(x, y + 1, z), player, BEETROOTS, null)) {
+                            if (compatibilityAdapter.placeBlock(relativeBlock, player, BEETROOTS, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, BEETROOT_SEEDS, 1);
                             }
                         }
                     } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
-                        && MaterialList.AIR.contains(block.getRelative(x, y + 1, z).getType())
+                        && MaterialList.AIR.contains(relativeBlock.getType())
                     ) {
                         if (event.getPlayer().getInventory().contains(NETHER_WART)) {
-                            if (this.getPlugin().getCompatibilityAdapter().placeBlock(block.getRelative(x, y + 1, z), player, NETHER_WART, null)) {
+                            if (this.getPlugin().getCompatibilityAdapter().placeBlock(relativeBlock, player, NETHER_WART, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, NETHER_WART, 1);
                             }
                         }

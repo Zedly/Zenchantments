@@ -63,7 +63,7 @@ public final class Jump extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         Utilities.addPotionEffect(player, JUMP, 610, (int) Math.round(level * this.getPower()));
         return true;
     }

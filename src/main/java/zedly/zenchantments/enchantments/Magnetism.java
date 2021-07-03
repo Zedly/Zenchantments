@@ -67,10 +67,10 @@ public final class Magnetism extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
-        int radius = (int) Math.round(this.getPower() * level * 2 + 3);
-        for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity.getType().equals(DROPPED_ITEM) && entity.getTicksLived() > 160) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
+        final int radius = (int) Math.round(this.getPower() * level * 2 + 3);
+        for (final Entity entity : player.getNearbyEntities(radius, radius, radius)) {
+            if (entity.getType() == DROPPED_ITEM && entity.getTicksLived() > 160) {
                 entity.setVelocity(player.getLocation().toVector().subtract(entity.getLocation().toVector()).multiply(0.05));
             }
         }

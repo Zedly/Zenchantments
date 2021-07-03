@@ -73,7 +73,7 @@ public final class Mow extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
             return this.shear(event, level, usedHand);
         }
@@ -82,24 +82,25 @@ public final class Mow extends Zenchantment {
     }
 
     @Override
-    public boolean onShear(@NotNull PlayerShearEntityEvent event, int level, boolean usedHand) {
+    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final boolean usedHand) {
         return this.shear(event, level, usedHand);
     }
 
-    private boolean shear(@NotNull PlayerEvent event, int level, boolean usedHand) {
-        boolean shearedEntity = false;
-        int radius = (int) Math.round(level * this.getPower() + 2);
-        Player player = event.getPlayer();
+    private boolean shear(final @NotNull PlayerEvent event, final int level, final boolean usedHand) {
+        final int radius = (int) Math.round(level * this.getPower() + 2);
+        final Player player = event.getPlayer();
 
-        for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
+        boolean shearedEntity = false;
+
+        for (final Entity entity : player.getNearbyEntities(radius, radius, radius)) {
             if (entity instanceof Sheep) {
-                Sheep sheep = (Sheep) entity;
+                final Sheep sheep = (Sheep) entity;
                 if (sheep.isAdult()) {
                     this.getPlugin().getCompatibilityAdapter().shearEntityNMS(sheep, player, usedHand);
                     shearedEntity = true;
                 }
             } else if (entity instanceof MushroomCow) {
-                MushroomCow mooshroom = (MushroomCow) entity;
+                final MushroomCow mooshroom = (MushroomCow) entity;
                 if (mooshroom.isAdult()) {
                     this.getPlugin().getCompatibilityAdapter().shearEntityNMS(mooshroom, player, usedHand);
                     shearedEntity = true;

@@ -9,9 +9,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.*;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
@@ -68,35 +70,35 @@ public final class Plough extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
 
-        Block block = event.getClickedBlock();
-        Location location = block.getLocation();
+        final Block block = requireNonNull(event.getClickedBlock());
+        final Location location = block.getLocation();
         int radiusXZ = (int) Math.round(this.getPower() * level + 2);
 
         for (int x = -radiusXZ; x <= radiusXZ; x++) {
             for (int y = -2; y <= 0; y++) {
                 for (int z = -radiusXZ; z <= radiusXZ; z++) {
-                    Block relative = block.getRelative(x, y, z);
+                    final Block relativeBlock = block.getRelative(x, y, z);
 
-                    if (!(relative.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
+                    if (!(relativeBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
                         continue;
                     }
 
-                    if (((relative.getType() != DIRT
-                        && relative.getType() != GRASS_BLOCK
-                        && relative.getType() != MYCELIUM))
-                        || !MaterialList.AIR.contains(relative.getRelative(0, 1, 0).getType())
+                    if (((relativeBlock.getType() != DIRT
+                        && relativeBlock.getType() != GRASS_BLOCK
+                        && relativeBlock.getType() != MYCELIUM))
+                        || !MaterialList.AIR.contains(relativeBlock.getRelative(0, 1, 0).getType())
                     ) {
                         continue;
                     }
 
                     this.getPlugin()
                         .getCompatibilityAdapter()
-                        .placeBlock(block.getRelative(x, y, z), event.getPlayer(), Material.FARMLAND, null);
+                        .placeBlock(relativeBlock, event.getPlayer(), Material.FARMLAND, null);
 
                     if (ThreadLocalRandom.current().nextBoolean()) {
                         Utilities.damageItemStack(event.getPlayer(), 1, usedHand);

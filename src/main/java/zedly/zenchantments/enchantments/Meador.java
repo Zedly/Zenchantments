@@ -64,8 +64,8 @@ public final class Meador extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
-        float speed = (float) Math.min(0.5f + level * this.getPower() * 0.05f, 1);
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+        final float speed = (float) Math.min(0.5f + level * this.getPower() * 0.05f, 1);
 
         player.setWalkSpeed(speed);
         player.setFlySpeed(speed);

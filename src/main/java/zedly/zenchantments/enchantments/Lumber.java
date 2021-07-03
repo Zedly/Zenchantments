@@ -66,18 +66,18 @@ public final class Lumber extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
         if (!event.getPlayer().isSneaking()) {
             return false;
         }
 
-        Block startBlock = event.getBlock();
+        final Block startBlock = event.getBlock();
 
         if (!MaterialList.TRUNKS.contains(startBlock.getType())) {
             return false;
         }
 
-        List<Block> blocks = Utilities.bfs(
+        final List<Block> blocks = Utilities.bfs(
             startBlock,
             MAX_BLOCKS,
             true,
@@ -89,7 +89,7 @@ public final class Lumber extends Zenchantment {
             false
         );
 
-        for (Block block : blocks) {
+        for (final Block block : blocks) {
             this.getPlugin().getCompatibilityAdapter().breakBlock(block, event.getPlayer());
         }
 

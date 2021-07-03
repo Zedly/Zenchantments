@@ -72,13 +72,13 @@ public final class NetherStep extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         if (player.isSneaking() && player.getLocation().getBlock().getType() == LAVA && !player.isFlying()) {
             player.setVelocity(player.getVelocity().setY(.4));
         }
 
-        Block block = player.getLocation().add(0, 0.2, 0).getBlock();
-        int radius = (int) Math.round(this.getPower() * level + 2);
+        final Block block = player.getLocation().add(0, 0.2, 0).getBlock();
+        final int radius = (int) Math.round(this.getPower() * level + 2);
 
         Utilities.selfRemovingArea(SOUL_SAND, LAVA, radius, block, player, NETHERSTEP_LOCATIONS);
 
@@ -89,7 +89,7 @@ public final class NetherStep extends Zenchantment {
     public static void updateBlocks(final @NotNull ZenchantmentsPlugin plugin) {
         Iterator<Location> iterator = FrozenStep.FROZEN_LOCATIONS.keySet().iterator();
         while (iterator.hasNext()) {
-            Location location = iterator.next();
+            final Location location = iterator.next();
             if (Math.abs(System.nanoTime() - FrozenStep.FROZEN_LOCATIONS.get(location)) > 9E8) {
                 location.getBlock().setType(WATER);
                 iterator.remove();
@@ -98,7 +98,7 @@ public final class NetherStep extends Zenchantment {
 
         iterator = NETHERSTEP_LOCATIONS.keySet().iterator();
         while (iterator.hasNext()) {
-            Location location = iterator.next();
+            final Location location = iterator.next();
             if (Math.abs(System.nanoTime() - NETHERSTEP_LOCATIONS.get(location)) > 9E8) {
                 location.getBlock().setType(LAVA);
                 iterator.remove();

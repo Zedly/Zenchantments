@@ -68,22 +68,22 @@ public final class PotionResistance extends Zenchantment {
     }
 
     @Override
-    public boolean onPotionSplash(@NotNull PotionSplashEvent event, int level, boolean usedHand) {
-        for (LivingEntity entity : event.getAffectedEntities()) {
+    public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final boolean usedHand) {
+        for (final LivingEntity entity : event.getAffectedEntities()) {
             if (!(entity instanceof Player)) {
                 continue;
             }
 
             int effect = 0;
 
-            for (ItemStack stack : ((Player) entity).getInventory().getArmorContents()) {
+            for (final ItemStack stack : ((Player) entity).getInventory().getArmorContents()) {
                 final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
                     stack,
                     this.getPlugin().getGlobalConfiguration(),
                     this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(entity.getWorld())
                 );
 
-                for (Zenchantment zenchantment : map.keySet()) {
+                for (final Zenchantment zenchantment : map.keySet()) {
                     if (zenchantment.equals(this)) {
                         effect += map.get(zenchantment);
                     }

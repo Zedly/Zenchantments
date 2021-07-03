@@ -65,7 +65,7 @@ public final class LongCast extends Zenchantment {
     }
 
     @Override
-    public boolean onProjectileLaunch(@NotNull ProjectileLaunchEvent event, int level, boolean usedHand) {
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
         if (event.getEntity().getType() == EntityType.FISHING_HOOK) {
             event.getEntity().setVelocity(
                 event.getEntity()

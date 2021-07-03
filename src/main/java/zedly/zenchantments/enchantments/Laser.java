@@ -93,30 +93,30 @@ public final class Laser extends Zenchantment {
         return false;
     }
 
-    private void shoot(@NotNull Player player, int level) {
+    private void shoot(final @NotNull Player player, final int level) {
         // Avoid conflicting with Lumber zenchantment.
         this.getPlugin()
             .getPlayerDataProvider()
             .getDataForPlayer(player)
             .setCooldown(new NamespacedKey(this.getPlugin(), Lumber.KEY), 5);
 
-        Block block = player.getTargetBlock(null, 6 + (int) Math.round(level * this.getPower() * 3));
-        Location playerLocation = player.getLocation();
-        Location target = Utilities.getCenter(block.getLocation());
+        final Block block = player.getTargetBlock(null, 6 + (int) Math.round(level * this.getPower() * 3));
+        final Location playerLocation = player.getLocation();
+        final Location target = Utilities.getCenter(block.getLocation());
 
         target.setY(target.getY() + .5);
         playerLocation.setY(playerLocation.getY() + 1.1);
-        double d = target.distance(playerLocation);
+        final double d = target.distance(playerLocation);
 
         for (int i = 0; i < (int) d * 5; i++) {
-            Location particleLocation = target.clone();
+            final Location particleLocation = target.clone();
             particleLocation.setX(playerLocation.getX() + (i * ((target.getX() - playerLocation.getX()) / (d * 5))));
             particleLocation.setY(playerLocation.getY() + (i * ((target.getY() - playerLocation.getY()) / (d * 5))));
             particleLocation.setZ(playerLocation.getZ() + (i * ((target.getZ() - playerLocation.getZ()) / (d * 5))));
 
             player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1, new Particle.DustOptions(Color.RED, 0.5f));
 
-            for (Entity entity : playerLocation.getWorld().getNearbyEntities(particleLocation, 0.3, 0.3, 0.3)) {
+            for (final Entity entity : player.getWorld().getNearbyEntities(particleLocation, 0.3, 0.3, 0.3)) {
                 if (entity instanceof LivingEntity && entity != player) {
                     this.getPlugin()
                         .getCompatibilityAdapter()

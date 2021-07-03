@@ -74,7 +74,7 @@ public final class MysteryFish extends Zenchantment {
     }
 
     @Override
-    public boolean onPlayerFish(@NotNull PlayerFishEvent event, int level, boolean usedHand) {
+    public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final boolean usedHand) {
         if (!(ThreadLocalRandom.current().nextInt(10) < level * this.getPower())) {
             return true;
         }
@@ -83,12 +83,15 @@ public final class MysteryFish extends Zenchantment {
             return true;
         }
 
-        Location location = event.getCaught().getLocation();
+        final Location location = event.getCaught().getLocation();
 
         if (ThreadLocalRandom.current().nextBoolean()) {
             event.getPlayer().getWorld().spawnEntity(location, SQUID);
         } else {
-            Guardian guardian = (Guardian) this.getPlugin().getCompatibilityAdapter().spawnGuardian(location, ThreadLocalRandom.current().nextBoolean());
+            final Guardian guardian = (Guardian) this.getPlugin()
+                .getCompatibilityAdapter()
+                .spawnGuardian(location, ThreadLocalRandom.current().nextBoolean());
+
             GUARDIANS_AND_PLAYERS.put(guardian, event.getPlayer());
         }
 
@@ -97,13 +100,11 @@ public final class MysteryFish extends Zenchantment {
 
     @EffectTask(Frequency.HIGH)
     public static void moveGuardians(final @NotNull ZenchantmentsPlugin plugin) {
-        Iterator<Guardian> iterator = GUARDIANS_AND_PLAYERS.keySet().iterator();
+        final Iterator<Guardian> iterator = GUARDIANS_AND_PLAYERS.keySet().iterator();
         while (iterator.hasNext()) {
-            Guardian guardian = iterator.next();
-            Player player = GUARDIANS_AND_PLAYERS.get(guardian);
-            if (guardian.getLocation().distance(player.getLocation()) > 2
-                && guardian.getTicksLived() < 160
-            ) {
+            final Guardian guardian = iterator.next();
+            final Player player = GUARDIANS_AND_PLAYERS.get(guardian);
+            if (guardian.getLocation().distance(player.getLocation()) > 2 && guardian.getTicksLived() < 160) {
                 guardian.setVelocity(player.getLocation().toVector().subtract(guardian.getLocation().toVector()));
             } else {
                 iterator.remove();
