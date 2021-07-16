@@ -71,7 +71,7 @@ public final class RainbowSlam extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final boolean usedHand) {
         if (!(event.getRightClicked() instanceof LivingEntity)
             || !this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
         ) {
@@ -80,8 +80,8 @@ public final class RainbowSlam extends Zenchantment {
 
         Utilities.damageItemStack(event.getPlayer(), 9, usedHand);
 
-        LivingEntity entity = (LivingEntity) event.getRightClicked();
-        Location location = entity.getLocation();
+        final LivingEntity entity = (LivingEntity) event.getRightClicked();
+        final Location location = entity.getLocation();
 
         entity.teleport(location);
 
@@ -93,8 +93,8 @@ public final class RainbowSlam extends Zenchantment {
                     if (entity.isDead()) {
                         return;
                     }
-                    Location cloned = location.clone();
-                    float t = 30 * finalI + j;
+                    final Location cloned = location.clone();
+                    final float t = 30 * finalI + j;
                     cloned.setY(cloned.getY() + (t / 100));
                     cloned.setX(cloned.getX() + Math.sin(Math.toRadians(t)) * t / 330);
                     cloned.setZ(cloned.getZ() + Math.cos(Math.toRadians(t)) * t / 330);
@@ -117,7 +117,7 @@ public final class RainbowSlam extends Zenchantment {
 
         RAINBOW_SLAM_ENTITIES.add(entity);
 
-        AtomicBoolean applied = new AtomicBoolean(false);
+        final AtomicBoolean applied = new AtomicBoolean(false);
 
         for (int i = 0; i < 3; i++) {
             this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {

@@ -72,11 +72,11 @@ public final class Rainbow extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
-        Block block = event.getBlock();
-        Material blockType = block.getType();
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+        final Block block = event.getBlock();
+        final Material blockType = block.getType();
 
-        Material dropMaterial;
+        final Material dropMaterial;
 
         if (SMALL_FLOWERS.contains(blockType)) {
             dropMaterial = SMALL_FLOWERS.getRandom();
@@ -88,7 +88,7 @@ public final class Rainbow extends Zenchantment {
 
         event.setCancelled(true);
 
-        Block relative = block.getRelative(DOWN);
+        final Block relative = block.getRelative(DOWN);
         if (LARGE_FLOWERS.contains(relative.getType())) {
             relative.setType(AIR);
         }
@@ -96,25 +96,22 @@ public final class Rainbow extends Zenchantment {
         block.setType(AIR);
 
         event.getPlayer().getWorld().dropItem(Utilities.getCenter(block), new ItemStack(dropMaterial, 1));
-
         Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
-
         return true;
     }
 
     @Override
-    public boolean onShear(@NotNull PlayerShearEntityEvent event, int level, boolean usedHand) {
-        Sheep sheep = (Sheep) event.getEntity();
+    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final boolean usedHand) {
+        final Sheep sheep = (Sheep) event.getEntity();
         if (sheep.isSheared()) {
             return true;
         }
 
-        int count = ThreadLocalRandom.current().nextInt(3) + 1;
+        final int count = ThreadLocalRandom.current().nextInt(3) + 1;
 
         Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
 
         sheep.setSheared(true);
-
         event.setCancelled(true);
 
         event.getEntity().getWorld().dropItemNaturally(

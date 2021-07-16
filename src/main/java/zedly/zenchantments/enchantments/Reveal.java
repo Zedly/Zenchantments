@@ -69,24 +69,24 @@ public final class Reveal extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return false;
         }
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (!player.isSneaking()) {
             return false;
         }
 
-        int radius = (int) Math.max(2, Math.round((2 + level) * this.getPower()));
-        int found = 0;
+        final int radius = (int) Math.max(2, Math.round((2 + level) * this.getPower()));
 
+        int found = 0;
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
                 for (int z = -radius; z <= radius; z++) {
-                    Block block = player.getLocation().getBlock().getRelative(x, y, z);
+                    final Block block = player.getLocation().getBlock().getRelative(x, y, z);
 
                     if (!MaterialList.ORES.contains(block.getType())) {
                         continue;
@@ -94,7 +94,7 @@ public final class Reveal extends Zenchantment {
 
                     boolean exposed = false;
 
-                    for (BlockFace face : Utilities.CARDINAL_BLOCK_FACES) {
+                    for (final BlockFace face : Utilities.CARDINAL_BLOCK_FACES) {
                         if (MaterialList.AIR.contains(block.getRelative(face).getType())) {
                             exposed = true;
                         }
@@ -105,7 +105,8 @@ public final class Reveal extends Zenchantment {
                     }
 
                     found++;
-                    int entityId = 2000000000 + (block.hashCode()) % 10000000;
+
+                    final int entityId = 2000000000 + (block.hashCode()) % 10000000;
 
                     if (GLOWING_BLOCKS.containsKey(block)) {
                         GLOWING_BLOCKS.put(block, GLOWING_BLOCKS.get(block) + 1);
@@ -130,7 +131,6 @@ public final class Reveal extends Zenchantment {
         }
 
         Utilities.damageItemStack(player, Math.max(16, (int) Math.round(found * 1.3)), usedHand);
-
         return true;
     }
 }
