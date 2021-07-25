@@ -66,13 +66,13 @@ public final class Spikes extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
         if (!(player.getVelocity().getY() < -0.45)) {
             return true;
         }
 
-        for (Entity entity : player.getNearbyEntities(1, 2, 1)) {
-            double fall = Math.min(player.getFallDistance(), 20.0);
+        for (final Entity entity : player.getNearbyEntities(1, 2, 1)) {
+            final double fall = Math.min(player.getFallDistance(), 20.0);
             if (entity instanceof LivingEntity) {
                 this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, this.getPower() * level * fall * 0.25);
             }

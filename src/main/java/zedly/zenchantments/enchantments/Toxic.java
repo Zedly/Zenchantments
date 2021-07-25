@@ -77,14 +77,14 @@ public final class Toxic extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
         if (event.getEntity() instanceof LivingEntity &&
             this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
             return true;
         }
 
-        int value = (int) Math.round(level * this.getPower());
+        final int value = (int) Math.round(level * this.getPower());
 
         Utilities.addPotionEffect((LivingEntity) event.getEntity(), CONFUSION, 80 + 60 * value, 4);
         Utilities.addPotionEffect((LivingEntity) event.getEntity(), HUNGER, 40 + 60 * value, 4);
@@ -93,12 +93,12 @@ public final class Toxic extends Zenchantment {
             return true;
         }
 
-        Player player = (Player) event.getEntity();
+        final Player player = (Player) event.getEntity();
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
             player.removePotionEffect(HUNGER);
             Utilities.addPotionEffect(player, HUNGER, 60 + 40 * value, 0);
-        }, 20 + 60 * value);
+        }, 20 + 60L * value);
 
         HUNGER_PLAYERS.put((Player) event.getEntity(), (1 + value) * 100);
 
@@ -106,17 +106,17 @@ public final class Toxic extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        ToxicArrow arrow = new ToxicArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final ToxicArrow arrow = new ToxicArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 
     @EffectTask(Frequency.HIGH)
     public static void hunger(final @NotNull ZenchantmentsPlugin plugin) {
-        Iterator<Player> iterator = HUNGER_PLAYERS.keySet().iterator();
+        final Iterator<Player> iterator = HUNGER_PLAYERS.keySet().iterator();
         while (iterator.hasNext()) {
-            Player player = iterator.next();
+            final Player player = iterator.next();
             if (HUNGER_PLAYERS.get(player) < 1) {
                 iterator.remove();
             } else {

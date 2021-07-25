@@ -8,13 +8,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.*;
+import zedly.zenchantments.Hand;
+import zedly.zenchantments.Tool;
+import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.VortexArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static java.util.Objects.requireNonNull;
 
 public final class Vortex extends Zenchantment {
     public static final String KEY = "vortex";
@@ -71,26 +76,29 @@ public final class Vortex extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityKill(@NotNull EntityDeathEvent event, int level, boolean usedHand) {
-        Block deathBlock = event.getEntity().getLocation().getBlock();
-        Player killer = event.getEntity().getKiller();
+    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final boolean usedHand) {
+        final Block deathBlock = event.getEntity().getLocation().getBlock();
+        final Player killer = event.getEntity().getKiller();
 
         VORTEX_LOCATIONS.put(deathBlock, killer);
 
-        int experience = event.getDroppedExp();
+        final int experience = event.getDroppedExp();
 
         event.setDroppedExp(0);
 
-        this.getPlugin().getCompatibilityAdapter().collectExp(killer, experience);
-
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> VORTEX_LOCATIONS.remove(deathBlock), 3);
+        this.getPlugin().getCompatibilityAdapter().collectExp(requireNonNull(killer), experience);
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+            this.getPlugin(),
+            () -> VORTEX_LOCATIONS.remove(deathBlock),
+            3
+        );
 
         return true;
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        VortexArrow arrow = new VortexArrow(this.getPlugin(), (Arrow) event.getProjectile());
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final VortexArrow arrow = new VortexArrow(this.getPlugin(), (Arrow) event.getProjectile());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

@@ -67,14 +67,14 @@ public final class SonicShock extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
         if (!player.isGliding() || !(player.getVelocity().length() >= 1)) {
             return true;
         }
 
-        for (Entity entity : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
+        for (final Entity entity : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
             if (entity instanceof Monster) {
-                double damage = player.getVelocity().length() * 1.5 * level * this.getPower();
+                final double damage = player.getVelocity().length() * 1.5 * level * this.getPower();
                 this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, damage);
             }
         }

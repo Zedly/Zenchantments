@@ -13,6 +13,7 @@ import zedly.zenchantments.*;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
@@ -72,17 +73,17 @@ public final class Terraformer extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
-        if (!event.getPlayer().isSneaking() || !event.getAction().equals(RIGHT_CLICK_BLOCK)) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+        if (!event.getPlayer().isSneaking() || event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
 
-        Block start = event.getClickedBlock().getRelative(event.getBlockFace());
-        Inventory inventory = event.getPlayer().getInventory();
+        final Block start = requireNonNull(event.getClickedBlock()).getRelative(event.getBlockFace());
+        final Inventory inventory = event.getPlayer().getInventory();
         Material material = AIR;
 
         for (int i = 0; i < 9; i++) {
-            ItemStack item = inventory.getItem(i);
+            final ItemStack item = inventory.getItem(i);
 
             if (item == null) {
                 continue;
@@ -94,7 +95,7 @@ public final class Terraformer extends Zenchantment {
             }
         }
 
-        Iterable<Block> blocks = Utilities.bfs(
+        final Iterable<Block> blocks = Utilities.bfs(
             start,
             MAX_BLOCKS,
             false,
@@ -106,7 +107,7 @@ public final class Terraformer extends Zenchantment {
             true
         );
 
-        for (Block block : blocks) {
+        for (final Block block : blocks) {
             if (block.getType() != AIR) {
                 continue;
             }

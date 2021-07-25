@@ -77,12 +77,12 @@ public final class Stream extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getItem() == null || event.getItem().getType() != Material.ELYTRA) {
             return false;
         }
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (!event.getPlayer().hasMetadata("ze.stream.mode")) {
             player.setMetadata("ze.stream.mode", new FixedMetadataValue(this.getPlugin(), 0));
@@ -117,18 +117,20 @@ public final class Stream extends Zenchantment {
 
         event.setCancelled(true);
 
-        PlayerInventory inventory = player.getInventory();
+        final PlayerInventory inventory = player.getInventory();
 
         // Prevent auto-equipping.
-        if ((inventory.getChestplate() == null
-            || inventory.getChestplate().getType() == Material.AIR)
+        if ((
+            inventory.getChestplate() == null
+                || inventory.getChestplate().getType() == Material.AIR
+        )
         ) {
             this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
                 if (inventory.getItemInMainHand().getType() != Material.AIR) {
                     return;
                 }
 
-                ItemStack stack = inventory.getChestplate();
+                final ItemStack stack = inventory.getChestplate();
                 inventory.setItemInMainHand(stack);
                 inventory.setChestplate(new ItemStack(Material.AIR));
             }, 0);
@@ -138,7 +140,7 @@ public final class Stream extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
         if (!player.isGliding() || !(player.getVelocity().length() >= 0.5)) {
             return false;
         }
@@ -147,7 +149,7 @@ public final class Stream extends Zenchantment {
             player.setMetadata("ze.stream.mode", new FixedMetadataValue(this.getPlugin(), 0));
         }
 
-        int mode = player.getMetadata("ze.stream.mode").get(0).asInt();
+        final int mode = player.getMetadata("ze.stream.mode").get(0).asInt();
 
         switch (mode) {
             case 0:
@@ -157,7 +159,7 @@ public final class Stream extends Zenchantment {
                 player.getWorld().spawnParticle(TRAIL_TYPES[mode], player.getLocation(), 3);
                 break;
             case 3:
-                ThreadLocalRandom random = ThreadLocalRandom.current();
+                final ThreadLocalRandom random = ThreadLocalRandom.current();
                 player.getWorld().spawnParticle(
                     Particle.REDSTONE,
                     player.getLocation(),

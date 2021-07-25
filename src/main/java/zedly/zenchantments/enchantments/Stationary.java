@@ -67,14 +67,14 @@ public final class Stationary extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
         if (event.getEntity() instanceof LivingEntity
             && !this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
             return true;
         }
 
-        LivingEntity entity = (LivingEntity) event.getEntity();
+        final LivingEntity entity = (LivingEntity) event.getEntity();
 
         if (event.getDamage() < entity.getHealth()) {
             event.setCancelled(true);
@@ -86,8 +86,8 @@ public final class Stationary extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        StationaryArrow arrow = new StationaryArrow(this.getPlugin(), (Arrow) event.getProjectile());
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final StationaryArrow arrow = new StationaryArrow(this.getPlugin(), (Arrow) event.getProjectile());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

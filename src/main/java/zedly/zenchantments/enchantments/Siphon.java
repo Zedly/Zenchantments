@@ -72,14 +72,14 @@ public final class Siphon extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
         if (event.getEntity() instanceof LivingEntity
             && this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
-            Player player = (Player) event.getDamager();
+            final Player player = (Player) event.getDamager();
             int difference = (int) Math.round(0.17 * level * this.getPower() * event.getDamage());
 
-            double genericMaxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+            final double genericMaxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
 
             while (difference > 0) {
                 if (player.getHealth() < genericMaxHealth) {
@@ -89,12 +89,13 @@ public final class Siphon extends Zenchantment {
                 difference--;
             }
         }
+
         return true;
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        SiphonArrow arrow = new SiphonArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final SiphonArrow arrow = new SiphonArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

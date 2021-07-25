@@ -2,7 +2,6 @@ package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
@@ -66,8 +65,8 @@ public final class Saturation extends Zenchantment {
     }
 
     @Override
-    public boolean onHungerChange(@NotNull FoodLevelChangeEvent event, int level, boolean usedHand) {
-        if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()
+    public boolean onHungerChange(final @NotNull FoodLevelChangeEvent event, final int level, final boolean usedHand) {
+        if (event.getFoodLevel() < event.getEntity().getFoodLevel()
             && ThreadLocalRandom.current().nextInt(10) > 10 - 2 * level * this.getPower()
         ) {
             event.setCancelled(true);

@@ -19,6 +19,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.entity.EntityType.*;
 
 public final class Transformation extends Zenchantment {
@@ -242,7 +243,7 @@ public final class Transformation extends Zenchantment {
                 1,
                 Math.min(
                     entity.getHealth(),
-                    newEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()
+                    requireNonNull(newEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue()
                 )
             )
         );
@@ -258,7 +259,7 @@ public final class Transformation extends Zenchantment {
         }
 
         for (final ItemStack stack : entity.getEquipment().getArmorContents()) {
-            if (stack.hasItemMeta() && stack.getItemMeta().hasEnchants()) {
+            if (stack.hasItemMeta() && requireNonNull(stack.getItemMeta()).hasEnchants()) {
                 return true;
             }
 

@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
+
 public final class Singularity extends Zenchantment {
     public static final String KEY = "singularity";
 
@@ -79,26 +81,26 @@ public final class Singularity extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        SingularityArrow arrow = new SingularityArrow(this.getPlugin(), (Arrow) event.getProjectile(), level);
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final SingularityArrow arrow = new SingularityArrow(this.getPlugin(), (Arrow) event.getProjectile(), level);
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 
     @EffectTask(Frequency.HIGH)
     public static void singularityPhysics(final @NotNull ZenchantmentsPlugin plugin) {
-        for (Location location : SINGULARITIES.keySet()) {
-            for (Entity entity : location.getWorld().getNearbyEntities(location, 10, 10, 10)) {
+        for (final Location location : SINGULARITIES.keySet()) {
+            for (final Entity entity : requireNonNull(location.getWorld()).getNearbyEntities(location, 10, 10, 10)) {
                 if (entity instanceof Player) {
                     if (((Player) entity).getGameMode() == GameMode.CREATIVE) {
                         continue;
                     }
                 }
 
-                ThreadLocalRandom random = ThreadLocalRandom.current();
+                final ThreadLocalRandom random = ThreadLocalRandom.current();
 
                 if (SINGULARITIES.get(location)) {
-                    Vector vector = location.clone().subtract(entity.getLocation()).toVector();
+                    final Vector vector = location.clone().subtract(entity.getLocation()).toVector();
                     vector.setX(vector.getX() + (-0.5f + random.nextFloat()) * 10);
                     vector.setY(vector.getY() + (-0.5f + random.nextFloat()) * 10);
                     vector.setZ(vector.getZ() + (-0.5f + random.nextFloat()) * 10);
@@ -106,7 +108,7 @@ public final class Singularity extends Zenchantment {
                     entity.setVelocity(vector.multiply(.35f));
                     entity.setFallDistance(0);
                 } else {
-                    Vector vector = entity.getLocation().subtract(location.clone()).toVector();
+                    final Vector vector = entity.getLocation().subtract(location.clone()).toVector();
                     vector.setX(vector.getX() + (-0.5f + random.nextFloat()) * 2);
                     vector.setY(vector.getY() + random.nextFloat());
                     vector.setZ(vector.getZ() + (-0.5f + random.nextFloat()) * 2);

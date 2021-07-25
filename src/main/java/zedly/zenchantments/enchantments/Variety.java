@@ -67,9 +67,9 @@ public final class Variety extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(@NotNull BlockBreakEvent event, int level, boolean usedHand) {
-        Block block = event.getBlock();
-        Material material = block.getType();
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+        final Block block = event.getBlock();
+        final Material material = block.getType();
 
         if (LOGS.contains(material)) {
             block.setType(AIR);

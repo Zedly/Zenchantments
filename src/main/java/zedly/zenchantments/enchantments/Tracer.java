@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 public final class Tracer extends Zenchantment {
     public static final String KEY = "tracer";
 
@@ -78,8 +80,8 @@ public final class Tracer extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(@NotNull EntityShootBowEvent event, int level, boolean usedHand) {
-        TracerArrow arrow = new TracerArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final TracerArrow arrow = new TracerArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
@@ -91,15 +93,15 @@ public final class Tracer extends Zenchantment {
             double distance = 100;
             int level = TRACERS.get(arrow);
             level += 2;
-            for (Entity entity : arrow.getNearbyEntities(level, level, level)) {
+            for (final Entity entity : arrow.getNearbyEntities(level, level, level)) {
                 if (!entity.getWorld().equals(arrow.getWorld())) {
                     continue;
                 }
 
-                double d = entity.getLocation().distance(arrow.getLocation());
-                Entity shooter = (Entity) arrow.getShooter();
+                final double d = entity.getLocation().distance(arrow.getLocation());
+                final Entity shooter = (Entity) arrow.getShooter();
 
-                if (arrow.getWorld().equals(shooter.getWorld())) {
+                if (arrow.getWorld().equals(requireNonNull(shooter).getWorld())) {
                     if (d < distance && entity instanceof LivingEntity
                         && !entity.equals(arrow.getShooter())
                         && arrow.getLocation().distance(shooter.getLocation()) > 15
@@ -111,15 +113,15 @@ public final class Tracer extends Zenchantment {
             }
 
             if (close != null) {
-                Location location = close.getLocation();
-                Location pos = arrow.getLocation();
+                final Location location = close.getLocation();
+                final Location pos = arrow.getLocation();
                 double its = location.distance(pos);
 
                 if (its == 0) {
                     its = 1;
                 }
 
-                Vector vector = new Vector(0D, 0D, 0D);
+                final Vector vector = new Vector(0D, 0D, 0D);
                 vector.setX((location.getX() - pos.getX()) / its);
                 vector.setY((location.getY() - pos.getY()) / its);
                 vector.setZ((location.getZ() - pos.getZ()) / its);

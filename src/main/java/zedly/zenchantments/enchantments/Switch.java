@@ -13,6 +13,7 @@ import zedly.zenchantments.*;
 
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.AIR;
 
 public final class Switch extends Zenchantment {
@@ -68,17 +69,17 @@ public final class Switch extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !event.getPlayer().isSneaking()) {
             return false;
         }
 
         // Make sure clicked block is okay to break.
-        if (!this.getPlugin().getCompatibilityAdapter().isBlockSafeToBreak(event.getClickedBlock())) {
+        if (!this.getPlugin().getCompatibilityAdapter().isBlockSafeToBreak(requireNonNull(event.getClickedBlock()))) {
             return false;
         }
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         ItemStack switchItem = null;
         int c = -1;
 
@@ -108,20 +109,23 @@ public final class Switch extends Zenchantment {
         }
 
         // Breaking succeeded, begin invasive operations.
-        Block clickedBlock = event.getClickedBlock();
+        final Block clickedBlock = event.getClickedBlock();
 
         Grab.GRAB_LOCATIONS.put(clickedBlock, event.getPlayer());
 
         event.setCancelled(true);
 
-        Material material = switchItem.getType();
+        final Material material = switchItem.getType();
+
+        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
+            this.getPlugin(),
+            () -> Grab.GRAB_LOCATIONS.remove(clickedBlock),
+            3
+        );
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
-            Grab.GRAB_LOCATIONS.remove(clickedBlock);
-        }, 3);
-
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
-            this.getPlugin().getCompatibilityAdapter().placeBlock(clickedBlock, player, material, null); // TODO: BlockData - whatever that means.
+            // TODO: BlockData - whatever that means.
+            this.getPlugin().getCompatibilityAdapter().placeBlock(clickedBlock, player, material, null);
         }, 1);
 
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);

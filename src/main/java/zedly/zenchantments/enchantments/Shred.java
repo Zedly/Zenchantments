@@ -16,6 +16,7 @@ import zedly.zenchantments.event.BlockShredEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.MaterialList.SHRED_PICKS;
 import static zedly.zenchantments.MaterialList.SHRED_SHOVELS;
@@ -182,10 +183,10 @@ public final class Shred extends Zenchantment {
                 break;
         }
 
+        // Technically sound should never be null because the default case assigns to it,
+        // but whatever. Compiler can't see that right now.
         if (sound != null) {
-            relativeBlock
-                .getLocation()
-                .getWorld()
+            requireNonNull(relativeBlock.getLocation().getWorld())
                 .playSound(relativeBlock.getLocation(), sound, 1, 1);
         }
 

@@ -69,18 +69,18 @@ public final class Stock extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
-        PlayerInventory inventory = event.getPlayer().getInventory();
-        ItemStack handItem = inventory.getItemInMainHand();
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+        final PlayerInventory inventory = event.getPlayer().getInventory();
+        final ItemStack handItem = inventory.getItemInMainHand();
 
         if (handItem.getType() == AIR) {
             return false;
         }
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
-            ItemStack newHandItem = inventory.getItemInMainHand();
+            final ItemStack newHandItem = inventory.getItemInMainHand();
 
             if (newHandItem.getType() != AIR) {
                 return;
@@ -89,7 +89,7 @@ public final class Stock extends Zenchantment {
             int current = -1;
 
             for (int i = 0; i < event.getPlayer().getInventory().getContents().length; i++) {
-                ItemStack stack = player.getInventory().getContents()[i];
+                final ItemStack stack = player.getInventory().getContents()[i];
                 if (stack.getType() == handItem.getType()) {
                     current = i;
                     break;

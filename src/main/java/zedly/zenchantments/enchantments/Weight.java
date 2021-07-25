@@ -66,8 +66,8 @@ public final class Weight extends Zenchantment {
     }
 
     @Override
-    public boolean onBeingHit(@NotNull EntityDamageByEntityEvent event, int level, boolean usedHand) {
-        Player player = (Player) event.getEntity();
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+        final Player player = (Player) event.getEntity();
 
         if (!(event.getDamage() < player.getHealth())) {
             return true;
@@ -85,7 +85,7 @@ public final class Weight extends Zenchantment {
                 .multiply((float) (1 / (level * this.getPower() + 1.5)))
         );
 
-        ItemStack[] armour = player.getInventory().getArmorContents();
+        final ItemStack[] armour = player.getInventory().getArmorContents();
 
         for (int i = 0; i < 4; i++) {
             if (armour[i] != null) {
@@ -102,7 +102,7 @@ public final class Weight extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(@NotNull Player player, int level, boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         Utilities.addPotionEffect(player, INCREASE_DAMAGE, 610, (int) Math.round(this.getPower() * level));
         player.setWalkSpeed((float) (0.164f - level * this.getPower() * 0.014f));
         player.setMetadata("ze.speed", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));

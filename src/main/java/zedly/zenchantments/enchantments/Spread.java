@@ -18,6 +18,8 @@ import zedly.zenchantments.arrows.ZenchantedArrow;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
+
 public final class Spread extends Zenchantment {
     public static final String KEY = "spread";
 
@@ -74,7 +76,7 @@ public final class Spread extends Zenchantment {
     public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
         final Arrow originalArrow = (Arrow) event.getEntity();
         final Player player = (Player) originalArrow.getShooter();
-        final ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
+        final ItemStack hand = Utilities.getUsedItemStack(requireNonNull(player), usedHand);
 
         final MultiArrow multiArrow = new MultiArrow(this.getPlugin(), originalArrow);
         ZenchantedArrow.putArrow(originalArrow, multiArrow, player);
