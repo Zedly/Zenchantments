@@ -85,21 +85,19 @@ public final class Glide extends Zenchantment {
             return false;
         }
 
-        // 🅱
-        // I actually don't know what this boolean does right now.
-        boolean b = false;
+        boolean safeFall = false;
 
         for (int i = -5; i < 0; i++) {
             if (location.getBlock().getRelative(0, i, 0).getType() != AIR) {
-                b = true;
+                safeFall = true;
             }
         }
 
         if (player.getVelocity().getY() > -0.5) {
-            b = true;
+            safeFall = true;
         }
 
-        if (!b) {
+        if (!safeFall) {
             final double cosPitch = Math.cos(Math.toRadians(location.getPitch()));
             final double sinYaw = Math.sin(Math.toRadians(location.getYaw()));
             final double cosYaw = Math.cos(Math.toRadians(location.getYaw()));
