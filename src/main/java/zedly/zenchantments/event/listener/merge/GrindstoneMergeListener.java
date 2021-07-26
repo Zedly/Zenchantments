@@ -20,18 +20,18 @@ import static org.bukkit.event.EventPriority.MONITOR;
 public class GrindstoneMergeListener implements Listener {
     private final ZenchantmentsPlugin plugin;
 
-    public GrindstoneMergeListener(@NotNull ZenchantmentsPlugin plugin) {
+    public GrindstoneMergeListener(final @NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler(priority = MONITOR)
-    private void onClick(@NotNull InventoryClickEvent event) {
+    private void onClick(final @NotNull InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.GRINDSTONE) {
             return;
         }
 
-        GrindstoneInventory inventory = (GrindstoneInventory) event.getInventory();
-        World world = event.getViewers().get(0).getWorld();
+        final GrindstoneInventory inventory = (GrindstoneInventory) event.getInventory();
+        final World world = event.getViewers().get(0).getWorld();
 
         if (event.getSlot() == 2) {
             this.removeOutputEnchants(inventory, world);
@@ -44,20 +44,21 @@ public class GrindstoneMergeListener implements Listener {
         }
     }
 
-    private void removeOutputEnchants(@NotNull GrindstoneInventory inventory, @NotNull World world) {
-        ItemStack itemStack = inventory.getItem(2);
+    private void removeOutputEnchants(final @NotNull GrindstoneInventory inventory, final @NotNull World world) {
+        final ItemStack itemStack = inventory.getItem(2);
 
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return;
         }
 
         final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(itemStack,
+        final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
+            itemStack,
             this.plugin.getGlobalConfiguration(),
             worldConfiguration
         ).keySet();
 
-        for (Zenchantment zenchantment : zenchantments) {
+        for (final Zenchantment zenchantment : zenchantments) {
             Zenchantment.setZenchantmentForItemStack(itemStack, zenchantment, 0, worldConfiguration);
         }
 

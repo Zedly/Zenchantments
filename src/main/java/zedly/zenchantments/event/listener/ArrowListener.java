@@ -13,35 +13,35 @@ import zedly.zenchantments.arrows.ZenchantedArrow;
 
 public class ArrowListener implements Listener {
     @EventHandler
-    private void onProjectileHit(@NotNull ProjectileHitEvent event) {
+    private void onProjectileHit(final @NotNull ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Arrow)) {
             return;
         }
 
-        Arrow entity = (Arrow) event.getEntity();
+        final Arrow entity = (Arrow) event.getEntity();
 
         if (!ZenchantedArrow.ADVANCED_PROJECTILES.containsKey(entity)) {
             return;
         }
 
-        for (ZenchantedArrow arrow : ZenchantedArrow.ADVANCED_PROJECTILES.get(entity)) {
+        for (final ZenchantedArrow arrow : ZenchantedArrow.ADVANCED_PROJECTILES.get(entity)) {
             arrow.onImpact();
         }
     }
 
     @EventHandler
-    private void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
+    private void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Arrow)) {
             return;
         }
 
-        Arrow damager = (Arrow) event.getDamager();
+        final Arrow damager = (Arrow) event.getDamager();
 
         if (!ZenchantedArrow.ADVANCED_PROJECTILES.containsKey(damager)) {
             return;
         }
 
-        for (ZenchantedArrow arrow : ZenchantedArrow.ADVANCED_PROJECTILES.remove(damager)) {
+        for (final ZenchantedArrow arrow : ZenchantedArrow.ADVANCED_PROJECTILES.remove(damager)) {
             if (event.getEntity() instanceof LivingEntity) {
                 if (!arrow.onImpact(event)) {
                     event.setDamage(0);
@@ -57,8 +57,8 @@ public class ArrowListener implements Listener {
     }
 
     @EventHandler
-    private void onEntityDeath(@NotNull EntityDeathEvent event) {
-        Entity entity = event.getEntity();
+    private void onEntityDeath(final @NotNull EntityDeathEvent event) {
+        final Entity entity = event.getEntity();
 
         if (ZenchantedArrow.KILLED_ENTITIES.containsKey(entity)) {
             ZenchantedArrow.KILLED_ENTITIES.remove(entity).onKill(event);
