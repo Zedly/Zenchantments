@@ -34,15 +34,14 @@ public final class Vortex extends Zenchantment {
     private final NamespacedKey key;
 
     public Vortex(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -86,9 +85,9 @@ public final class Vortex extends Zenchantment {
 
         event.setDroppedExp(0);
 
-        this.getPlugin().getCompatibilityAdapter().collectExp(requireNonNull(killer), experience);
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-            this.getPlugin(),
+        ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().collectExp(requireNonNull(killer), experience);
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+            ZenchantmentsPlugin.getInstance(),
             () -> VORTEX_LOCATIONS.remove(deathBlock),
             3
         );
@@ -98,7 +97,7 @@ public final class Vortex extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final VortexArrow arrow = new VortexArrow(this.getPlugin(), (Arrow) event.getProjectile());
+        final VortexArrow arrow = new VortexArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

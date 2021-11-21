@@ -26,15 +26,14 @@ public final class Arborist extends Zenchantment {
     private final NamespacedKey key;
 
     public Arborist(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
         final double probability,
         final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -83,14 +82,12 @@ public final class Arborist extends Zenchantment {
             LEAVES.indexOf(material)
         );
 
-        final ItemStack stack = new ItemStack(SAPLINGS.get(index), 1);
-
         if (!(ThreadLocalRandom.current().nextInt(10) >= (9 - level) / (this.getPower() + 0.001))) {
             return false;
         }
 
         if (ThreadLocalRandom.current().nextInt(3) % 3 == 0) {
-            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(SAPLINGS.get(index), 1));
         }
 
         if (ThreadLocalRandom.current().nextInt(3) % 3 == 0) {

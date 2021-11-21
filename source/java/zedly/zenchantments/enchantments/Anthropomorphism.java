@@ -40,15 +40,14 @@ public final class Anthropomorphism extends Zenchantment {
     private final NamespacedKey key;
 
     public Anthropomorphism(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
         final double probability,
         final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -220,12 +219,12 @@ public final class Anthropomorphism extends Zenchantment {
                     final Location location = player.getLocation();
                     final FallingBlock blockEntity = requireNonNull(location.getWorld()).spawnFallingBlock(
                         location,
-                        this.getPlugin().getServer().createBlockData(MATERIALS[ThreadLocalRandom.current().nextInt(4)])
+                        ZenchantmentsPlugin.getInstance().getServer().createBlockData(MATERIALS[ThreadLocalRandom.current().nextInt(4)])
                     );
 
                     blockEntity.setDropItem(false);
                     blockEntity.setGravity(false);
-                    blockEntity.setMetadata("ze.anthrothrower", new FixedMetadataValue(this.getPlugin(), player));
+                    blockEntity.setMetadata("ze.anthrothrower", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), player));
                     IDLE_BLOCKS.put(blockEntity, player);
                     return true;
                 }

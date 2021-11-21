@@ -29,15 +29,14 @@ public final class RainbowSlam extends Zenchantment {
     private final NamespacedKey key;
 
     public RainbowSlam(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -73,7 +72,7 @@ public final class RainbowSlam extends Zenchantment {
     @Override
     public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final boolean usedHand) {
         if (!(event.getRightClicked() instanceof LivingEntity)
-            || !this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
+            || !ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
         ) {
             return false;
         }
@@ -88,7 +87,7 @@ public final class RainbowSlam extends Zenchantment {
         for (int i = 0; i < 30; i++) {
             int finalI = i;
 
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
                 for (int j = 0; j < 40; j++) {
                     if (entity.isDead()) {
                         return;
@@ -120,7 +119,7 @@ public final class RainbowSlam extends Zenchantment {
         final AtomicBoolean applied = new AtomicBoolean(false);
 
         for (int i = 0; i < 3; i++) {
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
                 entity.setVelocity(location.toVector().subtract(entity.getLocation().toVector()).multiply(0.3));
                 entity.setFallDistance(0);
 
@@ -132,7 +131,7 @@ public final class RainbowSlam extends Zenchantment {
 
                 RAINBOW_SLAM_ENTITIES.remove(entity);
 
-                this.getPlugin().getCompatibilityAdapter().attackEntity(entity, event.getPlayer(), level * this.getPower());
+                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity(entity, event.getPlayer(), level * this.getPower());
 
                 for (int c = 0; c < 1000; c++) {
                     entity.getWorld().spawnParticle(

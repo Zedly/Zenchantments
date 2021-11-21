@@ -1,7 +1,9 @@
 package zedly.zenchantments;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +24,7 @@ import zedly.zenchantments.player.PlayerDataProvider;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static org.bukkit.Material.LAVA;
@@ -32,7 +35,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     private static ZenchantmentsPlugin instance;
 
     private final GlobalConfiguration        globalConfiguration        = new GlobalConfiguration(this);
-    private final WorldConfigurationProvider worldConfigurationProvider = new WorldConfigurationProvider(this);
+    private final WorldConfigurationProvider worldConfigurationProvider = WorldConfigurationProvider.getInstance();
     private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
     private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
     private final CompatibilityAdapter       compatibilityAdapter       = new CompatibilityAdapter(this);
@@ -46,8 +49,17 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     public void onEnable() {
         ZenchantmentsPlugin.instance = this;
 
-        this.globalConfiguration.loadGlobalConfiguration();
+        try {
+            this.globalConfiguration.loadGlobalConfiguration();
+        } catch (Exception e) {
+            System.err.println("Zenchantments was unable to load the default configuration. This can only mean the plugin JAR is broken!\n" +
+                "Please try updating Zenchantments from https://dev.bukkit.org/projects/zenchantments");
+            e.printStackTrace();
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         this.worldConfigurationProvider.loadWorldConfigurations();
+
 
         ZenchantmentsCommandHandler commandHandler = new ZenchantmentsCommandHandler(this);
         PluginCommand enchCommand = Objects.requireNonNull(this.getCommand("ench"));
@@ -100,28 +112,33 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
 
     @Override
     @NotNull
+    @Deprecated
     public GlobalConfiguration getGlobalConfiguration() {
         return this.globalConfiguration;
     }
 
     @Override
+    @Deprecated
     @NotNull
     public WorldConfigurationProvider getWorldConfigurationProvider() {
         return this.worldConfigurationProvider;
     }
 
     @Override
+    @Deprecated
     @NotNull
     public PlayerDataProvider getPlayerDataProvider() {
         return this.playerDataProvider;
     }
 
     @NotNull
+    @Deprecated
     public ZenchantmentFactory getZenchantmentFactory() {
         return this.zenchantmentFactory;
     }
 
     @NotNull
+    @Deprecated
     public CompatibilityAdapter getCompatibilityAdapter() {
         return this.compatibilityAdapter;
     }

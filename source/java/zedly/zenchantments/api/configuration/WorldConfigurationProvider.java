@@ -1,7 +1,10 @@
 package zedly.zenchantments.api.configuration;
 
 import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 /**
  * A provider and general manager of {@link WorldConfiguration} instances for various {@link World Worlds}.
@@ -19,7 +22,7 @@ public interface WorldConfigurationProvider {
      * @return The {@link WorldConfiguration} for the specified {@link World}.
      */
     @NotNull
-    WorldConfiguration getConfigurationForWorld(@NotNull World world);
+    WorldConfiguration getConfigurationForWorld(@NotNull World world) throws IOException, InvalidConfigurationException;
 
     /**
      * Loads the {@link WorldConfiguration} for the specified {@link World} from the disk.
@@ -35,7 +38,7 @@ public interface WorldConfigurationProvider {
      * {@link World}.
      */
     @NotNull
-    WorldConfiguration loadConfigurationForWorld(@NotNull World world);
+    WorldConfiguration loadConfigurationForWorld(@NotNull World world) throws IOException, InvalidConfigurationException;
 
     /**
      * Resets the {@link WorldConfiguration} for the specified {@link World} back to the values returned by

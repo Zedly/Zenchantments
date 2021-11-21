@@ -1,9 +1,15 @@
 package zedly.zenchantments.configuration;
 
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.api.Zenchantments;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Set;
 
@@ -28,7 +34,12 @@ public class GlobalConfiguration implements zedly.zenchantments.api.configuratio
         return Collections.emptySet();
     }
 
-    public void loadGlobalConfiguration() {
-
+    public void loadGlobalConfiguration() throws IOException, InvalidConfigurationException {
+        // Create default config for this world if it doesn't exist
+        InputStream stream = Zenchantments.class.getResourceAsStream("/config.yml");
+        // Load the config for this config
+        YamlConfiguration yamlConfig = new YamlConfiguration();
+        yamlConfig.load(new InputStreamReader(stream));
+        defaultWorldConfiguration = WorldConfiguration.fromYamlConfiguration(yamlConfig);
     }
 }

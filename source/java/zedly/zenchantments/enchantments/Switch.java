@@ -14,6 +14,7 @@ import zedly.zenchantments.*;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import org.bukkit.Bukkit;
 import static org.bukkit.Material.AIR;
 
 public final class Switch extends Zenchantment {
@@ -27,15 +28,14 @@ public final class Switch extends Zenchantment {
     private final NamespacedKey key;
 
     public Switch(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
         final double power,
         final float probability
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -73,9 +73,14 @@ public final class Switch extends Zenchantment {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !event.getPlayer().isSneaking()) {
             return false;
         }
+        
+        Block clickedBlock = event.getClickedBlock();
+        if(clickedBlock == null) {
+            return false;
+        }
 
         // Make sure clicked block is okay to break.
-        if (!this.getPlugin().getCompatibilityAdapter().isBlockSafeToBreak(requireNonNull(event.getClickedBlock()))) {
+        if (!ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().isBlockSafeToBreak(clickedBlock)) {
             return false;
         }
 
@@ -104,12 +109,9 @@ public final class Switch extends Zenchantment {
         }
 
         // Block has been selected, attempt breaking.
-        if (!this.getPlugin().getCompatibilityAdapter().breakBlock(event.getClickedBlock(), event.getPlayer())) {
+        if (!ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(clickedBlock, event.getPlayer())) {
             return false;
         }
-
-        // Breaking succeeded, begin invasive operations.
-        final Block clickedBlock = event.getClickedBlock();
 
         Grab.GRAB_LOCATIONS.put(clickedBlock, event.getPlayer());
 
@@ -117,15 +119,15 @@ public final class Switch extends Zenchantment {
 
         final Material material = switchItem.getType();
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-            this.getPlugin(),
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
+            ZenchantmentsPlugin.getInstance(),
             () -> Grab.GRAB_LOCATIONS.remove(clickedBlock),
             3
         );
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
             // TODO: BlockData - whatever that means.
-            this.getPlugin().getCompatibilityAdapter().placeBlock(clickedBlock, player, material, null);
+            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(clickedBlock, player, material, null);
         }, 1);
 
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);

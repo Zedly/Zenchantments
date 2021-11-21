@@ -1,6 +1,23 @@
 package zedly.zenchantments;
 
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.core.IRegistry;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
+import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.network.syncher.DataWatcher;
+import net.minecraft.network.syncher.DataWatcherObject;
+import net.minecraft.network.syncher.DataWatcherRegistry;
+import net.minecraft.network.syncher.DataWatcherSerializer;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.world.EnumHand;
+import net.minecraft.world.EnumInteractionResult;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.EntityMushroomCow;
+import net.minecraft.world.entity.animal.EntitySheep;
+import net.minecraft.world.entity.monster.EntityCreeper;
+import net.minecraft.world.entity.player.EntityHuman;
+import net.minecraft.world.level.World;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,11 +29,11 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftCreeper;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftSheep;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftCreeper;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftSheep;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
@@ -140,12 +157,12 @@ public class CompatibilityAdapter {
         );
         final EntityHuman human = ((CraftPlayer) player).getHandle();
         orb.pickup(human); // XP Orb Entity handles mending. Don't blame me, I didn't code it.
-        human.bu = 0; // Reset XP Pickup Timer.
+        human.ca = 0; // Reset XP Pickup Timer.
     }
 
     public boolean breakBlock(final @NotNull Block block, final @NotNull Player player) {
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        return ep.playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        return ep.d.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 
     public boolean placeBlock(
@@ -223,12 +240,12 @@ public class CompatibilityAdapter {
     ) {
         if (target instanceof CraftSheep) {
             final EntitySheep entitySheep = ((CraftSheep) target).getHandle();
-            final EnumInteractionResult result = entitySheep.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
-            return result == EnumInteractionResult.SUCCESS;
+            final EnumInteractionResult result = entitySheep.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.a : EnumHand.b);
+            return result == EnumInteractionResult.a;
         } else if (target instanceof CraftMushroomCow) {
             final EntityMushroomCow entityMushroomCow = ((CraftMushroomCow) target).getHandle();
-            final EnumInteractionResult result = entityMushroomCow.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
-            return result == EnumInteractionResult.SUCCESS;
+            final EnumInteractionResult result = entityMushroomCow.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.a : EnumHand.b);
+            return result == EnumInteractionResult.a;
         }
 
         return false;
@@ -331,13 +348,13 @@ public class CompatibilityAdapter {
     }
 
     public boolean showShulker(final @NotNull Block blockToHighlight, final int entityId, final @NotNull Player player) {
-        return showHighlightBlock(blockToHighlight, player);
+        return showHighlightBlock(blockToHighlight, entityId, player);
     }
 
     public boolean hideShulker(final int entityId, final @NotNull Player player) {
         final PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityId);
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ep.playerConnection.networkManager.sendPacket(packet);
+        ep.b.a.sendPacket(packet);
         return true;
     }
 
@@ -564,8 +581,7 @@ public class CompatibilityAdapter {
         return true;
     }
 
-    private boolean showHighlightBlock(final @NotNull Block block, final @NotNull Player player) {
-        int entityId = 2000000000 + (block.hashCode()) % 10000000;
+    private boolean showHighlightBlock(final @NotNull Block block, int entityId, final @NotNull Player player) {
         return showHighlightBlock(block.getX(), block.getY(), block.getZ(), entityId, player);
     }
 
@@ -576,102 +592,101 @@ public class CompatibilityAdapter {
         final int entityId,
         final @NotNull Player player
     ) {
-        final PacketPlayOutSpawnEntityLiving spawnPacket = generateShulkerSpawnPacket(x, y, z, entityId);
-        final PacketPlayOutEntityMetadata metadataPacket = generateShulkerGlowPacket(entityId);
-
-        final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ep.playerConnection.networkManager.sendPacket(spawnPacket);
-        ep.playerConnection.networkManager.sendPacket(metadataPacket);
-        return true;
+        try {
+            final PacketPlayOutSpawnEntityLiving spawnPacket = generateShulkerSpawnPacket(x, y, z, entityId);
+            final PacketPlayOutEntityMetadata metadataPacket = generateShulkerGlowPacket(entityId);
+            final EntityPlayer ep = ((CraftPlayer) player).getHandle();
+            ep.b.a.sendPacket(spawnPacket);
+            ep.b.a.sendPacket(metadataPacket);
+            return true;
+        } catch (InstantiationException ex) {
+            return false;
+        }
     }
 
     @NotNull
-    private static PacketPlayOutEntityMetadata generateShulkerGlowPacket(final int entityId) {
-        final PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
-        final Class<? extends PacketPlayOutEntityMetadata> clazz = packet.getClass();
-
-        try {
-            Field field = clazz.getDeclaredField("a");
-            field.setAccessible(true);
-            field.setInt(packet, entityId);
-
-            // Build data structure for Entity Metadata. Requires an index, a type and a value.
-            // As of 1.15.2, an invisible + glowing LivingEntity is set by Index 0 Type Byte Value 0x60
-            final DataWatcherSerializer<Byte> dws = DataWatcherRegistry.a; // Type (Byte)
-            final DataWatcherObject<Byte> dwo = new DataWatcherObject<>(0, dws); // Index (0)
-            final DataWatcher.Item<Byte> dwi = new DataWatcher.Item<>(dwo, (byte) 0x60); // Value (0x60)
-            final List<DataWatcher.Item<Byte>> list = new ArrayList<>();
-            list.add(dwi); // Pack it in a list
-
-            field = clazz.getDeclaredField("b");
-            field.setAccessible(true);
-            field.set(packet, list);
-        } catch (final NoSuchFieldException | IllegalAccessException ex) {
-            // Realistically, provided the plugin is running on the correct server version,
-            // this should never happen.
-
-            // Still, this should probably be improved.
-            // TODO: pls
-            ex.printStackTrace();
-            return null;
-        }
+    private static PacketPlayOutEntityMetadata generateShulkerGlowPacket(final int entityId) throws InstantiationException {
+        final Class<? extends PacketPlayOutEntityMetadata> clazz = PacketPlayOutEntityMetadata.class;
+        // Build data structure for Entity Metadata. Requires an index, a type and a value.
+        // As of 1.15.2, an invisible + glowing LivingEntity is set by Index 0 Type Byte Value 0x60
+        final DataWatcherSerializer<Byte> dws = DataWatcherRegistry.a; // Type (Byte)
+        final DataWatcherObject<Byte> dwo = new DataWatcherObject<>(0, dws); // Index (0)
+        final DataWatcher.Item<Byte> dwi = new DataWatcher.Item<>(dwo, (byte) 0x60); // Value (0x60)
+        final List<DataWatcher.Item<?>> list = new ArrayList<>();
+        FakeDataWatcher fdw = new FakeDataWatcher(list);
+        list.add(dwi); // Pack it in a list
+        PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata(entityId, fdw, true);
         return packet;
     }
 
     @NotNull
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(
-        final int x,
-        final int y,
-        final int z,
-        final int entityId
-    ) {
-        final PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving();
-        final int mobTypeId = IRegistry.ENTITY_TYPE.a(EntityTypes.SHULKER);
-        final Class<? extends PacketPlayOutSpawnEntityLiving> clazz = packet.getClass();
+        final int x, final int y, final int z, final int entityId) throws InstantiationException {
+        final int mobTypeId = IRegistry.Y.getId(EntityTypes.ay);
+        final UUID uuid = UUID.randomUUID();
+        FakeEntityLiving fel = new FakeEntityLiving(EntityTypes.ay, entityId, uuid, x, y, z);
+        PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving(fel);
+        return packet;
+    }
 
-        try {
-            Field field = clazz.getDeclaredField("a");
-            field.setAccessible(true);
-            field.setInt(packet, entityId);
-            field = clazz.getDeclaredField("b");
-            field.setAccessible(true);
-            field.set(packet, new UUID(0xFF00FF00FF00FF00L, 0xFF00FF00FF00FF00L));
-            field = clazz.getDeclaredField("c");
-            field.setAccessible(true);
-            field.setInt(packet, mobTypeId);
-            field = clazz.getDeclaredField("d");
-            field.setAccessible(true);
-            field.setDouble(packet, x + 0.5);
-            field = clazz.getDeclaredField("e");
-            field.setAccessible(true);
-            field.setDouble(packet, y);
-            field = clazz.getDeclaredField("f");
-            field.setAccessible(true);
-            field.setDouble(packet, z + 0.5);
-            field = clazz.getDeclaredField("g");
-            field.setAccessible(true);
-            field.setInt(packet, 0);
-            field = clazz.getDeclaredField("h");
-            field.setAccessible(true);
-            field.setInt(packet, 0);
-            field = clazz.getDeclaredField("i");
-            field.setAccessible(true);
-            field.setInt(packet, 0);
-            field = clazz.getDeclaredField("j");
-            field.setAccessible(true);
-            field.setByte(packet, (byte) 0);
-            field = clazz.getDeclaredField("k");
-            field.setAccessible(true);
-            field.setByte(packet, (byte) 0);
-            field = clazz.getDeclaredField("l");
-            field.setAccessible(true);
-            field.setByte(packet, (byte) 0);
-        } catch (final NoSuchFieldException | IllegalAccessException ex) {
-            // TODO: As described in generateShulkerGlowPacket(int).
-            ex.printStackTrace();
+    public static class FakeEntityLiving extends EntityLiving {
+        private final int entityId;
+        private final UUID uuid;
+        private final EntityTypes<?> entityType;
+
+        protected FakeEntityLiving(EntityTypes<? extends EntityLiving> entityType, int entityId, UUID uuid, double x, double y, double z) {
+            super(entityType, null);
+            this.entityId = entityId;
+            this.uuid = uuid;
+            this.entityType = entityType;
+            super.setPositionRaw(x, y, z);
+        }
+
+        @Override
+        public int getId() {
+            return entityId;
+        }
+
+        @Override
+        public UUID getUniqueID() {
+            return uuid;
+        }
+
+        public EntityTypes<?> getEntityType() {
+            return entityType;
+        }
+
+        // Useless abstract methods we need to implement to appease the compiler
+        @Override
+        public Iterable<net.minecraft.world.item.ItemStack> getArmorItems() {
             return null;
         }
 
-        return packet;
+        @Override
+        public net.minecraft.world.item.ItemStack getEquipment(EnumItemSlot enumItemSlot) {
+            return null;
+        }
+
+        @Override
+        public void setSlot(EnumItemSlot enumItemSlot, net.minecraft.world.item.ItemStack itemStack) {
+        }
+
+        @Override
+        public EnumMainHand getMainHand() {
+            return null;
+        }
+    }
+
+    public static class FakeDataWatcher extends DataWatcher {
+        private final List<DataWatcher.Item<?>> list;
+
+        public FakeDataWatcher(List<DataWatcher.Item<?>> list) {
+            super(null);
+            this.list = list;
+        }
+
+        public List<Item<?>> getAll() {
+            return list;
+        }
     }
 }

@@ -2,8 +2,11 @@ package zedly.zenchantments.configuration;
 
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentFactory;
 
 import java.util.*;
 
@@ -13,7 +16,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
     private final Map<NamespacedKey, Zenchantment> keyToEnch;
     private final double                           zenchantmentRarity;
     private final int                              maxZenchantments;
-    private final int                              shredDropsEnabled;
+    private final int                              shredDrops;
     private final boolean                          explosionBlockBreakEnabled;
     private final boolean                          descriptionLoreEnabled;
     private final ChatColor                        descriptionColor;
@@ -21,7 +24,78 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
     private final ChatColor                        enchantmentColor;
     private final ChatColor                        curseColor;
 
-    public WorldConfiguration(
+    public static WorldConfiguration fromYamlConfiguration(YamlConfiguration yamlConfig) {
+        double rarity = (double) (yamlConfig.get("enchant_rarity"));
+        double enchantRarity = (rarity / 100.0);
+        int maxEnchants = (int) yamlConfig.get("max_enchants");
+        boolean explosionBlockBreak = (boolean) yamlConfig.get("explosion_block_break");
+        boolean descriptionLore = (boolean) yamlConfig.get("description_lore");
+        boolean enchantGlow = (boolean) yamlConfig.get("enchantment_glow");
+        ChatColor descriptionColor = ChatColor.getByChar("" + yamlConfig.get("description_color"));
+        ChatColor enchantColor = ChatColor.getByChar("" + yamlConfig.get("enchantment_color"));
+        ChatColor curseColor = ChatColor.getByChar("" + yamlConfig.get("curse_color"));
+        int shredDrops;
+
+        descriptionColor = (descriptionColor != null) ? descriptionColor : ChatColor.GREEN;
+        enchantColor = enchantColor != null ? enchantColor : ChatColor.GRAY;
+        curseColor = curseColor != null ? curseColor : ChatColor.RED;
+
+        switch ((String) yamlConfig.get("shred_drops")) {
+            case "all":
+                shredDrops = 0;
+                break;
+            case "block":
+                shredDrops = 1;
+                break;
+            case "none":
+                shredDrops = 2;
+                break;
+            default:
+                shredDrops = 0;
+        }
+
+        Set<Class<? extends Zenchantment>> customEnchantments = ZenchantmentFactory.getZenchantmentClasses();
+
+        // Transform nested generic data types of YamlConfiguration into fixed types
+        Set<Zenchantment> enchantments = new HashSet<>();
+        Map<String, LinkedHashMap<String, Object>> configInfo = new HashMap<>();
+        for (Map<String, LinkedHashMap<String, Object>> part
+            : (List<Map<String, LinkedHashMap<String, Object>>>) yamlConfig.get("enchantments")) {
+            for (String name : part.keySet()) {
+                configInfo.put(name, part.get(name));
+            }
+        }
+
+        // Parse configuration into set of Zenchantment objects
+        for (Class<? extends Zenchantment> cl : customEnchantments) {
+            try {
+                Zenchantment.Constructor<? extends Zenchantment> enchConstructor = ZenchantmentFactory.getConstructor(cl);
+                if (configInfo.containsKey(cl.getSimpleName())) {
+                    LinkedHashMap<String, Object> data = configInfo.get(cl.getSimpleName());
+                    float probability = (float) (double) data.get("Probability");
+                    String loreName = (String) data.get("Name");
+                    int cooldown = (int) data.get("Cooldown");
+                    int maxLevel = (int) data.get("Max Level");
+                    double power = (double) data.get("Power");
+                    Set<Tool> materials = new HashSet<>();
+                    for (String s : ((String) data.get("Tools")).split(", |\\,")) {
+                        materials.add(Tool.fromString(s));
+                    }
+                    Tool[] enchantable = new Tool[0];
+                    enchantable = materials.toArray(enchantable);
+                    if (probability != -1) {
+                        enchantments.add(enchConstructor.construct(materials, maxLevel, cooldown, power, probability));
+                    }
+                }
+            } catch (Exception ex) {
+                throw new WorldConfigurationException("Exception while parsing configuration for enchantment " + cl.getSimpleName(), ex);
+            }
+        }
+        return new WorldConfiguration(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
+            descriptionLore, enchantGlow, descriptionColor, enchantColor, curseColor);
+    }
+
+    private WorldConfiguration(
         final @NotNull Set<Zenchantment> zenchantments,
         final double zenchantmentRarity,
         final int maxZenchantments,
@@ -36,7 +110,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
         this.zenchantments = zenchantments;
         this.zenchantmentRarity = zenchantmentRarity;
         this.maxZenchantments = maxZenchantments;
-        this.shredDropsEnabled = shredDropsEnabled;
+        this.shredDrops = shredDropsEnabled;
         this.explosionBlockBreakEnabled = explosionBlockBreakEnabled;
         this.descriptionLoreEnabled = descriptionLoreEnabled;
         this.zenchantmentGlowEnabled = zenchantmentGlowEnabled;
@@ -72,8 +146,8 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
     }
 
     @Override
-    public int areShredDropsEnabled() {
-        return shredDropsEnabled;
+    public int getShredDropType() {
+        return shredDrops;
     }
 
     @Override
@@ -119,5 +193,12 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
 
     public Set<Map.Entry<String, Zenchantment>> getSimpleMappings() {
         return nameToEnch.entrySet();
+    }
+
+    public static class WorldConfigurationException extends RuntimeException {
+
+        public WorldConfigurationException(String message, Exception cause) {
+            super(message, cause);
+        }
     }
 }

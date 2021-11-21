@@ -1,10 +1,12 @@
 package zedly.zenchantments.command;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,9 +22,14 @@ public class ReloadCommand extends ZenchantmentsCommand {
             return;
         }
 
-        this.plugin.getGlobalConfiguration().loadGlobalConfiguration();
-        this.plugin.getWorldConfigurationProvider().loadWorldConfigurations();
-
+        try {
+            this.plugin.getGlobalConfiguration().loadGlobalConfiguration();
+            this.plugin.getWorldConfigurationProvider().loadWorldConfigurations();
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+            sender.sendMessage(MESSAGE_PREFIX + "Reloaded Zenchantments.");
+            return;
+        }
         sender.sendMessage(MESSAGE_PREFIX + "Reloaded Zenchantments.");
     }
 

@@ -49,15 +49,14 @@ public final class Decapitation extends Zenchantment {
     private final NamespacedKey key;
 
     public Decapitation(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -103,7 +102,7 @@ public final class Decapitation extends Zenchantment {
             final int bound = Math.max((int) Math.round(BASE_PLAYER_DROP_CHANCE / (level * this.getPower())), 1);
             if (ThreadLocalRandom.current().nextInt(bound) == 0) {
                 SkullMeta meta = (SkullMeta) requireNonNull(itemStack.getItemMeta());
-                meta.setOwningPlayer(this.getPlugin().getServer().getOfflinePlayer(event.getEntity().getUniqueId()));
+                meta.setOwningPlayer(ZenchantmentsPlugin.getInstance().getServer().getOfflinePlayer(event.getEntity().getUniqueId()));
                 itemStack.setItemMeta(meta);
                 event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), itemStack);
                 return true;

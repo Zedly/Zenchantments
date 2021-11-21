@@ -24,15 +24,14 @@ public final class Spikes extends Zenchantment {
     private final NamespacedKey key;
 
     public Spikes(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -74,7 +73,7 @@ public final class Spikes extends Zenchantment {
         for (final Entity entity : player.getNearbyEntities(1, 2, 1)) {
             final double fall = Math.min(player.getFallDistance(), 20.0);
             if (entity instanceof LivingEntity) {
-                this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, this.getPower() * level * fall * 0.25);
+                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, this.getPower() * level * fall * 0.25);
             }
         }
 

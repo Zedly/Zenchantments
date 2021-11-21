@@ -546,7 +546,7 @@ public final class MaterialList extends AbstractList<Material> {
         MYCELIUM,
         PODZOL,
         GRASS_BLOCK,
-        GRASS_PATH
+        DIRT_PATH
     );
 
     public static final MaterialList STONES = new MaterialList(Material.STONE, GRANITE, ANDESITE, DIORITE);

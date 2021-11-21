@@ -28,15 +28,14 @@ public final class Grab extends Zenchantment {
     private final NamespacedKey key;
 
     public Grab(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -75,8 +74,8 @@ public final class Grab extends Zenchantment {
 
         GRAB_LOCATIONS.put(block, event.getPlayer());
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-            this.getPlugin(),
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+            ZenchantmentsPlugin.getInstance(),
             () -> GRAB_LOCATIONS.remove(block),
             3
         );

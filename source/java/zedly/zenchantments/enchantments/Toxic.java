@@ -35,15 +35,14 @@ public final class Toxic extends Zenchantment {
     private final NamespacedKey key;
 
     public Toxic(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -79,7 +78,7 @@ public final class Toxic extends Zenchantment {
     @Override
     public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
         if (event.getEntity() instanceof LivingEntity &&
-            this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
+            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
             return true;
         }
@@ -95,7 +94,7 @@ public final class Toxic extends Zenchantment {
 
         final Player player = (Player) event.getEntity();
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
             player.removePotionEffect(HUNGER);
             Utilities.addPotionEffect(player, HUNGER, 60 + 40 * value, 0);
         }, 20 + 60L * value);
@@ -107,7 +106,7 @@ public final class Toxic extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final ToxicArrow arrow = new ToxicArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+        final ToxicArrow arrow = new ToxicArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile(), level, this.getPower());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

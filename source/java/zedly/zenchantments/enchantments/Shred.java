@@ -32,15 +32,14 @@ public final class Shred extends Zenchantment {
     private final NamespacedKey key;
 
     public Shred(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
         final double power,
         final float probability
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, power, probability);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -91,7 +90,7 @@ public final class Shred extends Zenchantment {
             4.6 + (level * 0.22),
             new HashSet<>(),
             event.getPlayer(),
-            this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(block.getWorld()),
+            ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(block.getWorld()),
             hand.getType(),
             usedHand
         );
@@ -123,17 +122,17 @@ public final class Shred extends Zenchantment {
             return;
         }
 
-        if (config.areShredDropsEnabled() == 0) {
-            this.getPlugin().getCompatibilityAdapter().breakBlock(relativeBlock, player);
+        if (config.getShredDropType() == 0) {
+            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(relativeBlock, player);
         } else {
             final BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
-            this.getPlugin().getServer().getPluginManager().callEvent(event);
+            ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
                 return;
             }
 
-            if (config.areShredDropsEnabled() == 1) {
+            if (config.getShredDropType() == 1) {
                 if (relativeBlock.getType() == NETHER_QUARTZ_ORE) {
                     relativeBlock.setType(NETHERRACK);
                 } else if (MaterialList.ORES.contains(relativeBlock.getType())) {
@@ -146,9 +145,9 @@ public final class Shred extends Zenchantment {
 
                 Zenchantment.applyForTool(
                     player,
-                    this.getPlugin().getPlayerDataProvider(),
-                    this.getPlugin().getGlobalConfiguration(),
-                    this.getPlugin().getWorldConfigurationProvider(),
+                    ZenchantmentsPlugin.getInstance().getPlayerDataProvider(),
+                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
+                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider(),
                     Utilities.getUsedItemStack(player, true),
                     (ench, level) -> ench.onBlockBreak(event, level, true)
                 );

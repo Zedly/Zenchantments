@@ -31,15 +31,14 @@ public final class Terraformer extends Zenchantment {
     private final NamespacedKey key;
 
     public Terraformer(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -116,7 +115,7 @@ public final class Terraformer extends Zenchantment {
                 continue;
             }
 
-            if (this.getPlugin().getCompatibilityAdapter().placeBlock(block, event.getPlayer(), material, null)) {
+            if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(block, event.getPlayer(), material, null)) {
                 Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);
                 if (ThreadLocalRandom.current().nextInt(10) == 5) {
                     Utilities.damageItemStack(event.getPlayer(), 1, usedHand);

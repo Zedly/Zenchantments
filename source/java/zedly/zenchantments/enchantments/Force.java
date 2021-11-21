@@ -36,15 +36,14 @@ public final class Force extends Zenchantment {
     private final NamespacedKey key;
 
     public Force(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -82,12 +81,12 @@ public final class Force extends Zenchantment {
         final Player player = event.getPlayer();
 
         if (!event.getPlayer().hasMetadata("ze.direction")) {
-            player.setMetadata("ze.direction", new FixedMetadataValue(this.getPlugin(), true));
+            player.setMetadata("ze.direction", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), true));
         }
 
         if (player.isSneaking() && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)) {
             boolean mode = !player.getMetadata("ze.direction").get(0).asBoolean();
-            player.setMetadata("ze.direction", new FixedMetadataValue(this.getPlugin(), mode));
+            player.setMetadata("ze.direction", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), mode));
             player.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + (mode ? "Push Mode" : "Pull Mode"));
             return false;
         }
@@ -107,7 +106,7 @@ public final class Force extends Zenchantment {
 
         if (ThreadLocalRandom.current().nextInt(10) == 5) {
             final FoodLevelChangeEvent foodLevelChangeEvent = new FoodLevelChangeEvent(player, 2);
-            this.getPlugin().getServer().getPluginManager().callEvent(foodLevelChangeEvent);
+            ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(foodLevelChangeEvent);
             if (!foodLevelChangeEvent.isCancelled()) {
                 player.setFoodLevel(player.getFoodLevel() - 2);
             }
@@ -129,7 +128,7 @@ public final class Force extends Zenchantment {
             vector.setY(vector.getY() > 1 ? 1 : -1);
 
             if (entity instanceof LivingEntity
-                && this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, 0)
+                && ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, 0)
             ) {
                 entity.setVelocity(vector);
             }

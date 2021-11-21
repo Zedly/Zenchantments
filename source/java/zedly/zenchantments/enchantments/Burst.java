@@ -33,15 +33,14 @@ public final class Burst extends Zenchantment {
     private final NamespacedKey key;
 
     public Burst(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -95,7 +94,7 @@ public final class Burst extends Zenchantment {
             result = true;
             Utilities.setItemStackInHand(player, itemInHand, usedHand);
 
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
                 final Arrow arrow = player.getWorld().spawnArrow(
                     player.getEyeLocation(),
                     player.getLocation().getDirection(),
@@ -125,15 +124,15 @@ public final class Burst extends Zenchantment {
 
                 final ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
 
-                this.getPlugin().getServer().getPluginManager().callEvent(shootEvent);
-                this.getPlugin().getServer().getPluginManager().callEvent(launchEvent);
+                ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(shootEvent);
+                ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(launchEvent);
 
                 if (shootEvent.isCancelled() || launchEvent.isCancelled()) {
                     arrow.remove();
                 } else {
-                    arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
+                    arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
                     arrow.setCritical(true);
-                    ZenchantedArrow.putArrow(arrow, new MultiArrow(this.getPlugin(), arrow), player);
+                    ZenchantedArrow.putArrow(arrow, new MultiArrow(ZenchantmentsPlugin.getInstance(), arrow), player);
                     Utilities.damageItemStack(player, 1, usedHand);
                 }
             }, i * 2L);

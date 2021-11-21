@@ -28,15 +28,14 @@ public final class Germination extends Zenchantment {
     private final NamespacedKey key;
 
     public Germination(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -90,7 +89,7 @@ public final class Germination extends Zenchantment {
 
                     if (!(relativeBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)
                         || !Utilities.playerHasMaterial(player, Material.BONE_MEAL, 1)
-                        || !this.getPlugin().getCompatibilityAdapter().grow(relativeBlock, player)
+                        || !ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().grow(relativeBlock, player)
                     ) {
                         continue;
                     }
@@ -98,7 +97,7 @@ public final class Germination extends Zenchantment {
                     applied = true;
 
                     if (ThreadLocalRandom.current().nextBoolean()) {
-                        this.getPlugin().getCompatibilityAdapter().grow(relativeBlock, player);
+                        ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().grow(relativeBlock, player);
                     }
 
                     Utilities.displayParticle(

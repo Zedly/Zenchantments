@@ -22,15 +22,14 @@ public final class Haste extends Zenchantment {
     private final NamespacedKey key;
 
     public Haste(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -66,7 +65,7 @@ public final class Haste extends Zenchantment {
     @Override
     public boolean onScanHands(final @NotNull Player player, final int level, final boolean usedHand) {
         Utilities.addPotionEffect(player, FAST_DIGGING, 610, (int) Math.round(level * this.getPower()));
-        player.setMetadata("ze.haste", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));
+        player.setMetadata("ze.haste", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), System.currentTimeMillis()));
         return false;
     }
 }

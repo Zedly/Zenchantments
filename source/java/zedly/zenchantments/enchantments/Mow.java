@@ -31,15 +31,14 @@ public final class Mow extends Zenchantment {
     private final NamespacedKey key;
 
     public Mow(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -96,13 +95,13 @@ public final class Mow extends Zenchantment {
             if (entity instanceof Sheep) {
                 final Sheep sheep = (Sheep) entity;
                 if (sheep.isAdult()) {
-                    this.getPlugin().getCompatibilityAdapter().shearEntityNMS(sheep, player, usedHand);
+                    ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().shearEntityNMS(sheep, player, usedHand);
                     shearedEntity = true;
                 }
             } else if (entity instanceof MushroomCow) {
                 final MushroomCow mooshroom = (MushroomCow) entity;
                 if (mooshroom.isAdult()) {
-                    this.getPlugin().getCompatibilityAdapter().shearEntityNMS(mooshroom, player, usedHand);
+                    ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().shearEntityNMS(mooshroom, player, usedHand);
                     shearedEntity = true;
                 }
             }

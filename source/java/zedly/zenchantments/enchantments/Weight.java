@@ -24,17 +24,16 @@ public final class Weight extends Zenchantment {
     private final NamespacedKey key;
 
     public Weight(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
-
+    
     @Override
     @NotNull
     public NamespacedKey getKey() {
@@ -105,7 +104,7 @@ public final class Weight extends Zenchantment {
     public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         Utilities.addPotionEffect(player, INCREASE_DAMAGE, 610, (int) Math.round(this.getPower() * level));
         player.setWalkSpeed((float) (0.164f - level * this.getPower() * 0.014f));
-        player.setMetadata("ze.speed", new FixedMetadataValue(this.getPlugin(), System.currentTimeMillis()));
+        player.setMetadata("ze.speed", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), System.currentTimeMillis()));
         return true;
     }
 }

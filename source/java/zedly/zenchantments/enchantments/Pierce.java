@@ -32,15 +32,14 @@ public final class Pierce extends Zenchantment {
     private final NamespacedKey key;
 
     public Pierce(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -85,7 +84,7 @@ public final class Pierce extends Zenchantment {
         final Player player = event.getPlayer();
 
         if (!player.hasMetadata("ze.pierce.mode")) {
-            player.setMetadata("ze.pierce.mode", new FixedMetadataValue(this.getPlugin(), 1));
+            player.setMetadata("ze.pierce.mode", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), 1));
         }
 
         if (!player.isSneaking() || (event.getAction() != RIGHT_CLICK_AIR && event.getAction() != RIGHT_CLICK_BLOCK)) {
@@ -94,7 +93,7 @@ public final class Pierce extends Zenchantment {
 
         int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
         mode = mode == 5 ? 1 : mode + 1;
-        player.setMetadata("ze.pierce.mode", new FixedMetadataValue(this.getPlugin(), mode));
+        player.setMetadata("ze.pierce.mode", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), mode));
 
         switch (mode) {
             case 1:
@@ -122,7 +121,7 @@ public final class Pierce extends Zenchantment {
         final Player player = event.getPlayer();
 
         if (!player.hasMetadata("ze.pierce.mode")) {
-            player.setMetadata("ze.pierce.mode", new FixedMetadataValue(this.getPlugin(), 1));
+            player.setMetadata("ze.pierce.mode", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), 1));
         }
 
         final int mode = player.getMetadata("ze.pierce.mode").get(0).asInt();
@@ -194,7 +193,7 @@ public final class Pierce extends Zenchantment {
             );
         }
 
-        final CompatibilityAdapter compatibilityAdapter = this.getPlugin().getCompatibilityAdapter();
+        final CompatibilityAdapter compatibilityAdapter = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter();
         for (final Block block : total) {
             if (compatibilityAdapter.isBlockSafeToBreak(block)) {
                 compatibilityAdapter.breakBlock(block, event.getPlayer());

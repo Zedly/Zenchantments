@@ -46,15 +46,14 @@ public final class Fire extends Zenchantment {
     private final NamespacedKey key;
 
     public Fire(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -148,8 +147,8 @@ public final class Fire extends Zenchantment {
 
         CANCELLED_ITEM_DROPS.add(block);
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-            this.getPlugin(),
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+            ZenchantmentsPlugin.getInstance(),
             () -> CANCELLED_ITEM_DROPS.remove(block),
             5
         );
@@ -184,8 +183,8 @@ public final class Fire extends Zenchantment {
 
             CANCELLED_ITEM_DROPS.add(bfsBlock);
 
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-                this.getPlugin(),
+            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+                ZenchantmentsPlugin.getInstance(),
                 () -> CANCELLED_ITEM_DROPS.remove(bfsBlock),
                 5
             );
@@ -220,15 +219,15 @@ public final class Fire extends Zenchantment {
 
                 bfsBlock.setType(AIR);
             } else {
-                if (!this.getPlugin().getCompatibilityAdapter().breakBlock(bfsBlock, player)) {
+                if (!ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(bfsBlock, player)) {
                     return false;
                 }
             }
 
             CANCELLED_ITEM_DROPS.add(bfsBlock);
 
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-                this.getPlugin(),
+            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+                ZenchantmentsPlugin.getInstance(),
                 () -> CANCELLED_ITEM_DROPS.remove(bfsBlock),
                 5
             );
@@ -244,8 +243,8 @@ public final class Fire extends Zenchantment {
 
         CANCELLED_ITEM_DROPS.add(block);
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-            this.getPlugin(),
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+            ZenchantmentsPlugin.getInstance(),
             () -> CANCELLED_ITEM_DROPS.remove(block),
             5
         );

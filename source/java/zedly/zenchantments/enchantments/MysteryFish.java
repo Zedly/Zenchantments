@@ -32,15 +32,14 @@ public final class MysteryFish extends Zenchantment {
     private final NamespacedKey key;
 
     public MysteryFish(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -88,7 +87,7 @@ public final class MysteryFish extends Zenchantment {
         if (ThreadLocalRandom.current().nextBoolean()) {
             event.getPlayer().getWorld().spawnEntity(location, SQUID);
         } else {
-            final Guardian guardian = (Guardian) this.getPlugin()
+            final Guardian guardian = (Guardian) ZenchantmentsPlugin.getInstance()
                 .getCompatibilityAdapter()
                 .spawnGuardian(location, ThreadLocalRandom.current().nextBoolean());
 

@@ -24,15 +24,14 @@ public final class Gust extends Zenchantment {
     private final NamespacedKey key;
 
     public Gust(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -88,10 +87,10 @@ public final class Gust extends Zenchantment {
                 .multiply(.25 * this.getPower())
         );
 
-        this.getPlugin().getCompatibilityAdapter().damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
+        ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, 3, EntityDamageEvent.DamageCause.MAGIC);
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-            this.getPlugin(),
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+            ZenchantmentsPlugin.getInstance(),
             () -> Utilities.damageItemStack(event.getPlayer(), 1, usedHand),
             1
         );

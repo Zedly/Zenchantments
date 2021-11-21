@@ -19,20 +19,18 @@ public final class Lumber extends Zenchantment {
     private static final Hand                               HAND_USE    = Hand.LEFT;
 
     private static final int     MAX_BLOCKS   = 200;
-    private static final int[][] SEARCH_FACES = new int[0][0];
 
     private final NamespacedKey key;
 
     public Lumber(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -82,7 +80,7 @@ public final class Lumber extends Zenchantment {
             MAX_BLOCKS,
             true,
             Float.MAX_VALUE,
-            SEARCH_FACES,
+            Utilities.DEFAULT_SEARCH_FACES,
             MaterialList.TRUNKS,
             MaterialList.LUMBER_WHITELIST,
             true,
@@ -90,7 +88,7 @@ public final class Lumber extends Zenchantment {
         );
 
         for (final Block block : blocks) {
-            this.getPlugin().getCompatibilityAdapter().breakBlock(block, event.getPlayer());
+            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(block, event.getPlayer());
         }
 
         return !blocks.isEmpty();

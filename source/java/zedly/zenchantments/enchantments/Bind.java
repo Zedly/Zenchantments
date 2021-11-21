@@ -26,15 +26,14 @@ public final class Bind extends Zenchantment {
     private final NamespacedKey key;
 
     public Bind(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -81,8 +80,8 @@ public final class Bind extends Zenchantment {
             if (
                 !Zenchantment.getZenchantmentsOnItemStack(
                     contents[i],
-                    this.getPlugin().getGlobalConfiguration(),
-                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
+                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
                 ).containsKey(this)
             ) {
                 contents[i] = null;
@@ -92,7 +91,7 @@ public final class Bind extends Zenchantment {
             }
         }
 
-        this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
             if (event.getKeepInventory()) {
                 event.getDrops().addAll(removed);
             } else {

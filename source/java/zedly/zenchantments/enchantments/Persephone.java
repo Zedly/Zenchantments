@@ -29,15 +29,14 @@ public final class Persephone extends Zenchantment {
     private final NamespacedKey key;
 
     public Persephone(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -98,7 +97,7 @@ public final class Persephone extends Zenchantment {
                         && MaterialList.AIR.contains(relativeBlock.getType())
                     ) {
                         final Inventory inventory = player.getInventory();
-                        final CompatibilityAdapter compatibilityAdapter = this.getPlugin().getCompatibilityAdapter();
+                        final CompatibilityAdapter compatibilityAdapter = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter();
                         if (inventory.contains(CARROT)) {
                             if (compatibilityAdapter.placeBlock(relativeBlock, player, CARROTS, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, CARROT, 1);
@@ -120,7 +119,7 @@ public final class Persephone extends Zenchantment {
                         && MaterialList.AIR.contains(relativeBlock.getType())
                     ) {
                         if (event.getPlayer().getInventory().contains(NETHER_WART)) {
-                            if (this.getPlugin().getCompatibilityAdapter().placeBlock(relativeBlock, player, NETHER_WART, null)) {
+                            if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(relativeBlock, player, NETHER_WART, null)) {
                                 Utilities.removeMaterialsFromPlayer(player, NETHER_WART, 1);
                             }
                         }

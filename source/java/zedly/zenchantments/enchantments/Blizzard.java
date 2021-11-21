@@ -26,15 +26,14 @@ public final class Blizzard extends Zenchantment {
     private final NamespacedKey key;
 
     public Blizzard(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -69,7 +68,7 @@ public final class Blizzard extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final BlizzardArrow arrow = new BlizzardArrow(this.getPlugin(), (Arrow) event.getProjectile(), level, this.getPower());
+        final BlizzardArrow arrow = new BlizzardArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile(), level, this.getPower());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

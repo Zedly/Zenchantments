@@ -30,15 +30,14 @@ public final class Laser extends Zenchantment {
     private final NamespacedKey key;
 
     public Laser(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -95,10 +94,10 @@ public final class Laser extends Zenchantment {
 
     private void shoot(final @NotNull Player player, final int level) {
         // Avoid conflicting with Lumber zenchantment.
-        this.getPlugin()
+        ZenchantmentsPlugin.getInstance()
             .getPlayerDataProvider()
             .getDataForPlayer(player)
-            .setCooldown(new NamespacedKey(this.getPlugin(), Lumber.KEY), 5);
+            .setCooldown(new NamespacedKey(ZenchantmentsPlugin.getInstance(), Lumber.KEY), 5);
 
         final Block block = player.getTargetBlock(null, 6 + (int) Math.round(level * this.getPower() * 3));
         final Location playerLocation = player.getLocation();
@@ -118,7 +117,7 @@ public final class Laser extends Zenchantment {
 
             for (final Entity entity : player.getWorld().getNearbyEntities(particleLocation, 0.3, 0.3, 0.3)) {
                 if (entity instanceof LivingEntity && entity != player) {
-                    this.getPlugin()
+                    ZenchantmentsPlugin.getInstance()
                         .getCompatibilityAdapter()
                         .attackEntity((LivingEntity) entity, player, 1 + (level + this.getPower() * 2));
                     return;
@@ -126,10 +125,10 @@ public final class Laser extends Zenchantment {
             }
         }
 
-        if (this.getPlugin().getCompatibilityAdapter().isBlockSafeToBreak(block)
+        if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().isBlockSafeToBreak(block)
             && !MaterialList.LASER_BLACKLIST_BLOCKS.contains(block.getType())
         ) {
-            this.getPlugin().getCompatibilityAdapter().breakBlock(block, player);
+            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(block, player);
         }
     }
 }

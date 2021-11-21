@@ -119,7 +119,6 @@ public class ZenchantmentFactory {
         final float power
     ) {
         return getConstructor(zenchantmentClass).construct(
-            this.plugin,
             enchantable,
             maxLevel,
             cooldown,

@@ -39,7 +39,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         "§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)"
     );
 
-    private final ZenchantmentsPlugin plugin;
     private final Set<Tool>           enchantable;
     private final int                 maxLevel;
     private final int                 cooldown;
@@ -50,14 +49,12 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     private boolean cursed;
 
     protected Zenchantment(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
         final double power,
         final float probability
     ) {
-        this.plugin = plugin;
         this.enchantable = enchantable;
         this.maxLevel = maxLevel;
         this.cooldown = cooldown;
@@ -509,17 +506,11 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         setZenchantmentForItemStack(stack, this, level, worldConfiguration);
     }
 
-    @NotNull
-    protected final ZenchantmentsPlugin getPlugin() {
-        return this.plugin;
-    }
-
     @FunctionalInterface
     public interface Constructor<T extends Zenchantment> {
         @NotNull
-        @Contract(value = "_, _, _, _, _, _ -> new", pure = true)
+        @Contract(value = "_, _, _, _, _ -> new", pure = true)
         T construct(
-            final @NotNull ZenchantmentsPlugin plugin,
             final @NotNull Set<Tool> enchantable,
             final int maxLevel,
             final int cooldown,

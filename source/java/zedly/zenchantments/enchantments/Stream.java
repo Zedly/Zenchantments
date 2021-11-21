@@ -35,15 +35,14 @@ public final class Stream extends Zenchantment {
     private final NamespacedKey key;
 
     public Stream(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -85,7 +84,7 @@ public final class Stream extends Zenchantment {
         final Player player = event.getPlayer();
 
         if (!event.getPlayer().hasMetadata("ze.stream.mode")) {
-            player.setMetadata("ze.stream.mode", new FixedMetadataValue(this.getPlugin(), 0));
+            player.setMetadata("ze.stream.mode", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), 0));
         }
 
         if (!player.isSneaking() || (event.getAction() != RIGHT_CLICK_AIR && event.getAction() != RIGHT_CLICK_BLOCK)) {
@@ -95,7 +94,7 @@ public final class Stream extends Zenchantment {
         int mode = player.getMetadata("ze.stream.mode").get(0).asInt();
         mode = mode == 4 ? 0 : mode + 1;
 
-        player.setMetadata("ze.stream.mode", new FixedMetadataValue(this.getPlugin(), mode));
+        player.setMetadata("ze.stream.mode", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), mode));
 
         switch (mode) {
             case 0:
@@ -125,7 +124,7 @@ public final class Stream extends Zenchantment {
                 || inventory.getChestplate().getType() == Material.AIR
         )
         ) {
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
                 if (inventory.getItemInMainHand().getType() != Material.AIR) {
                     return;
                 }
@@ -146,7 +145,7 @@ public final class Stream extends Zenchantment {
         }
 
         if (!player.hasMetadata("ze.stream.mode")) {
-            player.setMetadata("ze.stream.mode", new FixedMetadataValue(this.getPlugin(), 0));
+            player.setMetadata("ze.stream.mode", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), 0));
         }
 
         final int mode = player.getMetadata("ze.stream.mode").get(0).asInt();

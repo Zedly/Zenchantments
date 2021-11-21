@@ -27,15 +27,14 @@ public final class Reveal extends Zenchantment {
     private final NamespacedKey key;
 
     public Reveal(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -114,12 +113,12 @@ public final class Reveal extends Zenchantment {
                         GLOWING_BLOCKS.put(block, 1);
                     }
 
-                    if (!this.getPlugin().getCompatibilityAdapter().showShulker(block, entityId, player)) {
+                    if (!ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().showShulker(block, entityId, player)) {
                         return false;
                     }
 
-                    this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
-                        this.getPlugin().getCompatibilityAdapter().hideShulker(entityId, player);
+                    ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
+                        ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().hideShulker(entityId, player);
                         if (GLOWING_BLOCKS.containsKey(block) && GLOWING_BLOCKS.get(block) > 1) {
                             GLOWING_BLOCKS.put(block, GLOWING_BLOCKS.get(block) - 1);
                         } else {

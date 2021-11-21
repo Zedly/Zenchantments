@@ -27,15 +27,14 @@ public final class Harvest extends Zenchantment {
     private final NamespacedKey key;
 
     public Harvest(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -116,9 +115,9 @@ public final class Harvest extends Zenchantment {
 
                     final boolean blockAltered;
                     if (block.getType() == Material.SWEET_BERRY_BUSH) {
-                        blockAltered = this.getPlugin().getCompatibilityAdapter().pickBerries(block, event.getPlayer());
+                        blockAltered = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().pickBerries(block, event.getPlayer());
                     } else {
-                        blockAltered = this.getPlugin().getCompatibilityAdapter().breakBlock(block, event.getPlayer());
+                        blockAltered = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(block, event.getPlayer());
                     }
 
                     if (!blockAltered) {
@@ -129,8 +128,8 @@ public final class Harvest extends Zenchantment {
 
                     Grab.GRAB_LOCATIONS.put(block, event.getPlayer());
 
-                    this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-                        this.getPlugin(),
+                    ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+                        ZenchantmentsPlugin.getInstance(),
                         () -> Grab.GRAB_LOCATIONS.remove(block),
                         3
                     );

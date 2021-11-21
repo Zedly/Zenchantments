@@ -24,15 +24,14 @@ public final class Combustion extends Zenchantment {
     private final NamespacedKey key;
 
     public Combustion(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -80,13 +79,13 @@ public final class Combustion extends Zenchantment {
             entity = event.getDamager();
         }
 
-        return this.getPlugin()
+        return ZenchantmentsPlugin.getInstance()
             .getCompatibilityAdapter()
             .igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
     }
 
     public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final boolean usedHand) {
-        if (this.getPlugin().getCompatibilityAdapter().isZombie(event.getCombuster())) {
+        if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().isZombie(event.getCombuster())) {
             event.setDuration(0);
         }
 

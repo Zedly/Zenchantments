@@ -28,15 +28,14 @@ public final class GreenThumb extends Zenchantment {
     private final NamespacedKey key;
 
     public GreenThumb(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -89,7 +88,7 @@ public final class GreenThumb extends Zenchantment {
 
                     boolean applied = false;
                     if (relativeBlock.getType() != DIRT) {
-                        applied = this.getPlugin().getCompatibilityAdapter().grow(centerBlock.getRelative(x, y, z), player);
+                        applied = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().grow(centerBlock.getRelative(x, y, z), player);
                     } else {
                         if (MaterialList.AIR.contains(relativeBlock.getRelative(0, 1, 0).getType())) {
                             final Material material;
@@ -108,7 +107,7 @@ public final class GreenThumb extends Zenchantment {
                                     material = GRASS_BLOCK;
                             }
 
-                            applied = this.getPlugin().getCompatibilityAdapter().placeBlock(relativeBlock, player, material, null);
+                            applied = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(relativeBlock, player, material, null);
                         }
                     }
 
@@ -134,8 +133,8 @@ public final class GreenThumb extends Zenchantment {
                             if (armour[i] != null) {
                                 final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
                                     armour[i],
-                                    this.getPlugin().getGlobalConfiguration(),
-                                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
+                                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
                                 );
 
                                 if (map.containsKey(this)) {

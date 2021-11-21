@@ -26,15 +26,14 @@ public final class Apocalypse extends Zenchantment {
     private final NamespacedKey key;
 
     public Apocalypse(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
         final double probability,
         final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -69,7 +68,7 @@ public final class Apocalypse extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final ApocalypseArrow arrow = new ApocalypseArrow(this.getPlugin(), (Arrow) event.getProjectile());
+        final ApocalypseArrow arrow = new ApocalypseArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

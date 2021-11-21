@@ -33,7 +33,7 @@ public final class Utilities {
         BlockFace.WEST
     };
 
-    private static final int[][] DEFAULT_SEARCH_FACES = new int[27][3];
+    public static final int[][] DEFAULT_SEARCH_FACES = new int[27][3];
 
     static {
         int i = 0;
@@ -600,7 +600,7 @@ public final class Utilities {
     // startBlock: The starting position of the BFS algorithm
     // maxBlocks: The max number of blocks to found (will return empty list if strict is true)
     // maxDistFromOrigin: The max distance the center of a found block can be from the center of startBlock to be a valid find
-    // strictMax: true -> return nothing if maxBlocks num is exceeded; false -> return current find if maxBlock num is exceeded
+    // returnEmptyIfMaxExceeded: true -> return nothing if maxBlocks num is exceeded; false -> return current find if maxBlock num is exceeded
     // searchFaces: The block faces to search
     // validFind: valid materials for a found block
     // validSearch: valid materials for a searched block; Will return empty list if not one of these
@@ -610,7 +610,7 @@ public final class Utilities {
     public static List<Block> bfs(
         final @NotNull Block startBlock,
         final int maxBlocks,
-        final boolean strictMax,
+        final boolean returnEmptyIfMaxExceeded,
         final float maxDistFromOrigin,
         final int[][] searchFaces,
         final @NotNull MaterialList validFind,
@@ -622,11 +622,6 @@ public final class Utilities {
         requireNonNull(validFind);
         requireNonNull(validSearch);
 
-        // Ensure the search list is in the whitelist.
-        if (!flipValidSearch) {
-            validSearch.addAll(validFind);
-        }
-
         // BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large.
 
         final Set<Block> searchedBlocks = new LinkedHashSet<>();
@@ -636,6 +631,7 @@ public final class Utilities {
         // Add the origin block.
         searchedBlocks.add(startBlock);
         toSearch.add(startBlock);
+
 
         // Keep searching as long as there's more blocks to search.
         while (!toSearch.isEmpty()) {
@@ -681,7 +677,7 @@ public final class Utilities {
 
             if (foundBlocks.size() > maxBlocks) {
                 // Allowed size exceeded.
-                if (strictMax) {
+                if (returnEmptyIfMaxExceeded) {
                     return Collections.emptyList();
                 } else {
                     return foundBlocks;

@@ -7,7 +7,7 @@ ZenchantmentsConfigVersion: 1.5.2
 #            Hoe, Helmet, Chestplate, Leggings, Boots, Elytra, All)
 #    Determines what tools can recieve the enchantment
 
-# Name: (For color use '§' instead of "&")
+# Name: (For color use the Paragraph symbol '�' instead of "&")
 #    Determines the appearance of the enchantment on tools
 
 # Max Level: (Integer)
@@ -439,7 +439,8 @@ enchantments:
       Tools: Elytra
       Max Level: 1
       Name: Stream
-      Cooldown: 0      
+      Cooldown: 0
+      Power: 1.0
   - Switch:
       Probability: 1.0
       Tools: Pickaxe

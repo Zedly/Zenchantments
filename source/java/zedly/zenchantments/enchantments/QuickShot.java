@@ -26,15 +26,14 @@ public final class QuickShot extends Zenchantment {
     private final NamespacedKey key;
 
     public QuickShot(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -69,7 +68,7 @@ public final class QuickShot extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final QuickArrow arrow = new QuickArrow(this.getPlugin(), (Arrow) event.getProjectile());
+        final QuickArrow arrow = new QuickArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile());
         ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }

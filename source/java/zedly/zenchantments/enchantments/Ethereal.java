@@ -20,15 +20,14 @@ public final class Ethereal extends Zenchantment {
     private final NamespacedKey key;
 
     public Ethereal(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -89,8 +88,8 @@ public final class Ethereal extends Zenchantment {
             if (
                 Zenchantment.getZenchantmentsOnItemStack(
                     stack,
-                    this.getPlugin().getGlobalConfiguration(),
-                    this.getPlugin().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
+                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
                 ).containsKey(this)
             ) {
                 Utilities.setItemStackDamage(stack, 0);

@@ -31,15 +31,14 @@ public final class Spread extends Zenchantment {
     private final NamespacedKey key;
 
     public Spread(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -78,10 +77,10 @@ public final class Spread extends Zenchantment {
         final Player player = (Player) originalArrow.getShooter();
         final ItemStack hand = Utilities.getUsedItemStack(requireNonNull(player), usedHand);
 
-        final MultiArrow multiArrow = new MultiArrow(this.getPlugin(), originalArrow);
+        final MultiArrow multiArrow = new MultiArrow(ZenchantmentsPlugin.getInstance(), originalArrow);
         ZenchantedArrow.putArrow(originalArrow, multiArrow, player);
 
-        this.getPlugin().getServer().getPluginManager().callEvent(
+        ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(
             new EntityShootBowEvent(
                 player,
                 hand,
@@ -122,17 +121,17 @@ public final class Spread extends Zenchantment {
                 false
             );
 
-            this.getPlugin().getServer().getPluginManager().callEvent(entityShootBowEvent);
+            ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(entityShootBowEvent);
 
             if (entityShootBowEvent.isCancelled()) {
                 arrow.remove();
                 return false;
             }
 
-            arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
+            arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
             arrow.setCritical(originalArrow.isCritical());
 
-            ZenchantedArrow.putArrow(originalArrow, new MultiArrow(this.getPlugin(), originalArrow), player);
+            ZenchantedArrow.putArrow(originalArrow, new MultiArrow(ZenchantmentsPlugin.getInstance(), originalArrow), player);
         }
 
         return true;

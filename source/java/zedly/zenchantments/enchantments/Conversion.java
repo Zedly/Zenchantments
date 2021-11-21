@@ -24,15 +24,14 @@ public final class Conversion extends Zenchantment {
     private final NamespacedKey key;
 
     public Conversion(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -88,8 +87,8 @@ public final class Conversion extends Zenchantment {
         player.setHealth(Math.min(20, player.getHealth() + 2 * this.getPower() * level));
 
         for (int i = 0; i < 3; i++) {
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-                this.getPlugin(),
+            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+                ZenchantmentsPlugin.getInstance(),
                 () -> Utilities.displayParticle(
                     Utilities.getCenter(player.getLocation()),
                     Particle.HEART,

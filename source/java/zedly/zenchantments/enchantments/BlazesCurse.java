@@ -62,15 +62,14 @@ public final class BlazesCurse extends Zenchantment {
     private final NamespacedKey key;
 
     public BlazesCurse(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -129,14 +128,14 @@ public final class BlazesCurse extends Zenchantment {
         Material material = block.getType();
 
         if (material == WATER) {
-            this.getPlugin().getCompatibilityAdapter().damagePlayer(player, SUBMERGE_DAMAGE, DROWNING);
+            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, SUBMERGE_DAMAGE, DROWNING);
             return true;
         }
 
         material = block.getRelative(BlockFace.DOWN).getType();
 
         if (material == ICE || material == FROSTED_ICE) {
-            this.getPlugin().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
+            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
             return true;
         }
 
@@ -151,7 +150,7 @@ public final class BlazesCurse extends Zenchantment {
             }
 
             if (checkLocation.getBlockY() == 256) {
-                this.getPlugin().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
+                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
             }
         }
 

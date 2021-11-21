@@ -19,7 +19,7 @@ public interface WorldConfiguration {
 
     int getMaxZenchantments();
 
-    int areShredDropsEnabled();
+    int getShredDropType();
 
     boolean isExplosionBlockBreakEnabled();
 

@@ -25,15 +25,14 @@ public final class SonicShock extends Zenchantment {
     private final NamespacedKey key;
 
     public SonicShock(
-        final @NotNull ZenchantmentsPlugin plugin,
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(plugin, enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(plugin, KEY);
+        super(enchantable, maxLevel, cooldown, probability, power);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
     }
 
     @Override
@@ -75,7 +74,7 @@ public final class SonicShock extends Zenchantment {
         for (final Entity entity : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
             if (entity instanceof Monster) {
                 final double damage = player.getVelocity().length() * 1.5 * level * this.getPower();
-                this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, damage);
+                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, damage);
             }
         }
 
