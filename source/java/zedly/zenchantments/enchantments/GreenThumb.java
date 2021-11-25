@@ -78,7 +78,7 @@ public final class GreenThumb extends Zenchantment {
             for (int y = -(radius) - 1; y <= radius - 1; y++) {
                 for (int z = -(radius); z <= radius; z++) {
                     final Block relativeBlock = centerBlock.getRelative(x, y, z);
-                    if (!(relativeBlock.getLocation().distance(location) < radius)) {
+                    if (relativeBlock.getLocation().distance(location) >= radius) {
                         continue;
                     }
 
