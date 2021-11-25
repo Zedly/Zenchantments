@@ -1,538 +1,538 @@
 ZenchantmentsConfigVersion: 1.5.2
 
-# Probability: (Decimal) (0 = no probability, -1 = disabled)
+# probability: (Decimal) (0 = no probability, -1 = disabled)
 #    Chance of obtaining the enchantment when enchanting
 
-# Tools: (Axe, Shovel, Sword, Pickaxe, Rod, Shears, Bow, Lighter,
+# tools: (Axe, Shovel, Sword, Pickaxe, Rod, Shears, Bow, Lighter,
 #            Hoe, Helmet, Chestplate, Leggings, Boots, Elytra, All)
 #    Determines what tools can recieve the enchantment
 
-# Name: (For color use the Paragraph symbol '?' instead of "&")
+# name: (For color use the Paragraph symbol '?' instead of "&")
 #    Determines the appearance of the enchantment on tools
 
-# Max Level: (Integer)
+# max-level: (Integer)
 #    Determines the highest obtainable level for the enchantment
 
-# Cooldown (Integer) (In increments of 1/20th of a second)
+# cooldown (Integer) (In increments of 1/20th of a second)
 #    Determines how quickly a user can repeatedly use the enchantment
 
-# Power (Decimal)
+# power (Decimal)
 #    Determines how powerful the enchantments is
 
 enchantments:
-    # Regular Enchantments
-    - anthropomorphism:
-          Probability: 1.0
-          Tools: Pickaxe
-          Name: Anthropomorphism
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - arborist:
-          Probability: 1.0
-          Tools: Axe
-          Name: Arborist
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - bind:
-          Probability: 1.0
-          Tools: All
-          Name: Bind
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - blazes-curse:
-          Probability: 1.0
-          Tools: Chestplate
-          Name: Blaze's Curse
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - blizzard:
-          Probability: 1.0
-          Tools: Bow
-          Name: Blizzard
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - bounce:
-          Probability: 1.0
-          Tools: Boots
-          Name: Bounce
-          Max Level: 5
-          Cooldown: 0
-          Power: 1.0
-    - burst:
-          Probability: 1.0
-          Tools: Bow
-          Name: Burst
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - combustion:
-          Probability: 1.0
-          Tools: Chestplate
-          Name: Combustion
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - conversion:
-          Probability: 1.0
-          Tools: Sword
-          Name: Conversion
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - decapitation:
-          Probability: 1.0
-          Tools: Sword
-          Name: Decapitation
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - extraction:
-          Probability: 1.0
-          Tools: Pickaxe
-          Name: Extraction
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - fire:
-          Probability: 1.0
-          Tools: Pickaxe, Shovel, Axe
-          Name: Fire
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - firestorm:
-          Probability: 1.0
-          Tools: Bow
-          Name: Firestorm
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - fireworks:
-          Probability: 1.0
-          Tools: Bow
-          Name: Fireworks
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - force:
-          Probability: 1.0
-          Tools: Sword
-          Name: Force
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - frozen-step:
-          Probability: 1.0
-          Tools: Boots
-          Name: Frozen Step
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - fuse:
-          Probability: 1.0
-          Tools: Bow
-          Name: Fuse
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - germination:
-          Probability: 1.0
-          Tools: Hoe
-          Name: Germination
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - glide:
-          Probability: 1.0
-          Tools: Leggings
-          Name: Glide
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - gluttony:
-          Probability: 1.0
-          Tools: Helmet
-          Name: Gluttony
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - gold-rush:
-          Probability: 1.0
-          Tools: Shovel
-          Name: Gold Rush
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - grab:
-          Probability: 1.0
-          Tools: Pickaxe, Shovel, Axe
-          Name: Grab
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - green-thumb:
-          Probability: 1.0
-          Tools: Leggings
-          Name: Green Thumb
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - gust:
-          Probability: 1.0
-          Tools: Sword
-          Name: Gust
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - harvest:
-          Probability: 1.0
-          Tools: Hoe
-          Name: Harvest
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - haste:
-          Probability: 1.0
-          Tools: Pickaxe, Shovel, Axe
-          Name: Haste
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - ice-aspect:
-          Probability: 1.0
-          Tools: Sword
-          Name: Ice Aspect
-          Max Level: 2
-          Cooldown: 0
-          Power: 1.0
-    - jump:
-          Probability: 1.0
-          Tools: Boots
-          Name: Jump
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - laser:
-          Probability: 1.0
-          Tools: Pickaxe, Axe
-          Name: Laser
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - level:
-          Probability: 1.0
-          Tools: Bow, Sword, Pickaxe
-          Name: Level
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - long-cast:
-          Probability: 1.0
-          Tools: Rod
-          Name: Long Cast
-          Max Level: 2
-          Cooldown: 0
-          Power: 1.0
-    - lumber:
-          Probability: 1.0
-          Tools: Axe
-          Name: Lumber
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - magnetism:
-          Probability: 1.0
-          Tools: Leggings
-          Name: Magnetism
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - meador:
-          Probability: 1.0
-          Tools: Boots
-          Name: Meador
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - mow:
-          Probability: 1.0
-          Tools: Shears
-          Name: Mow
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - mystery-fish:
-          Probability: 1.0
-          Tools: Rod
-          Name: Mystery Fish
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - nether-step:
-          Probability: 1.0
-          Tools: Boots
-          Name: Nether Step
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - night-vision:
-          Probability: 1.0
-          Tools: Helmet
-          Name: Night Vision
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - persephone:
-          Probability: 1.0
-          Tools: Hoe
-          Name: Persephone
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - pierce:
-          Probability: 1.0
-          Tools: Pickaxe
-          Name: Pierce
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - plough:
-          Probability: 1.0
-          Tools: Hoe
-          Name: Plough
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - potion:
-          Probability: 1.0
-          Tools: Bow
-          Name: Potion
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - potion-resistance:
-          Probability: 1.0
-          Tools: Helmet, Chestplate, Leggings, Boots
-          Name: Potion Resistance
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - quick-shot:
-          Probability: 1.0
-          Tools: Bow
-          Name: Quick Shot
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - rainbow:
-          Probability: 1.0
-          Tools: Shears
-          Name: Rainbow
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - rainbow-slam:
-          Probability: 1.0
-          Tools: Sword
-          Name: Rainbow Slam
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - reaper:
-          Probability: 1.0
-          Tools: Bow, Sword
-          Name: Reaper
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - reveal:
-          Probability: 1.0
-          Tools: Pickaxe
-          Name: Reveal
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - saturation:
-          Probability: 1.0
-          Tools: Leggings
-          Name: Saturation
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - short-cast:
-          Probability: 1.0
-          Tools: Rod
-          Name: Short Cast
-          Max Level: 2
-          Cooldown: 0
-          Power: 1.0
-    - shred:
-          Probability: 1.0
-          Tools: Pickaxe, Shovel
-          Name: Shred
-          Max Level: 5
-          Cooldown: 0
-          Power: 1.0
-    - siphon:
-          Probability: 1.0
-          Tools: Sword, Bow
-          Name: Siphon
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - sonic-shock:
-          Probability: 1.0
-          Tools: Elytra
-          Name: Sonic Shock
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - spectral:
-          Probability: 1.0
-          Tools: Shovel
-          Name: Spectral
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - speed:
-          Probability: 1.0
-          Tools: Boots
-          Name: Speed
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - spikes:
-          Probability: 1.0
-          Tools: Boots
-          Name: Spikes
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - spread:
-          Probability: 1.0
-          Tools: Bow
-          Name: Spread
-          Max Level: 5
-          Cooldown: 0
-          Power: 1.0
-    - stationary:
-          Probability: 1.0
-          Tools: Bow, Sword
-          Name: Stationary
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - stock:
-          Probability: 1.0
-          Tools: Chestplate
-          Name: Stock
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - stream:
-          Probability: 1.0
-          Tools: Elytra
-          Max Level: 1
-          Name: Stream
-          Cooldown: 0
-          Power: 1.0
-    - switch:
-          Probability: 1.0
-          Tools: Pickaxe
-          Name: Switch
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - terraformer:
-          Probability: 1.0
-          Tools: Shovel
-          Name: Terraformer
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - toxic:
-          Probability: 1.0
-          Tools: Bow, Sword
-          Name: Toxic
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - tracer:
-          Probability: 1.0
-          Tools: Bow
-          Name: Tracer
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    - transformation:
-          Probability: 1.0
-          Tools: Sword
-          Name: Transformation
-          Max Level: 3
-          Cooldown: 0
-          Power: 1.0
-    - variety:
-          Probability: 1.0
-          Tools: Axe
-          Name: Variety
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - vortex:
-          Probability: 1.0
-          Tools: Sword, Bow
-          Name: Vortex
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - weight:
-          Probability: 1.0
-          Tools: Boots
-          Name: Weight
-          Max Level: 4
-          Cooldown: 0
-          Power: 1.0
-    # Admin Enchantments
-    - apocalypse:
-          Probability: 0.0
-          Tools: Bow
-          Name: Apocalypse
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - ethereal:
-          Probability: 0.0
-          Tools: All
-          Name: Ethereal
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - missile:
-          Probability: 0.0
-          Tools: Bow
-          Name: Missile
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - singularity:
-          Probability: 0.0
-          Tools: Bow
-          Name: Singularity
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
-    - unrepairable:
-          Probability: 0.0
-          Tools: All
-          Name: Unrepairable
-          Max Level: 1
-          Cooldown: 0
-          Power: 1.0
+  # Regular Enchantments
+  - Anthropomorphism:
+      probability: 1.0
+      tools: Pickaxe
+      name: Anthropomorphism
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Arborist:
+      probability: 1.0
+      tools: Axe
+      name: Arborist
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Bind:
+      probability: 1.0
+      tools: All
+      name: Bind
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - BlazesCurse:
+      probability: 1.0
+      tools: Chestplate
+      name: Blaze's Curse
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Blizzard:
+      probability: 1.0
+      tools: Bow
+      name: Blizzard
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Bounce:
+      probability: 1.0
+      tools: Boots
+      name: Bounce
+      max-level: 5
+      cooldown: 0
+      power: 1.0
+  - Burst:
+      probability: 1.0
+      tools: Bow
+      name: Burst
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Combustion:
+      probability: 1.0
+      tools: Chestplate
+      name: Combustion
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Conversion:
+      probability: 1.0
+      tools: Sword
+      name: Conversion
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Decapitation:
+      probability: 1.0
+      tools: Sword
+      name: Decapitation
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Extraction:
+      probability: 1.0
+      tools: Pickaxe
+      name: Extraction
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Fire:
+      probability: 1.0
+      tools: Pickaxe, Shovel, Axe
+      name: Fire
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Firestorm:
+      probability: 1.0
+      tools: Bow
+      name: Firestorm
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Fireworks:
+      probability: 1.0
+      tools: Bow
+      name: Fireworks
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Force:
+      probability: 1.0
+      tools: Sword
+      name: Force
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - FrozenStep:
+      probability: 1.0
+      tools: Boots
+      name: Frozen Step
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Fuse:
+      probability: 1.0
+      tools: Bow
+      name: Fuse
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Germination:
+      probability: 1.0
+      tools: Hoe
+      name: Germination
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Glide:
+      probability: 1.0
+      tools: Leggings
+      name: Glide
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Gluttony:
+      probability: 1.0
+      tools: Helmet
+      name: Gluttony
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - GoldRush:
+      probability: 1.0
+      tools: Shovel
+      name: Gold Rush
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Grab:
+      probability: 1.0
+      tools: Pickaxe, Shovel, Axe
+      name: Grab
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - GreenThumb:
+      probability: 1.0
+      tools: Leggings
+      name: Green Thumb
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Gust:
+      probability: 1.0
+      tools: Sword
+      name: Gust
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Harvest:
+      probability: 1.0
+      tools: Hoe
+      name: Harvest
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Haste:
+      probability: 1.0
+      tools: Pickaxe, Shovel, Axe
+      name: Haste
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - IceAspect:
+      probability: 1.0
+      tools: Sword
+      name: Ice Aspect
+      max-level: 2
+      cooldown: 0
+      power: 1.0
+  - Jump:
+      probability: 1.0
+      tools: Boots
+      name: Jump
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Laser:
+      probability: 1.0
+      tools: Pickaxe, Axe
+      name: Laser
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Level:
+      probability: 1.0
+      tools: Bow, Sword, Pickaxe
+      name: Level
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - LongCast:
+      probability: 1.0
+      tools: Rod
+      name: Long Cast
+      max-level: 2
+      cooldown: 0
+      power: 1.0
+  - Lumber:
+      probability: 1.0
+      tools: Axe
+      name: Lumber
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Magnetism:
+      probability: 1.0
+      tools: Leggings
+      name: Magnetism
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Meador:
+      probability: 1.0
+      tools: Boots
+      name: Meador
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Mow:
+      probability: 1.0
+      tools: Shears
+      name: Mow
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - MysteryFish:
+      probability: 1.0
+      tools: Rod
+      name: Mystery Fish
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - NetherStep:
+      probability: 1.0
+      tools: Boots
+      name: Nether Step
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - NightVision:
+      probability: 1.0
+      tools: Helmet
+      name: Night Vision
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Persephone:
+      probability: 1.0
+      tools: Hoe
+      name: Persephone
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Pierce:
+      probability: 1.0
+      tools: Pickaxe
+      name: Pierce
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Plough:
+      probability: 1.0
+      tools: Hoe
+      name: Plough
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Potion:
+      probability: 1.0
+      tools: Bow
+      name: Potion
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - PotionResistance:
+      probability: 1.0
+      tools: Helmet, Chestplate, Leggings, Boots
+      name: Potion Resistance
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - QuickShot:
+      probability: 1.0
+      tools: Bow
+      name: Quick Shot
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Rainbow:
+      probability: 1.0
+      tools: Shears
+      name: Rainbow
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - RainbowSlam:
+      probability: 1.0
+      tools: Sword
+      name: Rainbow Slam
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Reaper:
+      probability: 1.0
+      tools: Bow, Sword
+      name: Reaper
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Reveal:
+      probability: 1.0
+      tools: Pickaxe
+      name: Reveal
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Saturation:
+      probability: 1.0
+      tools: Leggings
+      name: Saturation
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - ShortCast:
+      probability: 1.0
+      tools: Rod
+      name: Short Cast
+      max-level: 2
+      cooldown: 0
+      power: 1.0
+  - Shred:
+      probability: 1.0
+      tools: Pickaxe, Shovel
+      name: Shred
+      max-level: 5
+      cooldown: 0
+      power: 1.0
+  - Siphon:
+      probability: 1.0
+      tools: Sword, Bow
+      name: Siphon
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - SonicShock:
+      probability: 1.0
+      tools: Elytra
+      name: Sonic Shock
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Spectral:
+      probability: 1.0
+      tools: Shovel
+      name: Spectral
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Speed:
+      probability: 1.0
+      tools: Boots
+      name: Speed
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Spikes:
+      probability: 1.0
+      tools: Boots
+      name: Spikes
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Spread:
+      probability: 1.0
+      tools: Bow
+      name: Spread
+      max-level: 5
+      cooldown: 0
+      power: 1.0
+  - Stationary:
+      probability: 1.0
+      tools: Bow, Sword
+      name: Stationary
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Stock:
+      probability: 1.0
+      tools: Chestplate
+      name: Stock
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Stream:
+      probability: 1.0
+      tools: Elytra
+      max-level: 1
+      name: Stream
+      cooldown: 0
+      power: 1.0
+  - Switch:
+      probability: 1.0
+      tools: Pickaxe
+      name: Switch
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Terraformer:
+      probability: 1.0
+      tools: Shovel
+      name: Terraformer
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Toxic:
+      probability: 1.0
+      tools: Bow, Sword
+      name: Toxic
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Tracer:
+      probability: 1.0
+      tools: Bow
+      name: Tracer
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  - Transformation:
+      probability: 1.0
+      tools: Sword
+      name: Transformation
+      max-level: 3
+      cooldown: 0
+      power: 1.0
+  - Variety:
+      probability: 1.0
+      tools: Axe
+      name: Variety
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Vortex:
+      probability: 1.0
+      tools: Sword, Bow
+      name: Vortex
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Weight:
+      probability: 1.0
+      tools: Boots
+      name: Weight
+      max-level: 4
+      cooldown: 0
+      power: 1.0
+  # Admin Enchantments
+  - Apocalypse:
+      probability: 0.0
+      tools: Bow
+      name: Apocalypse
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Ethereal:
+      probability: 0.0
+      tools: All
+      name: Ethereal
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Missile:
+      probability: 0.0
+      tools: Bow
+      name: Missile
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Singularity:
+      probability: 0.0
+      tools: Bow
+      name: Singularity
+      max-level: 1
+      cooldown: 0
+      power: 1.0
+  - Unrepairable:
+      probability: 0.0
+      tools: All
+      name: Unrepairable
+      max-level: 1
+      cooldown: 0
+      power: 1.0
 # New Enchantments
 
 #  Changes the overall probability of obtaining all custom enchantments
