@@ -78,7 +78,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
                     int maxLevel = (int) data.get("max-level");
                     double power = (double) data.get("power");
                     Set<Tool> materials = new HashSet<>();
-                    for (String s : ((String) data.get("tools")).split(", |\\,")) {
+                    for (String s : ((String) data.get("tools")).split("\\W*,\\W*")) { // comma surrounded by arbitrary whitespaces
                         materials.add(Tool.fromString(s));
                     }
                     Tool[] enchantable = new Tool[0];
@@ -120,7 +120,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
 
         this.nameToEnch = new HashMap<>();
         for (Zenchantment ench : this.zenchantments) {
-            this.nameToEnch.put(ChatColor.stripColor(ench.getName().toLowerCase().replace(" ", "")), ench);
+            this.nameToEnch.put(ChatColor.stripColor(ench.getName().toLowerCase()), ench);
         }
 
         this.keyToEnch = new HashMap<>();
