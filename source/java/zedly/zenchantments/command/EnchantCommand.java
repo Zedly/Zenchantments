@@ -1,5 +1,6 @@
 package zedly.zenchantments.command;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,14 +11,20 @@ import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.Material.*;
 
 public class EnchantCommand extends ZenchantmentsCommand {
+
+    private static final Pattern ENCHANT_COMMAND_PATTERN = Pattern.compile("^([^\\d]+)(?: (\\d+))?$");
+
     public EnchantCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
     }
@@ -36,14 +43,24 @@ public class EnchantCommand extends ZenchantmentsCommand {
             return;
         }
 
+        String commandString = String.join(" ", args);
+        Matcher m = ENCHANT_COMMAND_PATTERN.matcher(commandString);
+        if(!m.find()) {
+            return;
+        }
+
         final WorldConfiguration worldConfiguration = this.plugin
             .getWorldConfigurationProvider()
             .getConfigurationForWorld(player.getWorld());
 
-        final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(args[0]);
+        String enchantString = m.group(1);
+
+
+        final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(enchantString);
+        String levelString = m.group(2) != null ? m.group(2) : "1";
 
         if (zenchantment == null) {
-            player.sendMessage(MESSAGE_PREFIX + "Enchantment " + args[0] + " does not exist!");
+            player.sendMessage(MESSAGE_PREFIX + "Enchantment " + enchantString + " does not exist!");
             return;
         }
 
@@ -53,7 +70,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
                 player,
                 zenchantment,
                 player.getInventory().getItemInMainHand(),
-                args.length >= 2 ? args[1] : "1"
+                levelString
             )
         );
     }

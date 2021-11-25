@@ -25,22 +25,22 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
     private final ChatColor                        curseColor;
 
     public static WorldConfiguration fromYamlConfiguration(YamlConfiguration yamlConfig) {
-        double rarity = (double) (yamlConfig.get("enchant_rarity"));
+        double rarity = (double) (yamlConfig.get("enchant-rarity"));
         double enchantRarity = (rarity / 100.0);
-        int maxEnchants = (int) yamlConfig.get("max_enchants");
-        boolean explosionBlockBreak = (boolean) yamlConfig.get("explosion_block_break");
-        boolean descriptionLore = (boolean) yamlConfig.get("description_lore");
-        boolean enchantGlow = (boolean) yamlConfig.get("enchantment_glow");
-        ChatColor descriptionColor = ChatColor.getByChar("" + yamlConfig.get("description_color"));
-        ChatColor enchantColor = ChatColor.getByChar("" + yamlConfig.get("enchantment_color"));
-        ChatColor curseColor = ChatColor.getByChar("" + yamlConfig.get("curse_color"));
+        int maxEnchants = (int) yamlConfig.get("max-enchants");
+        boolean explosionBlockBreak = (boolean) yamlConfig.get("explosion-block-break");
+        boolean descriptionLore = (boolean) yamlConfig.get("description-lore");
+        boolean enchantGlow = (boolean) yamlConfig.get("enchantment-glow");
+        ChatColor descriptionColor = ChatColor.getByChar("" + yamlConfig.get("description-color"));
+        ChatColor enchantColor = ChatColor.getByChar("" + yamlConfig.get("enchantment-color"));
+        ChatColor curseColor = ChatColor.getByChar("" + yamlConfig.get("curse-color"));
         int shredDrops;
 
         descriptionColor = (descriptionColor != null) ? descriptionColor : ChatColor.GREEN;
         enchantColor = enchantColor != null ? enchantColor : ChatColor.GRAY;
         curseColor = curseColor != null ? curseColor : ChatColor.RED;
 
-        switch ((String) yamlConfig.get("shred_drops")) {
+        switch ((String) yamlConfig.get("shred-drops")) {
             case "all":
                 shredDrops = 0;
                 break;
@@ -72,13 +72,13 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
                 Zenchantment.Constructor<? extends Zenchantment> enchConstructor = ZenchantmentFactory.getConstructor(cl);
                 if (configInfo.containsKey(cl.getSimpleName())) {
                     LinkedHashMap<String, Object> data = configInfo.get(cl.getSimpleName());
-                    float probability = (float) (double) data.get("Probability");
-                    String loreName = (String) data.get("Name");
-                    int cooldown = (int) data.get("Cooldown");
-                    int maxLevel = (int) data.get("Max Level");
-                    double power = (double) data.get("Power");
+                    float probability = (float) (double) data.get("probability");
+                    String loreName = (String) data.get("pame");
+                    int cooldown = (int) data.get("cooldown");
+                    int maxLevel = (int) data.get("max-level");
+                    double power = (double) data.get("power");
                     Set<Tool> materials = new HashSet<>();
-                    for (String s : ((String) data.get("Tools")).split(", |\\,")) {
+                    for (String s : ((String) data.get("tools")).split(", |\\,")) {
                         materials.add(Tool.fromString(s));
                     }
                     Tool[] enchantable = new Tool[0];

@@ -43,7 +43,12 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
             subcommand = args[0].toLowerCase();
         }
 
-        this.commandMap.getOrDefault(subcommand, this.enchantCommand).execute(sender, ArrayUtils.subarray(args, 1, args.length));
+        if(this.commandMap.containsKey(subcommand)) {
+            this.commandMap.get(subcommand).execute(sender, ArrayUtils.subarray(args, 1, args.length));
+        } else {
+            this.enchantCommand.execute(sender, args);
+        }
+
         return true;
     }
 
