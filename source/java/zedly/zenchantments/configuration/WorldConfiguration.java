@@ -73,7 +73,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
                 if (configInfo.containsKey(cl.getSimpleName())) {
                     LinkedHashMap<String, Object> data = configInfo.get(cl.getSimpleName());
                     float probability = (float) (double) data.get("probability");
-                    String loreName = (String) data.get("pame");
+                    String loreName = (String) data.get("name");
                     int cooldown = (int) data.get("cooldown");
                     int maxLevel = (int) data.get("max-level");
                     double power = (double) data.get("power");

@@ -27,7 +27,7 @@ public final class Pierce extends Zenchantment {
     private static final Hand                               HAND_USE    = Hand.BOTH;
 
     private static final int     MAX_BLOCKS   = 128;
-    private static final int[][] SEARCH_FACES = new int[0][0];
+    private static final int[][] SEARCH_FACES = Utilities.DEFAULT_SEARCH_FACES;
 
     private final NamespacedKey key;
 

@@ -56,29 +56,19 @@ public class GeneralListener implements Listener {
         }
 
         final World world = event.getBlock().getWorld();
-        final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final WorldConfiguration config = ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(world);
         final ItemStack item = event.getItem();
-
-        Laser laser = null;
-
-        for (final Zenchantment enchantment : config.getZenchantments()) {
-            if (enchantment.getClass() == Laser.class) {
-                laser = (Laser) enchantment;
-                break;
-            }
-        }
+        Laser laser = (Laser) config.getZenchantmentFromName("Laser");
 
         if (laser == null) {
             return;
         }
 
-        final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-
         if (
             !Zenchantment.getZenchantmentsOnItemStack(
                 item,
                 this.plugin.getGlobalConfiguration(),
-                worldConfiguration
+                config
             ).containsKey(laser) || item.getType() == ENCHANTED_BOOK
         ) {
             return;
@@ -86,11 +76,11 @@ public class GeneralListener implements Listener {
 
         event.setCancelled(true);
 
-        final int level = Zenchantment.getZenchantmentsOnItemStack(item, this.plugin.getGlobalConfiguration(), worldConfiguration).get(laser);
+        final int level = Zenchantment.getZenchantmentsOnItemStack(item, this.plugin.getGlobalConfiguration(), config).get(laser);
         final int range = 6 + (int) Math.round(level * laser.getPower() * 3);
 
         final Block block = event.getBlock();
-        final Block relativeBlock = block.getRelative(((Directional) block.getState().getData()).getFacing(), range);
+        final Block relativeBlock = block.getRelative(((Directional) block.getBlockData()).getFacing(), range);
 
         final Location play = Utilities.getCenter(block);
         final Location target = Utilities.getCenter(relativeBlock);
