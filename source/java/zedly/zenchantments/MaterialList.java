@@ -684,7 +684,8 @@ public final class MaterialList extends AbstractList<Material> {
             HOPPER,
             DROPPER,
             BREWING_STAND,
-            ANVIL
+            ANVIL,
+            BARREL
         },
         SHULKER_BOXES
     );
@@ -702,7 +703,10 @@ public final class MaterialList extends AbstractList<Material> {
             OBSERVER,
             CARTOGRAPHY_TABLE,
             GRINDSTONE,
-            SMITHING_TABLE
+            SMITHING_TABLE,
+            LECTERN,
+            SMOKER,
+            BLAST_FURNACE
         },
         BEDS,
         DOORS,
