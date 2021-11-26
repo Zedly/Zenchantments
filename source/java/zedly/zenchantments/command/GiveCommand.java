@@ -38,7 +38,6 @@ public class GiveCommand extends ZenchantmentsCommand {
                 .replace("]", "")
                 .replace(",", " ")
         );
-        scanner.next();
 
         final String playerName = scanner.next();
         Player recipient = null;
@@ -81,7 +80,7 @@ public class GiveCommand extends ZenchantmentsCommand {
             }
 
             final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(enchantName);
-            final Enchantment enchantment = Enchantment.getByName(enchantName);
+            final Enchantment enchantment = Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
 
             if (zenchantment != null) {
                 if (zenchantment.isValidMaterial(material) || material == Material.ENCHANTED_BOOK) {
@@ -126,7 +125,7 @@ public class GiveCommand extends ZenchantmentsCommand {
             message.append(stripColor(enchantment.getKey().getName())).append(", ");
         }
 
-        if (!zenchantmentsToAdd.isEmpty() && !enchantmentsToAdd.isEmpty()) {
+        if (!zenchantmentsToAdd.isEmpty() || !enchantmentsToAdd.isEmpty()) {
             recipient.getInventory().addItem(itemStack);
             sender.sendMessage(message.substring(0, message.length() - 2) + ".");
         }
