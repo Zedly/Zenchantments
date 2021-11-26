@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.DARK_AQUA;
@@ -23,7 +24,7 @@ import static org.bukkit.Material.*;
 
 public class EnchantCommand extends ZenchantmentsCommand {
 
-    private static final Pattern ENCHANT_COMMAND_PATTERN = Pattern.compile("^([^\\d]+)(?: (\\d+))?$");
+    private static final Pattern ENCHANT_COMMAND_PATTERN = Pattern.compile("^([^\\d]*[^\\d\\s])(?: (\\d+$))?");
 
     public EnchantCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
@@ -78,7 +79,48 @@ public class EnchantCommand extends ZenchantmentsCommand {
     @Override
     @Nullable
     public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
-        return Collections.emptyList();
+        if (!(sender instanceof Player)) {
+            return Collections.emptyList();
+        }
+
+        final Player player = (Player) sender;
+
+        if (!player.hasPermission("zenchantments.command.enchant")) {
+            return Collections.emptyList();
+        }
+
+        String commandString = String.join(" ", args);
+
+        if(commandString.equals("")) {
+            return fallbackToEnchantmentSuggestions("");
+        }
+
+        Matcher m = ENCHANT_COMMAND_PATTERN.matcher(commandString);
+        if(!m.find()) {
+            return Collections.emptyList();
+        }
+
+        final WorldConfiguration worldConfiguration = this.plugin
+            .getWorldConfigurationProvider()
+            .getConfigurationForWorld(player.getWorld());
+
+        String enchantString = m.group(1);
+
+
+        final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromNameOrKey(enchantString);
+        String levelString = m.group(2) != null ? m.group(2) : "1";
+
+        if (zenchantment == null) {
+            return fallbackToEnchantmentSuggestions(enchantString);
+        }
+
+        return IntStream.rangeClosed(0, zenchantment.getMaxLevel()).mapToObj(i -> String.valueOf(i)).toList();
+    }
+
+    private List<String> fallbackToEnchantmentSuggestions(String enchantString) {
+        List<String> enchCandidates = ZenchantmentsPlugin.getInstance().getGlobalConfiguration().getDefaultWorldConfiguration()
+            .getEnchantNames().stream().filter(s -> s.startsWith(enchantString)).toList();
+        return enchCandidates;
     }
 
     @NotNull

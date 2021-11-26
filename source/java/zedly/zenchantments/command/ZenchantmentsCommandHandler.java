@@ -64,10 +64,11 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
             return Collections.emptyList();
         }
 
+
         final ZenchantmentsCommand zenchantmentsCommand = this.commandMap.get(args[0].toLowerCase());
 
         if (zenchantmentsCommand == null) {
-            return Collections.emptyList();
+            return enchantCommand.getTabCompleteOptions(sender, args);
         }
 
         return zenchantmentsCommand.getTabCompleteOptions(sender, ArrayUtils.subarray(args, 1, args.length));
