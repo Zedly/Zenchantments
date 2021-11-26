@@ -192,7 +192,8 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
         if(zen != null) {
             return zen;
         }
-        return keyToEnch.get(ChatColor.stripColor(nameOrKey).toLowerCase());
+        NamespacedKey key = NamespacedKey.fromString("zenchantments:" + ChatColor.stripColor(nameOrKey).toLowerCase());
+        return keyToEnch.get(key);
     }
 
     public List<String> getEnchantNames() {
