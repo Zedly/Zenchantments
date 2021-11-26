@@ -190,6 +190,9 @@ public class CompatibilityAdapter {
         }
 
         blockPlaced.setType(material);
+        if (blockData != null) {
+            blockPlaced.setBlockData(blockData);
+        }
 
         if (MaterialList.LEAVES.contains(material)) {
             final Leaves leaves = (Leaves) blockPlaced.getBlockData();
