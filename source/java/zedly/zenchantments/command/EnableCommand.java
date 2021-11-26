@@ -59,6 +59,6 @@ public class EnableCommand extends ZenchantmentsCommand {
     @Override
     @Nullable
     public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
-        return Collections.emptyList();
+        return ZenchantmentsPlugin.getInstance().getGlobalConfiguration().getDefaultWorldConfiguration().getEnchantNames();
     }
 }
