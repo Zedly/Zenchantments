@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -364,6 +365,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     //region Enchantment Events
     public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+        return false;
+    }
+
+    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final boolean usedHand) {
         return false;
     }
 

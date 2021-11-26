@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -62,6 +63,21 @@ public final class ZenchantmentListener implements Listener {
             player,
             Utilities.getUsedItemStack(player, true),
             (ench, level) -> ench.onBlockBreak(event, level, true)
+        );
+    }
+
+    @EventHandler
+    public void onBlockPlace(final @NotNull BlockPlaceEvent event) {
+        if (event.isCancelled() || event.getBlock().getType() == AIR) {
+            return;
+        }
+
+        final Player player = event.getPlayer();
+
+        this.applyZenchantmentForTool(
+            player,
+            Utilities.getUsedItemStack(player, true),
+            (ench, level) -> ench.onBlockPlace(event, level, true)
         );
     }
 
