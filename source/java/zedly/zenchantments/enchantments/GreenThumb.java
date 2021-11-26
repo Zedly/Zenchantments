@@ -88,11 +88,11 @@ public final class GreenThumb extends Zenchantment {
 
                     boolean applied = false;
                     if (relativeBlock.getType() != DIRT) {
-                        applied = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().grow(centerBlock.getRelative(x, y, z), player);
+                        applied = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().grow(relativeBlock, player);
                     } else {
                         if (MaterialList.AIR.contains(relativeBlock.getRelative(0, 1, 0).getType())) {
                             final Material material;
-                            switch (centerBlock.getBiome()) {
+                            switch (relativeBlock.getBiome()) {
                                 case MUSHROOM_FIELD_SHORE:
                                 case MUSHROOM_FIELDS:
                                     material = MYCELIUM;
