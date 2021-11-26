@@ -79,7 +79,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                 level = Math.max(1, scanner.nextInt());
             }
 
-            final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(enchantName);
+            final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromNameOrKey(enchantName);
             final Enchantment enchantment = Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
 
             if (zenchantment != null) {

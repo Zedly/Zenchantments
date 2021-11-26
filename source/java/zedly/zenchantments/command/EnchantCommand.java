@@ -56,7 +56,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
         String enchantString = m.group(1);
 
 
-        final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromName(enchantString);
+        final Zenchantment zenchantment = worldConfiguration.getZenchantmentFromNameOrKey(enchantString);
         String levelString = m.group(2) != null ? m.group(2) : "1";
 
         if (zenchantment == null) {
