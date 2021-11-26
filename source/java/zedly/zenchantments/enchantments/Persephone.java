@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -135,4 +136,12 @@ public final class Persephone extends Zenchantment {
         }
         return true;
     }
+
+    @Override
+    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final boolean usedHand) {
+        event.setCancelled(true);
+        return false;
+    }
+
+
 }

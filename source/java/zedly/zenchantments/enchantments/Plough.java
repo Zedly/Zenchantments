@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -108,4 +109,11 @@ public final class Plough extends Zenchantment {
 
         return true;
     }
+
+    @Override
+    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final boolean usedHand) {
+        event.setCancelled(true);
+        return false;
+    }
+
 }
