@@ -65,7 +65,8 @@ public final class Speed extends Zenchantment {
 
     @Override
     public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
-        final float speed = (float) Math.min((0.05f * level * this.getPower()) + 0.2f, 1);
+        //final float speed = (float) Math.min((0.05f * level * this.getPower()) + 0.2f, 1);
+        final float speed = (float) Math.min(0.5f + level * this.getPower() * 0.05f, 1);
 
         player.setWalkSpeed(speed);
         player.setFlySpeed(speed);
