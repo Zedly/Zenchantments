@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -425,6 +426,12 @@ public final class Utilities {
         }
 
         entity.addPotionEffect(new PotionEffect(effectType, length, intensity));
+    }
+
+    @NotNull
+    public static String reproduceCorruptedInvisibleSequence(@NotNull String original) {
+        requireNonNull(original);
+        return CraftChatMessage.fromJSONComponent(CraftChatMessage.fromStringToJSON(original, false));
     }
 
     @NotNull

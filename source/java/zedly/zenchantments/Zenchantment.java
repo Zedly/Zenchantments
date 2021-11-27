@@ -40,11 +40,11 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         "§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)"
     );
 
-    private final Set<Tool>           enchantable;
-    private final int                 maxLevel;
-    private final int                 cooldown;
-    private final double              power;
-    private final float               probability;
+    private final Set<Tool> enchantable;
+    private final int maxLevel;
+    private final int cooldown;
+    private final double power;
+    private final float probability;
 
     private boolean used;
     private boolean cursed;
@@ -167,7 +167,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         // What does this part even do exactly?
         // Can it be removed?
-        for (final String key : new String[] { Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY }) {
+        for (final String key : new String[]{Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY}) {
             Zenchantment zenchantment = null;
 
             for (final Zenchantment configured : globalConfiguration.getConfiguredZenchantments()) {
@@ -210,17 +210,14 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         return new AbstractMap.SimpleEntry<>(zenchantment, level);
     }
 
-    public static boolean isDescription(final @NotNull String string) {
+    public static boolean isDescription(final @NotNull String string, WorldConfiguration config) {
         requireNonNull(string);
 
-        for (final Map.Entry<String, Boolean> entry : Utilities.fromInvisibleString(string).entrySet()) {
-            if (entry.getValue()) {
-                continue;
-            }
-
-            final String[] values = entry.getKey().split("\\.");
-            if (values.length == 3 && values[0].equals("ze") && values[1].equals("desc")) {
-                return true;
+        for (Zenchantment zen : config.getZenchantments()) {
+            for (String str : zen.getDescription(config)) {
+                if (string.equals(Utilities.reproduceCorruptedInvisibleSequence(str))) {
+                    return true;
+                }
             }
         }
         return false;
@@ -247,7 +244,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         if (meta.hasLore()) {
             for (final String line : requireNonNull(meta.getLore())) {
                 Map.Entry<Zenchantment, Integer> zenchantmentEntry = getZenchantmentFromString(line, worldConfiguration);
-                if (zenchantmentEntry == null && !Zenchantment.isDescription(line)) {
+                if (zenchantmentEntry == null && !Zenchantment.isDescription(line, worldConfiguration)) {
                     normalLore.add(line);
                 } else if (zenchantmentEntry != null && zenchantmentEntry.getKey() != zenchantment) {
                     isZenchantment = true;
