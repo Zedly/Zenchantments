@@ -70,7 +70,7 @@ public final class Stock extends Zenchantment {
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
         final PlayerInventory inventory = event.getPlayer().getInventory();
-        final ItemStack handItem = inventory.getItemInMainHand();
+        final ItemStack handItem = inventory.getItemInMainHand().clone();
 
         if (handItem.getType() == AIR) {
             return false;
@@ -89,7 +89,7 @@ public final class Stock extends Zenchantment {
 
             for (int i = 0; i < event.getPlayer().getInventory().getContents().length; i++) {
                 final ItemStack stack = player.getInventory().getContents()[i];
-                if (stack.getType() == handItem.getType()) {
+                if (stack != null && stack.getType() == handItem.getType()) {
                     current = i;
                     break;
                 }
