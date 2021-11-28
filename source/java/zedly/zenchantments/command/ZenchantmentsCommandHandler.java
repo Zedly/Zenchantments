@@ -1,7 +1,7 @@
 package zedly.zenchantments.command;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,7 +44,7 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
         }
 
         if(this.commandMap.containsKey(subcommand)) {
-            this.commandMap.get(subcommand).execute(sender, ArrayUtils.subarray(args, 1, args.length));
+            this.commandMap.get(subcommand).execute(sender, (String[]) ArrayUtils.subarray(args, 1, args.length));
         } else {
             this.enchantCommand.execute(sender, args);
         }
@@ -71,6 +71,6 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
             return enchantCommand.getTabCompleteOptions(sender, args);
         }
 
-        return zenchantmentsCommand.getTabCompleteOptions(sender, ArrayUtils.subarray(args, 1, args.length));
+        return zenchantmentsCommand.getTabCompleteOptions(sender, (String[]) ArrayUtils.subarray(args, 1, args.length));
     }
 }
