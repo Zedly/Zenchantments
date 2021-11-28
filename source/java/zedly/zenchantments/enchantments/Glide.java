@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -9,11 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.task.EffectTask;
+import zedly.zenchantments.task.Frequency;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
@@ -142,5 +142,15 @@ public final class Glide extends Zenchantment {
         GLIDE_USERS.put(uniqueId, player.getLocation().getY());
 
         return true;
+    }
+
+    @EffectTask(Frequency.SLOW)
+    public void purgeOfflineGlideUsers() {
+        for(Iterator<Map.Entry<UUID, Double>> it = GLIDE_USERS.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<UUID, Double> entry = it.next();
+            if(!Bukkit.getServer().getOfflinePlayer(entry.getKey()).isOnline()) {
+                it.remove();
+            }
+        }
     }
 }
