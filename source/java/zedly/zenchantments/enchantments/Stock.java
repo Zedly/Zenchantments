@@ -87,8 +87,9 @@ public final class Stock extends Zenchantment {
 
             int current = -1;
 
+            final ItemStack[] invContents = player.getInventory().getContents();
             for (int i = 0; i < event.getPlayer().getInventory().getContents().length; i++) {
-                final ItemStack stack = player.getInventory().getContents()[i];
+                final ItemStack stack = invContents[i];
                 if (stack != null && stack.getType() == handItem.getType()) {
                     current = i;
                     break;
@@ -96,7 +97,7 @@ public final class Stock extends Zenchantment {
             }
 
             if (current != -1) {
-                inventory.setItemInMainHand(event.getPlayer().getInventory().getContents()[current]);
+                inventory.setItemInMainHand(invContents[current]);
                 inventory.setItem(current, new ItemStack(AIR));
             }
         }, 1);
