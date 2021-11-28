@@ -156,6 +156,7 @@ public final class Stream extends Zenchantment {
             case 2:
             case 4:
                 player.getWorld().spawnParticle(TRAIL_TYPES[mode], player.getLocation(), 3);
+                Utilities.displayParticle(player.getLocation(), TRAIL_TYPES[mode], 3, 0.1, 0, 0, 0);
                 break;
             case 3:
                 final ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -166,8 +167,6 @@ public final class Stream extends Zenchantment {
                     new Particle.DustOptions(Color.fromRGB(random.nextInt(256), random.nextInt(256), random.nextInt(256)), 1.0f)
                 );
         }
-
-        Utilities.displayParticle(player.getLocation(), TRAIL_TYPES[mode], 3, 0.1, 0, 0, 0);
         return true;
     }
 }
