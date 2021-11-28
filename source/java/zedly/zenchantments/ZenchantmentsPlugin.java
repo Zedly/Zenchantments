@@ -3,7 +3,6 @@ package zedly.zenchantments;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +23,7 @@ import zedly.zenchantments.player.PlayerDataProvider;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
-import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 import static org.bukkit.Material.LAVA;
@@ -39,6 +38,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
     private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
     private final CompatibilityAdapter       compatibilityAdapter       = new CompatibilityAdapter(this);
+    private final I18n                       i18n                       = new I18n(this);
 
     @NotNull
     public static ZenchantmentsPlugin getInstance() {
@@ -49,6 +49,8 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     public void onEnable() {
         ZenchantmentsPlugin.instance = this;
 
+        this.i18n.updateLocale(Locale.getDefault());
+
         try {
             this.globalConfiguration.loadGlobalConfiguration();
         } catch (Exception e) {
@@ -58,8 +60,8 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        this.worldConfigurationProvider.loadWorldConfigurations();
 
+        this.worldConfigurationProvider.loadWorldConfigurations();
 
         ZenchantmentsCommandHandler commandHandler = new ZenchantmentsCommandHandler(this);
         PluginCommand enchCommand = Objects.requireNonNull(this.getCommand("ench"));
@@ -141,5 +143,10 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @Deprecated
     public CompatibilityAdapter getCompatibilityAdapter() {
         return this.compatibilityAdapter;
+    }
+
+    @NotNull
+    public I18n getI18n() {
+        return this.i18n;
     }
 }
