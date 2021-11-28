@@ -1,6 +1,5 @@
 package zedly.zenchantments.event.listener;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Material;
@@ -10,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -87,8 +87,9 @@ public final class ZenchantmentListener implements Listener {
 
     @EventHandler
     private void onBlockInteract(final @NotNull PlayerInteractEvent event) {
-        if (event.getClickedBlock() == null
-            || !MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
+        if (event.getAction() != Action.PHYSICAL
+            && (event.getClickedBlock() == null
+            || !MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType()))
         ) {
             final Player player = event.getPlayer();
             final boolean isMainHand = event.getHand() == EquipmentSlot.HAND;
