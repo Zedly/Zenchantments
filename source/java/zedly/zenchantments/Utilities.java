@@ -52,6 +52,12 @@ public final class Utilities {
     }
 
     @NotNull
+    public static <T extends Enum<?>> T randomOfEnum(Class<T> clazz) {
+        int x = ThreadLocalRandom.current().nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[x];
+    }
+
+    @NotNull
     public static List<ItemStack> getArmorAndHandItems(final @NotNull Player player, final boolean mainHand) {
         requireNonNull(player);
 
@@ -682,7 +688,7 @@ public final class Utilities {
                 }
             }
 
-            if (foundBlocks.size() > maxBlocks) {
+            if (foundBlocks.size() >= maxBlocks) {
                 // Allowed size exceeded.
                 if (returnEmptyIfMaxExceeded) {
                     return Collections.emptyList();
