@@ -88,7 +88,7 @@ public final class Fire extends Zenchantment {
 
     @Override
     public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE || !event.isDropItems()) {
             return false;
         }
 
