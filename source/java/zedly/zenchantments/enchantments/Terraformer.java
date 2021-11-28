@@ -81,8 +81,9 @@ public final class Terraformer extends Zenchantment {
         final Inventory inventory = event.getPlayer().getInventory();
         Material material = AIR;
 
+        ItemStack item = null;
         for (int i = 0; i < 9; i++) {
-            final ItemStack item = inventory.getItem(i);
+            item = inventory.getItem(i);
 
             if (item == null) {
                 continue;
@@ -94,9 +95,15 @@ public final class Terraformer extends Zenchantment {
             }
         }
 
+        if(item == null) {
+            return false;
+        }
+
+        int fillSize = item.getAmount();
+
         final Iterable<Block> blocks = Utilities.bfs(
             start,
-            MAX_BLOCKS,
+            fillSize,
             false,
             5f,
             SEARCH_FACES,
@@ -106,23 +113,18 @@ public final class Terraformer extends Zenchantment {
             true
         );
 
+        int blocksPlaced = 0;
         for (final Block block : blocks) {
             if (block.getType() != AIR) {
                 continue;
             }
 
-            if (!Utilities.playerHasMaterial(event.getPlayer(), material, 1)) {
-                continue;
-            }
-
             if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(block, event.getPlayer(), material, null)) {
-                Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);
-                if (ThreadLocalRandom.current().nextInt(10) == 5) {
-                    Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
-                }
+                blocksPlaced++;
             }
         }
-
+        Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, blocksPlaced);
+        Utilities.damageItemStack(event.getPlayer(), blocksPlaced, usedHand);
         return true;
     }
 }
