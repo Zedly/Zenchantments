@@ -1,11 +1,10 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -75,7 +74,7 @@ public final class MysteryFish extends Zenchantment {
 
     @Override
     public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final boolean usedHand) {
-        if(event.getState() != PlayerFishEvent.State.CAUGHT_FISH && event.getState() != PlayerFishEvent.State.CAUGHT_ENTITY) {
+        if(event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {
             return true;
         }
 
@@ -87,8 +86,19 @@ public final class MysteryFish extends Zenchantment {
 
         final Location location = event.getCaught().getLocation();
         EntityType mysteryMobType = chooseWeightedRandomEntityType();
-
         Entity ent = event.getPlayer().getWorld().spawnEntity(location, mysteryMobType);
+        switch(mysteryMobType) {
+            case AXOLOTL:
+                ((Axolotl) ent).setVariant(Utilities.randomOfEnum(Axolotl.Variant.class));
+                break;
+            case TROPICAL_FISH:
+                TropicalFish f = (TropicalFish) ent;
+                f.setPattern(Utilities.randomOfEnum(TropicalFish.Pattern.class));
+                f.setPatternColor(Utilities.randomOfEnum(DyeColor.class));
+                f.setBodyColor(Utilities.randomOfEnum(DyeColor.class));
+                break;
+        }
+
         ENTITIES_ATTRACTED_TO_PLAYERS.put(ent, event.getPlayer());
         return true;
     }
