@@ -72,13 +72,14 @@ public final class GreenThumb extends Zenchantment {
     public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
         final Location location = player.getLocation().clone();
         final Block centerBlock = location.getBlock();
-        final int radius = (int) Math.round(this.getPower() * level + 2);
+        int radiusSquare = (int) Math.round(this.getPower() * level + 2);
+        radiusSquare *= radiusSquare;
 
-        for (int x = -(radius); x <= radius; x++) {
-            for (int y = -(radius) - 1; y <= radius - 1; y++) {
-                for (int z = -(radius); z <= radius; z++) {
+        for (int x = -(radiusSquare); x <= radiusSquare; x++) {
+            for (int y = -(radiusSquare) - 1; y <= radiusSquare - 1; y++) {
+                for (int z = -(radiusSquare); z <= radiusSquare; z++) {
                     final Block relativeBlock = centerBlock.getRelative(x, y, z);
-                    if (relativeBlock.getLocation().distance(location) >= radius) {
+                    if (relativeBlock.getLocation().distanceSquared(location) >= radiusSquare) {
                         continue;
                     }
 
