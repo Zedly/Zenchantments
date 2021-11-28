@@ -361,13 +361,6 @@ public class CompatibilityAdapter {
         return true;
     }
 
-    public Entity spawnGuardian(final @NotNull Location location, final boolean elderGuardian) {
-        return Objects.requireNonNull(location.getWorld()).spawnEntity(
-            location,
-            elderGuardian ? EntityType.ELDER_GUARDIAN : EntityType.GUARDIAN
-        );
-    }
-
     public boolean isZombie(final @NotNull Entity entity) {
         return entity.getType() == EntityType.ZOMBIE
             || entity.getType() == EntityType.ZOMBIE_VILLAGER

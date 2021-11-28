@@ -3,7 +3,8 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.jetbrains.annotations.NotNull;
@@ -11,13 +12,10 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.bukkit.entity.EntityType.SQUID;
+import static org.bukkit.entity.EntityType.*;
 
 public final class MysteryFish extends Zenchantment {
     public static final String KEY = "mystery_fish";
@@ -27,7 +25,10 @@ public final class MysteryFish extends Zenchantment {
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 
-    private static final Map<Guardian, Player> GUARDIANS_AND_PLAYERS = new HashMap<>();
+    private static final Map<Entity, Player> ENTITIES_ATTRACTED_TO_PLAYERS = new HashMap<>();
+
+    private static final Map<Integer, EntityType> MYSTERY_SPAWN_RATES = new LinkedHashMap<>();
+    private static final int RANDOM_RANGE;
 
     private final NamespacedKey key;
 
@@ -74,40 +75,63 @@ public final class MysteryFish extends Zenchantment {
 
     @Override
     public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final boolean usedHand) {
+        if(event.getState() != PlayerFishEvent.State.CAUGHT_FISH && event.getState() != PlayerFishEvent.State.CAUGHT_ENTITY) {
+            return true;
+        }
+
         if (!(ThreadLocalRandom.current().nextInt(10) < level * this.getPower())) {
             return true;
         }
 
-        if (event.getCaught() == null) {
-            return true;
-        }
+        event.getCaught().remove();
 
         final Location location = event.getCaught().getLocation();
+        EntityType mysteryMobType = chooseWeightedRandomEntityType();
 
-        if (ThreadLocalRandom.current().nextBoolean()) {
-            event.getPlayer().getWorld().spawnEntity(location, SQUID);
-        } else {
-            final Guardian guardian = (Guardian) ZenchantmentsPlugin.getInstance()
-                .getCompatibilityAdapter()
-                .spawnGuardian(location, ThreadLocalRandom.current().nextBoolean());
-
-            GUARDIANS_AND_PLAYERS.put(guardian, event.getPlayer());
-        }
-
+        Entity ent = event.getPlayer().getWorld().spawnEntity(location, mysteryMobType);
+        ENTITIES_ATTRACTED_TO_PLAYERS.put(ent, event.getPlayer());
         return true;
     }
 
     @EffectTask(Frequency.HIGH)
     public static void moveGuardians(final @NotNull ZenchantmentsPlugin plugin) {
-        final Iterator<Guardian> iterator = GUARDIANS_AND_PLAYERS.keySet().iterator();
+        final Iterator<Entity> iterator = ENTITIES_ATTRACTED_TO_PLAYERS.keySet().iterator();
         while (iterator.hasNext()) {
-            final Guardian guardian = iterator.next();
-            final Player player = GUARDIANS_AND_PLAYERS.get(guardian);
-            if (guardian.getLocation().distance(player.getLocation()) > 2 && guardian.getTicksLived() < 160) {
-                guardian.setVelocity(player.getLocation().toVector().subtract(guardian.getLocation().toVector()));
+            final Entity ent = iterator.next();
+            final Player player = ENTITIES_ATTRACTED_TO_PLAYERS.get(ent);
+            if (ent.getLocation().distance(player.getLocation()) > 2 && ent.getTicksLived() < 160) {
+                ent.setVelocity(player.getLocation().toVector().subtract(ent.getLocation().toVector()).normalize());
             } else {
                 iterator.remove();
             }
         }
+    }
+
+    private final EntityType chooseWeightedRandomEntityType()  {
+        int randomInt = ThreadLocalRandom.current().nextInt(RANDOM_RANGE);
+        for(int range : MYSTERY_SPAWN_RATES.keySet()) {
+            if(randomInt < range) {
+                return MYSTERY_SPAWN_RATES.get(range);
+            }
+        }
+        return EntityType.SQUID; // Should never happen but is a convenient inoffensive fallback
+    }
+
+    static {
+        // TODO: Replace this with configurable values, add up each weight in the loop (make sure each value is >= 0)
+
+        MYSTERY_SPAWN_RATES.put(30, SQUID);
+        MYSTERY_SPAWN_RATES.put(40, COD);
+        MYSTERY_SPAWN_RATES.put(50, SALMON);
+        MYSTERY_SPAWN_RATES.put(60, PUFFERFISH);
+        MYSTERY_SPAWN_RATES.put(70, TROPICAL_FISH);
+        MYSTERY_SPAWN_RATES.put(80, GUARDIAN);
+        MYSTERY_SPAWN_RATES.put(85, ELDER_GUARDIAN);
+        MYSTERY_SPAWN_RATES.put(89, AXOLOTL);
+        MYSTERY_SPAWN_RATES.put(93, GLOW_SQUID);
+        MYSTERY_SPAWN_RATES.put(97, DOLPHIN);
+        MYSTERY_SPAWN_RATES.put(100, TURTLE);
+
+        RANDOM_RANGE = 100;
     }
 }
