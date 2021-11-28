@@ -20,6 +20,11 @@ public class I18n {
     }
 
     @NotNull
+    public static String translateString(final @NotNull String key, final @NotNull Object... objects) {
+        return ZenchantmentsPlugin.getInstance().getI18n().translate(key, objects);
+    }
+
+    @NotNull
     public String translate(final @NotNull String key, final @NotNull Object... objects) {
         final var message = this.getMessage(key);
 
