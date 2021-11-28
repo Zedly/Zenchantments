@@ -68,37 +68,8 @@ public final class Bind extends Zenchantment {
 
     @Override
     public boolean onPlayerDeath(final @NotNull PlayerDeathEvent event, final int level, final boolean usedHand) {
-        if (event.getKeepInventory()) {
-            return false;
-        }
-
-        final Player player = event.getEntity();
-        final ItemStack[] contents = player.getInventory().getContents().clone();
-        final List<ItemStack> removed = new ArrayList<>();
-
-        for (int i = 0; i < contents.length; i++) {
-            if (
-                !Zenchantment.getZenchantmentsOnItemStack(
-                    contents[i],
-                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
-                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
-                ).containsKey(this)
-            ) {
-                contents[i] = null;
-            } else {
-                removed.add(contents[i]);
-                event.getDrops().remove(contents[i]);
-            }
-        }
-
-        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-            if (event.getKeepInventory()) {
-                event.getDrops().addAll(removed);
-            } else {
-                player.getInventory().setContents(contents);
-            }
-        }, 1);
-
-        return true;
+        // Method body moved to ZenchantmentListener.onDeath because this is the only enchant that needs it anyway and we're
+        // missing access to some data here that's readily available in the listener
+        return false;
     }
 }

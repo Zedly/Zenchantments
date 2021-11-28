@@ -1,6 +1,7 @@
 package zedly.zenchantments.event.listener;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -11,20 +12,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.enchantments.Bind;
 import zedly.zenchantments.event.BlockShredEvent;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -43,7 +45,7 @@ public final class ZenchantmentListener implements Listener {
         5
     );
 
-    private static final EntityType[] ENTITY_INTERACT_BAD_ENTITIES = { HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER };
+    private static final EntityType[] ENTITY_INTERACT_BAD_ENTITIES = {HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER};
 
     private final ZenchantmentsPlugin plugin;
 
@@ -237,6 +239,15 @@ public final class ZenchantmentListener implements Listener {
     }
 
     @EventHandler
+    private void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player p = event.getPlayer();
+        if(p.hasMetadata("ze.force-inv-reload")) {
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> p.updateInventory(), 1);
+            p.removeMetadata("ze.force-inv-reload", ZenchantmentsPlugin.getInstance());
+        }
+    }
+
+    @EventHandler
     private void onShear(final @NotNull PlayerShearEntityEvent event) {
         if (event.isCancelled()) {
             return;
@@ -321,16 +332,34 @@ public final class ZenchantmentListener implements Listener {
 
     @EventHandler
     private void onDeath(final @NotNull PlayerDeathEvent event) {
-        final Player player = event.getEntity();
-        final PlayerInventory inventory = player.getInventory();
-
-        for (final ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
-            this.applyZenchantmentForTool(
-                player,
-                usedStack,
-                (ench, level) -> ench.onPlayerDeath(event, level, true)
-            );
+        if (event.getKeepInventory()) {
+            return;
         }
+        final Player player = event.getEntity();
+        final ItemStack[] contents = player.getInventory().getContents();
+        // Contents retains position of Bind items in player's inventory
+
+        final List<ItemStack> removed = new ArrayList<>();
+
+        for (int i = 0; i < contents.length; i++) {
+            if (contents[i] != null &&
+                Zenchantment.getZenchantmentsOnItemStack(
+                    contents[i],
+                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
+                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                ).keySet().stream().anyMatch(e -> e instanceof Bind) // TODO: Make this search more efficient
+            ) {
+                removed.add(contents[i]);
+                event.getDrops().remove(contents[i]);
+            } else {
+                contents[i] = null;
+            }
+        }
+
+        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
+            player.getInventory().setContents(contents);
+            player.setMetadata("ze.force-inv-reload",  new FixedMetadataValue(plugin, "Yes"));
+        }, 1);
     }
 
     @EventHandler
