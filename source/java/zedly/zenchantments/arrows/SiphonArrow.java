@@ -1,11 +1,9 @@
 package zedly.zenchantments.arrows;
 
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -26,15 +24,14 @@ public final class SiphonArrow extends ZenchantedArrow {
         if (event.getEntity() instanceof LivingEntity
             && this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
         ) {
-            final Player player = (Player) Objects.requireNonNull(((Projectile) event.getDamager()).getShooter());
-            int difference = (int) Math.round(0.17 * this.getLevel() * this.getPower() * event.getDamage());
-            while (difference > 0) {
-                if (player.getHealth() <= player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
-                    player.setHealth(player.getHealth() + 1);
-                }
-
-                difference--;
+            ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
+            if (shooter == null || !(shooter instanceof Player)) {
+                die();
+                return false;
             }
+            final Player player = (Player) shooter;
+            int difference = (int) Math.round(0.17 * this.getLevel() * this.getPower() * event.getDamage());
+            player.setHealth(Math.min(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), player.getHealth() + difference));
         }
 
         this.die();
