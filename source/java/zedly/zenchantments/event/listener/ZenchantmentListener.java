@@ -1,6 +1,6 @@
 package zedly.zenchantments.event.listener;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -324,7 +324,7 @@ public final class ZenchantmentListener implements Listener {
         final Player player = event.getEntity();
         final PlayerInventory inventory = player.getInventory();
 
-        for (final ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
+        for (final ItemStack usedStack : (ItemStack[]) ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
             this.applyZenchantmentForTool(
                 player,
                 usedStack,
@@ -342,7 +342,7 @@ public final class ZenchantmentListener implements Listener {
         final Player player = (Player) event.getEntity();
         final PlayerInventory inventory = player.getInventory();
 
-        for (final ItemStack usedStack : ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
+        for (final ItemStack usedStack : (ItemStack[]) ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
             this.applyZenchantmentForTool(
                 player,
                 usedStack,
