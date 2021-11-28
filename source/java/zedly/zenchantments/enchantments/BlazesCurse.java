@@ -141,15 +141,7 @@ public final class BlazesCurse extends Zenchantment {
 
         if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
             final Location checkLocation = player.getLocation();
-            while (checkLocation.getBlockY() < 256) {
-                if (!MaterialList.AIR.contains(checkLocation.getBlock().getType())) {
-                    break;
-                }
-
-                checkLocation.setY(checkLocation.getBlockY() + 1);
-            }
-
-            if (checkLocation.getBlockY() == 256) {
+            if (checkLocation.getWorld().getHighestBlockAt(checkLocation).getY() <= checkLocation.getY() + 2) {
                 ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
             }
         }
