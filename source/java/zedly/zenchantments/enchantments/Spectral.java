@@ -114,8 +114,8 @@ public final class Spectral extends Zenchantment {
                 newMaterial = STRIPPED_LOGS.getNext(original);
             } else if (WOODEN_PLANKS.contains(original)) {
                 newMaterial = WOODEN_PLANKS.getNext(original);
-            } else if (SAND.contains(original)) {
-                newMaterial = SAND.getNext(original);
+            } else if (SANDS.contains(original)) {
+                newMaterial = SANDS.getNext(original);
             } else if (SAPLINGS.contains(original)) {
                 newMaterial = SAPLINGS.getNext(original);
             } else if (LEAVES.contains(original)) {
