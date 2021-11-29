@@ -2,6 +2,7 @@ package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,6 +26,23 @@ public final class Extraction extends Zenchantment {
     private static final String                             DESCRIPTION = "Smelts and yields more product from ores";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Switch.class);
     private static final Hand                               HAND_USE    = Hand.LEFT;
+    private static final Map<Material, Material> ORE_SMELT_MAP = Map.of(
+        Material.IRON_ORE, IRON_INGOT,
+        Material.GOLD_ORE, GOLD_INGOT,
+        Material.COPPER_ORE, COPPER_INGOT,
+        Material.DEEPSLATE_IRON_ORE, IRON_INGOT,
+        Material.DEEPSLATE_GOLD_ORE, GOLD_INGOT,
+        Material.DEEPSLATE_COPPER_ORE, COPPER_INGOT
+    );
+    private static final Map<Material, Integer> ORE_EXPERIENCE_MAP = Map.of(
+        Material.IRON_ORE, 1,
+        Material.GOLD_ORE, 3,
+        Material.COPPER_ORE, 2,
+        Material.DEEPSLATE_IRON_ORE, 1,
+        Material.DEEPSLATE_GOLD_ORE, 3,
+        Material.DEEPSLATE_COPPER_ORE, 2
+    );
+
 
     private final NamespacedKey key;
 
@@ -76,7 +95,7 @@ public final class Extraction extends Zenchantment {
 
         final Block block = event.getBlock();
 
-        if (block.getType() != GOLD_ORE && block.getType() != IRON_ORE) {
+        if (!ORE_SMELT_MAP.containsKey(block.getType())) {
             return false;
         }
 
@@ -85,7 +104,7 @@ public final class Extraction extends Zenchantment {
         for (int x = 0; x < ThreadLocalRandom.current().nextInt((int) Math.round(this.getPower() * level + 1)) + 1; x++) {
             block.getWorld().dropItemNaturally(
                 event.getBlock().getLocation(),
-                new ItemStack(event.getBlock().getType() == GOLD_ORE ? GOLD_INGOT : IRON_INGOT)
+                new ItemStack(ORE_SMELT_MAP.get(block.getType()))
             );
         }
 
@@ -95,7 +114,7 @@ public final class Extraction extends Zenchantment {
         );
 
         final int experience = ThreadLocalRandom.current().nextInt(5);
-        experienceOrb.setExperience(block.getType() == IRON_ORE ? experience + 1 : experience + 3);
+        experienceOrb.setExperience(experience + ORE_EXPERIENCE_MAP.get(block.getType()));
 
         block.setType(AIR);
 
