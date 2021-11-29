@@ -133,7 +133,8 @@ public final class RainbowSlam extends Zenchantment {
 
                 ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity(entity, event.getPlayer(), level * this.getPower());
 
-                for (int c = 0; c < 1000; c++) {
+                int numParticleGroups = (int) Math.pow(10, getPower());
+                for (int c = 0; c < numParticleGroups; c++) {
                     entity.getWorld().spawnParticle(
                         Particle.BLOCK_DUST,
                         Utilities.getCenter(location),
