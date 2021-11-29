@@ -15,6 +15,7 @@ import zedly.zenchantments.*;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -42,6 +43,14 @@ public final class Fire extends Zenchantment {
         { 0, 0, -1 },
         { 0, 0, 1 }
     };
+    private static final Map<Material, Integer> ORE_EXPERIENCE_MAP = Map.of(
+        Material.IRON_ORE, 1,
+        Material.GOLD_ORE, 3,
+        Material.COPPER_ORE, 2,
+        Material.DEEPSLATE_IRON_ORE, 1,
+        Material.DEEPSLATE_GOLD_ORE, 3,
+        Material.DEEPSLATE_COPPER_ORE, 2
+    );
 
     private final NamespacedKey key;
 
@@ -101,20 +110,19 @@ public final class Fire extends Zenchantment {
         if (Tool.PICKAXE.contains(hand.getType())) {
             if (MaterialList.FIRE_RAW.contains(original)) {
                 material = MaterialList.FIRE_COOKED.get(MaterialList.FIRE_RAW.indexOf(original));
-            }
-            if (original == GOLD_ORE || original == IRON_ORE) {
-                ExperienceOrb experienceOrb = (ExperienceOrb) block.getWorld().spawnEntity(
-                    Utilities.getCenter(block),
+
+                final ExperienceOrb experienceOrb = (ExperienceOrb) block.getWorld().spawnEntity(
+                    event.getBlock().getLocation(),
                     EXPERIENCE_ORB
                 );
-                int experience = ThreadLocalRandom.current().nextInt(5);
-                experienceOrb.setExperience(original == IRON_ORE ? experience + 1 : experience + 3);
+                final int experience = ThreadLocalRandom.current().nextInt(5);
+                experienceOrb.setExperience(experience + ORE_EXPERIENCE_MAP.getOrDefault(block.getType(), 1));
             }
         }
 
         if (original == WET_SPONGE) {
             material = SPONGE;
-        } else if (MaterialList.SAND.contains(original)) {
+        } else if (MaterialList.SANDS.contains(original)) {
             material = GLASS;
         } else if (MaterialList.LOGS.contains(original)
             || MaterialList.STRIPPED_LOGS.contains(original)
