@@ -69,13 +69,12 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         final @NotNull PlayerDataProvider playerDataProvider,
         final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfigurationProvider worldConfigurationProvider,
-        final @NotNull ItemStack tool,
+        final @Nullable ItemStack tool,
         final @NotNull BiPredicate<Zenchantment, Integer> action
     ) {
         requireNonNull(player);
         requireNonNull(playerDataProvider);
         requireNonNull(worldConfigurationProvider);
-        requireNonNull(tool);
         requireNonNull(action);
 
         final Map<Zenchantment, Integer> zenchantments = getZenchantmentsOnItemStack(
@@ -108,7 +107,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
-        final @NotNull ItemStack itemStack,
+        final @Nullable ItemStack itemStack,
         final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration,
         final @NotNull List<String> outExtraLore
@@ -118,7 +117,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
-        final @NotNull ItemStack itemStack,
+        final @Nullable ItemStack itemStack,
         final boolean acceptBooks,
         final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration
@@ -128,7 +127,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
-        final @NotNull ItemStack itemStack,
+        final @Nullable ItemStack itemStack,
         final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
@@ -137,12 +136,16 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
-        final @NotNull ItemStack itemStack,
+        final @Nullable ItemStack itemStack,
         final boolean acceptBooks,
         final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration,
         final @Nullable List<String> outExtraLore
     ) {
+        if(itemStack == null) {
+            return Collections.emptyMap();
+        }
+
         final Map<Zenchantment, Integer> map = new LinkedHashMap<>();
 
         if ((!acceptBooks && itemStack.getType() == Material.ENCHANTED_BOOK)
