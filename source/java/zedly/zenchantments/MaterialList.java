@@ -282,7 +282,9 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_LOG,
         JUNGLE_LOG,
         CRIMSON_STEM,
-        WARPED_STEM
+        WARPED_STEM,
+        CRIMSON_HYPHAE,
+        WARPED_HYPHAE
     );
 
     public static final MaterialList WOODEN_PLANKS = new MaterialList(
@@ -528,30 +530,41 @@ public final class MaterialList extends AbstractList<Material> {
         DIAMOND_ORE,
         GOLD_ORE,
         IRON_ORE,
+        COPPER_ORE,
         LAPIS_ORE,
         GLOWSTONE,
         NETHER_QUARTZ_ORE,
         EMERALD_ORE,
         NETHER_GOLD_ORE,
-        ANCIENT_DEBRIS
+        ANCIENT_DEBRIS,
+        DEEPSLATE_COAL_ORE,
+        DEEPSLATE_REDSTONE_ORE,
+        DEEPSLATE_IRON_ORE,
+        DEEPSLATE_GOLD_ORE,
+        DEEPSLATE_COPPER_ORE,
+        DEEPSLATE_DIAMOND_ORE,
+        DEEPSLATE_LAPIS_ORE
     );
 
-    public static final MaterialList SAND = new MaterialList(Material.SAND, RED_SAND);
+    public static final MaterialList SANDS = new MaterialList(Material.SAND, RED_SAND);
 
     public static final MaterialList ICE = new MaterialList(Material.ICE, BLUE_ICE, PACKED_ICE);
 
     public static final MaterialList DIRT = new MaterialList(
         Material.DIRT,
         COARSE_DIRT,
+        ROOTED_DIRT,
         MYCELIUM,
         PODZOL,
         GRASS_BLOCK,
-        DIRT_PATH
+        DIRT_PATH,
+        CRIMSON_NYLIUM,
+        WARPED_NYLIUM
     );
 
-    public static final MaterialList STONES = new MaterialList(Material.STONE, GRANITE, ANDESITE, DIORITE);
+    public static final MaterialList STONES = new MaterialList(Material.STONE, GRANITE, ANDESITE, DIORITE, BASALT, TUFF);
 
-    public static final MaterialList COBBLESTONES = new MaterialList(COBBLESTONE, MOSSY_COBBLESTONE);
+    public static final MaterialList COBBLESTONES = new MaterialList(COBBLESTONE, MOSSY_COBBLESTONE, COBBLED_DEEPSLATE);
 
     public static final MaterialList NETHER_BRICKS = new MaterialList(Material.NETHER_BRICKS, RED_NETHER_BRICKS);
 
@@ -719,18 +732,13 @@ public final class MaterialList extends AbstractList<Material> {
 
     public static final MaterialList TERRAFORMER_MATERIALS = new MaterialList(
         new Material[] {
-            STONE,
             GRASS_BLOCK,
             Material.DIRT,
-            COBBLESTONE,
-            Material.SAND,
-            RED_SAND,
             GRAVEL,
             Material.SANDSTONE,
             BRICK,
             TNT,
             BOOKSHELF,
-            MOSSY_COBBLESTONE,
             Material.ICE,
             SNOW_BLOCK,
             CLAY,
@@ -747,6 +755,9 @@ public final class MaterialList extends AbstractList<Material> {
             PACKED_ICE,
             RED_SANDSTONE
         },
+        STONES,
+        COBBLESTONES,
+        SANDS,
         ORES,
         TERRACOTTA,
         GLAZED_TERRACOTTA,
@@ -827,6 +838,10 @@ public final class MaterialList extends AbstractList<Material> {
             GRANITE,
             IRON_ORE,
             GOLD_ORE,
+            COPPER_ORE,
+            DEEPSLATE_IRON_ORE,
+            DEEPSLATE_GOLD_ORE,
+            DEEPSLATE_COPPER_ORE,
             COBBLESTONE,
             MOSSY_COBBLESTONE,
             NETHERRACK,
@@ -843,6 +858,10 @@ public final class MaterialList extends AbstractList<Material> {
             POLISHED_GRANITE,
             IRON_INGOT,
             GOLD_INGOT,
+            COPPER_INGOT,
+            IRON_INGOT,
+            GOLD_INGOT,
+            COPPER_INGOT,
             STONE,
             MOSSY_STONE_BRICKS,
             NETHER_BRICK,
@@ -857,6 +876,8 @@ public final class MaterialList extends AbstractList<Material> {
             GRANITE,
             ANDESITE,
             DIORITE,
+            BASALT,
+            TUFF,
             NETHERRACK,
             GLOWSTONE,
             Material.SANDSTONE,
@@ -883,7 +904,7 @@ public final class MaterialList extends AbstractList<Material> {
             SOUL_SAND,
             CLAY
         },
-        SAND
+        SANDS
     );
 
     public static final MaterialList PERSEPHONE_CROPS = new MaterialList(
