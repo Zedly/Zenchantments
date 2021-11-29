@@ -41,7 +41,7 @@ public final class Utilities {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
-                    DEFAULT_SEARCH_FACES[i++] = new int[] { x, y, z };
+                    DEFAULT_SEARCH_FACES[i++] = new int[]{x, y, z};
                 }
             }
         }
@@ -83,12 +83,16 @@ public final class Utilities {
             ? inventory.getItemInMainHand()
             : inventory.getItemInOffHand();
 
+        int totalDamageApplied = 0;
         for (int i = 0; i < damage; i++) {
             if (ThreadLocalRandom.current().nextInt(100) <= (100 / (heldItem.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
-                setItemStackDamage(heldItem, getItemStackDamage(heldItem) + 1);
+                totalDamageApplied++;
             }
         }
 
+        if (totalDamageApplied > 0) {
+            setItemStackDamage(heldItem, getItemStackDamage(heldItem) + totalDamageApplied);
+        }
         final int maxDurability = heldItem.getType().getMaxDurability();
         final ItemStack item = getItemStackDamage(heldItem) > maxDurability ? new ItemStack(Material.AIR) : heldItem;
 
@@ -601,7 +605,7 @@ public final class Utilities {
                     }
 
                     if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().formBlock(possiblePlatformBlock, fill, player)) {
-                        placed.put(possiblePlatformLocation, System.nanoTime());
+                        placed.put(possiblePlatformLocation, System.currentTimeMillis());
                     }
                 }
             }
