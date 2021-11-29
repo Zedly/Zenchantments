@@ -8,8 +8,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Collections;
 import java.util.List;
 
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.DARK_AQUA;
+import static zedly.zenchantments.I18n.translateString;
 
 public class HelpCommand extends ZenchantmentsCommand {
     public HelpCommand(final @NotNull ZenchantmentsPlugin plugin) {
@@ -18,13 +17,13 @@ public class HelpCommand extends ZenchantmentsCommand {
 
     @Override
     public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
-        sender.sendMessage(MESSAGE_PREFIX);
-        sender.sendMessage(DARK_AQUA + "- ench info <?enchantment>: " + AQUA + "Returns information about custom enchantments.");
-        sender.sendMessage(DARK_AQUA + "- ench list: " + AQUA + "Returns a list of enchantments for the tool in hand.");
-        sender.sendMessage(DARK_AQUA + "- ench give <Player> <Material> <enchantment> <?level> ... " + AQUA + "Gives the target a specified enchanted item.");
-        sender.sendMessage(DARK_AQUA + "- ench <enchantment> <?level>: " + AQUA + "Enchants the item in hand with the given enchantment and level");
-        sender.sendMessage(DARK_AQUA + "- ench disable <enchantment/all>: " + AQUA + "Disables selected enchantment for the user");
-        sender.sendMessage(DARK_AQUA + "- ench enable <enchantment/all>: " + AQUA + "Enables selected enchantment for the user");
+        sender.sendMessage("- ench info " + translateString("command.info.usage") + ": " + translateString("command.info.description"));
+        sender.sendMessage("- ench list: " + translateString("command.list.description"));
+        sender.sendMessage("- ench give " + translateString("command.give.usage") + ": " + translateString("command.give.description"));
+        sender.sendMessage("- ench enable " + translateString("command.enable.usage") + ": " + translateString("command.enable.description"));
+        sender.sendMessage("- ench disable " + translateString("command.disable.usage") + ": " + translateString("command.disable.description"));
+        sender.sendMessage("- ench reload: " + translateString("command.reload.description"));
+        sender.sendMessage("- ench " + translateString("command.enchant.usage") + ": " + translateString("command.enchant.description"));
     }
 
     @Override

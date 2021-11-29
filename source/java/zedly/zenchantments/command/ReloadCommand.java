@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static zedly.zenchantments.I18n.translateString;
+
 public class ReloadCommand extends ZenchantmentsCommand {
     public ReloadCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
@@ -18,19 +20,18 @@ public class ReloadCommand extends ZenchantmentsCommand {
     @Override
     public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
         if (!sender.hasPermission("zenchantments.command.reload")) {
-            sender.sendMessage(MESSAGE_PREFIX + "You do not have permission to do this!");
+            sender.sendMessage(translateString("message.no_permission"));
             return;
         }
 
         try {
             this.plugin.getGlobalConfiguration().loadGlobalConfiguration();
             this.plugin.getWorldConfigurationProvider().loadWorldConfigurations();
-        } catch (IOException | InvalidConfigurationException e) {
+            sender.sendMessage(translateString("message.plugin_reloaded"));
+        } catch (final IOException | InvalidConfigurationException e) {
             e.printStackTrace();
-            sender.sendMessage(MESSAGE_PREFIX + "Reloaded Zenchantments.");
-            return;
+            sender.sendMessage(translateString("message.plugin_reloaded_with_errors"));
         }
-        sender.sendMessage(MESSAGE_PREFIX + "Reloaded Zenchantments.");
     }
 
     @Override

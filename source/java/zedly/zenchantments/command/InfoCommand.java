@@ -1,20 +1,15 @@
 package zedly.zenchantments.command;
 
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
-import zedly.zenchantments.configuration.WorldConfiguration;
-import zedly.zenchantments.player.PlayerData;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
-import static org.bukkit.ChatColor.*;
+import static zedly.zenchantments.I18n.translateString;
 
 public class InfoCommand extends ZenchantmentsCommand {
     public InfoCommand(final @NotNull ZenchantmentsPlugin plugin) {
@@ -23,41 +18,35 @@ public class InfoCommand extends ZenchantmentsCommand {
 
     @Override
     public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MESSAGE_PREFIX + "You must be a player to do this!");
+        if (!(sender instanceof final Player player)) {
+            sender.sendMessage(translateString("message.must_be_player"));
             return;
         }
-
-        final Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.info")) {
-            player.sendMessage(MESSAGE_PREFIX + "You do not have permission to do this!");
+            sender.sendMessage(translateString("message.no_permission"));
             return;
         }
 
-        final World world = player.getWorld();
-        final WorldConfiguration config = this.plugin
-            .getWorldConfigurationProvider()
-            .getConfigurationForWorld(world);
-        final PlayerData playerData = this.plugin
-            .getPlayerDataProvider()
-            .getDataForPlayer(player);
+        final var world = player.getWorld();
+        final var config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final var playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
 
         if (args.length > 0) {
-            final Zenchantment zenchantment = config.getZenchantmentFromName(args[0]);
+            final var zenchantment = config.getZenchantmentFromName(args[0]);
             if (zenchantment != null) {
                 player.sendMessage(
-                    MESSAGE_PREFIX
-                        + zenchantment.getName()
-                        + ": "
-                        + (playerData.isDisabled(zenchantment.getKey()) ? RED + "**Disabled** " : "")
-                        + AQUA + zenchantment.getDescription()
+                    translateString(
+                        playerData.isDisabled(zenchantment.getKey()) ? "message.disabled_zenchantment_info" : "message.zenchantment_info",
+                        translateString("zenchantment." + zenchantment.getKey().getKey() + ".name"),
+                        translateString("zenchantment." + zenchantment.getKey().getKey() + ".description")
+                    )
                 );
             }
             return;
         }
 
-        final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
+        final var zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             player.getInventory().getItemInMainHand(),
             true,
             this.plugin.getGlobalConfiguration(),
@@ -65,19 +54,18 @@ public class InfoCommand extends ZenchantmentsCommand {
         ).keySet();
 
         if (zenchantments.isEmpty()) {
-            player.sendMessage(MESSAGE_PREFIX + "There are no zenchantments on this tool!");
+            player.sendMessage(translateString("message.no_zenchantments_on_item"));
             return;
         }
 
-        player.sendMessage(MESSAGE_PREFIX + "Enchantment Info:");
-        for (final Zenchantment zenchantment : zenchantments) {
+        player.sendMessage(translateString("message.zenchantment_info_header"));
+        for (final var zenchantment : zenchantments) {
             player.sendMessage(
-                DARK_AQUA
-                    + zenchantment.getName()
-                    + ": "
-                    + (playerData.isDisabled(zenchantment.getKey()) ? RED + "**Disabled** " : "")
-                    + AQUA
-                    + zenchantment.getDescription()
+                translateString(
+                    playerData.isDisabled(zenchantment.getKey()) ? "message.disabled_zenchantment_info" : "message.zenchantment_info",
+                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".name"),
+                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".description")
+                )
             );
         }
     }

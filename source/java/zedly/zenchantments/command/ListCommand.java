@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.DARK_AQUA;
+import static zedly.zenchantments.I18n.translateString;
 
 public class ListCommand extends ZenchantmentsCommand {
     public ListCommand(final @NotNull ZenchantmentsPlugin plugin) {
@@ -21,19 +22,17 @@ public class ListCommand extends ZenchantmentsCommand {
 
     @Override
     public void execute(final @NotNull CommandSender sender, final @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MESSAGE_PREFIX + "You must be a player to do this!");
+        if (!(sender instanceof final Player player)) {
+            sender.sendMessage(translateString("message.must_be_player"));
             return;
         }
-
-        final Player player = (Player) sender;
 
         if (!player.hasPermission("zenchantments.command.list")) {
-            player.sendMessage(MESSAGE_PREFIX + "You do not have permission to do this!");
+            sender.sendMessage(translateString("message.no_permission"));
             return;
         }
 
-        player.sendMessage(MESSAGE_PREFIX + "Enchantment Types:");
+        player.sendMessage(translateString("message.zenchantment_list_header"));
 
         this.plugin
             .getWorldConfigurationProvider()
@@ -41,8 +40,9 @@ public class ListCommand extends ZenchantmentsCommand {
             .getZenchantments()
             .stream()
             .filter(zenchantment -> zenchantment.isValidMaterial(player.getInventory().getItemInMainHand()))
-            .sorted(Comparator.comparing(Zenchantment::getName))
-            .forEachOrdered(zenchantment -> player.sendMessage(DARK_AQUA + "- " + AQUA + zenchantment.getName()));
+            .map(zenchantment -> translateString("zenchantment." + zenchantment.getKey().getKey() + ".name"))
+            .sorted()
+            .forEach(name -> player.sendMessage("- " + name));
     }
 
     @Override

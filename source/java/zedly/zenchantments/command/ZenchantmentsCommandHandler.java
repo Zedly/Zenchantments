@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ZenchantmentsCommandHandler implements CommandExecutor, TabCompleter {
-    private final EnchantCommand                    enchantCommand;
+    private final EnchantCommand enchantCommand;
     private final Map<String, ZenchantmentsCommand> commandMap;
 
     public ZenchantmentsCommandHandler(final @NotNull ZenchantmentsPlugin plugin) {
@@ -38,12 +38,12 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
         final @NotNull String label,
         final @NotNull String[] args
     ) {
-        String subcommand = "help";
+        var subcommand = "help";
         if (args.length > 0) {
             subcommand = args[0].toLowerCase();
         }
 
-        if(this.commandMap.containsKey(subcommand)) {
+        if (this.commandMap.containsKey(subcommand)) {
             this.commandMap.get(subcommand).execute(sender, (String[]) ArrayUtils.subarray(args, 1, args.length));
         } else {
             this.enchantCommand.execute(sender, args);
@@ -64,11 +64,10 @@ public class ZenchantmentsCommandHandler implements CommandExecutor, TabComplete
             return Collections.emptyList();
         }
 
-
-        final ZenchantmentsCommand zenchantmentsCommand = this.commandMap.get(args[0].toLowerCase());
+        final var zenchantmentsCommand = this.commandMap.get(args[0].toLowerCase());
 
         if (zenchantmentsCommand == null) {
-            return enchantCommand.getTabCompleteOptions(sender, args);
+            return this.enchantCommand.getTabCompleteOptions(sender, args);
         }
 
         return zenchantmentsCommand.getTabCompleteOptions(sender, (String[]) ArrayUtils.subarray(args, 1, args.length));
