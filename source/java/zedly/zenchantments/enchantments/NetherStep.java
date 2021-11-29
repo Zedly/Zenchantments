@@ -89,7 +89,7 @@ public final class NetherStep extends Zenchantment {
         Iterator<Location> iterator = FrozenStep.FROZEN_LOCATIONS.keySet().iterator();
         while (iterator.hasNext()) {
             final Location location = iterator.next();
-            if (Math.abs(System.nanoTime() - FrozenStep.FROZEN_LOCATIONS.get(location)) > 9E8) {
+            if (Math.abs(System.currentTimeMillis() - FrozenStep.FROZEN_LOCATIONS.get(location)) > 900) {
                 location.getBlock().setType(WATER);
                 iterator.remove();
             }
@@ -98,7 +98,7 @@ public final class NetherStep extends Zenchantment {
         iterator = NETHERSTEP_LOCATIONS.keySet().iterator();
         while (iterator.hasNext()) {
             final Location location = iterator.next();
-            if (Math.abs(System.nanoTime() - NETHERSTEP_LOCATIONS.get(location)) > 9E8) {
+            if (Math.abs(System.currentTimeMillis() - NETHERSTEP_LOCATIONS.get(location)) > 900) {
                 location.getBlock().setType(LAVA);
                 iterator.remove();
             }
