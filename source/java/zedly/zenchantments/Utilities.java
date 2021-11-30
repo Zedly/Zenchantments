@@ -432,6 +432,10 @@ public final class Utilities {
                 return;
             }
 
+            if (effect.getAmplifier() == intensity) {
+                break;
+            }
+
             entity.removePotionEffect(effectType);
         }
 
