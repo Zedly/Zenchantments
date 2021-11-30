@@ -314,7 +314,7 @@ public final class ZenchantmentListener implements Listener {
     private void onProjectileLaunch(final @NotNull ProjectileLaunchEvent event) {
         final Entity shooter = (Entity) event.getEntity().getShooter();
 
-        if (!(shooter instanceof Player)) {
+        if (shooter == null || !(shooter instanceof Player)) {
             return;
         }
 
