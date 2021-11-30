@@ -3,6 +3,7 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
@@ -17,10 +18,10 @@ import static org.bukkit.entity.EntityType.DROPPED_ITEM;
 public final class Magnetism extends Zenchantment {
     public static final String KEY = "magnetism";
 
-    private static final String                             NAME        = "Magnetism";
-    private static final String                             DESCRIPTION = "Slowly attracts nearby items to the players inventory";
+    private static final String NAME = "Magnetism";
+    private static final String DESCRIPTION = "Slowly attracts nearby items to the players inventory";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.NONE;
+    private static final Hand HAND_USE = Hand.NONE;
 
     private final NamespacedKey key;
 
@@ -69,8 +70,12 @@ public final class Magnetism extends Zenchantment {
     public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
         final int radius = (int) Math.round(this.getPower() * level * 2 + 3);
         for (final Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity.getType() == DROPPED_ITEM && entity.getTicksLived() > 160) {
-                entity.setVelocity(player.getLocation().toVector().subtract(entity.getLocation().toVector()).multiply(0.05));
+            if (entity.getType() == DROPPED_ITEM) {
+                Item item = (Item) entity;
+                if (item.getPickupDelay() == 0
+                    && item.getTicksLived() >= 160) {
+                    entity.setVelocity(player.getLocation().toVector().subtract(entity.getLocation().toVector()).multiply(0.05));
+                }
             }
         }
 
