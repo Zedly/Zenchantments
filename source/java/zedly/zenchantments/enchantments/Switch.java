@@ -126,9 +126,8 @@ public final class Switch extends Zenchantment {
         );
 
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-            // TODO: BlockData - whatever that means.
             ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(clickedBlock, player, material, null);
-        }, 1);
+        }, 1);  // TODO: Check item availability again in next tick, then place, then consume.
 
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);
         return true;
