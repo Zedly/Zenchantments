@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public abstract class ZenchantmentsCommand {
     protected static final String MESSAGE_PREFIX =
@@ -17,6 +18,7 @@ public abstract class ZenchantmentsCommand {
             + ChatColor.BLUE
             + "] "
             + ChatColor.AQUA;
+    static final Pattern ENCHANT_COMMAND_PATTERN = Pattern.compile("^([^\\d]*[^\\d\\s])(?: (\\d+$))?");
 
     protected final ZenchantmentsPlugin plugin;
 

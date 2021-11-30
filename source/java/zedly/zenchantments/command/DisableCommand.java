@@ -33,10 +33,17 @@ public class DisableCommand extends ZenchantmentsCommand {
         }
 
         final var playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
+        final var commandString = String.join(" ", args);
+        final var matcher = ENCHANT_COMMAND_PATTERN.matcher(commandString);
+        if (!matcher.find()) {
+            return;
+        }
+
+        final var zenchantmentName = matcher.group(1);
         final var zenchantment = this.plugin
             .getWorldConfigurationProvider()
             .getConfigurationForWorld(player.getWorld())
-            .getZenchantmentFromName(args[0]);
+            .getZenchantmentFromName(zenchantmentName);
 
         if (zenchantment != null) {
             playerData.disableZenchantment(zenchantment.getKey());

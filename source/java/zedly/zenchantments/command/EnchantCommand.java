@@ -12,15 +12,12 @@ import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.I18n.translateString;
 
 public class EnchantCommand extends ZenchantmentsCommand {
-
-    private static final Pattern ENCHANT_COMMAND_PATTERN = Pattern.compile("^([^\\d]*[^\\d\\s])(?: (\\d+$))?");
 
     public EnchantCommand(final @NotNull ZenchantmentsPlugin plugin) {
         super(plugin);
