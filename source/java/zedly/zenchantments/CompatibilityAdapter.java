@@ -29,11 +29,11 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftCreeper;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftSheep;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftCreeper;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftSheep;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
@@ -156,13 +156,13 @@ public class CompatibilityAdapter {
             amount
         );
         final EntityHuman human = ((CraftPlayer) player).getHandle();
-        orb.pickup(human); // XP Orb Entity handles mending. Don't blame me, I didn't code it.
-        human.ca = 0; // Reset XP Pickup Timer.
+        orb.b(human); // XP Orb Entity handles mending. Don't blame me, I didn't code it.
+        human.cb = 0; // Reset XP Pickup Timer.
     }
 
     public boolean breakBlock(final @NotNull Block block, final @NotNull Player player) {
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        return ep.d.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        return ep.d.a(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 
     public boolean placeBlock(
@@ -329,7 +329,7 @@ public class CompatibilityAdapter {
 
     public boolean explodeCreeper(final @NotNull Creeper creeper, final boolean damage) {
         final EntityCreeper nmsCreeper = ((CraftCreeper) creeper).getHandle();
-        nmsCreeper.explode();
+        nmsCreeper.fB();
         return true;
     }
 
@@ -357,7 +357,7 @@ public class CompatibilityAdapter {
     public boolean hideShulker(final int entityId, final @NotNull Player player) {
         final PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityId);
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ep.b.a.sendPacket(packet);
+        ep.b.a.a(packet);
         return true;
     }
 
@@ -592,8 +592,8 @@ public class CompatibilityAdapter {
             final PacketPlayOutSpawnEntityLiving spawnPacket = generateShulkerSpawnPacket(x, y, z, entityId);
             final PacketPlayOutEntityMetadata metadataPacket = generateShulkerGlowPacket(entityId);
             final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-            ep.b.a.sendPacket(spawnPacket);
-            ep.b.a.sendPacket(metadataPacket);
+            ep.b.a.a(spawnPacket);
+            ep.b.a.a(metadataPacket);
             return true;
         } catch (InstantiationException ex) {
             return false;
@@ -618,7 +618,7 @@ public class CompatibilityAdapter {
     @NotNull
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(
         final int x, final int y, final int z, final int entityId) throws InstantiationException {
-        final int mobTypeId = IRegistry.Y.getId(EntityTypes.ay);
+        final int mobTypeId = IRegistry.Z.a(EntityTypes.ay);
         final UUID uuid = UUID.randomUUID();
         FakeEntityLiving fel = new FakeEntityLiving(EntityTypes.ay, entityId, uuid, x, y, z);
         PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving(fel);
@@ -635,16 +635,16 @@ public class CompatibilityAdapter {
             this.entityId = entityId;
             this.uuid = uuid;
             this.entityType = entityType;
-            super.setPositionRaw(x, y, z);
+            super.p(x, y, z);
         }
 
         @Override
-        public int getId() {
+        public int ae() {
             return entityId;
         }
 
         @Override
-        public UUID getUniqueID() {
+        public UUID cm() {
             return uuid;
         }
 
@@ -654,21 +654,21 @@ public class CompatibilityAdapter {
 
         // Useless abstract methods we need to implement to appease the compiler
         @Override
-        public Iterable<net.minecraft.world.item.ItemStack> getArmorItems() {
+        public Iterable<net.minecraft.world.item.ItemStack> bC() {
             return null;
         }
 
         @Override
-        public net.minecraft.world.item.ItemStack getEquipment(EnumItemSlot enumItemSlot) {
+        public net.minecraft.world.item.ItemStack b(EnumItemSlot enumItemSlot) {
             return null;
         }
 
         @Override
-        public void setSlot(EnumItemSlot enumItemSlot, net.minecraft.world.item.ItemStack itemStack) {
+        public void a(EnumItemSlot enumItemSlot, net.minecraft.world.item.ItemStack itemStack) {
         }
 
         @Override
-        public EnumMainHand getMainHand() {
+        public EnumMainHand eK() {
             return null;
         }
     }

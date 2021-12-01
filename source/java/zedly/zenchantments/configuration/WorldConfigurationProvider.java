@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import org.bukkit.World;
@@ -22,7 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.IOUtils;
+//import org.bukkit.craftbukkit.libs.org.apache.commons.io.IOUtils;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.Zenchantment.Constructor;
@@ -80,13 +83,10 @@ public class WorldConfigurationProvider implements zedly.zenchantments.api.confi
     private WorldConfiguration loadConfiguration(final @NotNull String worldName) throws IOException, InvalidConfigurationException {
         // Create default config for this world if it doesn't exist
         InputStream stream = Zenchantments.class.getResourceAsStream("/config.yml");
-        File file = new File(ZenchantmentsPlugin.getInstance().getDataFolder(), worldName + ".yml");
+        Path path = Path.of(ZenchantmentsPlugin.getInstance().getDataFolder().getAbsolutePath(), worldName + ".yml");
+        File file = path.toFile();
         if (!file.exists()) {
-            String raw = IOUtils.toString(stream, "UTF-8");
-            byte[] b = raw.getBytes();
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(b, 0, b.length);
-            fos.flush();
+            Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
         }
 
         // Load the config for this config
