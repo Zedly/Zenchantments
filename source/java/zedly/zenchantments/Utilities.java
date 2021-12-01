@@ -8,11 +8,8 @@ import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +17,7 @@ import zedly.zenchantments.player.PlayerData;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.ChatColor.COLOR_CHAR;
@@ -53,16 +51,16 @@ public final class Utilities {
 
     @NotNull
     public static <T extends Enum<?>> T randomOfEnum(Class<T> clazz) {
-        int x = ThreadLocalRandom.current().nextInt(clazz.getEnumConstants().length);
-        return clazz.getEnumConstants()[x];
+        final var i = ThreadLocalRandom.current().nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[i];
     }
 
     @NotNull
     public static List<ItemStack> getArmorAndHandItems(final @NotNull Player player, final boolean mainHand) {
         requireNonNull(player);
 
-        final List<ItemStack> stacks = new ArrayList<>(5); // Full armor + one hand = max 5 ItemStacks.
-        final PlayerInventory inventory = player.getInventory();
+        final var stacks = new ArrayList<ItemStack>(5); // Full armor + one hand = max 5 ItemStacks.
+        final var inventory = player.getInventory();
 
         stacks.addAll(Arrays.asList(inventory.getArmorContents()));
         stacks.add(mainHand ? inventory.getItemInMainHand() : inventory.getItemInOffHand());
@@ -78,14 +76,14 @@ public final class Utilities {
             return;
         }
 
-        final PlayerInventory inventory = player.getInventory();
-        final ItemStack heldItem = handUsed
-            ? inventory.getItemInMainHand()
-            : inventory.getItemInOffHand();
+        final var inventory = player.getInventory();
+        final var heldItem = handUsed ? inventory.getItemInMainHand() : inventory.getItemInOffHand();
 
-        int totalDamageApplied = 0;
-        for (int i = 0; i < damage; i++) {
-            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (heldItem.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
+        var totalDamageApplied = 0;
+        for (var i = 0; i < damage; i++) {
+            if (ThreadLocalRandom
+                .current()
+                .nextInt(100) <= (100 / (heldItem.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
                 totalDamageApplied++;
             }
         }
@@ -93,8 +91,9 @@ public final class Utilities {
         if (totalDamageApplied > 0) {
             setItemStackDamage(heldItem, getItemStackDamage(heldItem) + totalDamageApplied);
         }
-        final int maxDurability = heldItem.getType().getMaxDurability();
-        final ItemStack item = getItemStackDamage(heldItem) > maxDurability ? new ItemStack(Material.AIR) : heldItem;
+
+        final var maxDurability = heldItem.getType().getMaxDurability();
+        final var item = getItemStackDamage(heldItem) > maxDurability ? new ItemStack(Material.AIR) : heldItem;
 
         if (handUsed) {
             inventory.setItemInMainHand(item);
@@ -141,8 +140,12 @@ public final class Utilities {
             return;
         }
 
-        for (int i = 0; i < damage; i++) {
-            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (itemStack.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
+        for (var i = 0; i < damage; i++) {
+            if (
+                ThreadLocalRandom
+                    .current()
+                    .nextInt(100) <= (100 / (itemStack.getEnchantmentLevel(Enchantment.DURABILITY) + 1))
+            ) {
                 setItemStackDamage(itemStack, getItemStackDamage(itemStack) + 1);
             }
         }
@@ -151,18 +154,16 @@ public final class Utilities {
     public static void setItemStackDamage(final @NotNull ItemStack itemStack, final int damage) {
         requireNonNull(itemStack);
 
-        if (itemStack.getItemMeta() instanceof Damageable) {
-            final Damageable damageable = (Damageable) itemStack.getItemMeta();
+        if (itemStack.getItemMeta() instanceof final Damageable damageable) {
             damageable.setDamage(damage);
-            itemStack.setItemMeta((ItemMeta) damageable);
+            itemStack.setItemMeta(damageable);
         }
     }
 
     public static int getItemStackDamage(final @NotNull ItemStack itemStack) {
         requireNonNull(itemStack);
 
-        if (itemStack.getItemMeta() instanceof Damageable) {
-            final Damageable damageable = (Damageable) itemStack.getItemMeta();
+        if (itemStack.getItemMeta() instanceof final Damageable damageable) {
             return damageable.getDamage();
         }
 
@@ -173,9 +174,7 @@ public final class Utilities {
     public static ItemStack getUsedItemStack(final @NotNull Player player, final boolean handUsed) {
         requireNonNull(player);
 
-        return handUsed
-            ? player.getInventory().getItemInMainHand()
-            : player.getInventory().getItemInOffHand();
+        return handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
     }
 
     public static void setItemStackInHand(
@@ -205,14 +204,14 @@ public final class Utilities {
             return true;
         }
 
-        final Inventory inventory = player.getInventory();
+        final var inventory = player.getInventory();
 
         if (!playerHasMaterial(player, material, amount)) {
             return false;
         }
 
-        for (int i = 0; i < inventory.getSize(); i++) {
-            final ItemStack item = inventory.getItem(i);
+        for (var i = 0; i < inventory.getSize(); i++) {
+            final var item = inventory.getItem(i);
 
             if (item == null || item.getType() != material) {
                 continue;
@@ -243,10 +242,10 @@ public final class Utilities {
             return true;
         }
 
-        final Inventory inventory = player.getInventory();
+        final var inventory = player.getInventory();
 
-        for (int i = 0; i < inventory.getSize(); i++) {
-            final ItemStack item = inventory.getItem(i);
+        for (var i = 0; i < inventory.getSize(); i++) {
+            final var item = inventory.getItem(i);
 
             if (item == null || item.getType() != material) {
                 continue;
@@ -267,9 +266,9 @@ public final class Utilities {
             return 1;
         }
 
-        final int sectionSize = 32 / (maxLevel - 1);
-        final int position = levels / sectionSize;
-        final int mod = levels - position * sectionSize;
+        final var sectionSize = 32 / (maxLevel - 1);
+        final var position = levels / sectionSize;
+        final var mod = levels - position * sectionSize;
 
         if (ThreadLocalRandom.current().nextInt(2 * sectionSize) >= mod) {
             return position + 1;
@@ -281,60 +280,36 @@ public final class Utilities {
     public static int convertNumeralToInt(final @NotNull String numeral) {
         requireNonNull(numeral);
 
-        switch (numeral.toUpperCase()) {
-            case "-":
-                return 0;
-            case "II":
-                return 2;
-            case "III":
-                return 3;
-            case "IV":
-                return 4;
-            case "V":
-                return 5;
-            case "VI":
-                return 6;
-            case "VII":
-                return 7;
-            case "VIII":
-                return 8;
-            case "IX":
-                return 9;
-            case "X":
-                return 10;
-            case "I":
-            default:
-                return 1;
-        }
+        return switch (numeral.toUpperCase()) {
+            case "-" -> 0;
+            case "II" -> 2;
+            case "III" -> 3;
+            case "IV" -> 4;
+            case "V" -> 5;
+            case "VI" -> 6;
+            case "VII" -> 7;
+            case "VIII" -> 8;
+            case "IX" -> 9;
+            case "X" -> 10;
+            default -> 1;
+        };
     }
 
     @NotNull
     public static String convertIntToNumeral(final int number) {
-        switch (number) {
-            case 0:
-                return "-";
-            case 2:
-                return "II";
-            case 3:
-                return "III";
-            case 4:
-                return "IV";
-            case 5:
-                return "V";
-            case 6:
-                return "VI";
-            case 7:
-                return "VII";
-            case 8:
-                return "VIII";
-            case 9:
-                return "IX";
-            case 10:
-                return "X";
-            case 1:
-            default:
-                return "I";
-        }
+        return switch (number) {
+            case 0 -> "-";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            case 10 -> "X";
+            default -> "I";
+        };
     }
 
     @NotNull
@@ -346,7 +321,7 @@ public final class Utilities {
     public static Location getCenter(final @NotNull Location location, final boolean centerVertical) {
         requireNonNull(location);
 
-        final Location centered = location.clone();
+        final var centered = location.clone();
         centered.setX(location.getX() + 0.5);
         centered.setY(centerVertical ? location.getY() + 0.5 : location.getY());
         centered.setZ(location.getZ() + 0.5);
@@ -373,7 +348,7 @@ public final class Utilities {
 
         yaw %= 360;
 
-        final double i = (yaw + 8) / 18;
+        final var i = (yaw + 8) / 18;
         final BlockFace direction;
 
         if (pitch < -50) {
@@ -423,7 +398,7 @@ public final class Utilities {
         requireNonNull(effectType);
 
         // Examine existing potion effects to see what operations need to be performed.
-        for (final PotionEffect effect : entity.getActivePotionEffects()) {
+        for (final var effect : entity.getActivePotionEffects()) {
             if (effect.getType() != effectType) {
                 continue;
             }
@@ -443,7 +418,7 @@ public final class Utilities {
     }
 
     @NotNull
-    public static String reproduceCorruptedInvisibleSequence(@NotNull String original) {
+    public static String reproduceCorruptedInvisibleSequence(final @NotNull String original) {
         requireNonNull(original);
         return CraftChatMessage.fromJSONComponent(CraftChatMessage.fromStringToJSON(original, false));
     }
@@ -454,9 +429,9 @@ public final class Utilities {
 
         string = "\\<" + string + "\\>" + COLOR_CHAR + 'F';
 
-        final StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
 
-        for (final char c : string.toCharArray()) {
+        for (final var c : string.toCharArray()) {
             builder.append(COLOR_CHAR);
             builder.append(c);
         }
@@ -468,14 +443,14 @@ public final class Utilities {
     public static Map<String, Boolean> fromInvisibleString(final @NotNull String string) {
         requireNonNull(string);
 
-        final Map<String, Boolean> strings = new HashMap<>();
+        final var strings = new HashMap<String, Boolean>();
 
         // Reassigned in the loop below when a section is completed.
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
 
-        int state = 0;
+        var state = 0;
 
-        for (final char c : string.toCharArray()) {
+        for (final var c : string.toCharArray()) {
             switch (state) {
                 // Visible, waiting for '§'.
                 case 0:
@@ -588,10 +563,10 @@ public final class Utilities {
         requireNonNull(player);
         requireNonNull(placed);
 
-        for (int x = -radius; x <= radius; x++) {
-            for (int z = -radius; z <= radius; z++) {
-                final Block possiblePlatformBlock = center.getRelative(x, -1, z);
-                final Location possiblePlatformLocation = possiblePlatformBlock.getLocation();
+        for (var x = -radius; x <= radius; x++) {
+            for (var z = -radius; z <= radius; z++) {
+                final var possiblePlatformBlock = center.getRelative(x, -1, z);
+                final var possiblePlatformLocation = possiblePlatformBlock.getLocation();
 
                 if (!(possiblePlatformLocation.distanceSquared(center.getLocation()) < radius * radius - 2)) {
                     continue;
@@ -599,21 +574,43 @@ public final class Utilities {
 
                 if (placed.containsKey(possiblePlatformLocation)) {
                     placed.put(possiblePlatformLocation, System.nanoTime());
-                } else if (possiblePlatformBlock.getType() == check
-                    && MaterialList.AIR.contains(possiblePlatformBlock.getRelative(0, 1, 0).getType())
+                } else if (
+                    possiblePlatformBlock.getType() == check
+                        && MaterialList.AIR.contains(possiblePlatformBlock.getRelative(0, 1, 0).getType())
                 ) {
-                    if (possiblePlatformBlock.getBlockData() instanceof Levelled
-                        && ((Levelled) possiblePlatformBlock.getBlockData()).getLevel() != 0
-                    ) {
+                    if (possiblePlatformBlock.getBlockData() instanceof Levelled levelled && levelled.getLevel() != 0) {
                         continue;
                     }
 
-                    if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().formBlock(possiblePlatformBlock, fill, player)) {
+                    if (
+                        ZenchantmentsPlugin
+                            .getInstance()
+                            .getCompatibilityAdapter()
+                            .formBlock(possiblePlatformBlock, fill, player)
+                    ) {
                         placed.put(possiblePlatformLocation, System.currentTimeMillis());
                     }
                 }
             }
         }
+    }
+
+    public static int countItems(
+        final @NotNull Iterable<ItemStack> stacks,
+        final @NotNull Predicate<ItemStack> predicate
+    ) {
+        requireNonNull(stacks);
+        requireNonNull(predicate);
+
+        var count = 0;
+
+        for (final var stack : stacks) {
+            if (predicate.test(stack)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     // Returns a list of blocks found using the BFS algorithm given the passed search parameters.
@@ -635,7 +632,7 @@ public final class Utilities {
         final float maxDistFromOrigin,
         final int[][] searchFaces,
         final @NotNull MaterialList validFind,
-        @NotNull MaterialList validSearch,
+        final @NotNull MaterialList validSearch,
         final boolean strictValidSearch,
         final boolean flipValidSearch
     ) {
@@ -645,26 +642,25 @@ public final class Utilities {
 
         // BFS through the trunk, cancel if forbidden blocks are adjacent or search body becomes too large.
 
-        final Set<Block> searchedBlocks = new LinkedHashSet<>();
-        final List<Block> foundBlocks = new ArrayList<>();
-        final List<Block> toSearch = new ArrayList<>();
+        final var searchedBlocks = new LinkedHashSet<Block>();
+        final var foundBlocks = new ArrayList<Block>();
+        final var toSearch = new ArrayList<Block>();
 
         // Add the origin block.
         searchedBlocks.add(startBlock);
         toSearch.add(startBlock);
 
-
         // Keep searching as long as there's more blocks to search.
         while (!toSearch.isEmpty()) {
-            final Block searchBlock = toSearch.remove(0);
+            final var searchBlock = toSearch.remove(0);
 
             // If block is in the search list, add adjacent blocks to search perimeter.
             if (validFind.contains(searchBlock.getType())) {
                 foundBlocks.add(searchBlock);
 
-                for (final int[] blockFace : searchFaces) {
+                for (final var blockFace : searchFaces) {
                     // Add the adjacent block.
-                    final Block nextBlock = searchBlock.getRelative(blockFace[0], blockFace[1], blockFace[2]);
+                    final var nextBlock = searchBlock.getRelative(blockFace[0], blockFace[1], blockFace[2]);
 
                     // Check if it's already been searched.
                     if (searchedBlocks.contains(nextBlock)) {
@@ -672,7 +668,7 @@ public final class Utilities {
                     }
 
                     // Determine if the block is in the whitelist and flip the condition if flipValidSearch == true.
-                    boolean check = validSearch.contains(nextBlock.getType());
+                    var check = validSearch.contains(nextBlock.getType());
                     if (flipValidSearch) {
                         check = !check;
                     }
