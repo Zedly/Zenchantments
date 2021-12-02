@@ -94,15 +94,8 @@ public final class GreenThumb extends Zenchantment {
                         if (MaterialList.AIR.contains(relativeBlock.getRelative(0, 1, 0).getType())) {
                             final Material material;
                             switch (relativeBlock.getBiome()) {
-                                case MUSHROOM_FIELD_SHORE:
                                 case MUSHROOM_FIELDS:
                                     material = MYCELIUM;
-                                    break;
-                                case GIANT_SPRUCE_TAIGA:
-                                case GIANT_TREE_TAIGA:
-                                case GIANT_SPRUCE_TAIGA_HILLS:
-                                case GIANT_TREE_TAIGA_HILLS:
-                                    material = PODZOL;
                                     break;
                                 default:
                                     material = GRASS_BLOCK;

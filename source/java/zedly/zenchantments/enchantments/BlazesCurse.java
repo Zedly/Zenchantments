@@ -38,25 +38,13 @@ public final class BlazesCurse extends Zenchantment {
         DESERT,
         FROZEN_OCEAN,
         FROZEN_RIVER,
-        SNOWY_TUNDRA,
-        SNOWY_MOUNTAINS,
-        DESERT_HILLS,
         SNOWY_BEACH,
         SNOWY_TAIGA,
-        SNOWY_TAIGA_HILLS,
         SAVANNA,
         SAVANNA_PLATEAU,
         BADLANDS,
-        WOODED_BADLANDS_PLATEAU,
-        BADLANDS_PLATEAU,
-        DESERT_LAKES,
         ICE_SPIKES,
-        SNOWY_TAIGA_MOUNTAINS,
-        SHATTERED_SAVANNA,
-        SHATTERED_SAVANNA_PLATEAU,
-        ERODED_BADLANDS,
-        MODIFIED_WOODED_BADLANDS_PLATEAU,
-        MODIFIED_BADLANDS_PLATEAU
+        ERODED_BADLANDS
     );
 
     private final NamespacedKey key;
