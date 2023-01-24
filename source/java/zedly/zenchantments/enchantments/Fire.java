@@ -1,11 +1,9 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -13,10 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
@@ -25,9 +20,9 @@ import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 public final class Fire extends Zenchantment {
     public static final String KEY = "fire";
 
-    // Locations where Fire has been used on a block and the drop was changed. 
+    // Locations where Fire has been used on a block and the drop was changed.
     // BlockBreakEvent is not cancelled but the original item drop is not desired.
-    public static final Set<Block> CANCELLED_ITEM_DROPS = new HashSet<>();
+    public static final Map<Block, ItemStack> ITEM_DROP_REPLACEMENTS = new HashMap<>();
 
     private static final String                             NAME        = "Fire";
     private static final String                             DESCRIPTION = "Drops the smelted version of the block broken";
@@ -108,6 +103,14 @@ public final class Fire extends Zenchantment {
         Material material = AIR;
 
         if (Tool.PICKAXE.contains(hand.getType())) {
+            if(original == STONE) {
+                return breakBlockAsPlayerAndChangeDrops(block,
+                    event.getPlayer(),
+                    hand.containsEnchantment(Enchantment.SILK_TOUCH) ?
+                        new ItemStack(SMOOTH_STONE, 1) :
+                        new ItemStack(STONE, 1));
+            }
+
             if (MaterialList.FIRE_RAW.contains(original)) {
                 material = MaterialList.FIRE_COOKED.get(MaterialList.FIRE_RAW.indexOf(original));
 
@@ -120,9 +123,7 @@ public final class Fire extends Zenchantment {
             }
         }
 
-        if (original == WET_SPONGE) {
-            material = SPONGE;
-        } else if (MaterialList.SANDS.contains(original)) {
+         if (MaterialList.SANDS.contains(original)) {
             material = GLASS;
         } else if (MaterialList.LOGS.contains(original)
             || MaterialList.STRIPPED_LOGS.contains(original)
@@ -130,133 +131,34 @@ public final class Fire extends Zenchantment {
             || MaterialList.WOOD.contains(original)
         ) {
             material = CHARCOAL;
-        } else if (original == CLAY) {
-            return this.handleClay(block);
-        } else if (original == CACTUS) {
-            return this.handleCactus(block);
-        } else if (original == CHORUS_PLANT) {
-            return this.handleChorusPlant(block, event.getPlayer());
-        }
+        } else {
+             switch (original) {
+                 case CLAY -> {
+                     return breakBlockAsPlayerAndChangeDrops(block,
+                         event.getPlayer(),
+                         hand.containsEnchantment(Enchantment.SILK_TOUCH) ?
+                             new ItemStack(TERRACOTTA, 1) :
+                             new ItemStack(BRICK, 4));
+                 }
+                 case WET_SPONGE -> material = SPONGE;
+                 case CACTUS -> material = GREEN_DYE;
+                 case CHORUS_PLANT -> material = POPPED_CHORUS_FRUIT;
+             }
+         }
 
         if (material != Material.AIR) {
-            return this.handleEverythingElse(block, material);
+            return breakBlockAsPlayerAndChangeDrops(block, event.getPlayer(), new ItemStack(material, 1));
         }
-
         return false;
     }
 
-    private boolean handleClay(final @NotNull Block block) {
-        Utilities.displayParticle(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
-
-        final ItemStack brickStack = new ItemStack(BRICK);
-        for (int x = 0; x < 4; x++) {
-            block.getWorld().dropItemNaturally(block.getLocation(), brickStack);
+    private boolean breakBlockAsPlayerAndChangeDrops(Block block, Player player, ItemStack drop) {
+        ITEM_DROP_REPLACEMENTS.put(block, drop);
+        if(CompatibilityAdapter.instance().breakBlock(block, player)) {
+            Utilities.displayParticle(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+            ITEM_DROP_REPLACEMENTS.remove(block);
+            return true;
         }
-
-        CANCELLED_ITEM_DROPS.add(block);
-
-        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
-            ZenchantmentsPlugin.getInstance(),
-            () -> CANCELLED_ITEM_DROPS.remove(block),
-            5
-        );
-
-        return true;
-    }
-
-    private boolean handleCactus(final @NotNull Block block) {
-        final List<Block> blocks = Utilities.bfs(
-            block,
-            MAX_BLOCKS,
-            false,
-            256,
-            SEARCH_FACES_CACTUS,
-            MaterialList.CACTUS,
-            MaterialList.EMPTY,
-            false,
-            true
-        );
-
-        for (int i = blocks.size() - 1; i >= 0; i--) {
-            final Block bfsBlock = blocks.get(i);
-
-            Utilities.displayParticle(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
-
-            block.getWorld().dropItemNaturally(
-                Utilities.getCenter(bfsBlock.getLocation()),
-                new ItemStack(MaterialList.DYES.get(13), 1)
-            );
-
-            bfsBlock.setType(Material.AIR);
-
-            CANCELLED_ITEM_DROPS.add(bfsBlock);
-
-            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
-                ZenchantmentsPlugin.getInstance(),
-                () -> CANCELLED_ITEM_DROPS.remove(bfsBlock),
-                5
-            );
-
-        }
-        return true;
-    }
-
-    private boolean handleChorusPlant(final @NotNull Block block, final @NotNull Player player) {
-        final List<Block> blocks = Utilities.bfs(
-            block,
-            MAX_BLOCKS,
-            false,
-            256,
-            SEARCH_FACES_CHORUS,
-            MaterialList.CHORUS_PLANTS,
-            MaterialList.EMPTY,
-            false,
-            true
-        );
-
-        for (int i = blocks.size() - 1; i >= 0; i--) {
-            final Block bfsBlock = blocks.get(i);
-
-            Utilities.displayParticle(Utilities.getCenter(bfsBlock), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
-
-            if (bfsBlock.getType().equals(CHORUS_PLANT)) {
-                block.getWorld().dropItemNaturally(
-                    Utilities.getCenter(bfsBlock.getLocation()),
-                    new ItemStack(CHORUS_FRUIT, 1)
-                );
-
-                bfsBlock.setType(AIR);
-            } else {
-                if (!ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(bfsBlock, player)) {
-                    return false;
-                }
-            }
-
-            CANCELLED_ITEM_DROPS.add(bfsBlock);
-
-            ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
-                ZenchantmentsPlugin.getInstance(),
-                () -> CANCELLED_ITEM_DROPS.remove(bfsBlock),
-                5
-            );
-        }
-
-        return true;
-    }
-
-    private boolean handleEverythingElse(final @NotNull Block block, final @NotNull Material material) {
-        block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(material, 1));
-
-        Utilities.displayParticle(Utilities.getCenter(block), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
-
-        CANCELLED_ITEM_DROPS.add(block);
-
-        ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
-            ZenchantmentsPlugin.getInstance(),
-            () -> CANCELLED_ITEM_DROPS.remove(block),
-            5
-        );
-
-        return true;
+        return false;
     }
 }

@@ -18,10 +18,7 @@ import net.minecraft.world.entity.animal.EntitySheep;
 import net.minecraft.world.entity.monster.EntityCreeper;
 import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.level.World;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -45,6 +42,7 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -54,20 +52,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.BAMBOO;
 
 public class CompatibilityAdapter {
-    private final ZenchantmentsPlugin plugin;
+    //private final ZenchantmentsPlugin plugin;
 
-    public CompatibilityAdapter(final @NotNull ZenchantmentsPlugin plugin) {
-        this.plugin = plugin;
+    //public CompatibilityAdapter(final @NotNull ZenchantmentsPlugin plugin) {
+    //    this.plugin = plugin;
+    //}
+
+    private static final CompatibilityAdapter INSTANCE = new CompatibilityAdapter();
+
+    private CompatibilityAdapter() {
+    }
+
+    public static CompatibilityAdapter instance() {
+        return INSTANCE;
     }
 
     public static void damageTool(final @NotNull Player player, final int damage, final boolean handUsed) {
@@ -547,17 +551,14 @@ public class CompatibilityAdapter {
             return false;
         }
 
-        final PlayerInteractEvent event = new PlayerInteractEvent(
+        final PlayerHarvestBlockEvent event = new PlayerHarvestBlockEvent(
             player,
-            Action.RIGHT_CLICK_BLOCK,
-            player.getInventory().getItemInMainHand(),
             berryBlock,
-            player.getFacing()
+            List.of(new ItemStack(Material.SWEET_BERRIES, 2))
         );
 
         Bukkit.getServer().getPluginManager().callEvent(event);
 
-        // TODO: Fix deprecation warning.
         if (event.isCancelled()) {
             return false;
         }

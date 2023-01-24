@@ -33,8 +33,6 @@ public final class Anthropomorphism extends Zenchantment {
     private static final Hand                               HAND_USE    = Hand.BOTH;
 
     private static final List<Entity> VORTEX    = new ArrayList<>();
-    private static final Material[]   MATERIALS = new Material[] { STONE, GRAVEL, DIRT, GRASS_BLOCK };
-
     private static boolean fallBool = false;
 
     private final NamespacedKey key;
@@ -212,21 +210,23 @@ public final class Anthropomorphism extends Zenchantment {
                     }
                 }
 
-                if (counter < 64 && player.getInventory().contains(COBBLESTONE)) {
-                    Utilities.removeMaterialsFromPlayer(player, COBBLESTONE, 1);
-                    Utilities.damageItemStack(player, 2, usedHand);
+                for(Material mat : MaterialList.STONES) {
+                    if (counter < 64 && player.getInventory().contains(mat)) {
+                        Utilities.removeMaterialsFromPlayer(player, mat, 1);
+                        Utilities.damageItemStack(player, 2, usedHand);
 
-                    final Location location = player.getLocation();
-                    final FallingBlock blockEntity = requireNonNull(location.getWorld()).spawnFallingBlock(
-                        location,
-                        ZenchantmentsPlugin.getInstance().getServer().createBlockData(MATERIALS[ThreadLocalRandom.current().nextInt(4)])
-                    );
+                        final Location location = player.getLocation();
+                        final FallingBlock blockEntity = requireNonNull(location.getWorld()).spawnFallingBlock(
+                            location,
+                            ZenchantmentsPlugin.getInstance().getServer().createBlockData(mat)
+                        );
 
-                    blockEntity.setDropItem(false);
-                    blockEntity.setGravity(false);
-                    blockEntity.setMetadata("ze.anthrothrower", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), player));
-                    IDLE_BLOCKS.put(blockEntity, player);
-                    return true;
+                        blockEntity.setDropItem(false);
+                        blockEntity.setGravity(false);
+                        blockEntity.setMetadata("ze.anthrothrower", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), player));
+                        IDLE_BLOCKS.put(blockEntity, player);
+                        return true;
+                    }
                 }
             }
 

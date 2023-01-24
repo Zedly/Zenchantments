@@ -74,20 +74,18 @@ public final class Burst extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
-        final Player player = event.getPlayer();
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        final Player player = (Player) event.getEntity();
         final ItemStack itemInHand = Utilities.getUsedItemStack(player, usedHand);
-
-        if (event.getAction() != RIGHT_CLICK_AIR && event.getAction() != RIGHT_CLICK_BLOCK) {
-            return false;
-        }
 
         boolean result = false;
 
         for (int i = 0; i <= (int) Math.round((this.getPower() * level) + 1); i++) {
-            if ((!itemInHand.containsEnchantment(Enchantment.ARROW_INFINITE) || !Utilities.playerHasMaterial(player, Material.ARROW, 1))
-                && !Utilities.removeMaterialsFromPlayer(player, Material.ARROW, 1)
-            ) {
+            if (!Utilities.playerHasMaterial(player, Material.ARROW, 1)) {
+                continue;
+            }
+            if (!itemInHand.containsEnchantment(Enchantment.ARROW_INFINITE) &&
+                !Utilities.removeMaterialsFromPlayer(player, Material.ARROW, 1)) {
                 continue;
             }
 
@@ -108,7 +106,7 @@ public final class Burst extends Zenchantment {
                     arrow.setFireTicks(Integer.MAX_VALUE);
                 }
 
-                arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(1.7));
+                arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(event.getForce()));
 
                 // Some of the parameters below have been added since this class was last updated.
                 // This zenchantment may need more testing to determine whether or not it still works properly.
@@ -131,13 +129,12 @@ public final class Burst extends Zenchantment {
                     arrow.remove();
                 } else {
                     arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
-                    arrow.setCritical(true);
+                    arrow.setCritical(false);
                     ZenchantedArrow.putArrow(arrow, new MultiArrow(ZenchantmentsPlugin.getInstance(), arrow), player);
                     Utilities.damageItemStack(player, 1, usedHand);
                 }
             }, i * 2L);
         }
-
         return result;
     }
 }

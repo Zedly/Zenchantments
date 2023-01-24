@@ -77,10 +77,7 @@ public final class Arborist extends Zenchantment {
 
         // Crudely get the index in the array of materials.
         // TODO: Make this not awful.
-        int index = Math.max(
-            LEAVES.indexOf(material),
-            LEAVES.indexOf(material)
-        );
+        int index = LEAVES.indexOf(material);
 
         if (!(ThreadLocalRandom.current().nextInt(10) >= (9 - level) / (this.getPower() + 0.001))) {
             return false;
