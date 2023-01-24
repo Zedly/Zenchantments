@@ -36,14 +36,11 @@ public final class BlazesCurse extends Zenchantment {
 
     private static final EnumSet<Biome> DRY_BIOMES = EnumSet.of(
         DESERT,
-        FROZEN_OCEAN,
-        FROZEN_RIVER,
-        SNOWY_BEACH,
-        SNOWY_TAIGA,
         SAVANNA,
         SAVANNA_PLATEAU,
+        WINDSWEPT_SAVANNA,
         BADLANDS,
-        ICE_SPIKES,
+        WOODED_BADLANDS,
         ERODED_BADLANDS
     );
 
@@ -115,16 +112,25 @@ public final class BlazesCurse extends Zenchantment {
         final Block block = player.getLocation().getBlock();
         Material material = block.getType();
 
-        if (material == WATER) {
-            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, SUBMERGE_DAMAGE, DROWNING);
-            return true;
+        switch(material) {
+            case WATER:
+            case SNOW:
+            case POWDER_SNOW:
+                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
+                return true;
         }
 
         material = block.getRelative(BlockFace.DOWN).getType();
 
-        if (material == ICE || material == FROSTED_ICE) {
-            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
-            return true;
+        switch(material) {
+            case ICE:
+            case FROSTED_ICE:
+            case PACKED_ICE:
+            case BLUE_ICE:
+            case SNOW_BLOCK:
+            case POWDER_SNOW:
+                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
+                return true;
         }
 
         if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {

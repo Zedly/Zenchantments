@@ -161,7 +161,8 @@ public final class MaterialList extends AbstractList<Material> {
         BROWN_CARPET,
         GREEN_CARPET,
         RED_CARPET,
-        BLACK_CARPET
+        BLACK_CARPET,
+        MOSS_CARPET
     );
 
     public static final MaterialList STAINED_GLASS = new MaterialList(
@@ -271,7 +272,9 @@ public final class MaterialList extends AbstractList<Material> {
         SPRUCE_LEAVES,
         ACACIA_LEAVES,
         DARK_OAK_LEAVES,
-        JUNGLE_LEAVES
+        JUNGLE_LEAVES,
+        AZALEA_LEAVES,
+        FLOWERING_AZALEA_LEAVES
     );
 
     public static final MaterialList LOGS = new MaterialList(
@@ -310,12 +313,14 @@ public final class MaterialList extends AbstractList<Material> {
     );
 
     public static final MaterialList SAPLINGS = new MaterialList(
-        ACACIA_SAPLING,
+        OAK_SAPLING,
         BIRCH_SAPLING,
+        SPRUCE_SAPLING,
+        ACACIA_SAPLING,
         DARK_OAK_SAPLING,
         JUNGLE_SAPLING,
-        OAK_SAPLING,
-        SPRUCE_SAPLING
+        AZALEA,
+        FLOWERING_AZALEA
     );
 
     public static final MaterialList WOODEN_SLABS = new MaterialList(
@@ -842,17 +847,21 @@ public final class MaterialList extends AbstractList<Material> {
             DEEPSLATE_IRON_ORE,
             DEEPSLATE_GOLD_ORE,
             DEEPSLATE_COPPER_ORE,
+            ANCIENT_DEBRIS,
             COBBLESTONE,
-            MOSSY_COBBLESTONE,
             NETHERRACK,
-            Material.STONE_BRICKS
+            COBBLED_DEEPSLATE,
+            Material.SANDSTONE,
+            RED_SANDSTONE,
+            QUARTZ_BLOCK,
+            BASALT,
         },
         TERRACOTTA
     );
 
     public static final MaterialList FIRE_COOKED = new MaterialList(
         new Material[] {
-            Material.STONE_BRICKS,
+            STONE,
             POLISHED_DIORITE,
             POLISHED_ANDESITE,
             POLISHED_GRANITE,
@@ -862,10 +871,15 @@ public final class MaterialList extends AbstractList<Material> {
             IRON_INGOT,
             GOLD_INGOT,
             COPPER_INGOT,
+            NETHERITE_SCRAP,
             STONE,
-            MOSSY_STONE_BRICKS,
             NETHER_BRICK,
-            CRACKED_STONE_BRICKS
+            DEEPSLATE,
+            SMOOTH_SANDSTONE,
+            SMOOTH_RED_SANDSTONE,
+            SMOOTH_QUARTZ,
+            SMOOTH_BASALT,
+
         },
         GLAZED_TERRACOTTA
     );
@@ -878,6 +892,7 @@ public final class MaterialList extends AbstractList<Material> {
             DIORITE,
             BASALT,
             TUFF,
+            DEEPSLATE,
             NETHERRACK,
             GLOWSTONE,
             Material.SANDSTONE,
