@@ -136,12 +136,13 @@ public class GeneralListener implements Listener {
 
     @EventHandler
     public void onItemSpawn(final @NotNull ItemSpawnEvent event) {
-        if (Fire.CANCELLED_ITEM_DROPS.contains(event.getLocation().getBlock())) {
-            event.setCancelled(true);
+        Block b = event.getLocation().getBlock();
+        final Location location = event.getEntity().getLocation();
+
+        if (Fire.ITEM_DROP_REPLACEMENTS.containsKey(b)) {
+            event.getEntity().setItemStack(Fire.ITEM_DROP_REPLACEMENTS.get(b));
             return;
         }
-
-        final Location location = event.getEntity().getLocation();
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
             for (final Block block : Grab.GRAB_LOCATIONS.keySet()) {
