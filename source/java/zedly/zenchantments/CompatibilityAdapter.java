@@ -183,7 +183,7 @@ public class CompatibilityAdapter {
             EquipmentSlot.HAND
         );
 
-        this.plugin.getServer().getPluginManager().callEvent(placeEvent);
+        Bukkit.getServer().getPluginManager().callEvent(placeEvent);
 
         if (placeEvent.isCancelled()) {
             return false;
@@ -218,7 +218,7 @@ public class CompatibilityAdapter {
     ) {
         final EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(attacker, target, DamageCause.ENTITY_ATTACK, damage);
 
-        this.plugin.getServer().getPluginManager().callEvent(damageEvent);
+        Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 
         if (damage == 0) {
             return !damageEvent.isCancelled();
@@ -267,7 +267,7 @@ public class CompatibilityAdapter {
 
         final BlockBreakEvent breakEvent = new BlockBreakEvent(from, player);
 
-        this.plugin.getServer().getPluginManager().callEvent(breakEvent);
+        Bukkit.getServer().getPluginManager().callEvent(breakEvent);
 
         if (breakEvent.isCancelled()) {
             return false;
@@ -284,7 +284,7 @@ public class CompatibilityAdapter {
             EquipmentSlot.HAND
         );
 
-        this.plugin.getServer().getPluginManager().callEvent(placeEvent);
+        Bukkit.getServer().getPluginManager().callEvent(placeEvent);
 
         if (placeEvent.isCancelled()) {
             from.getWorld().dropItem(from.getLocation(), stack);
@@ -298,7 +298,7 @@ public class CompatibilityAdapter {
     public boolean igniteEntity(final @NotNull Entity target, final @NotNull Player player, final int duration) {
         final EntityCombustByEntityEvent event = new EntityCombustByEntityEvent(target, player, duration);
 
-        this.plugin.getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return false;
@@ -312,7 +312,7 @@ public class CompatibilityAdapter {
     public boolean damagePlayer(final @NotNull Player player, final double damage, final @NotNull DamageCause cause) {
         final EntityDamageEvent event = new EntityDamageEvent(player, cause, damage);
 
-        this.plugin.getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (damage == 0) {
             return !event.isCancelled();
@@ -339,7 +339,7 @@ public class CompatibilityAdapter {
 
         final EntityBlockFormEvent event = new EntityBlockFormEvent(player, block, state);
 
-        this.plugin.getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return false;
@@ -555,7 +555,7 @@ public class CompatibilityAdapter {
             player.getFacing()
         );
 
-        this.plugin.getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         // TODO: Fix deprecation warning.
         if (event.isCancelled()) {
