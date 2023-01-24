@@ -86,6 +86,7 @@ public final class Laser extends Zenchantment {
             && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)
         ) {
             this.shoot(event.getPlayer(), level);
+            event.setCancelled(true);
             return true;
         }
 
