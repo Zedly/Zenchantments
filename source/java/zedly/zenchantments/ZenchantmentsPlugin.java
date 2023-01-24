@@ -37,7 +37,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     private final WorldConfigurationProvider worldConfigurationProvider = WorldConfigurationProvider.getInstance();
     private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
     private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
-    private final CompatibilityAdapter       compatibilityAdapter       = new CompatibilityAdapter(this);
     private final I18n                       i18n                       = new I18n(this);
 
     @NotNull
@@ -142,7 +141,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @NotNull
     @Deprecated
     public CompatibilityAdapter getCompatibilityAdapter() {
-        return this.compatibilityAdapter;
+        return CompatibilityAdapter.instance();
     }
 
     @NotNull

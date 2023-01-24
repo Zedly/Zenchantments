@@ -5,6 +5,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.CompatibilityAdapter;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Objects;
@@ -22,7 +23,7 @@ public final class SiphonArrow extends ZenchantedArrow {
     @Override
     public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof LivingEntity
-            && this.getPlugin().getCompatibilityAdapter().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
+            && CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
         ) {
             ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
             if (shooter == null || !(shooter instanceof Player)) {
