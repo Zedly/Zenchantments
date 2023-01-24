@@ -145,12 +145,7 @@ public final class Glide extends Zenchantment {
     }
 
     @EffectTask(Frequency.SLOW)
-    public void purgeOfflineGlideUsers() {
-        for(Iterator<Map.Entry<UUID, Double>> it = GLIDE_USERS.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<UUID, Double> entry = it.next();
-            if(!Bukkit.getServer().getOfflinePlayer(entry.getKey()).isOnline()) {
-                it.remove();
-            }
-        }
+    public static void purgeOfflineGlideUsers() {
+        GLIDE_USERS.entrySet().removeIf(entry -> !Bukkit.getServer().getOfflinePlayer(entry.getKey()).isOnline());
     }
 }
