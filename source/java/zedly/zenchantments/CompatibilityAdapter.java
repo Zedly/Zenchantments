@@ -29,11 +29,11 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftCreeper;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftSheep;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftCreeper;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftMushroomCow;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftSheep;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
@@ -604,7 +604,7 @@ public class CompatibilityAdapter {
     private static PacketPlayOutEntityMetadata generateShulkerGlowPacket(final int entityId) throws InstantiationException {
         final Class<? extends PacketPlayOutEntityMetadata> clazz = PacketPlayOutEntityMetadata.class;
         // Build data structure for Entity Metadata. Requires an index, a type and a value.
-        // As of 1.15.2, an invisible + glowing LivingEntity is set by Index 0 Type Byte Value 0x60
+        // As of 1.18, an invisible + glowing LivingEntity is set by Index 0 Type Byte Value 0x60
         final DataWatcherSerializer<Byte> dws = DataWatcherRegistry.a; // Type (Byte)
         final DataWatcherObject<Byte> dwo = new DataWatcherObject<>(0, dws); // Index (0)
         final DataWatcher.Item<Byte> dwi = new DataWatcher.Item<>(dwo, (byte) 0x60); // Value (0x60)
@@ -618,13 +618,20 @@ public class CompatibilityAdapter {
     @NotNull
     private static PacketPlayOutSpawnEntityLiving generateShulkerSpawnPacket(
         final int x, final int y, final int z, final int entityId) throws InstantiationException {
-        final int mobTypeId = IRegistry.Z.a(EntityTypes.ay);
+        final int mobTypeId = IRegistry.W.a(EntityTypes.ay);
         final UUID uuid = UUID.randomUUID();
         FakeEntityLiving fel = new FakeEntityLiving(EntityTypes.ay, entityId, uuid, x, y, z);
         PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving(fel);
         return packet;
     }
 
+
+    /*
+
+    1.17 removed empty constructors for Packets and the only available constructors for PacketPlayOutSpawnEneityLiving requires an Entity parameter.
+    Luckily it's a reasonable amount of effort to make some mock data to construct the necessary packets.
+
+     */
     public static class FakeEntityLiving extends EntityLiving {
         private final int entityId;
         private final UUID uuid;
@@ -635,7 +642,7 @@ public class CompatibilityAdapter {
             this.entityId = entityId;
             this.uuid = uuid;
             this.entityType = entityType;
-            super.p(x, y, z);
+            super.o(x, y, z);
         }
 
         @Override
@@ -668,7 +675,7 @@ public class CompatibilityAdapter {
         }
 
         @Override
-        public EnumMainHand eK() {
+        public EnumMainHand eL() {
             return null;
         }
     }
@@ -681,7 +688,7 @@ public class CompatibilityAdapter {
             this.list = list;
         }
 
-        public List<Item<?>> getAll() {
+        public List<Item<?>> c() {
             return list;
         }
     }
