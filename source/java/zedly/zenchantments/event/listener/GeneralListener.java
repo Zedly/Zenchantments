@@ -193,7 +193,7 @@ public class GeneralListener implements Listener {
     @EventHandler
     public void onIceOrLavaBreak(final @NotNull BlockBreakEvent event) {
         final Location location = event.getBlock().getLocation();
-        if (FrozenStep.FROZEN_LOCATIONS.containsKey(location) || NetherStep.NETHERSTEP_LOCATIONS.containsKey(location)) {
+        if (NetherStep.NETHERSTEP_LOCATIONS.containsKey(location)) {
             event.setCancelled(true);
         }
     }

@@ -12,7 +12,6 @@ import zedly.zenchantments.command.ZenchantmentsCommandHandler;
 import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.Anthropomorphism;
-import zedly.zenchantments.enchantments.FrozenStep;
 import zedly.zenchantments.enchantments.NetherStep;
 import zedly.zenchantments.event.listener.ArrowListener;
 import zedly.zenchantments.event.listener.GeneralListener;
@@ -85,10 +84,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
 
     @Override
     public void onDisable() {
-        for (Location location : FrozenStep.FROZEN_LOCATIONS.keySet()) {
-            location.getBlock().setType(WATER);
-        }
-
         for (Location location : NetherStep.NETHERSTEP_LOCATIONS.keySet()) {
             location.getBlock().setType(LAVA);
         }

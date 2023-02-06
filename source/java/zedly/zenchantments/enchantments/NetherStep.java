@@ -24,7 +24,7 @@ public final class NetherStep extends Zenchantment {
 
     private static final String                             NAME        = "Nether Step";
     private static final String                             DESCRIPTION = "Allows the player to slowly but safely walk on lava";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(FrozenStep.class);
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
@@ -86,16 +86,7 @@ public final class NetherStep extends Zenchantment {
 
     @EffectTask(Frequency.MEDIUM_HIGH)
     public static void updateBlocks(final @NotNull ZenchantmentsPlugin plugin) {
-        Iterator<Location> iterator = FrozenStep.FROZEN_LOCATIONS.keySet().iterator();
-        while (iterator.hasNext()) {
-            final Location location = iterator.next();
-            if (Math.abs(System.currentTimeMillis() - FrozenStep.FROZEN_LOCATIONS.get(location)) > 900) {
-                location.getBlock().setType(WATER);
-                iterator.remove();
-            }
-        }
-
-        iterator = NETHERSTEP_LOCATIONS.keySet().iterator();
+        Iterator<Location> iterator = NETHERSTEP_LOCATIONS.keySet().iterator();
         while (iterator.hasNext()) {
             final Location location = iterator.next();
             if (Math.abs(System.currentTimeMillis() - NETHERSTEP_LOCATIONS.get(location)) > 900) {

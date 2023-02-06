@@ -170,7 +170,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         // What does this part even do exactly?
         // Can it be removed?
-        for (final String key : new String[]{Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Extraction.KEY, Plough.KEY}) {
+        for (final String key : new String[]{Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Plough.KEY}) {
             Zenchantment zenchantment = null;
 
             for (final Zenchantment configured : globalConfiguration.getConfiguredZenchantments()) {

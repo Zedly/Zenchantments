@@ -29,12 +29,10 @@ public class ZenchantmentFactory {
         addConstructor(builder, Conversion.class, Conversion::new);
         addConstructor(builder, Decapitation.class, Decapitation::new);
         addConstructor(builder, Ethereal.class, Ethereal::new);
-        addConstructor(builder, Extraction.class, Extraction::new);
         addConstructor(builder, Fire.class, Fire::new);
         addConstructor(builder, Firestorm.class, Firestorm::new);
         addConstructor(builder, Fireworks.class, Fireworks::new);
         addConstructor(builder, Force.class, Force::new);
-        addConstructor(builder, FrozenStep.class, FrozenStep::new);
         addConstructor(builder, Fuse.class, Fuse::new);
         addConstructor(builder, Germination.class, Germination::new);
         addConstructor(builder, Glide.class, Glide::new);
