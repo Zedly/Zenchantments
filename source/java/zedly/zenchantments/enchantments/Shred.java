@@ -189,7 +189,7 @@ public final class Shred extends Zenchantment {
                 .playSound(relativeBlock.getLocation(), sound, 1, 1);
         }
 
-        Utilities.damageItemStack(player, 1, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(player, 1, usedHand);
 
         used.add(relativeBlock);
 

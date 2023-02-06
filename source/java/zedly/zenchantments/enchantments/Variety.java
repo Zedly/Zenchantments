@@ -77,14 +77,14 @@ public final class Variety extends Zenchantment {
                 new ItemStack(LOGS.getRandom())
             );
 
-            Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
+            Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, usedHand);
         } else if (LEAVES.contains(material)) {
             block.setType(AIR);
             block.getWorld().dropItemNaturally(
                 block.getLocation(),
                 new ItemStack(LEAVES.getRandom())
             );
-            Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
+            Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, usedHand);
         }
 
         return true;

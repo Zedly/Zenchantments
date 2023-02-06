@@ -8,7 +8,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -18,9 +17,6 @@ import zedly.zenchantments.arrows.MultiArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
 import java.util.Set;
-
-import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public final class Burst extends Zenchantment {
     public static final String KEY = "burst";
@@ -131,7 +127,7 @@ public final class Burst extends Zenchantment {
                     arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
                     arrow.setCritical(false);
                     ZenchantedArrow.putArrow(arrow, new MultiArrow(ZenchantmentsPlugin.getInstance(), arrow), player);
-                    Utilities.damageItemStack(player, 1, usedHand);
+                    Utilities.damageItemStackRespectUnbreaking(player, 1, usedHand);
                 }
             }, i * 2L);
         }

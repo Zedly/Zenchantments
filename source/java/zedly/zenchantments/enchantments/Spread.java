@@ -92,7 +92,7 @@ public final class Spread extends Zenchantment {
             )
         );
 
-        Utilities.damageItemStack(player, (int) Math.round(level / 2.0 + 1), usedHand);
+        Utilities.damageItemStackRespectUnbreaking(player, (int) Math.round(level / 2.0 + 1), usedHand);
 
         for (int i = 0; i < (int) Math.round(this.getPower() * level * 4); i++) {
             final Vector vector = originalArrow.getVelocity();

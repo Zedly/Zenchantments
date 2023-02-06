@@ -409,7 +409,7 @@ public final class Spectral extends Zenchantment {
 
         // We only damage the tool they used if the enchantment gets used.
         if (result) {
-            Utilities.damageItemStack(
+            Utilities.damageItemStackRespectUnbreaking(
                 event.getPlayer(),
                 (int) Math.ceil(Math.log(blocks.size() + 1) / Math.log(2)),
                 usedHand

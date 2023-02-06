@@ -78,7 +78,7 @@ public final class Stationary extends Zenchantment {
         if (event.getDamage() < entity.getHealth()) {
             event.setCancelled(true);
             entity.damage(event.getDamage());
-            Utilities.damageItemStack(((Player) event.getDamager()), 1, usedHand);
+            Utilities.damageItemStackRespectUnbreaking(((Player) event.getDamager()), 1, usedHand);
         }
 
         return true;

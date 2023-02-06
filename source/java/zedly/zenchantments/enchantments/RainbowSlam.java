@@ -77,7 +77,7 @@ public final class RainbowSlam extends Zenchantment {
             return false;
         }
 
-        Utilities.damageItemStack(event.getPlayer(), 9, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 9, usedHand);
 
         final LivingEntity entity = (LivingEntity) event.getRightClicked();
         final Location location = entity.getLocation();

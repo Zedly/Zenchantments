@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.AIR;
@@ -124,7 +123,7 @@ public final class Terraformer extends Zenchantment {
             }
         }
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, blocksPlaced);
-        Utilities.damageItemStack(event.getPlayer(), blocksPlaced, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), blocksPlaced, usedHand);
         return true;
     }
 }

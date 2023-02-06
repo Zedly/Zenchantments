@@ -73,7 +73,7 @@ public final class Missile extends Zenchantment {
 
         event.setCancelled(true);
 
-        Utilities.damageItemStack(player, 1, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(player, 1, usedHand);
         Utilities.removeMaterialsFromPlayer(player, Material.ARROW, 1);
         return true;
     }
