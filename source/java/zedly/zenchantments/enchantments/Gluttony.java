@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -92,10 +93,12 @@ public final class Gluttony extends Zenchantment {
             }
             if (foodMaterial == HONEY_BOTTLE
             ) {
-                player.getInventory().addItem(new ItemStack(GLASS_BOTTLE));
+                HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(new ItemStack(GLASS_BOTTLE));
+                if(!overflow.isEmpty()) {
+                    player.getWorld().dropItem(player.getLocation(), overflow.get(0));
+                }
             }
         }
-
         return true;
     }
 
