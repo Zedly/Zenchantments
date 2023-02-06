@@ -69,7 +69,43 @@ public final class Utilities {
         return stacks;
     }
 
-    public static void damageItemStack(final @NotNull Player player, final int damage, final boolean handUsed) {
+    public static int getUnbreakingLevel(ItemStack is) {
+        return is.getEnchantmentLevel(Enchantment.DURABILITY);
+    }
+
+    public static boolean decideRandomlyIfDamageToolRespectUnbreaking(int unbreakingLevel) {
+        return ThreadLocalRandom.current().nextInt(100) <= (100 / (unbreakingLevel + 1));
+    }
+
+    public static int getUsesRemainingOnTool(ItemStack is) {
+        if(is == null || !is.hasItemMeta()) {
+            return Integer.MAX_VALUE;
+        }
+
+        if (is.getItemMeta() instanceof final Damageable damageable) {
+            return is.getType().getMaxDurability() - damageable.getDamage();
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    public static void damageItemStackRespectUnbreaking(final @NotNull Player player, final int damage, final boolean handUsed) {
+        requireNonNull(player);
+
+        final PlayerInventory inventory = player.getInventory();
+        final ItemStack heldItem = handUsed ? inventory.getItemInMainHand() : inventory.getItemInOffHand();
+        final int unbreakingLevel = getUnbreakingLevel(heldItem);
+        int totalDamageApplied = 0;
+
+        for (var i = 0; i < damage; i++) {
+            if (decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                totalDamageApplied++;
+            }
+        }
+
+        damageItemStackIgnoreUnbreaking(player, totalDamageApplied, handUsed);
+    }
+
+    public static void damageItemStackIgnoreUnbreaking(final @NotNull Player player, final int damage, final boolean handUsed) {
         requireNonNull(player);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
@@ -79,18 +115,7 @@ public final class Utilities {
         final var inventory = player.getInventory();
         final var heldItem = handUsed ? inventory.getItemInMainHand() : inventory.getItemInOffHand();
 
-        var totalDamageApplied = 0;
-        for (var i = 0; i < damage; i++) {
-            if (ThreadLocalRandom
-                .current()
-                .nextInt(100) <= (100 / (heldItem.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
-                totalDamageApplied++;
-            }
-        }
-
-        if (totalDamageApplied > 0) {
-            setItemStackDamage(heldItem, getItemStackDamage(heldItem) + totalDamageApplied);
-        }
+        setItemStackDamage(heldItem, getItemStackDamage(heldItem) + damage);
 
         final var maxDurability = heldItem.getType().getMaxDurability();
         final var item = getItemStackDamage(heldItem) > maxDurability ? new ItemStack(Material.AIR) : heldItem;
@@ -595,10 +620,22 @@ public final class Utilities {
         }
     }
 
-    public static int countItems(
-        final @NotNull Iterable<ItemStack> stacks,
-        final @NotNull Predicate<ItemStack> predicate
-    ) {
+    public static int countItems(final @NotNull Iterable<ItemStack> stacks, final @NotNull Predicate<ItemStack> predicate) {
+        requireNonNull(stacks);
+        requireNonNull(predicate);
+
+        var count = 0;
+
+        for (final var stack : stacks) {
+            if (predicate.test(stack)) {
+                count+=stack.getAmount();
+            }
+        }
+
+        return count;
+    }
+
+    public static int countItemStacks(final @NotNull Iterable<ItemStack> stacks, final @NotNull Predicate<ItemStack> predicate) {
         requireNonNull(stacks);
         requireNonNull(predicate);
 
