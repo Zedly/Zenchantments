@@ -72,7 +72,7 @@ public final class Magnetism extends Zenchantment {
         for (final Entity entity : player.getNearbyEntities(radius, radius, radius)) {
             if (entity.getType() == DROPPED_ITEM) {
                 Item item = (Item) entity;
-                if (item.getPickupDelay() == 0
+                if (item.getPickupDelay() <= 0
                     && item.getTicksLived() >= 160) {
                     entity.setVelocity(player.getLocation().toVector().subtract(entity.getLocation().toVector()).multiply(0.05));
                 }
