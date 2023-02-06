@@ -15,7 +15,6 @@ import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
@@ -32,6 +31,7 @@ public final class Anthropomorphism extends Zenchantment {
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
     private static final Hand                               HAND_USE    = Hand.BOTH;
 
+    private static final MaterialList ANTHRO_SOURCES = new MaterialList(MaterialList.STONES, MaterialList.COBBLESTONES, MaterialList.DIRT);
     private static final List<Entity> VORTEX    = new ArrayList<>();
     private static boolean fallBool = false;
 
@@ -210,10 +210,10 @@ public final class Anthropomorphism extends Zenchantment {
                     }
                 }
 
-                for(Material mat : MaterialList.STONES) {
+                for(Material mat : ANTHRO_SOURCES) {
                     if (counter < 64 && player.getInventory().contains(mat)) {
                         Utilities.removeMaterialsFromPlayer(player, mat, 1);
-                        Utilities.damageItemStack(player, 2, usedHand);
+                        Utilities.damageItemStackRespectUnbreaking(player, 2, usedHand);
 
                         final Location location = player.getLocation();
                         final FallingBlock blockEntity = requireNonNull(location.getWorld()).spawnFallingBlock(
