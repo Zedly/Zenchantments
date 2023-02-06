@@ -687,7 +687,7 @@ public final class MaterialList extends AbstractList<Material> {
         COMMAND_BLOCKS
     );
 
-    public static final MaterialList LASER_BLACKLIST_BLOCKS = new MaterialList(OBSIDIAN);
+    public static final MaterialList LASER_BLACKLIST_BLOCKS = new MaterialList(OBSIDIAN, CRYING_OBSIDIAN);
 
     public static final MaterialList STORAGE_BLOCKS = new MaterialList(
         new Material[] {
@@ -703,7 +703,9 @@ public final class MaterialList extends AbstractList<Material> {
             DROPPER,
             BREWING_STAND,
             ANVIL,
-            BARREL
+            BARREL,
+            BEE_NEST,
+            BEEHIVE,
         },
         SHULKER_BOXES
     );
