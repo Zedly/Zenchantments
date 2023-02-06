@@ -3,9 +3,12 @@ package zedly.zenchantments.arrows;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.data.type.Campfire;
+import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -15,8 +18,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Objects;
 
-import static org.bukkit.Material.AIR;
-import static org.bukkit.Material.TNT;
+import static org.bukkit.Material.*;
 
 public final class FuseArrow extends ZenchantedArrow {
     public FuseArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
@@ -35,24 +37,28 @@ public final class FuseArrow extends ZenchantedArrow {
                 location.getZ() + vector.getZ()
             );
 
-            if (hitLocation.getBlock().getType() != TNT) {
-                continue;
+            if (hitLocation.getBlock().getType() == TNT) {
+                final BlockBreakEvent event = new BlockBreakEvent(
+                    hitLocation.getBlock(),
+                    (Player) Objects.requireNonNull(this.getArrow().getShooter())
+                );
+
+                this.getPlugin().getServer().getPluginManager().callEvent(event);
+
+                if (!event.isCancelled()) {
+                    hitLocation.getBlock().setType(AIR);
+                    hitLocation.getWorld().spawnEntity(hitLocation, EntityType.PRIMED_TNT);
+                    this.die();
+                }
+
+                return;
+            } else if (hitLocation.getBlock().getBlockData() instanceof final Candle candle) {
+                candle.setLit(true);
+                hitLocation.getBlock().setBlockData(candle);
+             } else if (hitLocation.getBlock().getBlockData() instanceof final Campfire campfire) {
+                campfire.setLit(true);
+                hitLocation.getBlock().setBlockData(campfire);
             }
-
-            final BlockBreakEvent event = new BlockBreakEvent(
-                hitLocation.getBlock(),
-                (Player) Objects.requireNonNull(this.getArrow().getShooter())
-            );
-
-            this.getPlugin().getServer().getPluginManager().callEvent(event);
-
-            if (!event.isCancelled()) {
-                hitLocation.getBlock().setType(AIR);
-                hitLocation.getWorld().spawnEntity(hitLocation, EntityType.PRIMED_TNT);
-                this.die();
-            }
-
-            return;
         }
 
         this.die();
