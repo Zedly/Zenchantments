@@ -22,7 +22,7 @@ public final class Switch extends Zenchantment {
 
     private static final String                             NAME        = "Switch";
     private static final String                             DESCRIPTION = "Replaces the clicked block with the leftmost block in your hotbar when sneaking";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Shred.class, Anthropomorphism.class, Fire.class, Extraction.class, Pierce.class, Reveal.class);
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Shred.class, Anthropomorphism.class, Fire.class, Pierce.class, Reveal.class);
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
