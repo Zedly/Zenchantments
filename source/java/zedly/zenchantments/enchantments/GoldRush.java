@@ -14,8 +14,7 @@ import zedly.zenchantments.ZenchantmentsPlugin;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.bukkit.Material.GOLD_NUGGET;
-import static org.bukkit.Material.SAND;
+import static org.bukkit.Material.*;
 
 public final class GoldRush extends Zenchantment {
     public static final String KEY = "gold_rush";
@@ -72,7 +71,7 @@ public final class GoldRush extends Zenchantment {
     public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
         final Block block = event.getBlock();
 
-        if (block.getType() == SAND && ThreadLocalRandom.current().nextInt(100) >= (100 - (level * this.getPower() * 3))) {
+        if ((block.getType() == SAND || block.getType() == RED_SAND) && ThreadLocalRandom.current().nextInt(100) >= (100 - (level * this.getPower() * 3))) {
             block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(GOLD_NUGGET));
             return true;
         }
