@@ -2,15 +2,9 @@ package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 
 import java.util.Set;
 
@@ -72,9 +66,9 @@ public final class SonicShock extends Zenchantment {
         }
 
         for (final Entity entity : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
-            if (entity instanceof Monster) {
+            if (entity instanceof Monster || entity instanceof Slime || entity instanceof ShulkerBullet) {
                 final double damage = player.getVelocity().length() * 1.5 * level * this.getPower();
-                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, damage);
+                CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, player, damage);
             }
         }
 
