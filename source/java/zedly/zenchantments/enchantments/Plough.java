@@ -1,17 +1,19 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.*;
@@ -27,6 +29,8 @@ public final class Plough extends Zenchantment {
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
+
+    private final HashSet<UUID> pendingOperations = new HashSet<>();
 
     public Plough(
         final @NotNull Set<Tool> enchantable,
@@ -75,45 +79,64 @@ public final class Plough extends Zenchantment {
             return false;
         }
 
-        final Block block = requireNonNull(event.getClickedBlock());
-        final Location location = block.getLocation();
-        int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+        final Player player = event.getPlayer();
+        final Block clickedBlock = requireNonNull(event.getClickedBlock());
+        final Location location = clickedBlock.getLocation();
+
+        // PlayerInteractEvent means run the method, but a following BlockPlaceEvent means a block is being placed, so don't run the method after all.
+        // This is why we need to schedule and possibly cancel the method. IMO this is because Bukkit-implementing servers behave inconsistently
+        pendingOperations.add(event.getPlayer().getUniqueId());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
+            delayedOperationhandler(event.getPlayer(), clickedBlock, location, level, usedHand);
+        }, 0);
+        return true;
+    }
+
+    private void delayedOperationhandler(Player player, final Block clickedBlock, final Location location, final int level, final boolean usedHand) {
+        if (!pendingOperations.contains(player.getUniqueId())) {
+            return;
+        }
+        pendingOperations.remove(player.getUniqueId());
+        performDelayed(player, clickedBlock, location, level, usedHand);
+    }
+
+    private void performDelayed(Player player, final Block clickedBlock, final Location location, final int level, final boolean usedHand) {
+        final int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+        final int radiusY = 2;
+
+        ItemStack toolUsed = Utilities.getUsedItemStack(player, usedHand);
+        int numUsesAvailable = Utilities.getUsesRemainingOnTool(toolUsed);
+        int unbreakingLevel = Utilities.getUnbreakingLevel(toolUsed);
+        int damageApplied = 0;
 
         for (int x = -radiusXZ; x <= radiusXZ; x++) {
-            for (int y = -2; y <= 0; y++) {
+            for (int y = -radiusY; y <= 0; y++) {
                 for (int z = -radiusXZ; z <= radiusXZ; z++) {
-                    final Block relativeBlock = block.getRelative(x, y, z);
+                    final Block relativeBlock = clickedBlock.getRelative(x, y, z);
 
-                    if (!(relativeBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
+                    if (damageApplied >= numUsesAvailable || !(relativeBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
                         continue;
                     }
 
                     if (((relativeBlock.getType() != DIRT
                         && relativeBlock.getType() != GRASS_BLOCK
                         && relativeBlock.getType() != MYCELIUM))
-                        || !MaterialList.AIR.contains(relativeBlock.getRelative(0, 1, 0).getType())
+                        || !MaterialList.AIR.contains(relativeBlock.getRelative(BlockFace.UP).getType())
                     ) {
                         continue;
                     }
 
-                    ZenchantmentsPlugin.getInstance()
-                        .getCompatibilityAdapter()
-                        .placeBlock(relativeBlock, event.getPlayer(), Material.FARMLAND, null);
+                    CompatibilityAdapter.instance().placeBlock(relativeBlock, player, Material.FARMLAND, null);
 
-                    if (ThreadLocalRandom.current().nextBoolean()) {
-                        Utilities.damageItemStack(event.getPlayer(), 1, usedHand);
+                    if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                        damageApplied++;
                     }
                 }
             }
         }
 
-        return true;
+        if (damageApplied != 0) {
+            Utilities.damageItemStackIgnoreUnbreaking(player, damageApplied, usedHand);
+        }
     }
-
-    @Override
-    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final boolean usedHand) {
-        event.setCancelled(true);
-        return false;
-    }
-
 }

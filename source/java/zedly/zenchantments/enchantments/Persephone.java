@@ -1,19 +1,22 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
@@ -28,6 +31,8 @@ public final class Persephone extends Zenchantment {
     private static final Hand                               HAND_USE = Hand.RIGHT;
 
     private final NamespacedKey key;
+
+    private final HashSet<UUID> pendingOperations = new HashSet<>();
 
     public Persephone(
         final @NotNull Set<Tool> enchantable,
@@ -77,71 +82,132 @@ public final class Persephone extends Zenchantment {
         }
 
         final Player player = event.getPlayer();
-        final Location location = requireNonNull(event.getClickedBlock()).getLocation();
-        final int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+        final Block clickedBlock = requireNonNull(event.getClickedBlock());
+        final Location location = clickedBlock.getLocation();
 
         if (!MaterialList.PERSEPHONE_CROPS.contains(event.getClickedBlock().getType())) {
             return false;
         }
 
-        final Block block = location.getBlock();
-        for (int x = -radiusXZ; x <= radiusXZ; x++) {
-            for (int y = -2; y <= 0; y++) {
-                for (int z = -radiusXZ; z <= radiusXZ; z++) {
-                    if (!(block.getRelative(x, y, z).getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
-                        continue;
-                    }
-
-                    final Block relativeBlock = block.getRelative(x, y + 1, z);
-
-                    if (block.getRelative(x, y, z).getType() == FARMLAND
-                        && MaterialList.AIR.contains(relativeBlock.getType())
-                    ) {
-                        final Inventory inventory = player.getInventory();
-                        final CompatibilityAdapter compatibilityAdapter = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter();
-                        if (inventory.contains(CARROT)) {
-                            if (compatibilityAdapter.placeBlock(relativeBlock, player, CARROTS, null)) {
-                                Utilities.removeMaterialsFromPlayer(player, CARROT, 1);
-                            }
-                        } else if (inventory.contains(POTATO)) {
-                            if (compatibilityAdapter.placeBlock(relativeBlock, player, POTATOES, null)) {
-                                Utilities.removeMaterialsFromPlayer(player, POTATO, 1);
-                            }
-                        } else if (inventory.contains(WHEAT_SEEDS)) {
-                            if (compatibilityAdapter.placeBlock(relativeBlock, player, WHEAT, null)) {
-                                Utilities.removeMaterialsFromPlayer(player, WHEAT_SEEDS, 1);
-                            }
-                        } else if (inventory.contains(BEETROOT_SEEDS)) {
-                            if (compatibilityAdapter.placeBlock(relativeBlock, player, BEETROOTS, null)) {
-                                Utilities.removeMaterialsFromPlayer(player, BEETROOT_SEEDS, 1);
-                            }
-                        }
-                    } else if (block.getRelative(x, y, z).getType() == SOUL_SAND
-                        && MaterialList.AIR.contains(relativeBlock.getType())
-                    ) {
-                        if (event.getPlayer().getInventory().contains(NETHER_WART)) {
-                            if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(relativeBlock, player, NETHER_WART, null)) {
-                                Utilities.removeMaterialsFromPlayer(player, NETHER_WART, 1);
-                            }
-                        }
-                    } else {
-                        continue;
-                    }
-
-                    if (ThreadLocalRandom.current().nextBoolean()) {
-                        Utilities.damageItemStack(player, 1, usedHand);
-                    }
-                }
-            }
-        }
+        // PlayerInteractEvent means run the method, but a following BlockPlaceEvent means a block is being placed, so don't run the method after all.
+        // This is why we need to schedule and possibly cancel the method. IMO this is because Bukkit-implementing servers behave inconsistently
+        pendingOperations.add(event.getPlayer().getUniqueId());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {delayedOperationhandler(event.getPlayer(), clickedBlock, location, level, usedHand);}, 0);
         return true;
     }
 
     @Override
     public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final boolean usedHand) {
-        event.setCancelled(true);
+        pendingOperations.remove(event.getPlayer().getUniqueId());
         return false;
     }
 
+    private void delayedOperationhandler(Player player, final Block clickedBlock, final Location location, final int level, final boolean usedHand) {
+        if(!pendingOperations.contains(player.getUniqueId())) {
+            return;
+        }
+        pendingOperations.remove(player.getUniqueId());
+        performDelayed(player, clickedBlock, location, level, usedHand);
+    }
 
+    private void performDelayed(Player player, final Block clickedBlock, final Location location, final int level, final boolean usedHand) {
+        final int radiusXZ = (int) Math.round(this.getPower() * level + 2);
+
+        final Inventory inventory = player.getInventory();
+        ItemStack toolUsed = Utilities.getUsedItemStack(player, usedHand);
+        int numUsesAvailable = Utilities.getUsesRemainingOnTool(toolUsed);
+        int unbreakingLevel = Utilities.getUnbreakingLevel(toolUsed);
+        int damageApplied = 0;
+        int numWheatSown = 0;
+        int numCarrotsSown = 0;
+        int numPotatoesSown = 0;
+        int numBeetrootsSown = 0;
+        int numNetherwartsSown = 0;
+        int numWheatAvailable = Utilities.countItems(player.getInventory(), (is) -> {
+            return is != null && is.getType() == WHEAT_SEEDS;
+        });
+        int numCarrotsAvailable = Utilities.countItems(player.getInventory(), (is) -> {
+            return is != null && is.getType() == CARROT;
+        });
+        int numPotatoesAvailable = Utilities.countItems(player.getInventory(), (is) -> {
+            return is != null && is.getType() == POTATO;
+        });
+        int numBeetrootSeedsAvailable = Utilities.countItems(player.getInventory(), (is) -> {
+            return is != null && is.getType() == BEETROOT_SEEDS;
+        });
+        int numNetherwartsAvailable = Utilities.countItems(player.getInventory(), (is) -> {
+            return is != null && is.getType() == NETHER_WART;
+        });
+
+        final Block block = location.getBlock();
+        for (int x = -radiusXZ; x <= radiusXZ; x++) {
+            for (int y = -2; y <= 0; y++) {
+                for (int z = -radiusXZ; z <= radiusXZ; z++) {
+                    Block soilBlock = block.getRelative(x, y, z);
+                    if (damageApplied >= numUsesAvailable || !(block.getRelative(x, y, z).getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
+                        continue;
+                    }
+
+                    final Block blockAboveSoil = block.getRelative(BlockFace.UP);
+                    if(!MaterialList.AIR.contains(blockAboveSoil.getType())) {
+                        continue;
+                    }
+
+                    if (block.getRelative(x, y, z).getType() == FARMLAND) {
+                        if (numWheatAvailable > numWheatSown) {
+                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, WHEAT, null)) {
+                                numWheatSown++;
+                                if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                                    damageApplied++;
+                                }
+                            }
+                        } else if (numCarrotsAvailable > numCarrotsSown) {
+                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, CARROTS, null)) {
+                                numCarrotsSown++;
+                                if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                                    damageApplied++;
+                                }
+                            }
+                        } else if (numPotatoesAvailable > numPotatoesSown) {
+                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, POTATOES, null)) {
+                                numPotatoesSown++;
+                                if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                                    damageApplied++;
+                                }
+                            }
+                        } else if (numBeetrootSeedsAvailable > numBeetrootsSown) {
+                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, BEETROOTS, null)) {
+                                numBeetrootsSown++;
+                                if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                                    damageApplied++;
+                                }
+                            }
+                        }
+                    } else if (block.getRelative(x, y, z).getType() == SOUL_SAND) {
+                        if (numNetherwartsAvailable > numNetherwartsSown) {
+                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, NETHER_WART, null)) {
+                                numNetherwartsSown++;
+                                if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                                    damageApplied++;
+                                }
+                            }
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        Utilities.removeMaterialsFromPlayer(player, WHEAT_SEEDS, numWheatSown);
+        Utilities.removeMaterialsFromPlayer(player, CARROT, numCarrotsSown);
+        Utilities.removeMaterialsFromPlayer(player, POTATO, numPotatoesSown);
+        Utilities.removeMaterialsFromPlayer(player, BEETROOT_SEEDS, numBeetrootsSown);
+        Utilities.removeMaterialsFromPlayer(player, NETHER_WART, numNetherwartsSown);
+
+        if(damageApplied > 0) {
+            Utilities.damageItemStackIgnoreUnbreaking(player, damageApplied, usedHand);
+            // damage tool or not
+        }
+    }
 }
