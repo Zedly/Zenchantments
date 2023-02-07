@@ -1,9 +1,12 @@
 package zedly.zenchantments;
 
+import net.minecraft.util.Tuple;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
@@ -837,54 +840,29 @@ public final class MaterialList extends AbstractList<Material> {
         DEADLY_PLANTS
     );
 
-    public static final MaterialList FIRE_RAW = new MaterialList(
-        new Material[] {
-            STONE,
-            DIORITE,
-            ANDESITE,
-            GRANITE,
-            IRON_ORE,
-            GOLD_ORE,
-            COPPER_ORE,
-            DEEPSLATE_IRON_ORE,
-            DEEPSLATE_GOLD_ORE,
-            DEEPSLATE_COPPER_ORE,
-            ANCIENT_DEBRIS,
-            COBBLESTONE,
-            NETHERRACK,
-            COBBLED_DEEPSLATE,
-            Material.SANDSTONE,
-            RED_SANDSTONE,
-            QUARTZ_BLOCK,
-            BASALT,
-        },
-        TERRACOTTA
-    );
-
-    public static final MaterialList FIRE_COOKED = new MaterialList(
-        new Material[] {
-            STONE,
-            POLISHED_DIORITE,
-            POLISHED_ANDESITE,
-            POLISHED_GRANITE,
-            IRON_INGOT,
-            GOLD_INGOT,
-            COPPER_INGOT,
-            IRON_INGOT,
-            GOLD_INGOT,
-            COPPER_INGOT,
-            NETHERITE_SCRAP,
-            STONE,
-            NETHER_BRICK,
-            DEEPSLATE,
-            SMOOTH_SANDSTONE,
-            SMOOTH_RED_SANDSTONE,
-            SMOOTH_QUARTZ,
-            SMOOTH_BASALT,
-
-        },
-        GLAZED_TERRACOTTA
-    );
+    public static final HashMap<Material, Tuple<Material, Double>> FIRE_SMELT_MAP = new HashMap<>();
+    static {
+        FIRE_SMELT_MAP.put(STONE,                       new Tuple<Material, Double>(STONE,                   0.1));
+        FIRE_SMELT_MAP.put(DIORITE,                     new Tuple<Material, Double>(POLISHED_DIORITE,        0.1));
+        FIRE_SMELT_MAP.put(ANDESITE,                    new Tuple<Material, Double>(POLISHED_ANDESITE,       0.1));
+        FIRE_SMELT_MAP.put(GRANITE,                     new Tuple<Material, Double>(POLISHED_GRANITE,        0.1));
+        FIRE_SMELT_MAP.put(COBBLESTONE,                 new Tuple<Material, Double>(STONE,                   0.5));
+        FIRE_SMELT_MAP.put(COBBLED_DEEPSLATE,           new Tuple<Material, Double>(DEEPSLATE,               0.1));
+        FIRE_SMELT_MAP.put(Material.SANDSTONE,          new Tuple<Material, Double>(SMOOTH_SANDSTONE,        0.1));
+        FIRE_SMELT_MAP.put(RED_SANDSTONE,               new Tuple<Material, Double>(SMOOTH_RED_SANDSTONE,    0.1));
+        FIRE_SMELT_MAP.put(BASALT,                      new Tuple<Material, Double>(SMOOTH_BASALT,           0.1));
+        FIRE_SMELT_MAP.put(NETHERRACK,                  new Tuple<Material, Double>(NETHER_BRICK,            0.1));
+        FIRE_SMELT_MAP.put(RAW_IRON,                    new Tuple<Material, Double>(IRON_INGOT,              0.7));
+        FIRE_SMELT_MAP.put(RAW_GOLD,                    new Tuple<Material, Double>(GOLD_INGOT,              1.0));
+        FIRE_SMELT_MAP.put(RAW_COPPER,                  new Tuple<Material, Double>(COPPER_INGOT,            0.7));
+        FIRE_SMELT_MAP.put(ANCIENT_DEBRIS,              new Tuple<Material, Double>(NETHERITE_SCRAP,         2.0));
+        FIRE_SMELT_MAP.put(QUARTZ_BLOCK,                new Tuple<Material, Double>(SMOOTH_QUARTZ,           0.1));
+        FIRE_SMELT_MAP.put(CLAY_BALL,                   new Tuple<Material, Double>(BRICK,                   0.3));
+        FIRE_SMELT_MAP.put(CLAY,                        new Tuple<Material, Double>(Material.TERRACOTTA,     0.35));
+        FIRE_SMELT_MAP.put(Material.CACTUS,             new Tuple<Material, Double>(GREEN_DYE,               1.0));
+        FIRE_SMELT_MAP.put(CHORUS_FRUIT,                new Tuple<Material, Double>(POPPED_CHORUS_FRUIT,     0.1));
+        LOGS.stream().forEach((m) -> {FIRE_SMELT_MAP.put(m, new Tuple<Material, Double>(CHARCOAL,            0.15));});
+    }
 
     public static final MaterialList SHRED_PICKS = new MaterialList(
         new Material[] {

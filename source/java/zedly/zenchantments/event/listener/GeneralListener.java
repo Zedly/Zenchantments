@@ -1,9 +1,7 @@
 package zedly.zenchantments.event.listener;
 
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import net.minecraft.util.Tuple;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
@@ -28,6 +26,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.MaterialList;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
@@ -36,9 +35,11 @@ import zedly.zenchantments.enchantments.*;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
+import static org.bukkit.entity.EntityType.EXPERIENCE_ORB;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
@@ -139,9 +140,29 @@ public class GeneralListener implements Listener {
         Block b = event.getLocation().getBlock();
         final Location location = event.getEntity().getLocation();
 
-        if (Fire.ITEM_DROP_REPLACEMENTS.containsKey(b)) {
-            event.getEntity().setItemStack(Fire.ITEM_DROP_REPLACEMENTS.get(b));
-            return;
+        AtomicInteger itemsDropped;
+        if ((itemsDropped = Fire.ITEM_DROP_REPLACEMENTS.get(b)) != null) {
+            ItemStack is = event.getEntity().getItemStack();
+            Tuple<Material, Double> product;
+            if ((product = MaterialList.FIRE_SMELT_MAP.get(is.getType())) != null) {
+                itemsDropped.addAndGet(is.getAmount());
+                is.setType(product.a());
+                event.getEntity().setItemStack(is);
+                Utilities.displayParticle(Utilities.getCenter(b), Particle.FLAME, 10, 0.1f, 0.5f, 0.5f, 0.5f);
+
+                int experience = product.b().intValue();
+                double remainder = product.b() - experience;
+                if (ThreadLocalRandom.current().nextDouble() >= remainder) {
+                    experience++;
+                }
+                if (experience > 0) {
+                    final ExperienceOrb experienceOrb = (ExperienceOrb) event.getLocation().getWorld().spawnEntity(
+                        event.getLocation(),
+                        EXPERIENCE_ORB
+                    );
+                    experienceOrb.setExperience(experience);
+                }
+            }
         }
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
