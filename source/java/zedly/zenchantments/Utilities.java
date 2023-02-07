@@ -9,6 +9,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -428,12 +429,8 @@ public final class Utilities {
                 continue;
             }
 
-            if (effect.getAmplifier() > intensity || effect.getDuration() > length) {
+            if (effect.getAmplifier() >= intensity || effect.getDuration() > length) {
                 return;
-            }
-
-            if (effect.getAmplifier() == intensity) {
-                break;
             }
 
             entity.removePotionEffect(effectType);
