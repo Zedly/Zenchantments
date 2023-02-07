@@ -432,7 +432,9 @@ public final class MaterialList extends AbstractList<Material> {
         new Material[] {
             MUSHROOM_STEM,
             BROWN_MUSHROOM_BLOCK,
-            RED_MUSHROOM_BLOCK
+            RED_MUSHROOM_BLOCK,
+            CHORUS_PLANT,
+            Material.CACTUS
         },
         LOGS,
         WOOD,
@@ -802,8 +804,6 @@ public final class MaterialList extends AbstractList<Material> {
             RED_MUSHROOM,
             MOSSY_COBBLESTONE,
             CLAY,
-            BROWN_MUSHROOM,
-            RED_MUSHROOM,
             MYCELIUM,
             TORCH,
             SUGAR_CANE,
@@ -830,6 +830,7 @@ public final class MaterialList extends AbstractList<Material> {
             WARPED_HYPHAE,
             SHROOMLIGHT,
             FIRE,
+            END_STONE
         },
         TRUNKS,
         LEAVES,
