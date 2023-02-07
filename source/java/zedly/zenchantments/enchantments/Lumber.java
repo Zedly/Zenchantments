@@ -88,7 +88,9 @@ public final class Lumber extends Zenchantment {
         );
 
         for (final Block block : blocks) {
-            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(block, event.getPlayer());
+            if (!CompatibilityAdapter.instance().breakBlock(block, event.getPlayer())) {
+                break;
+            }
         }
 
         return !blocks.isEmpty();
