@@ -30,7 +30,7 @@ public final class Force extends Zenchantment {
 
     private static final String                             NAME        = "Force";
     private static final String                             DESCRIPTION = "Pushes and pulls nearby mobs, configurable through shift clicking";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(RainbowSlam.class, Gust.class);
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(RainbowSlam.class);
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;

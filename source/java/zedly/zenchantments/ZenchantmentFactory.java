@@ -40,7 +40,6 @@ public class ZenchantmentFactory {
         addConstructor(builder, GoldRush.class, GoldRush::new);
         addConstructor(builder, Grab.class, Grab::new);
         addConstructor(builder, GreenThumb.class, GreenThumb::new);
-        addConstructor(builder, Gust.class, Gust::new);
         addConstructor(builder, Harvest.class, Harvest::new);
         addConstructor(builder, Haste.class, Haste::new);
         addConstructor(builder, IceAspect.class, IceAspect::new);

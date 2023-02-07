@@ -23,7 +23,7 @@ public final class RainbowSlam extends Zenchantment {
 
     private static final String                             NAME        = "Rainbow Slam";
     private static final String                             DESCRIPTION = "Attacks enemy mobs with a powerful swirling slam";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Force.class, Gust.class);
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Force.class);
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
