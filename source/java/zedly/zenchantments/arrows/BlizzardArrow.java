@@ -1,25 +1,22 @@
 package zedly.zenchantments.arrows;
 
 import org.bukkit.Particle;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.CompatibilityAdapter;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.ZenchantmentsPlugin;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
 
 public final class BlizzardArrow extends ZenchantedArrow {
     public BlizzardArrow(
-        final @NotNull ZenchantmentsPlugin plugin,
-        final @NotNull Arrow entity,
+        final @NotNull AbstractArrow entity,
         final int level,
         final double power
     ) {
-        super(plugin, entity, level, power);
+        super(entity, level, power);
     }
 
     @Override

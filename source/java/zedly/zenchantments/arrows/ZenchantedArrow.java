@@ -20,35 +20,32 @@ public class ZenchantedArrow {
 
     private static final Set<ZenchantedArrow> DIE_QUEUE = new HashSet<>();
 
-    private final ZenchantmentsPlugin plugin;
-    private final Arrow               arrow;
-    private final int                 level;
-    private final double              power;
+    private final AbstractArrow arrow;
+    private final int level;
+    private final double power;
 
     private int tick;
 
     public ZenchantedArrow(
-        final @NotNull ZenchantmentsPlugin plugin,
-        final @NotNull Arrow arrow,
+        final @NotNull AbstractArrow arrow,
         final int level,
         final double power
     ) {
-        this.plugin = plugin;
         this.arrow = arrow;
         this.level = level;
         this.power = power;
     }
 
-    public ZenchantedArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow arrow, final int level) {
-        this(plugin, arrow, level, 1);
+    public ZenchantedArrow(final @NotNull AbstractArrow arrow, final int level) {
+        this(arrow, level, 1);
     }
 
-    public ZenchantedArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow arrow) {
-        this(plugin, arrow, 0);
+    public ZenchantedArrow(final @NotNull AbstractArrow arrow) {
+        this(arrow, 0);
     }
 
     public static void putArrow(
-        final @NotNull Arrow arrow,
+        final @NotNull AbstractArrow arrow,
         final @NotNull ZenchantedArrow zenchantedArrow,
         final @NotNull Player player
     ) {
@@ -66,12 +63,7 @@ public class ZenchantedArrow {
     }
 
     @NotNull
-    public final ZenchantmentsPlugin getPlugin() {
-        return this.plugin;
-    }
-
-    @NotNull
-    public final Arrow getArrow() {
+    public final AbstractArrow getArrow() {
         return this.arrow;
     }
 

@@ -1,35 +1,24 @@
 package zedly.zenchantments.configuration;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 //import org.bukkit.craftbukkit.libs.org.apache.commons.io.IOUtils;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.Zenchantment.Constructor;
-import zedly.zenchantments.ZenchantmentFactory;
 import zedly.zenchantments.api.Zenchantments;
 
 public class WorldConfigurationProvider implements zedly.zenchantments.api.configuration.WorldConfigurationProvider {

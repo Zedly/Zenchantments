@@ -2,7 +2,7 @@ package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -73,11 +73,11 @@ public final class Spread extends Zenchantment {
 
     @Override
     public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
-        final Arrow originalArrow = (Arrow) event.getEntity();
+        final AbstractArrow originalArrow = (AbstractArrow) event.getEntity();
         final Player player = (Player) originalArrow.getShooter();
         final ItemStack hand = Utilities.getUsedItemStack(requireNonNull(player), usedHand);
 
-        final MultiArrow multiArrow = new MultiArrow(ZenchantmentsPlugin.getInstance(), originalArrow);
+        final MultiArrow multiArrow = new MultiArrow(originalArrow);
         ZenchantedArrow.putArrow(originalArrow, multiArrow, player);
 
         ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(
@@ -100,7 +100,7 @@ public final class Spread extends Zenchantment {
             vector.setX(vector.getX() + Math.max(Math.min(ThreadLocalRandom.current().nextGaussian() / 8, 0.75), -0.75));
             vector.setZ(vector.getZ() + Math.max(Math.min(ThreadLocalRandom.current().nextGaussian() / 8, 0.75), -0.75));
 
-            final Arrow arrow = player.getWorld().spawnArrow(
+            final AbstractArrow arrow = player.getWorld().spawnArrow(
                 player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.0)),
                 vector,
                 1,
@@ -110,6 +110,7 @@ public final class Spread extends Zenchantment {
             arrow.setVelocity(vector.normalize().multiply(originalArrow.getVelocity().length()));
             arrow.setFireTicks(originalArrow.getFireTicks());
             arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
+            arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
 
             final EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(
                 player,
@@ -131,7 +132,7 @@ public final class Spread extends Zenchantment {
             arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
             arrow.setCritical(originalArrow.isCritical());
 
-            ZenchantedArrow.putArrow(originalArrow, new MultiArrow(ZenchantmentsPlugin.getInstance(), originalArrow), player);
+            ZenchantedArrow.putArrow(originalArrow, new MultiArrow(originalArrow), player);
         }
 
         return true;

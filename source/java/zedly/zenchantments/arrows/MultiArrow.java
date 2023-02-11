@@ -1,6 +1,6 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class MultiArrow extends ZenchantedArrow {
-    public MultiArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
-        super(plugin, entity);
+    public MultiArrow(final @NotNull AbstractArrow entity) {
+        super(entity);
     }
 
     @Override
@@ -28,7 +28,7 @@ public final class MultiArrow extends ZenchantedArrow {
 
     @Override
     public void onImpact() {
-        final Arrow arrow = this.getArrow().getWorld().spawnArrow(
+        final AbstractArrow arrow = this.getArrow().getWorld().spawnArrow(
             this.getArrow().getLocation(),
             this.getArrow().getVelocity(),
             (float) (this.getArrow().getVelocity().length() / 10),
@@ -37,8 +37,8 @@ public final class MultiArrow extends ZenchantedArrow {
 
         arrow.setFireTicks(this.getArrow().getFireTicks());
         arrow.getLocation().setDirection(this.getArrow().getLocation().getDirection());
-        arrow.setMetadata("ze.arrow", new FixedMetadataValue(this.getPlugin(), null));
-
+        arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
+        arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         this.getArrow().remove();
     }
 }

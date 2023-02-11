@@ -1,29 +1,29 @@
 package zedly.zenchantments.arrows;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.List;
 
 import static org.bukkit.Material.AIR;
 
 public final class MissileArrow extends ZenchantedArrow {
-    public MissileArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
-        super(plugin, entity);
+    public MissileArrow(final @NotNull AbstractArrow entity) {
+        super(entity);
     }
 
     @Override
     public void onLaunch(final @NotNull LivingEntity player, final @Nullable List<String> lore) {
-        final WorldConfiguration config = this.getPlugin()
-            .getWorldConfigurationProvider()
+        final WorldConfiguration config = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(player.getWorld());
 
         final Location target = Utilities.getCenter(player.getTargetBlock(null, 220));
@@ -36,8 +36,8 @@ public final class MissileArrow extends ZenchantedArrow {
 
         for (int i = 9; i <= ((int) (distance * 5) + 9); i++) {
             final int finalI = i;
-            this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-                this.getPlugin(),
+            Bukkit.getScheduler().scheduleSyncDelayedTask(
+                ZenchantmentsPlugin.getInstance(),
                 () -> {
                     final Location location1 = target.clone();
                     location1.setX(playerLocation.getX() + (finalI * ((target.getX() - playerLocation.getX()) / (distance * 5))));

@@ -1,5 +1,6 @@
 package zedly.zenchantments.arrows;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
@@ -7,6 +8,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import static org.bukkit.Material.FIRE;
 import static org.bukkit.entity.EntityType.BLAZE;
@@ -14,14 +16,13 @@ import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
 public final class ApocalypseArrow extends ZenchantedArrow {
-    public ApocalypseArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
-        super(plugin, entity);
+    public ApocalypseArrow(final @NotNull AbstractArrow entity) {
+        super(entity);
     }
 
     @Override
     public void onImpact() {
-        final WorldConfiguration config = this.getPlugin()
-            .getWorldConfigurationProvider()
+        final WorldConfiguration config = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(this.getArrow().getWorld());
 
         final Location clone = this.getArrow().getLocation().clone();
@@ -35,10 +36,10 @@ public final class ApocalypseArrow extends ZenchantedArrow {
             final int finalLs = l;
             for (int i = 0; i <= 45; i++) {
                 int c = i + 1;
-                this.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(
-                    this.getPlugin(),
+                Bukkit.getScheduler().scheduleSyncDelayedTask(
+                    ZenchantmentsPlugin.getInstance(),
                     () -> {
-                        final Entity entity = location.getWorld().spawnFallingBlock(location, this.getPlugin().getServer().createBlockData(FIRE));
+                        final Entity entity = location.getWorld().spawnFallingBlock(location, Bukkit.createBlockData(FIRE));
 
                         final Vector vector = location.toVector();
                         vector.setY(Math.abs(Math.sin(c)));

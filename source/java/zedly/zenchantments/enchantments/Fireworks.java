@@ -2,7 +2,6 @@ package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
@@ -68,8 +67,8 @@ public final class Fireworks extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final FireworkArrow arrow = new FireworkArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile(), level);
-        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        final FireworkArrow arrow = new FireworkArrow((AbstractArrow) event.getProjectile(), level);
+        ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 }

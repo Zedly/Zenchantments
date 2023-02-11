@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.enchantments.Bind;
 import zedly.zenchantments.event.BlockShredEvent;
+import zedly.zenchantments.player.PlayerDataProvider;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
@@ -389,7 +390,6 @@ public final class ZenchantmentListener implements Listener {
     ) {
         Zenchantment.applyForTool(
             player,
-            this.plugin.getPlayerDataProvider(),
             this.plugin.getGlobalConfiguration(),
             this.plugin.getWorldConfigurationProvider(),
             tool,
@@ -401,7 +401,7 @@ public final class ZenchantmentListener implements Listener {
     @EffectTask(Frequency.HIGH)
     public static void scanPlayers(final @NotNull ZenchantmentsPlugin plugin) {
         for (final Player player : plugin.getServer().getOnlinePlayers()) {
-            plugin.getPlayerDataProvider().getDataForPlayer(player).tick();
+            PlayerDataProvider.getDataForPlayer(player).tick();
         }
 
         // Sweeping scan over the player list for armor enchants
@@ -425,7 +425,6 @@ public final class ZenchantmentListener implements Listener {
 
             Zenchantment.applyForTool(
                 player,
-                plugin.getPlayerDataProvider(),
                 plugin.getGlobalConfiguration(),
                 plugin.getWorldConfigurationProvider(),
                 itemStack,
@@ -436,8 +435,7 @@ public final class ZenchantmentListener implements Listener {
                         }
 
                         if (ench.onFastScan(player, level, true)) {
-                            plugin.getPlayerDataProvider()
-                                .getDataForPlayer(player)
+                            PlayerDataProvider.getDataForPlayer(player)
                                 .setCooldown(ench.getKey(), ench.getCooldown());
                         }
 
@@ -453,7 +451,6 @@ public final class ZenchantmentListener implements Listener {
         if (hand.getType() != Material.AIR) {
             Zenchantment.applyForTool(
                 player,
-                plugin.getPlayerDataProvider(),
                 plugin.getGlobalConfiguration(),
                 plugin.getWorldConfigurationProvider(),
                 hand,
@@ -464,7 +461,7 @@ public final class ZenchantmentListener implements Listener {
                         }
 
                         if (ench.onFastScanHands(player, level, true)) {
-                            plugin.getPlayerDataProvider()
+                            PlayerDataProvider
                                 .getDataForPlayer(player)
                                 .setCooldown(ench.getKey(), ench.getCooldown());
                         }
@@ -481,7 +478,6 @@ public final class ZenchantmentListener implements Listener {
         if (offHand.getType() != Material.AIR) {
             Zenchantment.applyForTool(
                 player,
-                plugin.getPlayerDataProvider(),
                 plugin.getGlobalConfiguration(),
                 plugin.getWorldConfigurationProvider(),
                 offHand,
@@ -492,7 +488,7 @@ public final class ZenchantmentListener implements Listener {
                         }
 
                         if (ench.onFastScanHands(player, level, false)) {
-                            plugin.getPlayerDataProvider()
+                            PlayerDataProvider
                                 .getDataForPlayer(player)
                                 .setCooldown(ench.getKey(), ench.getCooldown());
                         }

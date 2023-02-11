@@ -3,15 +3,11 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.VortexArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
@@ -85,7 +81,7 @@ public final class Vortex extends Zenchantment {
 
         event.setDroppedExp(0);
 
-        ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().collectExp(requireNonNull(killer), experience);
+        CompatibilityAdapter.instance().collectExp(requireNonNull(killer), experience);
         ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
             ZenchantmentsPlugin.getInstance(),
             () -> VORTEX_LOCATIONS.remove(deathBlock),
@@ -97,8 +93,8 @@ public final class Vortex extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final VortexArrow arrow = new VortexArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile());
-        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        final VortexArrow arrow = new VortexArrow((AbstractArrow) event.getProjectile());
+        ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 }

@@ -117,7 +117,7 @@ public final class MysteryFish extends Zenchantment {
         }
     }
 
-    private final EntityType chooseWeightedRandomEntityType()  {
+    private EntityType chooseWeightedRandomEntityType()  {
         int randomInt = ThreadLocalRandom.current().nextInt(RANDOM_RANGE);
         for(int range : MYSTERY_SPAWN_RATES.keySet()) {
             if(randomInt < range) {

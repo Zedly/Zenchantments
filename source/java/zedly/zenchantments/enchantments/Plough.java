@@ -10,11 +10,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.event.ZenBlockPlaceEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.*;
 import static org.bukkit.Material.*;
@@ -90,6 +90,14 @@ public final class Plough extends Zenchantment {
             delayedOperationhandler(event.getPlayer(), clickedBlock, location, level, usedHand);
         }, 0);
         return true;
+    }
+
+    @Override
+    public boolean onBlockPlace(BlockPlaceEvent evt, final int level, final boolean usedHand) {
+        if(!(evt instanceof ZenBlockPlaceEvent)) {
+            pendingOperations.remove(evt.getPlayer().getUniqueId());
+        }
+        return false;
     }
 
     private void delayedOperationhandler(Player player, final Block clickedBlock, final Location location, final int level, final boolean usedHand) {

@@ -3,7 +3,6 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.jetbrains.annotations.NotNull;
@@ -66,10 +65,10 @@ public final class Missile extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final MissileArrow arrow = new MissileArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile());
+        final MissileArrow arrow = new MissileArrow((AbstractArrow) event.getProjectile());
         final Player player = (Player) event.getEntity();
 
-        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, player);
+        ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, player);
 
         event.setCancelled(true);
 

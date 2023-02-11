@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class DisableCommand extends ZenchantmentsCommand {
             return;
         }
 
-        final var playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
+        final var playerData = PlayerDataProvider.getDataForPlayer(player);
         final var commandString = String.join(" ", args);
         final var matcher = ENCHANT_COMMAND_PATTERN.matcher(commandString);
         if (!matcher.find()) {

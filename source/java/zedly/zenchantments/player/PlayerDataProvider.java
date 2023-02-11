@@ -9,23 +9,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerDataProvider implements zedly.zenchantments.api.player.PlayerDataProvider {
-    private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
-    private final ZenchantmentsPlugin   plugin;
+public class PlayerDataProvider {
+    private static final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
 
-    public PlayerDataProvider(@NotNull ZenchantmentsPlugin plugin) {
-        this.plugin = plugin;
+    private PlayerDataProvider() {
     }
 
-    @Override
     @NotNull
     @Contract(mutates = "this")
-    public PlayerData getDataForPlayer(@NotNull Player player) {
-        PlayerData playerData = this.playerDataMap.get(player.getUniqueId());
+    public static PlayerData getDataForPlayer(@NotNull Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
 
         if (playerData == null) {
-            playerData = new PlayerData(this.plugin, player);
-            this.playerDataMap.put(player.getUniqueId(), playerData);
+            playerData = new PlayerData(ZenchantmentsPlugin.getInstance(), player);
+            playerDataMap.put(player.getUniqueId(), playerData);
         } else {
             // The PlayerData instance should always be updated with a fresh Player instance.
             // For example, if a Player was to log off and log back on again,
@@ -38,9 +35,8 @@ public class PlayerDataProvider implements zedly.zenchantments.api.player.Player
         return playerData;
     }
 
-    @Override
     @Contract(mutates = "this")
-    public void resetDataForPlayer(@NotNull Player player) {
-        this.playerDataMap.put(player.getUniqueId(), new PlayerData(this.plugin, player));
+    public static void resetDataForPlayer(@NotNull Player player) {
+        playerDataMap.put(player.getUniqueId(), new PlayerData(ZenchantmentsPlugin.getInstance(), player));
     }
 }

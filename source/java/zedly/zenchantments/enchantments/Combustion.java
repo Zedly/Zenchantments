@@ -69,7 +69,7 @@ public final class Combustion extends Zenchantment {
         final Entity entity;
 
         if (event.getDamager().getType() == EntityType.ARROW) {
-            final Arrow arrow = (Arrow) event.getDamager();
+            final AbstractArrow arrow = (AbstractArrow) event.getDamager();
             if (!(arrow.getShooter() instanceof LivingEntity)) {
                 return false;
             }

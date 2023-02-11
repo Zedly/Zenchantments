@@ -1,5 +1,6 @@
 package zedly.zenchantments.arrows;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -8,21 +9,20 @@ import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.CompatibilityAdapter;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.Objects;
 
 import static org.bukkit.Material.*;
 
 public final class FuseArrow extends ZenchantedArrow {
-    public FuseArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
-        super(plugin, entity);
+    public FuseArrow(final @NotNull AbstractArrow entity) {
+        super(entity);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class FuseArrow extends ZenchantedArrow {
                     (Player) Objects.requireNonNull(this.getArrow().getShooter())
                 );
 
-                this.getPlugin().getServer().getPluginManager().callEvent(event);
+                Bukkit.getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
                     hitLocation.getBlock().setType(AIR);
@@ -75,9 +75,8 @@ public final class FuseArrow extends ZenchantedArrow {
             final Creeper creeper = (Creeper) event.getEntity();
             CompatibilityAdapter.instance().explodeCreeper(
                 creeper,
-                this.getPlugin()
-                    .getWorldConfigurationProvider()
-                    .getConfigurationForWorld(event.getDamager().getWorld())
+                    WorldConfigurationProvider.getInstance()
+                        .getConfigurationForWorld(event.getDamager().getWorld())
                     .isExplosionBlockBreakEnabled()
             );
         } else if (event.getEntity().getType() == EntityType.MUSHROOM_COW) {

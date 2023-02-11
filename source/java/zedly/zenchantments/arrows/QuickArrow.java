@@ -1,16 +1,14 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.List;
 
 public final class QuickArrow extends ZenchantedArrow {
-    public QuickArrow(final @NotNull ZenchantmentsPlugin plugin, final @NotNull Arrow entity) {
-        super(plugin, entity);
+    public QuickArrow(final @NotNull AbstractArrow entity) {
+        super(entity);
     }
 
     @Override

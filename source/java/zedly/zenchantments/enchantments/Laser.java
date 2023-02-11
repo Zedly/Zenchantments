@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.Set;
 
@@ -95,8 +96,7 @@ public final class Laser extends Zenchantment {
 
     private void shoot(final @NotNull Player player, final int level) {
         // Avoid conflicting with Lumber zenchantment.
-        ZenchantmentsPlugin.getInstance()
-            .getPlayerDataProvider()
+        PlayerDataProvider
             .getDataForPlayer(player)
             .setCooldown(new NamespacedKey(ZenchantmentsPlugin.getInstance(), Lumber.KEY), 5);
 

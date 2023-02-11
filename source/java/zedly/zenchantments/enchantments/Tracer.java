@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 public final class Tracer extends Zenchantment {
     public static final String KEY = "tracer";
 
-    public static final Map<Arrow, Integer> TRACERS = new HashMap<>();
+    public static final Map<AbstractArrow, Integer> TRACERS = new HashMap<>();
 
     private static final String                             NAME        = "Tracer";
     private static final String                             DESCRIPTION = "Guides the arrow to targets and then attacks";
@@ -80,8 +80,8 @@ public final class Tracer extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
-        final TracerArrow arrow = new TracerArrow(ZenchantmentsPlugin.getInstance(), (Arrow) event.getProjectile(), level, this.getPower());
-        ZenchantedArrow.putArrow((Arrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        final TracerArrow arrow = new TracerArrow((AbstractArrow) event.getProjectile(), level, this.getPower());
+        ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 

@@ -13,7 +13,6 @@ import zedly.zenchantments.*;
 
 import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
 import org.bukkit.Bukkit;
 import static org.bukkit.Material.AIR;
 
@@ -80,7 +79,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Make sure clicked block is okay to break.
-        if (!ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().isBlockSafeToBreak(clickedBlock)) {
+        if (!CompatibilityAdapter.instance().isBlockSafeToBreak(clickedBlock)) {
             return false;
         }
 
@@ -109,7 +108,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Block has been selected, attempt breaking.
-        if (!ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(clickedBlock, event.getPlayer())) {
+        if (!CompatibilityAdapter.instance().breakBlock(clickedBlock, event.getPlayer())) {
             return false;
         }
 
@@ -126,7 +125,7 @@ public final class Switch extends Zenchantment {
         );
 
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(clickedBlock, player, material, null);
+            CompatibilityAdapter.instance().placeBlock(clickedBlock, player, material, null);
         }, 1);  // TODO: Check item availability again in next tick, then place, then consume.
 
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);

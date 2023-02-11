@@ -1,12 +1,10 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,12 +31,11 @@ public final class PotionArrow extends ZenchantedArrow {
     };
 
     public PotionArrow(
-        final @NotNull ZenchantmentsPlugin plugin,
-        final @NotNull Arrow entity,
+        final @NotNull AbstractArrow entity,
         final int level,
         final double power
     ) {
-        super(plugin, entity, level, power);
+        super(entity, level, power);
     }
 
     @Override

@@ -4,15 +4,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.DARK_AQUA;
 import static zedly.zenchantments.I18n.translateString;
 
 public class ListCommand extends ZenchantmentsCommand {

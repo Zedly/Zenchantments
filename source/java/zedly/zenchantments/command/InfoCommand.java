@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class InfoCommand extends ZenchantmentsCommand {
 
         final var world = player.getWorld();
         final var config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
-        final var playerData = this.plugin.getPlayerDataProvider().getDataForPlayer(player);
+        final var playerData = PlayerDataProvider.getDataForPlayer(player);
 
         if (args.length > 0) {
             final var zenchantment = config.getZenchantmentFromName(args[0]);

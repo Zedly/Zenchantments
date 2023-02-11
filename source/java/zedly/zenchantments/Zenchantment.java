@@ -66,14 +66,12 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     //region Static Methods
     public static void applyForTool(
         final @NotNull Player player,
-        final @NotNull PlayerDataProvider playerDataProvider,
         final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfigurationProvider worldConfigurationProvider,
         final @Nullable ItemStack tool,
         final @NotNull BiPredicate<Zenchantment, Integer> action
     ) {
         requireNonNull(player);
-        requireNonNull(playerDataProvider);
         requireNonNull(worldConfigurationProvider);
         requireNonNull(action);
 
@@ -86,7 +84,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         for (final Map.Entry<Zenchantment, Integer> entry : zenchantments.entrySet()) {
             final Zenchantment zenchantment = entry.getKey();
             final Integer level = entry.getValue(); // Use Integer to prevent unboxing and then re-boxing.
-            final PlayerData playerData = playerDataProvider.getDataForPlayer(player);
+            final PlayerData playerData = PlayerDataProvider.getDataForPlayer(player);
 
             if (!zenchantment.used && Utilities.playerCanUseZenchantment(player, playerData, zenchantment.getKey())) {
                 try {

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -89,7 +89,7 @@ public final class Burst extends Zenchantment {
             Utilities.setItemStackInHand(player, itemInHand, usedHand);
 
             ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-                final Arrow arrow = player.getWorld().spawnArrow(
+                final AbstractArrow arrow = player.getWorld().spawnArrow(
                     player.getEyeLocation(),
                     player.getLocation().getDirection(),
                     1,

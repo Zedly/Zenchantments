@@ -18,7 +18,6 @@ import zedly.zenchantments.event.listener.GeneralListener;
 import zedly.zenchantments.event.listener.ZenchantmentListener;
 import zedly.zenchantments.event.listener.merge.AnvilMergeListener;
 import zedly.zenchantments.event.listener.merge.GrindstoneMergeListener;
-import zedly.zenchantments.player.PlayerDataProvider;
 import zedly.zenchantments.task.Frequency;
 import zedly.zenchantments.task.TaskRunner;
 
@@ -26,7 +25,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static org.bukkit.Material.LAVA;
-import static org.bukkit.Material.WATER;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 
 public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
@@ -34,7 +32,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
 
     private final GlobalConfiguration        globalConfiguration        = new GlobalConfiguration(this);
     private final WorldConfigurationProvider worldConfigurationProvider = WorldConfigurationProvider.getInstance();
-    private final PlayerDataProvider         playerDataProvider         = new PlayerDataProvider(this);
     private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
     private final I18n                       i18n                       = new I18n(this);
 
@@ -118,13 +115,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @NotNull
     public WorldConfigurationProvider getWorldConfigurationProvider() {
         return this.worldConfigurationProvider;
-    }
-
-    @Override
-    @Deprecated
-    @NotNull
-    public PlayerDataProvider getPlayerDataProvider() {
-        return this.playerDataProvider;
     }
 
     @NotNull

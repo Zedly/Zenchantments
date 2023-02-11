@@ -3,7 +3,6 @@ package zedly.zenchantments.api;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.api.configuration.GlobalConfiguration;
 import zedly.zenchantments.api.configuration.WorldConfigurationProvider;
-import zedly.zenchantments.api.player.PlayerDataProvider;
 
 /**
  * Represents the main Zenchantments plugin class and entry-point into the API.
@@ -24,12 +23,4 @@ public interface Zenchantments {
      */
     @NotNull
     WorldConfigurationProvider getWorldConfigurationProvider();
-
-    /**
-     * Gets the {@link PlayerDataProvider} of this {@link Zenchantments} instance.
-     *
-     * @return The {@link PlayerDataProvider} of this {@link Zenchantments} instance.
-     */
-    @NotNull
-    PlayerDataProvider getPlayerDataProvider();
 }
