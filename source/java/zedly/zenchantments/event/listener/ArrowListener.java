@@ -1,5 +1,6 @@
 package zedly.zenchantments.event.listener;
 
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;

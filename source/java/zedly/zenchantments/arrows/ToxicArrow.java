@@ -1,6 +1,7 @@
 package zedly.zenchantments.arrows;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;

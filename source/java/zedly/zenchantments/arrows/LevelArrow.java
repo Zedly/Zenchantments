@@ -1,5 +1,6 @@
 package zedly.zenchantments.arrows;
 
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 
