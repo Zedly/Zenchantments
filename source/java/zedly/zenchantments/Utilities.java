@@ -56,6 +56,7 @@ public final class Utilities {
         return clazz.getEnumConstants()[i];
     }
 
+    /*
     @NotNull
     public static List<ItemStack> getArmorAndHandItems(final @NotNull Player player, final boolean mainHand) {
         requireNonNull(player);
@@ -69,6 +70,7 @@ public final class Utilities {
 
         return stacks;
     }
+    */
 
     public static int getUnbreakingLevel(ItemStack is) {
         return is.getEnchantmentLevel(Enchantment.DURABILITY);

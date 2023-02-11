@@ -9,18 +9,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
-import static org.bukkit.Material.ENCHANTED_BOOK;
 import static org.bukkit.enchantments.Enchantment.DURABILITY;
 import static org.bukkit.event.EventPriority.MONITOR;
 

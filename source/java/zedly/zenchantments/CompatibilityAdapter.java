@@ -17,7 +17,6 @@ import net.minecraft.world.entity.animal.EntityMushroomCow;
 import net.minecraft.world.entity.animal.EntitySheep;
 import net.minecraft.world.entity.monster.EntityCreeper;
 import net.minecraft.world.entity.player.EntityHuman;
-import net.minecraft.world.level.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -31,11 +30,8 @@ import org.bukkit.craftbukkit.v1_18_R2.entity.CraftCreeper;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftSheep;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -43,19 +39,15 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import zedly.zenchantments.event.ZenBlockPlaceEvent;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.BAMBOO;
 
 public class CompatibilityAdapter {
@@ -72,30 +64,6 @@ public class CompatibilityAdapter {
 
     public static CompatibilityAdapter instance() {
         return INSTANCE;
-    }
-
-    public static void damageTool(final @NotNull Player player, final int damage, final boolean handUsed) {
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            return;
-        }
-
-        final PlayerInventory inventory = player.getInventory();
-        final ItemStack hand = handUsed ? inventory.getItemInMainHand() : inventory.getItemInOffHand();
-        for (int i = 0; i < damage; i++) {
-            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (hand.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
-                setDamage(hand, getDamage(hand) + 1);
-            }
-        }
-
-        if (handUsed) {
-            player.getInventory().setItemInMainHand(
-                getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand
-            );
-        } else {
-            player.getInventory().setItemInOffHand(
-                getDamage(hand) > hand.getType().getMaxDurability() ? new ItemStack(AIR) : hand
-            );
-        }
     }
 
     public static void displayParticle(
@@ -118,37 +86,6 @@ public class CompatibilityAdapter {
             (float) z,
             (float) speed
         );
-    }
-
-    public static void addUnbreaking(final @NotNull Player player, final @NotNull ItemStack itemStack, final int damage) {
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            return;
-        }
-
-        for (int i = 0; i < damage; i++) {
-            if (ThreadLocalRandom.current().nextInt(100) <= (100 / (itemStack.getEnchantmentLevel(Enchantment.DURABILITY) + 1))) {
-                setDamage(itemStack, getDamage(itemStack) + 1);
-            }
-        }
-    }
-
-    public static void setDamage(final @NotNull ItemStack itemStack, final int damage) {
-        if (!(itemStack.getItemMeta() instanceof Damageable)) {
-            return;
-        }
-
-        final org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) itemStack.getItemMeta();
-        damageable.setDamage(damage);
-        itemStack.setItemMeta((ItemMeta) damageable);
-    }
-
-    public static int getDamage(final @NotNull ItemStack itemStack) {
-        if (!(itemStack.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable)) {
-            return 0;
-        }
-
-        final org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) itemStack.getItemMeta();
-        return damageable.getDamage();
     }
 
     public void collectExp(final @NotNull Player player, final int amount) {
@@ -235,7 +172,7 @@ public class CompatibilityAdapter {
         target.damage(damage, attacker);
         target.setLastDamageCause(damageEvent);
 
-        damageTool(attacker, 1, true);
+        Utilities.damageItemStackRespectUnbreaking(attacker, 1, true);
 
         return true;
     }
@@ -256,47 +193,6 @@ public class CompatibilityAdapter {
         }
 
         return false;
-    }
-
-    public boolean haulOrBreakBlock(
-        final @NotNull Block from,
-        final @NotNull Block to,
-        final @NotNull BlockFace face,
-        final @NotNull Player player
-    ) {
-        final BlockState state = from.getState();
-        if (state.getClass().getName().endsWith("CraftBlockState")) {
-            return false;
-        }
-
-        final BlockBreakEvent breakEvent = new BlockBreakEvent(from, player);
-
-        Bukkit.getServer().getPluginManager().callEvent(breakEvent);
-
-        if (breakEvent.isCancelled()) {
-            return false;
-        }
-
-        final ItemStack stack = new ItemStack(state.getType(), 1);
-
-        from.setType(AIR);
-
-        final BlockPlaceEvent placeEvent = new BlockPlaceEvent(
-            to,
-            to.getRelative(face.getOppositeFace()).getState(),
-            to.getRelative(face.getOppositeFace()), stack, player, true,
-            EquipmentSlot.HAND
-        );
-
-        Bukkit.getServer().getPluginManager().callEvent(placeEvent);
-
-        if (placeEvent.isCancelled()) {
-            from.getWorld().dropItem(from.getLocation(), stack);
-            return true;
-        }
-
-        to.setType(state.getType());
-        return true;
     }
 
     public boolean igniteEntity(final @NotNull Entity target, final @NotNull Player player, final int duration) {

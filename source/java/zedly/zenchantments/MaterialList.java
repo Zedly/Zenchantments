@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
