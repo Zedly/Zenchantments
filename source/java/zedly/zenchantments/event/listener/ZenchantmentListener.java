@@ -95,13 +95,7 @@ public final class ZenchantmentListener implements Listener {
             final Player player = event.getPlayer();
             final boolean isMainHand = event.getHand() == EquipmentSlot.HAND;
 
-            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
-                this.applyZenchantmentForTool(
-                    player,
-                    usedStack,
-                    (ench, level) -> ench.onBlockInteract(event, level, isMainHand)
-                );
-            }
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onBlockInteract(event, level, isMainHand));
         }
     }
 
@@ -113,13 +107,7 @@ public final class ZenchantmentListener implements Listener {
             final Player player = event.getPlayer();
             final boolean isMainHand = event.getHand() == EquipmentSlot.HAND;
 
-            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, isMainHand)) {
-                this.applyZenchantmentForTool(
-                    player,
-                    usedStack,
-                    (ench, level) -> ench.onBlockInteractInteractable(event, level, isMainHand)
-                );
-            }
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onBlockInteractInteractable(event, level, isMainHand));
         }
     }
 
@@ -171,26 +159,14 @@ public final class ZenchantmentListener implements Listener {
             final Player player = (Player) event.getDamager();
 
             if (event.getEntity() instanceof LivingEntity) {
-                for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
-                    this.applyZenchantmentForTool(
-                        player,
-                        usedStack,
-                        (ench, level) -> ench.onEntityHit(event, level, true)
-                    );
-                }
+                applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onEntityHit(event, level, true));
             }
         }
 
         if (event.getEntity() instanceof Player) {
             final Player player = (Player) event.getEntity();
             // Only check main hand for some reason.
-            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
-                this.applyZenchantmentForTool(
-                    player,
-                    usedStack,
-                    (ench, level) -> ench.onBeingHit(event, level, true)
-                );
-            }
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onBeingHit(event, level, true));
         }
     }
 
@@ -201,13 +177,7 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = (Player) event.getEntity();
-        for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, false)) {
-            this.applyZenchantmentForTool(
-                player,
-                usedStack,
-                (ench, level) -> ench.onEntityDamage(event, level, false)
-            );
-        }
+        applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onEntityDamage(event, level, false));
     }
 
     @EventHandler
@@ -232,13 +202,7 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = (Player) event.getEntity();
-        for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
-            this.applyZenchantmentForTool(
-                player,
-                usedStack,
-                (ench, level) -> ench.onHungerChange(event, level, true)
-            );
-        }
+        applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onHungerChange(event, level, true));
     }
 
     @EventHandler
@@ -298,16 +262,7 @@ public final class ZenchantmentListener implements Listener {
             final Player player = (Player) entity;
             final AtomicBoolean apply = new AtomicBoolean(true);
 
-            for (final ItemStack usedStack : Utilities.getArmorAndHandItems(player, true)) {
-                // Only apply one enchantment, which in practice is Potion Resistance.
-                // This will always skip execution of the Lambda and return false after a Lambda returned true once
-                // Yes, I am bored
-                this.applyZenchantmentForTool(
-                    player,
-                    usedStack,
-                    (ench, level) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, false), false)
-                );
-            }
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, false), false));
         }
     }
 
@@ -372,15 +327,28 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = (Player) event.getEntity();
-        final PlayerInventory inventory = player.getInventory();
+        applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onCombust(event, level, true));
+    }
 
-        for (final ItemStack usedStack : (ItemStack[]) ArrayUtils.addAll(inventory.getArmorContents(), inventory.getContents())) {
+    private void applyZenchantmentForArmorAndHeldItems(Player player, final @NotNull BiPredicate<Zenchantment, Integer> action) {
+        final PlayerInventory inventory = player.getInventory();
+        for (final ItemStack usedStack : inventory.getArmorContents()) {
             this.applyZenchantmentForTool(
                 player,
                 usedStack,
-                (ench, level) -> ench.onCombust(event, level, true)
+                action
             );
         }
+        this.applyZenchantmentForTool(
+            player,
+            player.getInventory().getItemInMainHand(),
+            action
+        );
+        this.applyZenchantmentForTool(
+            player,
+            player.getInventory().getItemInOffHand(),
+            action
+        );
     }
 
     private void applyZenchantmentForTool(
