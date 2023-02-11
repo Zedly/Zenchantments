@@ -114,7 +114,7 @@ public class CompatibilityAdapter {
     ) {
         final Block blockAgainst = blockPlaced.getRelative(blockPlaced.getY() == 0 ? BlockFace.UP : BlockFace.DOWN);
         final ItemStack itemHeld = new ItemStack(material);
-        final BlockPlaceEvent placeEvent = new BlockPlaceEvent(
+        final BlockPlaceEvent placeEvent = new ZenBlockPlaceEvent(
             blockPlaced,
             blockPlaced.getState(),
             blockAgainst,

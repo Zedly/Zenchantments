@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.MultiArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
+import zedly.zenchantments.event.ZenEntityShootBowEvent;
 
 import java.util.Set;
 
@@ -71,6 +72,10 @@ public final class Burst extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+        if(event instanceof ZenEntityShootBowEvent) {
+            return false;
+        }
+
         final Player player = (Player) event.getEntity();
         final ItemStack itemInHand = Utilities.getUsedItemStack(player, usedHand);
 
@@ -106,10 +111,10 @@ public final class Burst extends Zenchantment {
 
                 // Some of the parameters below have been added since this class was last updated.
                 // This zenchantment may need more testing to determine whether or not it still works properly.
-                final EntityShootBowEvent shootEvent = new EntityShootBowEvent(
+                final EntityShootBowEvent shootEvent = new ZenEntityShootBowEvent(
                     player,
                     itemInHand,
-                    null,
+                    event.getConsumable(),
                     arrow,
                     usedHand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND,
                     1f,
@@ -126,7 +131,8 @@ public final class Burst extends Zenchantment {
                 } else {
                     arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
                     arrow.setCritical(false);
-                    ZenchantedArrow.putArrow(arrow, new MultiArrow(ZenchantmentsPlugin.getInstance(), arrow), player);
+                    arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                    ZenchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
                     Utilities.damageItemStackRespectUnbreaking(player, 1, usedHand);
                 }
             }, i * 2L);
