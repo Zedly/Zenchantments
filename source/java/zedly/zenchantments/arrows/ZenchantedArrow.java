@@ -1,11 +1,9 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
@@ -15,8 +13,10 @@ import zedly.zenchantments.task.Frequency;
 import java.util.*;
 
 public class ZenchantedArrow {
-    public static final Map<Entity, ZenchantedArrow>     KILLED_ENTITIES      = new HashMap<>();
-    public static final Map<Arrow, Set<ZenchantedArrow>> ADVANCED_PROJECTILES = new HashMap<>();
+
+    private static final LinkedList<ZenchantedArrow> ZENCHANTED_ARROWS = new LinkedList<>();
+    public static final String ARROW_METADATA_NAME = "ze.enchanted_arrow";
+    public static final String KILLED_BY_ARROW_METADATA_NAME = "ze.killed_by_ench_arrow";
 
     private static final Set<ZenchantedArrow> DIE_QUEUE = new HashSet<>();
 
@@ -49,16 +49,8 @@ public class ZenchantedArrow {
         final @NotNull ZenchantedArrow zenchantedArrow,
         final @NotNull Player player
     ) {
-        final Set<ZenchantedArrow> arrows;
-
-        if (ADVANCED_PROJECTILES.containsKey(arrow)) {
-            arrows = ADVANCED_PROJECTILES.get(arrow);
-        } else {
-            arrows = new HashSet<>();
-        }
-
-        arrows.add(zenchantedArrow);
-        ADVANCED_PROJECTILES.put(arrow, arrows);
+        arrow.setMetadata(ARROW_METADATA_NAME, new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), zenchantedArrow));
+        ZENCHANTED_ARROWS.add(zenchantedArrow);
         zenchantedArrow.onLaunch(player, null);
     }
 
@@ -86,18 +78,13 @@ public class ZenchantedArrow {
     protected final void die(boolean removeArrow) {
         this.onDie();
 
+        // Formally we should only remove the particular ZenchantedArrow that died here
+        // However in practice they all begin and die at the same time, so we just wipe the metadata
+        arrow.removeMetadata(ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance());
+
         if (removeArrow) {
             arrow.remove();
         }
-
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-            if (ADVANCED_PROJECTILES.containsKey(arrow)) {
-                ADVANCED_PROJECTILES.get(arrow).remove(this);
-                if (ADVANCED_PROJECTILES.get(arrow).isEmpty()) {
-                    ADVANCED_PROJECTILES.remove(arrow);
-                }
-            }
-        }, 1);
     }
 
     private void tick() {
@@ -120,35 +107,20 @@ public class ZenchantedArrow {
         return true;
     }
 
-    protected void onDie() { }
-
-    @EffectTask(Frequency.MEDIUM_HIGH)
-    public static void scanAndReap(final @NotNull ZenchantmentsPlugin plugin) {
-        synchronized (ADVANCED_PROJECTILES) {
-            for (final Arrow arrow : ADVANCED_PROJECTILES.keySet()) {
-                if (arrow.isDead()) {
-                    DIE_QUEUE.addAll(ADVANCED_PROJECTILES.get(arrow));
-                }
-
-                for (final ZenchantedArrow zenchantedArrow : ADVANCED_PROJECTILES.get(arrow)) {
-                    if (zenchantedArrow.getTick() > 600) {
-                        DIE_QUEUE.add(zenchantedArrow);
-                    }
-                }
-            }
-
-            for (final ZenchantedArrow zenchantedArrow : DIE_QUEUE) {
-                zenchantedArrow.die();
-            }
-
-            DIE_QUEUE.clear();
-        }
+    protected void onDie() {
     }
 
     @EffectTask(Frequency.HIGH)
     public static void doTick(final @NotNull ZenchantmentsPlugin plugin) {
-        synchronized (ADVANCED_PROJECTILES) {
-            ADVANCED_PROJECTILES.values().forEach((set) -> set.forEach(ZenchantedArrow::tick));
+        Iterator<ZenchantedArrow> it = ZENCHANTED_ARROWS.iterator();
+        while(it.hasNext()) {
+            ZenchantedArrow arrow = it.next();
+            if (arrow.getArrow().isDead() || arrow.getTick() > 600) {
+                arrow.onDie();
+                it.remove();
+            } else {
+                arrow.tick();
+            }
         }
     }
 }
