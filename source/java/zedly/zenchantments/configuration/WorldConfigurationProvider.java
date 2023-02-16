@@ -64,7 +64,7 @@ public class WorldConfigurationProvider implements zedly.zenchantments.api.confi
             System.err.println("Zenchantments was unable to load the configuration for world: " + world.getName() + ".\n" +
                 "Please check the configuration for this world. Falling back to default configuration!");
             e.printStackTrace();
-            return ZenchantmentsPlugin.getInstance().getGlobalConfiguration().getDefaultWorldConfiguration();
+            return GlobalConfiguration.getDefaultWorldConfiguration();
         }
     }
 

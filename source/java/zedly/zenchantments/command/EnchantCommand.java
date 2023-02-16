@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfiguration;
 
 import java.util.Collections;
@@ -102,9 +103,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
 
     @NotNull
     private List<String> fallbackToEnchantmentSuggestions(final @NotNull String enchantString) {
-        return ZenchantmentsPlugin
-            .getInstance()
-            .getGlobalConfiguration()
+        return GlobalConfiguration
             .getDefaultWorldConfiguration()
             .getEnchantNames()
             .stream()

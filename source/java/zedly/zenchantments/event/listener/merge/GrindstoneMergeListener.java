@@ -84,7 +84,6 @@ public class GrindstoneMergeListener implements Listener {
         final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
         final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             itemStack,
-            this.plugin.getGlobalConfiguration(),
             worldConfiguration
         ).keySet();
 

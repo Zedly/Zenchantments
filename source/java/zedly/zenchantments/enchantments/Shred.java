@@ -145,7 +145,6 @@ public final class Shred extends Zenchantment {
 
                 Zenchantment.applyForTool(
                     player,
-                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
                     ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider(),
                     Utilities.getUsedItemStack(player, true),
                     (ench, level) -> ench.onBlockBreak(event, level, true)

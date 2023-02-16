@@ -6,10 +6,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 
 import java.util.Set;
 
@@ -79,13 +76,12 @@ public final class Combustion extends Zenchantment {
             entity = event.getDamager();
         }
 
-        return ZenchantmentsPlugin.getInstance()
-            .getCompatibilityAdapter()
+        return CompatibilityAdapter.instance()
             .igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
     }
 
     public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final boolean usedHand) {
-        if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().isZombie(event.getCombuster())) {
+        if (CompatibilityAdapter.instance().isZombie(event.getCombuster())) {
             event.setDuration(0);
         }
 

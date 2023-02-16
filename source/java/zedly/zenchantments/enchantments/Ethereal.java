@@ -88,7 +88,6 @@ public final class Ethereal extends Zenchantment {
             if (
                 Zenchantment.getZenchantmentsOnItemStack(
                     stack,
-                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
                     ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
                 ).containsKey(this)
             ) {

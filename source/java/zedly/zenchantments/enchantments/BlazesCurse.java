@@ -119,7 +119,7 @@ public final class BlazesCurse extends Zenchantment {
             case BLUE_ICE:
             case SNOW_BLOCK:
             case POWDER_SNOW:
-                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
+                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, MELTING);
                 return true;
         }
 
@@ -132,14 +132,14 @@ public final class BlazesCurse extends Zenchantment {
             case BLUE_ICE:
             case SNOW_BLOCK:
             case POWDER_SNOW:
-                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, MELTING);
+                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, MELTING);
                 return true;
         }
 
         if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
             final Location checkLocation = player.getLocation();
             if (checkLocation.getWorld().getHighestBlockAt(checkLocation).getY() <= checkLocation.getY() + 1) {
-                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
+                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
             }
         }
 

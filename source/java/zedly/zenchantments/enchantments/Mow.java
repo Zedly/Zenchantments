@@ -10,10 +10,7 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 
 import java.util.Set;
 
@@ -95,13 +92,13 @@ public final class Mow extends Zenchantment {
             if (entity instanceof Sheep) {
                 final Sheep sheep = (Sheep) entity;
                 if (sheep.isAdult()) {
-                    ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().shearEntityNMS(sheep, player, usedHand);
+                    CompatibilityAdapter.instance().shearEntityNMS(sheep, player, usedHand);
                     shearedEntity = true;
                 }
             } else if (entity instanceof MushroomCow) {
                 final MushroomCow mooshroom = (MushroomCow) entity;
                 if (mooshroom.isAdult()) {
-                    ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().shearEntityNMS(mooshroom, player, usedHand);
+                    CompatibilityAdapter.instance().shearEntityNMS(mooshroom, player, usedHand);
                     shearedEntity = true;
                 }
             }

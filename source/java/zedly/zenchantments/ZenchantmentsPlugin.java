@@ -30,7 +30,6 @@ import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
 public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     private static ZenchantmentsPlugin instance;
 
-    private final GlobalConfiguration        globalConfiguration        = new GlobalConfiguration(this);
     private final WorldConfigurationProvider worldConfigurationProvider = WorldConfigurationProvider.getInstance();
     private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
     private final I18n                       i18n                       = new I18n(this);
@@ -45,17 +44,8 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         ZenchantmentsPlugin.instance = this;
 
         this.i18n.updateLocale(Locale.getDefault());
-
-        try {
-            this.globalConfiguration.loadGlobalConfiguration();
-        } catch (Exception e) {
-            System.err.println("Zenchantments was unable to load the default configuration. This can only mean the plugin JAR is broken!\n" +
-                "Please try updating Zenchantments from https://dev.bukkit.org/projects/zenchantments");
-            e.printStackTrace();
-            Bukkit.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
+        // Attempt loading default config early so we can disable the plugin if needed
+        GlobalConfiguration.getDefaultWorldConfiguration();
         this.worldConfigurationProvider.loadWorldConfigurations();
 
         ZenchantmentsCommandHandler commandHandler = new ZenchantmentsCommandHandler(this);
@@ -101,13 +91,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
                 player.removeMetadata("ze.haste", this);
             }
         }
-    }
-
-    @Override
-    @NotNull
-    @Deprecated
-    public GlobalConfiguration getGlobalConfiguration() {
-        return this.globalConfiguration;
     }
 
     @Override

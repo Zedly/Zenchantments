@@ -120,14 +120,12 @@ public class AnvilMergeListener implements Listener {
         final Map<Zenchantment, Integer> leftEnchantments = Zenchantment.getZenchantmentsOnItemStack(
             leftItem,
             true,
-            this.plugin.getGlobalConfiguration(),
             worldConfiguration,
             normalLeftLore
         );
         final Map<Zenchantment, Integer> rightEnchantments = Zenchantment.getZenchantmentsOnItemStack(
             rightItem,
             true,
-            this.plugin.getGlobalConfiguration(),
             worldConfiguration
         );
 

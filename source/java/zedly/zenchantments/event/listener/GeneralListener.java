@@ -68,7 +68,6 @@ public class GeneralListener implements Listener {
         if (
             !Zenchantment.getZenchantmentsOnItemStack(
                 item,
-                this.plugin.getGlobalConfiguration(),
                 config
             ).containsKey(laser) || item.getType() == ENCHANTED_BOOK
         ) {
@@ -77,7 +76,7 @@ public class GeneralListener implements Listener {
 
         event.setCancelled(true);
 
-        final int level = Zenchantment.getZenchantmentsOnItemStack(item, this.plugin.getGlobalConfiguration(), config).get(laser);
+        final int level = Zenchantment.getZenchantmentsOnItemStack(item, config).get(laser);
         final int range = 6 + (int) Math.round(level * laser.getPower() * 3);
 
         final Block block = event.getBlock();
@@ -250,7 +249,6 @@ public class GeneralListener implements Listener {
             .getConfigurationForWorld(player.getWorld());
         final boolean zenchantment = !Zenchantment.getZenchantmentsOnItemStack(
             inventory.getItemInMainHand(),
-            this.plugin.getGlobalConfiguration(),
             worldConfiguration
         ).isEmpty();
 
@@ -276,7 +274,6 @@ public class GeneralListener implements Listener {
         final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
         final Map<Zenchantment, Integer> existingEnchants = Zenchantment.getZenchantmentsOnItemStack(
             item,
-            this.plugin.getGlobalConfiguration(),
             worldConfiguration
         );
         final Map<Zenchantment, Integer> addedEnchants = new HashMap<>();
@@ -365,7 +362,6 @@ public class GeneralListener implements Listener {
         final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld());
         final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             event.getCurrentItem(),
-            this.plugin.getGlobalConfiguration(),
             config
         ).keySet();
 

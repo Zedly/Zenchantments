@@ -193,10 +193,9 @@ public final class Pierce extends Zenchantment {
             );
         }
 
-        final CompatibilityAdapter compatibilityAdapter = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter();
-        for (final Block block : total) {
-            if (compatibilityAdapter.isBlockSafeToBreak(block)) {
-                compatibilityAdapter.breakBlock(block, event.getPlayer());
+       for (final Block block : total) {
+            if (CompatibilityAdapter.instance().isBlockSafeToBreak(block)) {
+                CompatibilityAdapter.instance().breakBlock(block, event.getPlayer());
             }
         }
 

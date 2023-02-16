@@ -132,7 +132,7 @@ public final class Anthropomorphism extends Zenchantment {
                     final Player attacker = (Player) blockEntity.getMetadata("ze.anthrothrower").get(0).value();
 
                     if (targetEntity.getNoDamageTicks() == 0 && ATTACK_BLOCKS.get(blockEntity) != null) {
-                        final boolean result = ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity(
+                        final boolean result = CompatibilityAdapter.instance().attackEntity(
                             targetEntity,
                             requireNonNull(attacker),
                             2.0 * ATTACK_BLOCKS.get(blockEntity).getKey()

@@ -9,14 +9,6 @@ import zedly.zenchantments.api.configuration.WorldConfigurationProvider;
  */
 public interface Zenchantments {
     /**
-     * Gets the {@link GlobalConfiguration} of this {@link Zenchantments} instance.
-     *
-     * @return The {@link GlobalConfiguration} of this {@link Zenchantments} instance.
-     */
-    @NotNull
-    GlobalConfiguration getGlobalConfiguration();
-
-    /**
      * Gets the {@link WorldConfigurationProvider} of this {@link Zenchantments} instance.
      *
      * @return The {@link WorldConfigurationProvider} of this {@link Zenchantments} instance.

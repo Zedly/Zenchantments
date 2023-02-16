@@ -66,7 +66,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     //region Static Methods
     public static void applyForTool(
         final @NotNull Player player,
-        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfigurationProvider worldConfigurationProvider,
         final @Nullable ItemStack tool,
         final @NotNull BiPredicate<Zenchantment, Integer> action
@@ -77,7 +76,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         final Map<Zenchantment, Integer> zenchantments = getZenchantmentsOnItemStack(
             tool,
-            globalConfiguration,
             worldConfigurationProvider.getConfigurationForWorld(player.getWorld())
         );
 
@@ -106,37 +104,33 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @Nullable ItemStack itemStack,
-        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration,
         final @NotNull List<String> outExtraLore
     ) {
-        return getZenchantmentsOnItemStack(itemStack, false, globalConfiguration, worldConfiguration, outExtraLore);
+        return getZenchantmentsOnItemStack(itemStack, false, worldConfiguration, outExtraLore);
     }
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @Nullable ItemStack itemStack,
         final boolean acceptBooks,
-        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
-        return getZenchantmentsOnItemStack(itemStack, acceptBooks, globalConfiguration, worldConfiguration, null);
+        return getZenchantmentsOnItemStack(itemStack, acceptBooks, worldConfiguration, null);
     }
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @Nullable ItemStack itemStack,
-        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
-        return getZenchantmentsOnItemStack(itemStack, false, globalConfiguration, worldConfiguration, null);
+        return getZenchantmentsOnItemStack(itemStack, false, worldConfiguration, null);
     }
 
     @NotNull
     public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
         final @Nullable ItemStack itemStack,
         final boolean acceptBooks,
-        final @NotNull GlobalConfiguration globalConfiguration,
         final @NotNull WorldConfiguration worldConfiguration,
         final @Nullable List<String> outExtraLore
     ) {
@@ -171,7 +165,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         for (final String key : new String[]{Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Plough.KEY}) {
             Zenchantment zenchantment = null;
 
-            for (final Zenchantment configured : globalConfiguration.getConfiguredZenchantments()) {
+            for (final Zenchantment configured : GlobalConfiguration.getConfiguredZenchantments()) {
                 if (configured.getKey().getKey().equals(key)) {
                     zenchantment = configured;
                     break;
@@ -335,28 +329,23 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
     //endregion
 
-    @Override
     @NotNull
     public final Set<Tool> getEnchantable() {
         return this.enchantable;
     }
 
-    @Override
     public final int getMaxLevel() {
         return this.maxLevel;
     }
 
-    @Override
     public final int getCooldown() {
         return this.cooldown;
     }
 
-    @Override
     public final double getPower() {
         return this.power;
     }
 
-    @Override
     public final float getProbability() {
         return this.probability;
     }

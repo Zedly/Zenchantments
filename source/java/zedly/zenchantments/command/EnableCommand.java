@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.List;
@@ -62,6 +63,6 @@ public class EnableCommand extends ZenchantmentsCommand {
     @Override
     @Nullable
     public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
-        return ZenchantmentsPlugin.getInstance().getGlobalConfiguration().getDefaultWorldConfiguration().getEnchantNames();
+        return GlobalConfiguration.getDefaultWorldConfiguration().getEnchantNames();
     }
 }

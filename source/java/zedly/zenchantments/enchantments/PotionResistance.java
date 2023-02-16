@@ -78,7 +78,6 @@ public final class PotionResistance extends Zenchantment {
             for (final ItemStack stack : ((Player) entity).getInventory().getArmorContents()) {
                 final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
                     stack,
-                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
                     ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(entity.getWorld())
                 );
 

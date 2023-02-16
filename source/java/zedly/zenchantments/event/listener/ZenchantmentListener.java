@@ -303,7 +303,6 @@ public final class ZenchantmentListener implements Listener {
             if (contents[i] != null &&
                 Zenchantment.getZenchantmentsOnItemStack(
                     contents[i],
-                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
                     ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
                 ).keySet().stream().anyMatch(e -> e instanceof Bind) // TODO: Make this search more efficient
             ) {
@@ -358,7 +357,6 @@ public final class ZenchantmentListener implements Listener {
     ) {
         Zenchantment.applyForTool(
             player,
-            this.plugin.getGlobalConfiguration(),
             this.plugin.getWorldConfigurationProvider(),
             tool,
             action
@@ -393,7 +391,6 @@ public final class ZenchantmentListener implements Listener {
 
             Zenchantment.applyForTool(
                 player,
-                plugin.getGlobalConfiguration(),
                 plugin.getWorldConfigurationProvider(),
                 itemStack,
                 (ench, level) -> {
@@ -419,7 +416,6 @@ public final class ZenchantmentListener implements Listener {
         if (hand.getType() != Material.AIR) {
             Zenchantment.applyForTool(
                 player,
-                plugin.getGlobalConfiguration(),
                 plugin.getWorldConfigurationProvider(),
                 hand,
                 (ench, level) -> {
@@ -446,7 +442,6 @@ public final class ZenchantmentListener implements Listener {
         if (offHand.getType() != Material.AIR) {
             Zenchantment.applyForTool(
                 player,
-                plugin.getGlobalConfiguration(),
                 plugin.getWorldConfigurationProvider(),
                 offHand,
                 (ench, level) -> {

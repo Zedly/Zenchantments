@@ -607,9 +607,7 @@ public final class Utilities {
                     }
 
                     if (
-                        ZenchantmentsPlugin
-                            .getInstance()
-                            .getCompatibilityAdapter()
+                        CompatibilityAdapter.instance()
                             .formBlock(possiblePlatformBlock, fill, player)
                     ) {
                         placed.put(possiblePlatformLocation, System.currentTimeMillis());

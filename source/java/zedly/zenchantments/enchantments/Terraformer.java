@@ -118,7 +118,7 @@ public final class Terraformer extends Zenchantment {
                 continue;
             }
 
-            if (ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().placeBlock(block, event.getPlayer(), material, null)) {
+            if (CompatibilityAdapter.instance().placeBlock(block, event.getPlayer(), material, null)) {
                 blocksPlaced++;
             }
         }

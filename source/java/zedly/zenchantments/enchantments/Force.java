@@ -13,10 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 
 import java.util.List;
 import java.util.Set;
@@ -128,7 +125,7 @@ public final class Force extends Zenchantment {
             vector.setY(vector.getY() > 1 ? 1 : -1);
 
             if (entity instanceof LivingEntity
-                && ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, 0)
+                && CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, player, 0)
             ) {
                 entity.setVelocity(vector);
             }

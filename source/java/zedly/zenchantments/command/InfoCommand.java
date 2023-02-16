@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.List;
@@ -50,7 +51,6 @@ public class InfoCommand extends ZenchantmentsCommand {
         final var zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             player.getInventory().getItemInMainHand(),
             true,
-            this.plugin.getGlobalConfiguration(),
             this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world)
         ).keySet();
 
@@ -74,6 +74,6 @@ public class InfoCommand extends ZenchantmentsCommand {
     @Override
     @Nullable
     public List<String> getTabCompleteOptions(final @NotNull CommandSender sender, final @NotNull String[] args) {
-        return ZenchantmentsPlugin.getInstance().getGlobalConfiguration().getDefaultWorldConfiguration().getEnchantNames();
+        return GlobalConfiguration.getDefaultWorldConfiguration().getEnchantNames();
     }
 }

@@ -23,15 +23,8 @@ public class ReloadCommand extends ZenchantmentsCommand {
             sender.sendMessage(translateString("message.no_permission"));
             return;
         }
-
-        try {
-            this.plugin.getGlobalConfiguration().loadGlobalConfiguration();
-            this.plugin.getWorldConfigurationProvider().loadWorldConfigurations();
-            sender.sendMessage(translateString("message.plugin_reloaded"));
-        } catch (final IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-            sender.sendMessage(translateString("message.plugin_reloaded_with_errors"));
-        }
+        this.plugin.getWorldConfigurationProvider().loadWorldConfigurations();
+        sender.sendMessage(translateString("message.plugin_reloaded"));
     }
 
     @Override

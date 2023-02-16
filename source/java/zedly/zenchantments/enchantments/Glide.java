@@ -123,7 +123,6 @@ public final class Glide extends Zenchantment {
 
                 final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
                     armour[i],
-                    ZenchantmentsPlugin.getInstance().getGlobalConfiguration(),
                     ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
                 );
 

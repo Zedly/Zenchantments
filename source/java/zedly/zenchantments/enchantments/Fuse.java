@@ -19,7 +19,7 @@ public final class Fuse extends Zenchantment {
     public static final String KEY = "fuse";
 
     private static final String                             NAME        = "Fuse";
-    private static final String                             DESCRIPTION = "Instantly ignites anything explosive";
+    private static final String                             DESCRIPTION = "Instantly detonates creepers";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.RIGHT;
 

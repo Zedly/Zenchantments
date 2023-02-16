@@ -6,10 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 
 import java.util.Set;
 
@@ -73,7 +70,7 @@ public final class Spikes extends Zenchantment {
         for (final Entity entity : player.getNearbyEntities(1, 2, 1)) {
             final double fall = Math.min(player.getFallDistance(), 20.0);
             if (entity instanceof LivingEntity) {
-                ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().attackEntity((LivingEntity) entity, player, this.getPower() * level * fall * 0.25);
+                CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, player, this.getPower() * level * fall * 0.25);
             }
         }
 
