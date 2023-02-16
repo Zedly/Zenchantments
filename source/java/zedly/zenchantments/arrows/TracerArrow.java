@@ -57,8 +57,9 @@ public final class TracerArrow extends ZenchantedArrow {
         if (closestEntity != null) {
             final Location targetLoc = closestEntity.getLocation();
             final Location arrowLoc = getArrow().getLocation();
-            final Vector vector = targetLoc.toVector().subtract(arrowLoc.toVector()).normalize().multiply(0.1);
-            getArrow().setVelocity(vector.multiply(2));
+            final double originalSpeed = getArrow().getVelocity().length();
+            final Vector vector = targetLoc.toVector().subtract(arrowLoc.toVector()).normalize().multiply(originalSpeed);
+            getArrow().setVelocity(vector);
         }
     }
 }
