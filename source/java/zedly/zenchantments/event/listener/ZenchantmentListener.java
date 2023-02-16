@@ -332,22 +332,28 @@ public final class ZenchantmentListener implements Listener {
     private void applyZenchantmentForArmorAndHeldItems(Player player, final @NotNull BiPredicate<Zenchantment, Integer> action) {
         final PlayerInventory inventory = player.getInventory();
         for (final ItemStack usedStack : inventory.getArmorContents()) {
+            if (usedStack != null) {
+                this.applyZenchantmentForTool(
+                    player,
+                    usedStack,
+                    action
+                );
+            }
+        }
+        if (player.getInventory().getItemInMainHand() != null) {
             this.applyZenchantmentForTool(
                 player,
-                usedStack,
+                player.getInventory().getItemInMainHand(),
                 action
             );
         }
-        this.applyZenchantmentForTool(
-            player,
-            player.getInventory().getItemInMainHand(),
-            action
-        );
-        this.applyZenchantmentForTool(
-            player,
-            player.getInventory().getItemInOffHand(),
-            action
-        );
+        if (player.getInventory().getItemInOffHand() != null) {
+            this.applyZenchantmentForTool(
+                player,
+                player.getInventory().getItemInOffHand(),
+                action
+            );
+        }
     }
 
     private void applyZenchantmentForTool(
