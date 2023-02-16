@@ -11,6 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.player.PlayerDataProvider;
@@ -72,18 +73,17 @@ public final class Laser extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, boolean usedHand) {
-        if (usedHand && !event.getPlayer().isSneaking()) {
+    public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, final EquipmentSlot slot) {
+        if (slot == EquipmentSlot.HAND && !event.getPlayer().isSneaking()) {
             this.shoot(event.getPlayer(), level);
             return true;
         }
-
         return false;
     }
 
     @Override
-    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, boolean usedHand) {
-        if (usedHand && !event.getPlayer().isSneaking()
+    public boolean onBlockInteract(@NotNull PlayerInteractEvent event, int level, final EquipmentSlot slot) {
+        if (slot == EquipmentSlot.HAND && !event.getPlayer().isSneaking()
             && (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK)
         ) {
             this.shoot(event.getPlayer(), level);

@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -23,6 +24,7 @@ import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.*;
+import zedly.zenchantments.event.listener.EnchantmentFunction;
 import zedly.zenchantments.player.PlayerData;
 import zedly.zenchantments.player.PlayerDataProvider;
 
@@ -67,12 +69,16 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     public static void applyForTool(
         final @NotNull Player player,
         final @NotNull WorldConfigurationProvider worldConfigurationProvider,
-        final @Nullable ItemStack tool,
-        final @NotNull BiPredicate<Zenchantment, Integer> action
+        final @Nullable EquipmentSlot slot,
+        final @NotNull EnchantmentFunction action
     ) {
         requireNonNull(player);
         requireNonNull(worldConfigurationProvider);
         requireNonNull(action);
+        ItemStack tool = player.getInventory().getItem(slot);
+        if(tool == null) {
+            return;
+        }
 
         final Map<Zenchantment, Integer> zenchantments = getZenchantmentsOnItemStack(
             tool,
@@ -87,7 +93,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
             if (!zenchantment.used && Utilities.playerCanUseZenchantment(player, playerData, zenchantment.getKey())) {
                 try {
                     zenchantment.used = true;
-                    if (action.test(zenchantment, level)) {
+                    if (action.run(zenchantment, level, slot)) {
                         playerData.setCooldown(zenchantment.getKey(), zenchantment.cooldown);
                     }
                 } catch (Exception ex) {
@@ -151,7 +157,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
             final Map.Entry<Zenchantment, Integer> zenchantment = getZenchantmentFromString(raw, worldConfiguration);
             if (zenchantment != null) {
                 map.put(zenchantment.getKey(), zenchantment.getValue());
-            } else {
+            } else if(!isDescription(raw, worldConfiguration)) {
                 if (outExtraLore != null) {
                     outExtraLore.add(raw);
                 }
@@ -351,87 +357,87 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     //region Enchantment Events
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onBlockInteractInteractable(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteractInteractable(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final boolean usedHand) {
+    public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onHungerChange(final @NotNull FoodLevelChangeEvent event, final int level, final boolean usedHand) {
+    public boolean onHungerChange(final @NotNull FoodLevelChangeEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final boolean usedHand) {
+    public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onPlayerDeath(final @NotNull PlayerDeathEvent event, final int level, final boolean usedHand) {
+    public boolean onPlayerDeath(final @NotNull PlayerDeathEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onScanHands(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         return false;
     }
 
-    public boolean onFastScanHands(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onFastScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         return false;
     }
     //endregion

@@ -9,6 +9,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -69,20 +70,20 @@ public final class Mow extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
-            return this.shear(event, level, usedHand);
+            return this.shear(event, level, slot);
         }
 
         return false;
     }
 
     @Override
-    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final boolean usedHand) {
-        return this.shear(event, level, usedHand);
+    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final EquipmentSlot slot) {
+        return this.shear(event, level, slot);
     }
 
-    private boolean shear(final @NotNull PlayerEvent event, final int level, final boolean usedHand) {
+    private boolean shear(final @NotNull PlayerEvent event, final int level, final EquipmentSlot slot) {
         final int radius = (int) Math.round(level * this.getPower() + 2);
         final Player player = event.getPlayer();
 
@@ -92,13 +93,13 @@ public final class Mow extends Zenchantment {
             if (entity instanceof Sheep) {
                 final Sheep sheep = (Sheep) entity;
                 if (sheep.isAdult()) {
-                    CompatibilityAdapter.instance().shearEntityNMS(sheep, player, usedHand);
+                    CompatibilityAdapter.instance().shearEntityNMS(sheep, player, slot == EquipmentSlot.HAND);
                     shearedEntity = true;
                 }
             } else if (entity instanceof MushroomCow) {
                 final MushroomCow mooshroom = (MushroomCow) entity;
                 if (mooshroom.isAdult()) {
-                    CompatibilityAdapter.instance().shearEntityNMS(mooshroom, player, usedHand);
+                    CompatibilityAdapter.instance().shearEntityNMS(mooshroom, player, slot == EquipmentSlot.HAND);
                     shearedEntity = true;
                 }
             }

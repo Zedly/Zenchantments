@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
@@ -64,7 +65,7 @@ public final class LongCast extends Zenchantment {
     }
 
     @Override
-    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final EquipmentSlot slot) {
         if (event.getEntity().getType() == EntityType.FISHING_HOOK) {
             event.getEntity().setVelocity(
                 event.getEntity()

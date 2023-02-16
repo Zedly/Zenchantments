@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +66,7 @@ public final class Weight extends Zenchantment {
     }
 
     @Override
-    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         final Player player = (Player) event.getEntity();
 
         if (!(event.getDamage() < player.getHealth())) {
@@ -101,7 +102,7 @@ public final class Weight extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         Utilities.addPotionEffect(player, INCREASE_DAMAGE, 610, (int) Math.round(this.getPower() * level));
         player.setWalkSpeed((float) (0.164f - level * this.getPower() * 0.014f));
         player.setMetadata("ze.speed", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), System.currentTimeMillis()));

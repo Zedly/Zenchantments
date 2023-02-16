@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.MultiArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
+import zedly.zenchantments.event.ZenEntityShootBowEvent;
 
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -72,27 +73,27 @@ public final class Spread extends Zenchantment {
     }
 
     @Override
-    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final boolean usedHand) {
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final EquipmentSlot slot) {
         final AbstractArrow originalArrow = (AbstractArrow) event.getEntity();
         final Player player = (Player) originalArrow.getShooter();
-        final ItemStack hand = Utilities.getUsedItemStack(requireNonNull(player), usedHand);
+        final ItemStack hand = player.getInventory().getItem(slot);
 
         final MultiArrow multiArrow = new MultiArrow(originalArrow);
         ZenchantedArrow.putArrow(originalArrow, multiArrow, player);
 
         ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(
-            new EntityShootBowEvent(
+            new ZenEntityShootBowEvent(
                 player,
                 hand,
                 null,
                 originalArrow,
-                usedHand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND,
+                slot,
                 (float) originalArrow.getVelocity().length(),
                 false
             )
         );
 
-        Utilities.damageItemStackRespectUnbreaking(player, (int) Math.round(level / 2.0 + 1), usedHand);
+        Utilities.damageItemStackRespectUnbreaking(player, (int) Math.round(level / 2.0 + 1), slot);
 
         for (int i = 0; i < (int) Math.round(this.getPower() * level * 4); i++) {
             final Vector vector = originalArrow.getVelocity();
@@ -112,12 +113,12 @@ public final class Spread extends Zenchantment {
             arrow.setKnockbackStrength(originalArrow.getKnockbackStrength());
             arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
 
-            final EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(
+            final EntityShootBowEvent entityShootBowEvent = new ZenEntityShootBowEvent(
                 player,
                 hand,
                 null,
                 arrow,
-                usedHand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND,
+                slot,
                 (float) originalArrow.getVelocity().length(),
                 false
             );

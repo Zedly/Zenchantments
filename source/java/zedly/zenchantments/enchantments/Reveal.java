@@ -7,6 +7,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -68,7 +69,7 @@ public final class Reveal extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return false;
         }
@@ -129,7 +130,7 @@ public final class Reveal extends Zenchantment {
             }
         }
 
-        Utilities.damageItemStackRespectUnbreaking(player, Math.max(16, (int) Math.round(found * 1.3)), usedHand);
+        Utilities.damageItemStackRespectUnbreaking(player, Math.max(16, (int) Math.round(found * 1.3)), slot);
         return true;
     }
 }

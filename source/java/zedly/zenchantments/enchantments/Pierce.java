@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -80,7 +81,7 @@ public final class Pierce extends Zenchantment {
     // 5 = ore
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         final Player player = event.getPlayer();
 
         if (!player.hasMetadata("ze.pierce.mode")) {
@@ -117,7 +118,7 @@ public final class Pierce extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         final Player player = event.getPlayer();
 
         if (!player.hasMetadata("ze.pierce.mode")) {

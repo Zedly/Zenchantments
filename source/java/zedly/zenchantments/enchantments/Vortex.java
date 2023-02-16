@@ -7,6 +7,7 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.VortexArrow;
@@ -72,7 +73,7 @@ public final class Vortex extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final EquipmentSlot slot) {
         final Block deathBlock = event.getEntity().getLocation().getBlock();
         final Player killer = event.getEntity().getKiller();
 
@@ -93,7 +94,7 @@ public final class Vortex extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final VortexArrow arrow = new VortexArrow((AbstractArrow) event.getProjectile());
         ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;

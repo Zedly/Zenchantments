@@ -9,6 +9,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -188,7 +189,7 @@ public final class Transformation extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return false;
         }

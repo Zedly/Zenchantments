@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -73,14 +74,14 @@ public final class Shred extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         final Block block = event.getBlock();
 
         if (!SHRED_PICKS.contains(block.getType()) && !SHRED_SHOVELS.contains(block.getType())) {
             return false;
         }
 
-        final ItemStack hand = Utilities.getUsedItemStack(event.getPlayer(), usedHand);
+        final ItemStack hand = event.getPlayer().getInventory().getItem(slot);
 
         this.shred(
             block,
@@ -92,7 +93,7 @@ public final class Shred extends Zenchantment {
             event.getPlayer(),
             ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(block.getWorld()),
             hand.getType(),
-            usedHand
+            slot
         );
 
         return true;
@@ -108,7 +109,7 @@ public final class Shred extends Zenchantment {
         final @NotNull Player player,
         final @NotNull WorldConfiguration config,
         final @NotNull Material itemType,
-        final boolean usedHand
+        final EquipmentSlot usedHand
     ) {
         if (MaterialList.AIR.contains(relativeBlock.getType()) || used.contains(relativeBlock)) {
             return;
@@ -146,8 +147,8 @@ public final class Shred extends Zenchantment {
                 Zenchantment.applyForTool(
                     player,
                     ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider(),
-                    Utilities.getUsedItemStack(player, true),
-                    (ench, level) -> ench.onBlockBreak(event, level, true)
+                    usedHand,
+                    (ench, level, slot) -> ench.onBlockBreak(event, level, slot)
                 );
 
                 if (event.isCancelled()) {

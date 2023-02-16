@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +75,7 @@ public final class Force extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         final Player player = event.getPlayer();
 
         if (!event.getPlayer().hasMetadata("ze.direction")) {

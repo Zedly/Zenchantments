@@ -3,6 +3,7 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -60,7 +61,7 @@ public final class SonicShock extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         if (!player.isGliding() || !(player.getVelocity().length() >= 1)) {
             return true;
         }

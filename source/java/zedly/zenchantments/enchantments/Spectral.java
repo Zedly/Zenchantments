@@ -8,6 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.*;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -72,13 +73,13 @@ public final class Spectral extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
-        return this.doEvent(event, usedHand);
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
+        return this.doEvent(event, slot);
     }
 
     @Override
-    public boolean onBlockInteractInteractable(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
-        return this.doEvent(event, usedHand);
+    public boolean onBlockInteractInteractable(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
+        return this.doEvent(event, slot);
     }
 
     private boolean cycleBlockType(final @NotNull Set<Block> blocks) {
@@ -376,7 +377,7 @@ public final class Spectral extends Zenchantment {
         return change;
     }
 
-    private boolean doEvent(final @NotNull PlayerInteractEvent event, final boolean usedHand) {
+    private boolean doEvent(final @NotNull PlayerInteractEvent event, final EquipmentSlot slot) {
         if (event.getClickedBlock() == null) {
             return false;
         }
@@ -412,7 +413,7 @@ public final class Spectral extends Zenchantment {
             Utilities.damageItemStackRespectUnbreaking(
                 event.getPlayer(),
                 (int) Math.ceil(Math.log(blocks.size() + 1) / Math.log(2)),
-                usedHand
+                slot
             );
         }
 

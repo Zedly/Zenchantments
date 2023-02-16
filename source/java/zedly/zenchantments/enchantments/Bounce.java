@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
@@ -66,7 +68,7 @@ public final class Bounce extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         if (player.getVelocity().getY() >= 0) {
             return false;
         }

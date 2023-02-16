@@ -172,7 +172,7 @@ public class CompatibilityAdapter {
         target.damage(damage, attacker);
         target.setLastDamageCause(damageEvent);
 
-        Utilities.damageItemStackRespectUnbreaking(attacker, 1, true);
+        Utilities.damageItemStackRespectUnbreaking(attacker, 1, EquipmentSlot.HAND);
 
         return true;
     }
@@ -180,15 +180,15 @@ public class CompatibilityAdapter {
     public boolean shearEntityNMS(
         final @NotNull Entity target,
         final @NotNull Player player,
-        final boolean mainHand
+        final boolean isUsingMainHand
     ) {
         if (target instanceof CraftSheep) {
             final EntitySheep entitySheep = ((CraftSheep) target).getHandle();
-            final EnumInteractionResult result = entitySheep.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.a : EnumHand.b);
+            final EnumInteractionResult result = entitySheep.a(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
             return result == EnumInteractionResult.a;
         } else if (target instanceof CraftMushroomCow) {
             final EntityMushroomCow entityMushroomCow = ((CraftMushroomCow) target).getHandle();
-            final EnumInteractionResult result = entityMushroomCow.a(((CraftPlayer) player).getHandle(), mainHand ? EnumHand.a : EnumHand.b);
+            final EnumInteractionResult result = entityMushroomCow.a(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
             return result == EnumInteractionResult.a;
         }
 

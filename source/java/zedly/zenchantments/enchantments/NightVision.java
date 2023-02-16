@@ -3,6 +3,7 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -62,7 +63,7 @@ public final class NightVision extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         Utilities.addPotionEffect(player, NIGHT_VISION, 610, 5);
         return true;
     }

@@ -8,6 +8,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -70,14 +71,14 @@ public final class RainbowSlam extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final EquipmentSlot slot) {
         if (!(event.getRightClicked() instanceof LivingEntity)
             || !CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
         ) {
             return false;
         }
 
-        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 9, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 9, slot);
 
         final LivingEntity entity = (LivingEntity) event.getRightClicked();
         final Location location = entity.getLocation();

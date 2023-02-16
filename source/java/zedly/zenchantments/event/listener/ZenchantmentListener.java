@@ -2,7 +2,6 @@ package zedly.zenchantments.event.listener;
 
 import org.bukkit.Bukkit;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -30,24 +29,25 @@ import zedly.zenchantments.task.Frequency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.entity.EntityType.*;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
+import static org.bukkit.inventory.EquipmentSlot.*;
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
-import static zedly.zenchantments.Tool.BOW;
+import static zedly.zenchantments.Tool.*;
 
 public final class ZenchantmentListener implements Listener {
+    private static final EquipmentSlot[] ARMOR_AND_HELD_SLOTS = new EquipmentSlot[]{HEAD, EquipmentSlot.CHEST, LEGS, FEET, HAND, OFF_HAND};
     private static final HighFrequencyRunnableCache CACHE = new HighFrequencyRunnableCache(
         ZenchantmentsPlugin.getInstance(),
         ZenchantmentListener::feedEnchCache,
         5
     );
 
-    private static final EntityType[] ENTITY_INTERACT_BAD_ENTITIES = { HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER };
+    private static final EntityType[] ENTITY_INTERACT_BAD_ENTITIES = {HORSE, ARMOR_STAND, ITEM_FRAME, VILLAGER};
 
     private final ZenchantmentsPlugin plugin;
 
@@ -65,8 +65,8 @@ public final class ZenchantmentListener implements Listener {
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, true),
-            (ench, level) -> ench.onBlockBreak(event, level, true)
+            EquipmentSlot.HAND,
+            (ench, level, slot) -> ench.onBlockBreak(event, level, slot)
         );
     }
 
@@ -80,8 +80,8 @@ public final class ZenchantmentListener implements Listener {
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, true),
-            (ench, level) -> ench.onBlockPlace(event, level, true)
+            event.getHand(),
+            (ench, level, slot) -> ench.onBlockPlace(event, level, slot)
         );
     }
 
@@ -91,11 +91,10 @@ public final class ZenchantmentListener implements Listener {
         if (event.getAction() != Action.PHYSICAL
             && (event.getClickedBlock() == null
             || !MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType()))
+            && event.getHand() == HAND
         ) {
             final Player player = event.getPlayer();
-            final boolean isMainHand = event.getHand() == EquipmentSlot.HAND;
-
-            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onBlockInteract(event, level, isMainHand));
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> ench.onBlockInteract(event, level, slot));
         }
     }
 
@@ -103,17 +102,16 @@ public final class ZenchantmentListener implements Listener {
     private void onBlockInteractInteractable(final @NotNull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null
             || MaterialList.INTERACTABLE_BLOCKS.contains(event.getClickedBlock().getType())
+            && event.getHand() == HAND
         ) {
             final Player player = event.getPlayer();
-            final boolean isMainHand = event.getHand() == EquipmentSlot.HAND;
-
-            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onBlockInteractInteractable(event, level, isMainHand));
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> ench.onBlockInteractInteractable(event, level, slot));
         }
     }
 
     @EventHandler
     private void onEntityInteract(final @NotNull PlayerInteractEntityEvent event) {
-        if (ArrayUtils.contains(ENTITY_INTERACT_BAD_ENTITIES, event.getRightClicked().getType())) {
+        if (event.getHand() == OFF_HAND || ArrayUtils.contains(ENTITY_INTERACT_BAD_ENTITIES, event.getRightClicked().getType())) {
             return;
         }
 
@@ -121,8 +119,8 @@ public final class ZenchantmentListener implements Listener {
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, true),
-            (ench, level) -> ench.onEntityInteract(event, level, true)
+            HAND,
+            (ench, level, slot) -> ench.onEntityInteract(event, level, slot)
         );
     }
 
@@ -134,18 +132,16 @@ public final class ZenchantmentListener implements Listener {
 
         final Player player = event.getEntity().getKiller();
         final PlayerInventory inventory = player.getInventory();
-        final EquipmentSlot slot = event.getEntity().getLastDamageCause().getCause() == PROJECTILE
+        final EquipmentSlot usedHand = event.getEntity().getLastDamageCause().getCause() == PROJECTILE
             && Tool.fromItemStack(inventory.getItemInOffHand()) == BOW
             && Tool.fromItemStack(inventory.getItemInMainHand()) != BOW
             ? EquipmentSlot.OFF_HAND
             : EquipmentSlot.HAND;
 
-        final boolean usedHand = slot == EquipmentSlot.HAND;
-
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand),
-            (ench, level) -> ench.onEntityKill(event, level, usedHand)
+            usedHand,
+            (ench, level, slot) -> ench.onEntityKill(event, level, slot)
         );
     }
 
@@ -159,14 +155,14 @@ public final class ZenchantmentListener implements Listener {
             final Player player = (Player) event.getDamager();
 
             if (event.getEntity() instanceof LivingEntity) {
-                applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onEntityHit(event, level, true));
+                applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> ench.onEntityHit(event, level, slot));
             }
         }
 
         if (event.getEntity() instanceof Player) {
             final Player player = (Player) event.getEntity();
             // Only check main hand for some reason.
-            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onBeingHit(event, level, true));
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> ench.onBeingHit(event, level, slot));
         }
     }
 
@@ -177,7 +173,7 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = (Player) event.getEntity();
-        applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onEntityDamage(event, level, false));
+        applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> ench.onEntityDamage(event, level, slot));
     }
 
     @EventHandler
@@ -190,8 +186,8 @@ public final class ZenchantmentListener implements Listener {
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand == EquipmentSlot.HAND),
-            (ench, level) -> ench.onPlayerFish(event, level, true)
+            usedHand,
+            (ench, level, slot) -> ench.onPlayerFish(event, level, slot)
         );
     }
 
@@ -202,13 +198,13 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = (Player) event.getEntity();
-        applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onHungerChange(event, level, true));
+        applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> ench.onHungerChange(event, level, slot));
     }
 
     @EventHandler
     private void onPlayerRespawn(PlayerRespawnEvent event) {
         Player p = event.getPlayer();
-        if(p.hasMetadata("ze.force-inv-reload")) {
+        if (p.hasMetadata("ze.force-inv-reload")) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> p.updateInventory(), 1);
             p.removeMetadata("ze.force-inv-reload", ZenchantmentsPlugin.getInstance());
         }
@@ -228,8 +224,8 @@ public final class ZenchantmentListener implements Listener {
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand == EquipmentSlot.HAND),
-            (ench, level) -> ench.onShear(event, level, true)
+            usedHand,
+            (ench, level, slot) -> ench.onShear(event, level, slot)
         );
     }
 
@@ -247,8 +243,8 @@ public final class ZenchantmentListener implements Listener {
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, usedHand == EquipmentSlot.HAND),
-            (ench, level) -> ench.onEntityShootBow(event, level, true)
+            usedHand,
+            (ench, level, slot) -> ench.onEntityShootBow(event, level, slot)
         );
     }
 
@@ -262,7 +258,7 @@ public final class ZenchantmentListener implements Listener {
             final Player player = (Player) entity;
             final AtomicBoolean apply = new AtomicBoolean(true);
 
-            applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, false), false));
+            applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> apply.get() && apply.compareAndSet(ench.onPotionSplash(event, level, slot), false));
         }
     }
 
@@ -279,12 +275,11 @@ public final class ZenchantmentListener implements Listener {
         final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
         final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
         final EquipmentSlot usedHand = main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
-        final boolean isMainHand = usedHand == EquipmentSlot.HAND;
 
         this.applyZenchantmentForTool(
             player,
-            Utilities.getUsedItemStack(player, isMainHand),
-            (ench, level) -> ench.onProjectileLaunch(event, level, isMainHand)
+            usedHand,
+            (ench, level, slot) -> ench.onProjectileLaunch(event, level, slot)
         );
     }
 
@@ -315,7 +310,7 @@ public final class ZenchantmentListener implements Listener {
 
         ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
             player.getInventory().setContents(contents);
-            player.setMetadata("ze.force-inv-reload",  new FixedMetadataValue(plugin, "Yes"));
+            player.setMetadata("ze.force-inv-reload", new FixedMetadataValue(plugin, "Yes"));
         }, 1);
     }
 
@@ -326,31 +321,16 @@ public final class ZenchantmentListener implements Listener {
         }
 
         final Player player = (Player) event.getEntity();
-        applyZenchantmentForArmorAndHeldItems(player, (ench, level) -> ench.onCombust(event, level, true));
+        applyZenchantmentForArmorAndHeldItems(player, (ench, level, slot) -> ench.onCombust(event, level, slot));
     }
 
-    private void applyZenchantmentForArmorAndHeldItems(Player player, final @NotNull BiPredicate<Zenchantment, Integer> action) {
+    private void applyZenchantmentForArmorAndHeldItems(Player player, final @NotNull EnchantmentFunction action) {
         final PlayerInventory inventory = player.getInventory();
-        for (final ItemStack usedStack : inventory.getArmorContents()) {
-            if (usedStack != null) {
-                this.applyZenchantmentForTool(
-                    player,
-                    usedStack,
-                    action
-                );
-            }
-        }
-        if (player.getInventory().getItemInMainHand() != null) {
+        for (EquipmentSlot usedSlot : ARMOR_AND_HELD_SLOTS) {
+            ItemStack usedStack = inventory.getItem(usedSlot);
             this.applyZenchantmentForTool(
                 player,
-                player.getInventory().getItemInMainHand(),
-                action
-            );
-        }
-        if (player.getInventory().getItemInOffHand() != null) {
-            this.applyZenchantmentForTool(
-                player,
-                player.getInventory().getItemInOffHand(),
+                usedSlot,
                 action
             );
         }
@@ -358,21 +338,21 @@ public final class ZenchantmentListener implements Listener {
 
     private void applyZenchantmentForTool(
         final @NotNull Player player,
-        final @NotNull ItemStack tool,
-        final @NotNull BiPredicate<Zenchantment, Integer> action
+        final @NotNull EquipmentSlot slot,
+        final @NotNull EnchantmentFunction action
     ) {
         Zenchantment.applyForTool(
             player,
             this.plugin.getWorldConfigurationProvider(),
-            tool,
+            slot,
             action
         );
     }
 
     // Fast Scan of Player's Armor and their hand to register enchantments
     @EffectTask(Frequency.HIGH)
-    public static void scanPlayers(final @NotNull ZenchantmentsPlugin plugin) {
-        for (final Player player : plugin.getServer().getOnlinePlayers()) {
+    public static void scanPlayers() {
+        for (final Player player : Bukkit.getOnlinePlayers()) {
             PlayerDataProvider.getDataForPlayer(player).tick();
         }
 
@@ -387,7 +367,8 @@ public final class ZenchantmentListener implements Listener {
         final @NotNull Consumer<Supplier<Boolean>> consumer
     ) {
         final PlayerInventory inventory = player.getInventory();
-        for (final ItemStack itemStack : inventory.getArmorContents()) {
+        for (final EquipmentSlot usedHand : ARMOR_AND_HELD_SLOTS) {
+            ItemStack itemStack = inventory.getItem(usedHand);
             // Rather than being an ItemStack of air, armor contents are null if empty.
             // We technically don't need to test this for the hand/off hand items,
             // but a NullPointerException would occur here otherwise.
@@ -398,14 +379,14 @@ public final class ZenchantmentListener implements Listener {
             Zenchantment.applyForTool(
                 player,
                 plugin.getWorldConfigurationProvider(),
-                itemStack,
-                (ench, level) -> {
+                usedHand,
+                (ench, level, slot) -> {
                     consumer.accept(() -> {
                         if (!player.isOnline()) {
                             return false;
                         }
 
-                        if (ench.onFastScan(player, level, true)) {
+                        if (ench.onFastScan(player, level, slot)) {
                             PlayerDataProvider.getDataForPlayer(player)
                                 .setCooldown(ench.getKey(), ench.getCooldown());
                         }
@@ -413,59 +394,7 @@ public final class ZenchantmentListener implements Listener {
                         return true;
                     });
 
-                    return ench.onScan(player, level, true);
-                }
-            );
-        }
-
-        final ItemStack hand = inventory.getItemInMainHand();
-        if (hand.getType() != Material.AIR) {
-            Zenchantment.applyForTool(
-                player,
-                plugin.getWorldConfigurationProvider(),
-                hand,
-                (ench, level) -> {
-                    consumer.accept(() -> {
-                        if (!player.isOnline()) {
-                            return false;
-                        }
-
-                        if (ench.onFastScanHands(player, level, true)) {
-                            PlayerDataProvider
-                                .getDataForPlayer(player)
-                                .setCooldown(ench.getKey(), ench.getCooldown());
-                        }
-
-                        return true;
-                    });
-
-                    return ench.onScanHands(player, level, true);
-                }
-            );
-        }
-
-        final ItemStack offHand = inventory.getItemInOffHand();
-        if (offHand.getType() != Material.AIR) {
-            Zenchantment.applyForTool(
-                player,
-                plugin.getWorldConfigurationProvider(),
-                offHand,
-                (ench, level) -> {
-                    consumer.accept(() -> {
-                        if (!player.isOnline()) {
-                            return false;
-                        }
-
-                        if (ench.onFastScanHands(player, level, false)) {
-                            PlayerDataProvider
-                                .getDataForPlayer(player)
-                                .setCooldown(ench.getKey(), ench.getCooldown());
-                        }
-
-                        return true;
-                    });
-
-                    return ench.onScanHands(player, level, false);
+                    return ench.onScan(player, level, slot);
                 }
             );
         }

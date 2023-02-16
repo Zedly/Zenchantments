@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
@@ -67,7 +68,7 @@ public final class Firestorm extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final FirestormArrow arrow = new FirestormArrow((AbstractArrow) event.getProjectile(), level, this.getPower());
         ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;

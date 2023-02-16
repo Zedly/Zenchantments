@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +73,7 @@ public final class Glide extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         final UUID uniqueId = player.getUniqueId();
         final Location location = player.getLocation();
 

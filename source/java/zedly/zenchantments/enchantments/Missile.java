@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.MissileArrow;
@@ -65,7 +66,7 @@ public final class Missile extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final MissileArrow arrow = new MissileArrow((AbstractArrow) event.getProjectile());
         final Player player = (Player) event.getEntity();
 
@@ -73,7 +74,7 @@ public final class Missile extends Zenchantment {
 
         event.setCancelled(true);
 
-        Utilities.damageItemStackRespectUnbreaking(player, 1, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(player, 1, slot);
         Utilities.removeMaterialsFromPlayer(player, Material.ARROW, 1);
         return true;
     }

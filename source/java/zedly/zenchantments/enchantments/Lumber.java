@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -64,7 +65,7 @@ public final class Lumber extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         if (!event.getPlayer().isSneaking()) {
             return false;
         }

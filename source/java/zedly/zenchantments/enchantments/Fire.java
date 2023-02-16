@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -85,7 +86,7 @@ public final class Fire extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE || !event.isDropItems()) {
             return false;
         }
@@ -101,7 +102,7 @@ public final class Fire extends Zenchantment {
             // in code using NMS, observe the drops, and alter the tool damage based on that.
             Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
                 AtomicInteger itemsSmelted = ITEM_DROP_REPLACEMENTS.get(block);
-                Utilities.damageItemStackRespectUnbreaking(player, itemsSmelted.get(), usedHand);
+                Utilities.damageItemStackRespectUnbreaking(player, itemsSmelted.get(), slot);
                 ITEM_DROP_REPLACEMENTS.remove(block);
             }, 1);
         }

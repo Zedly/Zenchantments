@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.v1_18_R2.util.CraftChatMessage;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
@@ -91,11 +92,11 @@ public final class Utilities {
         return Integer.MAX_VALUE;
     }
 
-    public static void damageItemStackRespectUnbreaking(final @NotNull Player player, final int damage, final boolean handUsed) {
+    public static void damageItemStackRespectUnbreaking(final @NotNull Player player, final int damage, final EquipmentSlot slot) {
         requireNonNull(player);
 
         final PlayerInventory inventory = player.getInventory();
-        final ItemStack heldItem = handUsed ? inventory.getItemInMainHand() : inventory.getItemInOffHand();
+        final ItemStack heldItem = inventory.getItem(slot);
         final int unbreakingLevel = getUnbreakingLevel(heldItem);
         int totalDamageApplied = 0;
 
@@ -105,10 +106,10 @@ public final class Utilities {
             }
         }
 
-        damageItemStackIgnoreUnbreaking(player, totalDamageApplied, handUsed);
+        damageItemStackIgnoreUnbreaking(player, totalDamageApplied, slot);
     }
 
-    public static void damageItemStackIgnoreUnbreaking(final @NotNull Player player, final int damage, final boolean handUsed) {
+    public static void damageItemStackIgnoreUnbreaking(final @NotNull Player player, final int damage, final EquipmentSlot slot) {
         requireNonNull(player);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
@@ -116,18 +117,13 @@ public final class Utilities {
         }
 
         final var inventory = player.getInventory();
-        final var heldItem = handUsed ? inventory.getItemInMainHand() : inventory.getItemInOffHand();
-
+        final ItemStack heldItem = inventory.getItem(slot);
         setItemStackDamage(heldItem, getItemStackDamage(heldItem) + damage);
 
         final var maxDurability = heldItem.getType().getMaxDurability();
         final var item = getItemStackDamage(heldItem) > maxDurability ? new ItemStack(Material.AIR) : heldItem;
 
-        if (handUsed) {
-            inventory.setItemInMainHand(item);
-        } else {
-            inventory.setItemInOffHand(item);
-        }
+        inventory.setItem(slot, item);
     }
 
     public static void displayParticle(
@@ -196,28 +192,6 @@ public final class Utilities {
         }
 
         return 0;
-    }
-
-    @NotNull
-    public static ItemStack getUsedItemStack(final @NotNull Player player, final boolean handUsed) {
-        requireNonNull(player);
-
-        return handUsed ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
-    }
-
-    public static void setItemStackInHand(
-        final @NotNull Player player,
-        final @NotNull ItemStack itemStack,
-        final boolean handUsed
-    ) {
-        requireNonNull(player);
-        requireNonNull(itemStack);
-
-        if (handUsed) {
-            player.getInventory().setItemInMainHand(itemStack);
-        } else {
-            player.getInventory().setItemInOffHand(itemStack);
-        }
     }
 
     public static boolean removeMaterialsFromPlayer(

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -76,7 +77,7 @@ public final class Stream extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         if (event.getItem() == null || event.getItem().getType() != Material.ELYTRA) {
             return false;
         }
@@ -139,7 +140,7 @@ public final class Stream extends Zenchantment {
     }
 
     @Override
-    public boolean onFastScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         if (!player.isGliding() || !(player.getVelocity().length() >= 0.5)) {
             return false;
         }

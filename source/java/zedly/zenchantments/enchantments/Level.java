@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
@@ -70,7 +71,7 @@ public final class Level extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final EquipmentSlot slot) {
         if (ThreadLocalRandom.current().nextBoolean()) {
             event.setDroppedExp((int) (event.getDroppedExp() * (1.3 + (level * this.getPower() * .5))));
             return true;
@@ -80,7 +81,7 @@ public final class Level extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         if (ThreadLocalRandom.current().nextBoolean()) {
             event.setExpToDrop((int) (event.getExpToDrop() * (1.3 + (level * this.getPower() * .5))));
             return true;
@@ -90,7 +91,7 @@ public final class Level extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         if (ThreadLocalRandom.current().nextBoolean()) {
             final LevelArrow arrow = new LevelArrow((AbstractArrow) event.getProjectile(), level, this.getPower());
             ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());

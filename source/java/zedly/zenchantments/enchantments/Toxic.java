@@ -7,6 +7,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.ToxicArrow;
@@ -76,7 +77,7 @@ public final class Toxic extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         if (event.getEntity() instanceof LivingEntity &&
             CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
@@ -105,14 +106,14 @@ public final class Toxic extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final ToxicArrow arrow = new ToxicArrow((AbstractArrow) event.getProjectile(), level, this.getPower());
         ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void hunger(final @NotNull ZenchantmentsPlugin plugin) {
+    public static void hunger() {
         final Iterator<Player> iterator = HUNGER_PLAYERS.keySet().iterator();
         while (iterator.hasNext()) {
             final Player player = iterator.next();

@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
@@ -79,7 +80,7 @@ public final class Anthropomorphism extends Zenchantment {
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
-    public static void removeOldBlocks(final @NotNull ZenchantmentsPlugin plugin) {
+    public static void removeOldBlocks() {
         Iterator<FallingBlock> iterator = IDLE_BLOCKS.keySet().iterator();
         while (iterator.hasNext()) {
             if (iterator.next().isDead()) {
@@ -96,7 +97,7 @@ public final class Anthropomorphism extends Zenchantment {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void moveBlocks(final @NotNull ZenchantmentsPlugin plugin) {
+    public static void moveBlocks() {
         // Move aggressive Anthropomorphism Blocks towards a target & attack.
         final Iterator<FallingBlock> iterator = ATTACK_BLOCKS.keySet().iterator();
         while (iterator.hasNext()) {
@@ -193,9 +194,9 @@ public final class Anthropomorphism extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         final Player player = event.getPlayer();
-        final ItemStack hand = Utilities.getUsedItemStack(player, usedHand);
+        final ItemStack hand = player.getInventory().getItem(slot);
 
         if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
             if (player.isSneaking()) {
@@ -213,7 +214,7 @@ public final class Anthropomorphism extends Zenchantment {
                 for(Material mat : ANTHRO_SOURCES) {
                     if (counter < 64 && player.getInventory().contains(mat)) {
                         Utilities.removeMaterialsFromPlayer(player, mat, 1);
-                        Utilities.damageItemStackRespectUnbreaking(player, 2, usedHand);
+                        Utilities.damageItemStackRespectUnbreaking(player, 2, slot);
 
                         final Location location = player.getLocation();
                         final FallingBlock blockEntity = requireNonNull(location.getWorld()).spawnFallingBlock(

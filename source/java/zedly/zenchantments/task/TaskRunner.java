@@ -18,7 +18,6 @@ import java.util.logging.Level;
 public class TaskRunner implements Runnable {
     private static final Set<Class<?>> TASK_CLASSES = new HashSet<>();
 
-    private final ZenchantmentsPlugin plugin;
     private final Set<Method>         tasks;
 
     static {
@@ -34,8 +33,7 @@ public class TaskRunner implements Runnable {
      * @param frequency
      *     The frequency of annotation that we'll be running.
      */
-    public TaskRunner(ZenchantmentsPlugin plugin, Frequency frequency) {
-        this.plugin = plugin;
+    public TaskRunner(Frequency frequency) {
         this.tasks = new HashSet<>();
 
         for (final Class<?> taskClass : TASK_CLASSES) {
@@ -47,14 +45,14 @@ public class TaskRunner implements Runnable {
                 }
 
                 if (!Modifier.isStatic(method.getModifiers())) {
-                    this.plugin.getLogger().warning(
+                    ZenchantmentsPlugin.getInstance().getLogger().warning(
                         "EffectTask on non-static method '" + method.getName() + "' in class '" + taskClass.getName() + "'."
                     );
                     continue;
                 }
 
-                if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != ZenchantmentsPlugin.class) {
-                    this.plugin.getLogger().warning("EffectTask method doesn't have one parameter type of ZenchantmentsPlugin.");
+                if (method.getParameterCount() != 0) {
+                    ZenchantmentsPlugin.getInstance().getLogger().warning("EffectTask method doesn't have one parameter type of ZenchantmentsPlugin.");
                     continue;
                 }
 
@@ -76,9 +74,9 @@ public class TaskRunner implements Runnable {
     public void run() {
         for (Method method : this.tasks) {
             try {
-                method.invoke(null, this.plugin);
+                method.invoke(null);
             } catch (IllegalAccessException | InvocationTargetException ex) {
-                this.plugin.getLogger().log(Level.SEVERE, "Could not invoke EffectTask '" + method.getName() + "'.", ex);
+                ZenchantmentsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not invoke EffectTask '" + method.getName() + "'.", ex);
             }
         }
     }

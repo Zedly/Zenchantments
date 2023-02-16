@@ -8,6 +8,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -73,7 +74,7 @@ public final class Harvest extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         if (event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
@@ -85,28 +86,28 @@ public final class Harvest extends Zenchantment {
         // PlayerInteractEvent means run the method, but a following BlockPlaceEvent means a block is being placed, so don't run the method after all.
         // This is why we need to schedule and possibly cancel the method. IMO this is because Bukkit-implementing servers behave inconsistently
         pendingOperations.add(event.getPlayer().getUniqueId());
-        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {delayedOperationhandler(event.getPlayer(), clickedBlock, location, level, usedHand);}, 0);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {delayedOperationhandler(event.getPlayer(), clickedBlock, location, level, slot);}, 0);
         return true;
     }
 
     @Override
-    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
         pendingOperations.remove(event.getPlayer().getUniqueId());
         return false;
     }
 
-    private void delayedOperationhandler(Player player, final Block clickedBlock, final Location location, final int level, final boolean usedHand) {
+    private void delayedOperationhandler(Player player, final Block clickedBlock, final Location location, final int level, final EquipmentSlot slot) {
         if(!pendingOperations.contains(player.getUniqueId())) {
             return;
         }
         pendingOperations.remove(player.getUniqueId());
-        performDelayed(player, clickedBlock, location, level, usedHand);
+        performDelayed(player, clickedBlock, location, level, slot);
     }
 
-    private void performDelayed(Player player, final Block clickedBlock, final Location location, final int level, final boolean usedHand) {
+    private void performDelayed(Player player, final Block clickedBlock, final Location location, final int level, final EquipmentSlot slot) {
         final int radiusXZ = (int) Math.round(this.getPower() * level + 2);
 
-        ItemStack toolUsed = Utilities.getUsedItemStack(player, usedHand);
+        ItemStack toolUsed = player.getInventory().getItem(slot);
         int numUsesAvailable = Utilities.getUsesRemainingOnTool(toolUsed);
         int unbreakingLevel = Utilities.getUnbreakingLevel(toolUsed);
         int damageApplied = 0;
@@ -174,7 +175,7 @@ public final class Harvest extends Zenchantment {
         }
 
         if(harvestedBlocks > 0) {
-            Utilities.damageItemStackIgnoreUnbreaking(player, damageApplied, usedHand);
+            Utilities.damageItemStackIgnoreUnbreaking(player, damageApplied, slot);
             // damage tool or not
         }
     }

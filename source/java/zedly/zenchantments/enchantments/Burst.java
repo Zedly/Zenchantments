@@ -71,13 +71,13 @@ public final class Burst extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         if(event instanceof ZenEntityShootBowEvent) {
             return false;
         }
 
         final Player player = (Player) event.getEntity();
-        final ItemStack itemInHand = Utilities.getUsedItemStack(player, usedHand);
+        final ItemStack itemInHand = player.getInventory().getItem(slot);
 
         boolean result = false;
 
@@ -91,7 +91,7 @@ public final class Burst extends Zenchantment {
             }
 
             result = true;
-            Utilities.setItemStackInHand(player, itemInHand, usedHand);
+            player.getInventory().setItem(slot, itemInHand);
 
             ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
                 final AbstractArrow arrow = player.getWorld().spawnArrow(
@@ -116,7 +116,7 @@ public final class Burst extends Zenchantment {
                     itemInHand,
                     event.getConsumable(),
                     arrow,
-                    usedHand ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND,
+                    slot,
                     1f,
                     false
                 );
@@ -133,7 +133,7 @@ public final class Burst extends Zenchantment {
                     arrow.setCritical(false);
                     arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                     ZenchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
-                    Utilities.damageItemStackRespectUnbreaking(player, 1, usedHand);
+                    Utilities.damageItemStackRespectUnbreaking(player, 1, slot);
                 }
             }, i * 2L);
         }

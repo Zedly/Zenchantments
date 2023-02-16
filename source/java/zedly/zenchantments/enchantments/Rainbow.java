@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -71,7 +72,7 @@ public final class Rainbow extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         final Block block = event.getBlock();
         final Material blockType = block.getType();
 
@@ -95,12 +96,12 @@ public final class Rainbow extends Zenchantment {
         block.setType(AIR);
 
         event.getPlayer().getWorld().dropItem(Utilities.getCenter(block), new ItemStack(dropMaterial, 1));
-        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, slot);
         return true;
     }
 
     @Override
-    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onShear(final @NotNull PlayerShearEntityEvent event, final int level, final EquipmentSlot slot) {
         final Sheep sheep = (Sheep) event.getEntity();
         if (sheep.isSheared()) {
             return true;
@@ -108,7 +109,7 @@ public final class Rainbow extends Zenchantment {
 
         final int count = ThreadLocalRandom.current().nextInt(3) + 1;
 
-        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, slot);
 
         sheep.setSheared(true);
         event.setCancelled(true);

@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +72,7 @@ public final class Terraformer extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         if (!event.getPlayer().isSneaking() || event.getAction() != RIGHT_CLICK_BLOCK) {
             return false;
         }
@@ -123,7 +124,7 @@ public final class Terraformer extends Zenchantment {
             }
         }
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, blocksPlaced);
-        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), blocksPlaced, usedHand);
+        Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), blocksPlaced, slot);
         return true;
     }
 }

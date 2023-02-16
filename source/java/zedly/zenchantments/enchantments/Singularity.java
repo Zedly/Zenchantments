@@ -8,6 +8,7 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
@@ -80,14 +81,14 @@ public final class Singularity extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final SingularityArrow arrow = new SingularityArrow((AbstractArrow) event.getProjectile(), level);
         ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void singularityPhysics(final @NotNull ZenchantmentsPlugin plugin) {
+    public static void singularityPhysics() {
         for (final Location location : SINGULARITIES.keySet()) {
             for (final Entity entity : requireNonNull(location.getWorld()).getNearbyEntities(location, 10, 10, 10)) {
                 if (entity instanceof Player) {

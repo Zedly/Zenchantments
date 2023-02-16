@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
@@ -67,7 +68,7 @@ public final class PotionResistance extends Zenchantment {
     }
 
     @Override
-    public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final boolean usedHand) {
+    public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final EquipmentSlot slot) {
         for (final LivingEntity entity : event.getAffectedEntities()) {
             if (!(entity instanceof Player)) {
                 continue;

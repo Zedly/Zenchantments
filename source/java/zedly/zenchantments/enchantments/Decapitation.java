@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
@@ -90,7 +91,7 @@ public final class Decapitation extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final EquipmentSlot slot) {
         final int id = ArrayUtils.indexOf(APPLICABLE_ENTITIES, event.getEntityType());
         if (id == -1) {
             return false;

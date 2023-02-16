@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
@@ -62,7 +63,7 @@ public final class Combustion extends Zenchantment {
     }
 
     @Override
-    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         final Entity entity;
 
         if (event.getDamager().getType() == EntityType.ARROW) {
@@ -80,7 +81,7 @@ public final class Combustion extends Zenchantment {
             .igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
     }
 
-    public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final EquipmentSlot slot) {
         if (CompatibilityAdapter.instance().isZombie(event.getCombuster())) {
             event.setDuration(0);
         }

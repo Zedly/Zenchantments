@@ -7,6 +7,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.StationaryArrow;
@@ -66,7 +67,7 @@ public final class Stationary extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         if (event.getEntity() instanceof LivingEntity
             && !CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
@@ -78,14 +79,14 @@ public final class Stationary extends Zenchantment {
         if (event.getDamage() < entity.getHealth()) {
             event.setCancelled(true);
             entity.damage(event.getDamage());
-            Utilities.damageItemStackRespectUnbreaking(((Player) event.getDamager()), 1, usedHand);
+            Utilities.damageItemStackRespectUnbreaking(((Player) event.getDamager()), 1, slot);
         }
 
         return true;
     }
 
     @Override
-    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final StationaryArrow arrow = new StationaryArrow((AbstractArrow) event.getProjectile());
         ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;

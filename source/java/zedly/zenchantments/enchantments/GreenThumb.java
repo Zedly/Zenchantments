@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -69,7 +70,7 @@ public final class GreenThumb extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         final Location location = player.getLocation().clone();
         final Block centerBlock = location.getBlock();
         int radiusSquare = (int) Math.round(this.getPower() * level + 2);

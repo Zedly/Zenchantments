@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.task.EffectTask;
@@ -73,7 +74,7 @@ public final class MysteryFish extends Zenchantment {
     }
 
     @Override
-    public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final boolean usedHand) {
+    public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final EquipmentSlot slot) {
         if(event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {
             return true;
         }
@@ -104,7 +105,7 @@ public final class MysteryFish extends Zenchantment {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void moveGuardians(final @NotNull ZenchantmentsPlugin plugin) {
+    public static void moveGuardians() {
         final Iterator<Entity> iterator = ENTITIES_ATTRACTED_TO_PLAYERS.keySet().iterator();
         while (iterator.hasNext()) {
             final Entity ent = iterator.next();

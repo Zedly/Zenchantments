@@ -62,7 +62,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
         for (Frequency frequency : Frequency.values()) {
             this.getServer().getScheduler().scheduleSyncRepeatingTask(
                 this,
-                new TaskRunner(this, frequency),
+                new TaskRunner(frequency),
                 1,
                 frequency.getPeriod()
             );

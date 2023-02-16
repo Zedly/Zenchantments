@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.task.EffectTask;
@@ -71,7 +72,7 @@ public final class NetherStep extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         if (player.isSneaking() && player.getLocation().getBlock().getType() == LAVA && !player.isFlying()) {
             player.setVelocity(player.getVelocity().setY(.4));
         }
@@ -85,7 +86,7 @@ public final class NetherStep extends Zenchantment {
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
-    public static void updateBlocks(final @NotNull ZenchantmentsPlugin plugin) {
+    public static void updateBlocks() {
         Iterator<Location> iterator = NETHERSTEP_LOCATIONS.keySet().iterator();
         while (iterator.hasNext()) {
             final Location location = iterator.next();

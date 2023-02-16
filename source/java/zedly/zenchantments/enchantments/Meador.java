@@ -3,6 +3,7 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -63,7 +64,7 @@ public final class Meador extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         //final float speed = (float) Math.min(0.5f + level * this.getPower() * 0.05f, 1);
         final float speed = (float) Math.min((0.2f * this.getPower()) + 0.2f, 1);
 

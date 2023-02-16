@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -69,7 +70,7 @@ public final class Gluttony extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         for (int i = 0; i < GLUTTONY_FOODS.size(); i++) {
             final Material foodMaterial = GLUTTONY_FOODS.get(i).getLeft();
             final int foodLevel = GLUTTONY_FOODS.get(i).getMiddle();

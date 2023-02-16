@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -66,7 +67,7 @@ public final class Variety extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final boolean usedHand) {
+    public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         final Block block = event.getBlock();
         final Material material = block.getType();
 
@@ -77,14 +78,14 @@ public final class Variety extends Zenchantment {
                 new ItemStack(LOGS.getRandom())
             );
 
-            Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, usedHand);
+            Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, slot);
         } else if (LEAVES.contains(material)) {
             block.setType(AIR);
             block.getWorld().dropItemNaturally(
                 block.getLocation(),
                 new ItemStack(LEAVES.getRandom())
             );
-            Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, usedHand);
+            Utilities.damageItemStackRespectUnbreaking(event.getPlayer(), 1, slot);
         }
 
         return true;

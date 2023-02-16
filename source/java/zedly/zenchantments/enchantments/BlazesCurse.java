@@ -11,13 +11,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-import static org.bukkit.Material.*;
 import static org.bukkit.block.Biome.*;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
@@ -88,7 +88,7 @@ public final class BlazesCurse extends Zenchantment {
     }
 
     @Override
-    public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final boolean usedHand) {
+    public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final EquipmentSlot slot) {
         if (event.getCause() == LAVA || event.getCause() == FIRE || event.getCause() == FIRE_TICK || event.getCause() == HOT_FLOOR) {
             event.setCancelled(true);
             return true;
@@ -98,7 +98,7 @@ public final class BlazesCurse extends Zenchantment {
     }
 
     @Override
-    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final boolean usedHand) {
+    public boolean onBeingHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         if (event.getDamager().getType() == EntityType.FIREBALL || event.getDamager().getType() == EntityType.SMALL_FIREBALL) {
             event.setDamage(0);
             return true;
@@ -108,7 +108,7 @@ public final class BlazesCurse extends Zenchantment {
     }
 
     @Override
-    public boolean onScan(final @NotNull Player player, final int level, final boolean usedHand) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         final Block block = player.getLocation().getBlock();
         Material material = block.getType();
 
