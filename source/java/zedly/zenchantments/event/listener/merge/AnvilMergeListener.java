@@ -1,5 +1,6 @@
 package zedly.zenchantments.event.listener.merge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -69,8 +70,8 @@ public class AnvilMergeListener implements Listener {
         final ItemStack item1 = anvilInv.getItem(1);
         handlePossibleEnchantedBook(item1);
 
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-            final ItemStack stack = this.doMerge(
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+            final ItemStack stack = doMerge(
                 item0,
                 item1,
                 anvilInv.getItem(2),
@@ -98,7 +99,7 @@ public class AnvilMergeListener implements Listener {
 
     @Nullable
     @Contract("null, _, _, _ -> null; _, null, _, _ -> null; _, _, null, _ -> null")
-    private ItemStack doMerge(
+    private static ItemStack doMerge(
         final @Nullable ItemStack leftItem,
         final @Nullable ItemStack rightItem,
         final @Nullable ItemStack oldOutItem,
