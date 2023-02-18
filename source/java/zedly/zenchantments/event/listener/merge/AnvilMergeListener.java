@@ -1,6 +1,7 @@
 package zedly.zenchantments.event.listener.merge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import zedly.zenchantments.CompatibilityAdapter;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
@@ -64,22 +66,14 @@ public class AnvilMergeListener implements Listener {
 
         final AnvilInventory anvilInv = event.getInventory();
 
-        final ItemStack item0 = anvilInv.getItem(0);
-        handlePossibleEnchantedBook(item0);
-
-        final ItemStack item1 = anvilInv.getItem(1);
-        handlePossibleEnchantedBook(item1);
+        final ItemStack stack = doMerge(
+            anvilInv,
+            this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(
+                event.getViewers().get(0).getWorld()
+            )
+        );
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-            final ItemStack stack = doMerge(
-                item0,
-                item1,
-                anvilInv.getItem(2),
-                this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(
-                    event.getViewers().get(0).getWorld()
-                )
-            );
-
             if (stack != null) {
                 anvilInv.setItem(2, stack);
             }
@@ -98,23 +92,25 @@ public class AnvilMergeListener implements Listener {
     }
 
     @Nullable
-    @Contract("null, _, _, _ -> null; _, null, _, _ -> null; _, _, null, _ -> null")
     private static ItemStack doMerge(
-        final @Nullable ItemStack leftItem,
-        final @Nullable ItemStack rightItem,
-        final @Nullable ItemStack oldOutItem,
+        AnvilInventory anvilInv,
         final @NotNull WorldConfiguration worldConfiguration
     ) {
-        if (leftItem == null || rightItem == null || oldOutItem == null) {
+        final ItemStack leftItem = anvilInv.getItem(0);
+        final ItemStack rightItem = anvilInv.getItem(1);
+        ItemStack oldOutItem = anvilInv.getItem(2);
+
+        if (leftItem == null || rightItem == null) {
             return null;
         }
 
-        if (leftItem.getType() == AIR || rightItem.getType() == AIR || oldOutItem.getType() == AIR) {
+        if (leftItem.getType() == AIR || rightItem.getType() == AIR) {
             return null;
         }
 
-        if (!oldOutItem.hasItemMeta()) {
-            return null;
+        if((oldOutItem == null || oldOutItem.getType() == AIR) && rightItem != null && rightItem.getType() == ENCHANTED_BOOK) {
+            oldOutItem = leftItem.clone();
+            anvilInv.setRepairCost(42);
         }
 
         final List<String> normalLeftLore = new ArrayList<>();
@@ -130,6 +126,7 @@ public class AnvilMergeListener implements Listener {
             worldConfiguration
         );
 
+        /*
         final boolean isBookLeft = leftItem.getType() == ENCHANTED_BOOK;
         final boolean isBookRight = rightItem.getType() == ENCHANTED_BOOK;
 
@@ -142,6 +139,7 @@ public class AnvilMergeListener implements Listener {
 
         final int leftUnbreakingLevel = leftEnchantment.getOrDefault(DURABILITY, -1);
         final int rightUnbreakingLevel = rightEnchantment.getOrDefault(DURABILITY, -1);
+        */
 
         for (final Zenchantment enchantment : leftEnchantments.keySet()) {
             if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
@@ -155,16 +153,12 @@ public class AnvilMergeListener implements Listener {
             }
         }
 
-        if (leftEnchantments.isEmpty() && rightEnchantments.isEmpty()) {
-            return oldOutItem;
-        }
-
         final EnchantmentPool pool = new EnchantmentPool(oldOutItem, worldConfiguration.getMaxZenchantments());
         pool.addAll(leftEnchantments);
 
         final List<Entry<Zenchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());
         Collections.shuffle(rightEnchantmentList);
-        pool.addAll(rightEnchantmentList);
+        boolean anyZenchantmentsAdded = pool.addAll(rightEnchantmentList);
 
         final Map<Zenchantment, Integer> outEnchantments = pool.getEnchantmentMap();
         final ItemStack newOutItem = new ItemStack(oldOutItem);
@@ -181,8 +175,8 @@ public class AnvilMergeListener implements Listener {
         final List<String> outLore = newOutMeta.hasLore() ? requireNonNull(newOutMeta.getLore()) : new ArrayList<>();
         outLore.addAll(normalLeftLore);
 
-        if (leftUnbreakingLevel * rightUnbreakingLevel == 0
-            && leftUnbreakingLevel < 1
+        /*
+        if (leftUnbreakingLevel < 1
             && rightUnbreakingLevel < 1
         ) {
             if (oldOutItem.getType() == ENCHANTED_BOOK) {
@@ -193,19 +187,24 @@ public class AnvilMergeListener implements Listener {
 
             newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
+        */
 
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
-
         Zenchantment.updateEnchantmentGlowForItemStack(newOutItem, !outEnchantments.isEmpty(), worldConfiguration);
 
+        if(oldOutItem == null || oldOutItem.getType() == AIR) {
+            if(anyZenchantmentsAdded) {
+                return leftItem;
+            }
+        }
         return newOutItem;
     }
 
     private static class EnchantmentPool {
         private final Map<Zenchantment, Integer> enchantmentPool = new HashMap<>();
-        private final ItemStack                  itemStack;
-        private final int                        maxCapacity;
+        private final ItemStack itemStack;
+        private final int maxCapacity;
 
         public EnchantmentPool(final @NotNull ItemStack itemStack, final int maxCapacity) {
             this.itemStack = itemStack;
@@ -213,28 +212,30 @@ public class AnvilMergeListener implements Listener {
         }
 
         @Contract(mutates = "this")
-        public void addAll(final @NotNull Map<Zenchantment, Integer> enchantsToAdd) {
-            this.addAll(enchantsToAdd.entrySet());
+        public boolean addAll(final @NotNull Map<Zenchantment, Integer> enchantsToAdd) {
+            return this.addAll(enchantsToAdd.entrySet());
         }
 
         @Contract(mutates = "this")
-        public void addAll(final @NotNull Collection<Entry<Zenchantment, Integer>> enchantsToAdd) {
+        public boolean addAll(final @NotNull Collection<Entry<Zenchantment, Integer>> enchantsToAdd) {
+            boolean anyAdded = false;
             for (final Entry<Zenchantment, Integer> enchantEntry : enchantsToAdd) {
-                this.addEnchant(enchantEntry);
+                anyAdded |= this.addEnchant(enchantEntry);
             }
+            return anyAdded;
         }
 
         @Contract(mutates = "this")
-        private void addEnchant(final @NotNull Entry<Zenchantment, Integer> enchantEntry) {
+        private boolean addEnchant(final @NotNull Entry<Zenchantment, Integer> enchantEntry) {
             final Zenchantment zenchantment = enchantEntry.getKey();
 
             if (this.itemStack.getType() != ENCHANTED_BOOK && !zenchantment.isValidMaterial(this.itemStack)) {
-                return;
+                return false;
             }
 
             for (final Zenchantment enchantment : this.enchantmentPool.keySet()) {
                 if (zenchantment.getConflicting().contains(enchantment.getClass())) {
-                    return;
+                    return false;
                 }
             }
 
@@ -244,12 +245,16 @@ public class AnvilMergeListener implements Listener {
 
                 if (leftLevel == rightLevel && leftLevel < zenchantment.getMaxLevel()) {
                     this.enchantmentPool.put(zenchantment, leftLevel + 1);
+                    return true;
                 } else if (rightLevel > leftLevel) {
                     this.enchantmentPool.put(zenchantment, rightLevel);
+                    return true;
                 }
             } else if (this.enchantmentPool.size() < this.maxCapacity) {
                 this.enchantmentPool.put(zenchantment, enchantEntry.getValue());
+                return true;
             }
+            return false;
         }
 
         @NotNull
