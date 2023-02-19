@@ -427,20 +427,6 @@ public final class MaterialList extends AbstractList<Material> {
 
     public static final MaterialList GROWN_CROP_BLOCKS = new MaterialList(MELON, PUMPKIN);
 
-    public static final MaterialList TRUNKS = new MaterialList(
-        new Material[] {
-            MUSHROOM_STEM,
-            BROWN_MUSHROOM_BLOCK,
-            RED_MUSHROOM_BLOCK,
-            CHORUS_PLANT,
-            Material.CACTUS
-        },
-        LOGS,
-        WOOD,
-        STRIPPED_WOOD,
-        STRIPPED_LOGS
-    );
-
     public static final MaterialList CORAL_BLOCKS = new MaterialList(
         BRAIN_CORAL_BLOCK,
         BUBBLE_CORAL_BLOCK,
@@ -516,6 +502,20 @@ public final class MaterialList extends AbstractList<Material> {
 
     public static final MaterialList TRAPDOORS = new MaterialList(new Material[] { IRON_TRAPDOOR }, WOODEN_TRAPDOORS);
 
+    public static final MaterialList TRUNKS = new MaterialList(
+        new Material[]{
+            MUSHROOM_STEM,
+            BROWN_MUSHROOM_BLOCK,
+            RED_MUSHROOM_BLOCK,
+            Material.CACTUS
+        },
+        CHORUS_PLANTS,
+        LOGS,
+        WOOD,
+        STRIPPED_WOOD,
+        STRIPPED_LOGS
+    );
+
     public static final MaterialList PRESSURE_PLATES = new MaterialList(
         new Material[] {
             STONE_PRESSURE_PLATE,
@@ -533,19 +533,7 @@ public final class MaterialList extends AbstractList<Material> {
         REPEATING_COMMAND_BLOCK
     );
 
-    public static final MaterialList ORES = new MaterialList(
-        COAL_ORE,
-        REDSTONE_ORE,
-        DIAMOND_ORE,
-        GOLD_ORE,
-        IRON_ORE,
-        COPPER_ORE,
-        LAPIS_ORE,
-        GLOWSTONE,
-        NETHER_QUARTZ_ORE,
-        EMERALD_ORE,
-        NETHER_GOLD_ORE,
-        ANCIENT_DEBRIS,
+    public static final MaterialList DEEPSLATE_ORES = new MaterialList(
         DEEPSLATE_COAL_ORE,
         DEEPSLATE_REDSTONE_ORE,
         DEEPSLATE_IRON_ORE,
@@ -553,6 +541,26 @@ public final class MaterialList extends AbstractList<Material> {
         DEEPSLATE_COPPER_ORE,
         DEEPSLATE_DIAMOND_ORE,
         DEEPSLATE_LAPIS_ORE
+    );
+
+    public static final MaterialList NETHER_ORES = new MaterialList(
+        GLOWSTONE,
+        NETHER_QUARTZ_ORE,
+        NETHER_GOLD_ORE,
+        ANCIENT_DEBRIS
+    );
+
+    public static final MaterialList ORES = new MaterialList(
+        new Material[]{COAL_ORE,
+            REDSTONE_ORE,
+            DIAMOND_ORE,
+            GOLD_ORE,
+            IRON_ORE,
+            COPPER_ORE,
+            LAPIS_ORE,
+            EMERALD_ORE},
+        DEEPSLATE_ORES,
+        NETHER_ORES
     );
 
     public static final MaterialList SANDS = new MaterialList(Material.SAND, RED_SAND);
@@ -841,27 +849,30 @@ public final class MaterialList extends AbstractList<Material> {
     );
 
     public static final HashMap<Material, Tuple<Material, Double>> FIRE_SMELT_MAP = new HashMap<>();
+
     static {
-        FIRE_SMELT_MAP.put(STONE,                       new Tuple<Material, Double>(STONE,                   0.1));
-        FIRE_SMELT_MAP.put(DIORITE,                     new Tuple<Material, Double>(POLISHED_DIORITE,        0.1));
-        FIRE_SMELT_MAP.put(ANDESITE,                    new Tuple<Material, Double>(POLISHED_ANDESITE,       0.1));
-        FIRE_SMELT_MAP.put(GRANITE,                     new Tuple<Material, Double>(POLISHED_GRANITE,        0.1));
-        FIRE_SMELT_MAP.put(COBBLESTONE,                 new Tuple<Material, Double>(STONE,                   0.5));
-        FIRE_SMELT_MAP.put(COBBLED_DEEPSLATE,           new Tuple<Material, Double>(DEEPSLATE,               0.1));
-        FIRE_SMELT_MAP.put(Material.SANDSTONE,          new Tuple<Material, Double>(SMOOTH_SANDSTONE,        0.1));
-        FIRE_SMELT_MAP.put(RED_SANDSTONE,               new Tuple<Material, Double>(SMOOTH_RED_SANDSTONE,    0.1));
-        FIRE_SMELT_MAP.put(BASALT,                      new Tuple<Material, Double>(SMOOTH_BASALT,           0.1));
-        FIRE_SMELT_MAP.put(NETHERRACK,                  new Tuple<Material, Double>(NETHER_BRICK,            0.1));
-        FIRE_SMELT_MAP.put(RAW_IRON,                    new Tuple<Material, Double>(IRON_INGOT,              0.7));
-        FIRE_SMELT_MAP.put(RAW_GOLD,                    new Tuple<Material, Double>(GOLD_INGOT,              1.0));
-        FIRE_SMELT_MAP.put(RAW_COPPER,                  new Tuple<Material, Double>(COPPER_INGOT,            0.7));
-        FIRE_SMELT_MAP.put(ANCIENT_DEBRIS,              new Tuple<Material, Double>(NETHERITE_SCRAP,         2.0));
-        FIRE_SMELT_MAP.put(QUARTZ_BLOCK,                new Tuple<Material, Double>(SMOOTH_QUARTZ,           0.1));
-        FIRE_SMELT_MAP.put(CLAY_BALL,                   new Tuple<Material, Double>(BRICK,                   0.3));
-        FIRE_SMELT_MAP.put(CLAY,                        new Tuple<Material, Double>(Material.TERRACOTTA,     0.35));
-        FIRE_SMELT_MAP.put(Material.CACTUS,             new Tuple<Material, Double>(GREEN_DYE,               1.0));
-        FIRE_SMELT_MAP.put(CHORUS_FRUIT,                new Tuple<Material, Double>(POPPED_CHORUS_FRUIT,     0.1));
-        LOGS.stream().forEach((m) -> {FIRE_SMELT_MAP.put(m, new Tuple<Material, Double>(CHARCOAL,            0.15));});
+        FIRE_SMELT_MAP.put(STONE, new Tuple<Material, Double>(STONE, 0.1));
+        FIRE_SMELT_MAP.put(DIORITE, new Tuple<Material, Double>(POLISHED_DIORITE, 0.1));
+        FIRE_SMELT_MAP.put(ANDESITE, new Tuple<Material, Double>(POLISHED_ANDESITE, 0.1));
+        FIRE_SMELT_MAP.put(GRANITE, new Tuple<Material, Double>(POLISHED_GRANITE, 0.1));
+        FIRE_SMELT_MAP.put(COBBLESTONE, new Tuple<Material, Double>(STONE, 0.5));
+        FIRE_SMELT_MAP.put(COBBLED_DEEPSLATE, new Tuple<Material, Double>(DEEPSLATE, 0.1));
+        FIRE_SMELT_MAP.put(Material.SANDSTONE, new Tuple<Material, Double>(SMOOTH_SANDSTONE, 0.1));
+        FIRE_SMELT_MAP.put(RED_SANDSTONE, new Tuple<Material, Double>(SMOOTH_RED_SANDSTONE, 0.1));
+        FIRE_SMELT_MAP.put(BASALT, new Tuple<Material, Double>(SMOOTH_BASALT, 0.1));
+        FIRE_SMELT_MAP.put(NETHERRACK, new Tuple<Material, Double>(NETHER_BRICK, 0.1));
+        FIRE_SMELT_MAP.put(RAW_IRON, new Tuple<Material, Double>(IRON_INGOT, 0.7));
+        FIRE_SMELT_MAP.put(RAW_GOLD, new Tuple<Material, Double>(GOLD_INGOT, 1.0));
+        FIRE_SMELT_MAP.put(RAW_COPPER, new Tuple<Material, Double>(COPPER_INGOT, 0.7));
+        FIRE_SMELT_MAP.put(ANCIENT_DEBRIS, new Tuple<Material, Double>(NETHERITE_SCRAP, 2.0));
+        FIRE_SMELT_MAP.put(QUARTZ_BLOCK, new Tuple<Material, Double>(SMOOTH_QUARTZ, 0.1));
+        FIRE_SMELT_MAP.put(CLAY_BALL, new Tuple<Material, Double>(BRICK, 0.3));
+        FIRE_SMELT_MAP.put(CLAY, new Tuple<Material, Double>(Material.TERRACOTTA, 0.35));
+        FIRE_SMELT_MAP.put(Material.CACTUS, new Tuple<Material, Double>(GREEN_DYE, 1.0));
+        FIRE_SMELT_MAP.put(CHORUS_FRUIT, new Tuple<Material, Double>(POPPED_CHORUS_FRUIT, 0.1));
+        LOGS.stream().forEach((m) -> {
+            FIRE_SMELT_MAP.put(m, new Tuple<Material, Double>(CHARCOAL, 0.15));
+        });
     }
 
     public static final MaterialList SHRED_PICKS = new MaterialList(
