@@ -1,15 +1,18 @@
 package zedly.zenchantments.event.listener.merge;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -33,6 +36,7 @@ import static org.bukkit.enchantments.Enchantment.DURABILITY;
 
 public class AnvilMergeListener implements Listener {
     private final ZenchantmentsPlugin plugin;
+    private final HashSet<AnvilInventory> UNSTABLE_ANVIL_INVS = new HashSet<>();
 
     public AnvilMergeListener(final @NotNull ZenchantmentsPlugin plugin) {
         this.plugin = plugin;
@@ -41,6 +45,17 @@ public class AnvilMergeListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     private void onClick(final @NotNull InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.ANVIL || !event.getClick().isLeftClick()) {
+            return;
+        }
+
+        // Prevent user from taking an intermediate output item with Unbreaking I that results from adding Unbreaking 0
+        if(event.getSlotType() == InventoryType.SlotType.RESULT && UNSTABLE_ANVIL_INVS.contains(event.getInventory())) {
+            event.setCancelled(true);
+            // Address another bug that results from fixing the Unbreaking I bug which
+            // falsely displays a lower XP level for the player who attempted to extract the temporary item
+            if(event.getWhoClicked() instanceof Player player) {
+                player.setLevel(player.getLevel());
+            }
             return;
         }
 
@@ -65,30 +80,59 @@ public class AnvilMergeListener implements Listener {
         }
 
         final AnvilInventory anvilInv = event.getInventory();
+        UNSTABLE_ANVIL_INVS.add(anvilInv);
 
-        final ItemStack stack = doMerge(
-            anvilInv,
-            this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(
-                event.getViewers().get(0).getWorld()
-            )
-        );
+        // Apply unbreaking 0 if necessary
+        ItemStack rightItem = anvilInv.getItem(1);
+        if (handlePossibleEnchantedBook(rightItem)) {
+            anvilInv.setItem(1, rightItem);
+        }
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+            final ItemStack stack = doMerge(
+                anvilInv,
+                this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(
+                    event.getViewers().get(0).getWorld()
+                )
+            );
             if (stack != null) {
                 anvilInv.setItem(2, stack);
             }
+            UNSTABLE_ANVIL_INVS.remove(anvilInv);
         }, 0);
     }
 
-    private void handlePossibleEnchantedBook(final @Nullable ItemStack item) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    private void onClose(final @NotNull InventoryCloseEvent event) {
+        if (event.getInventory().getType() != InventoryType.ANVIL) {
+            return;
+        }
+        AnvilInventory inv = (AnvilInventory) event.getInventory();
+        ItemStack rightItem = inv.getItem(1);
+        if (rightItem == null || rightItem.getType() != ENCHANTED_BOOK) {
+            return;
+        }
+        final EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) rightItem.getItemMeta();
+        if (requireNonNull(bookMeta).getStoredEnchants().containsKey(DURABILITY)
+            && bookMeta.getStoredEnchants().get(DURABILITY) == 0
+        ) {
+            bookMeta.removeStoredEnchant(DURABILITY);
+            rightItem.setItemMeta(bookMeta);
+        }
+    }
+
+
+    private static boolean handlePossibleEnchantedBook(final @Nullable ItemStack item) {
         if (item != null && item.getType() == ENCHANTED_BOOK) {
             final EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) item.getItemMeta();
 
             if (!requireNonNull(bookMeta).getStoredEnchants().containsKey(DURABILITY)) {
                 bookMeta.addStoredEnchant(DURABILITY, 0, true);
                 item.setItemMeta(bookMeta);
+                return true;
             }
         }
+        return false;
     }
 
     @Nullable
@@ -99,64 +143,58 @@ public class AnvilMergeListener implements Listener {
         final ItemStack leftItem = anvilInv.getItem(0);
         final ItemStack rightItem = anvilInv.getItem(1);
         ItemStack oldOutItem = anvilInv.getItem(2);
-
-        if (leftItem == null || rightItem == null) {
+        if (leftItem == null || rightItem == null || oldOutItem == null) {
+            return null;
+        }
+        if (leftItem.getType() == AIR || rightItem.getType() == AIR || oldOutItem.getType() == AIR) {
+            return null;
+        }
+        if (!oldOutItem.hasItemMeta()) {
             return null;
         }
 
-        if (leftItem.getType() == AIR || rightItem.getType() == AIR) {
-            return null;
-        }
 
-        if((oldOutItem == null || oldOutItem.getType() == AIR) && rightItem != null && rightItem.getType() == ENCHANTED_BOOK) {
-            oldOutItem = leftItem.clone();
-            anvilInv.setRepairCost(42);
-        }
-
-        final List<String> normalLeftLore = new ArrayList<>();
-        final Map<Zenchantment, Integer> leftEnchantments = Zenchantment.getZenchantmentsOnItemStack(
+        final List<String> leftNonEnchantLore = new ArrayList<>();
+        final Map<Zenchantment, Integer> leftZenchantments = Zenchantment.getZenchantmentsOnItemStack(
             leftItem,
             true,
             worldConfiguration,
-            normalLeftLore
+            leftNonEnchantLore
         );
-        final Map<Zenchantment, Integer> rightEnchantments = Zenchantment.getZenchantmentsOnItemStack(
+        final Map<Zenchantment, Integer> rightZenchantments = Zenchantment.getZenchantmentsOnItemStack(
             rightItem,
             true,
             worldConfiguration
         );
 
-        /*
+        for (final Zenchantment enchantment : leftZenchantments.keySet()) {
+            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
+                return new ItemStack(AIR);
+            }
+        }
+        for (final Zenchantment enchantment : rightZenchantments.keySet()) {
+            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
+                return new ItemStack(AIR);
+            }
+        }
+
         final boolean isBookLeft = leftItem.getType() == ENCHANTED_BOOK;
         final boolean isBookRight = rightItem.getType() == ENCHANTED_BOOK;
 
-        final Map<Enchantment, Integer> leftEnchantment = isBookLeft
+        final Map<Enchantment, Integer> leftVanillaEnchantments = isBookLeft
             ? ((EnchantmentStorageMeta) requireNonNull(leftItem.getItemMeta())).getStoredEnchants()
             : leftItem.getEnchantments();
-        final Map<Enchantment, Integer> rightEnchantment = isBookRight
+        final Map<Enchantment, Integer> rightVanillaEnchantments = isBookRight
             ? ((EnchantmentStorageMeta) requireNonNull(rightItem.getItemMeta())).getStoredEnchants()
             : rightItem.getEnchantments();
 
-        final int leftUnbreakingLevel = leftEnchantment.getOrDefault(DURABILITY, -1);
-        final int rightUnbreakingLevel = rightEnchantment.getOrDefault(DURABILITY, -1);
-        */
-
-        for (final Zenchantment enchantment : leftEnchantments.keySet()) {
-            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
-                return new ItemStack(AIR);
-            }
-        }
-
-        for (final Zenchantment enchantment : rightEnchantments.keySet()) {
-            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
-                return new ItemStack(AIR);
-            }
-        }
+        final int leftUnbreakingLevel = leftVanillaEnchantments.getOrDefault(DURABILITY, -1);
+        final int rightUnbreakingLevel = rightVanillaEnchantments.getOrDefault(DURABILITY, -1);
 
         final EnchantmentPool pool = new EnchantmentPool(oldOutItem, worldConfiguration.getMaxZenchantments());
-        pool.addAll(leftEnchantments);
+        pool.addAll(leftZenchantments);
 
-        final List<Entry<Zenchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightEnchantments.entrySet());
+        final List<Entry<Zenchantment, Integer>> rightEnchantmentList = new ArrayList<>(rightZenchantments.entrySet());
         Collections.shuffle(rightEnchantmentList);
         boolean anyZenchantmentsAdded = pool.addAll(rightEnchantmentList);
 
@@ -173,9 +211,8 @@ public class AnvilMergeListener implements Listener {
 
         final ItemMeta newOutMeta = requireNonNull(newOutItem.getItemMeta());
         final List<String> outLore = newOutMeta.hasLore() ? requireNonNull(newOutMeta.getLore()) : new ArrayList<>();
-        outLore.addAll(normalLeftLore);
+        outLore.addAll(leftNonEnchantLore);
 
-        /*
         if (leftUnbreakingLevel < 1
             && rightUnbreakingLevel < 1
         ) {
@@ -184,20 +221,19 @@ public class AnvilMergeListener implements Listener {
             } else {
                 newOutMeta.removeEnchant(DURABILITY);
             }
-
             newOutMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
-        */
+
+        if (rightItem.getType() == ENCHANTED_BOOK && !anyZenchantmentsAdded) {
+            Map<Enchantment, Integer> prematureEnchants = CompatibilityAdapter.instance().getPrematureEnchantments(newOutMeta);
+            if (prematureEnchants == null || prematureEnchants.equals(leftVanillaEnchantments)) {
+                return new ItemStack(AIR);
+            }
+        }
 
         newOutMeta.setLore(outLore);
         newOutItem.setItemMeta(newOutMeta);
         Zenchantment.updateEnchantmentGlowForItemStack(newOutItem, !outEnchantments.isEmpty(), worldConfiguration);
-
-        if(oldOutItem == null || oldOutItem.getType() == AIR) {
-            if(anyZenchantmentsAdded) {
-                return leftItem;
-            }
-        }
         return newOutItem;
     }
 
