@@ -4,8 +4,10 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
@@ -49,7 +51,18 @@ public class ZenchantedArrow {
         final @NotNull ZenchantedArrow zenchantedArrow,
         final @NotNull Player player
     ) {
-        arrow.setMetadata(ARROW_METADATA_NAME, new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), zenchantedArrow));
+        List<ZenchantedArrow> arrowMeta;
+        if(arrow.hasMetadata(ARROW_METADATA_NAME)) {
+            MetadataValue m = arrow.getMetadata(ARROW_METADATA_NAME).get(0);
+            if(m.getOwningPlugin() != ZenchantmentsPlugin.getInstance()) {
+                return;
+            }
+            arrowMeta = (List<ZenchantedArrow>) m.value();
+        } else {
+            arrowMeta = new LinkedList<>();
+        }
+        arrowMeta.add(zenchantedArrow);
+        arrow.setMetadata(ARROW_METADATA_NAME, new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), arrowMeta));
         ZENCHANTED_ARROWS.add(zenchantedArrow);
         zenchantedArrow.onLaunch(player, null);
     }
@@ -111,7 +124,7 @@ public class ZenchantedArrow {
     }
 
     @EffectTask(Frequency.HIGH)
-    public static void doTick(final @NotNull ZenchantmentsPlugin plugin) {
+    public static void doTick() {
         Iterator<ZenchantedArrow> it = ZENCHANTED_ARROWS.iterator();
         while(it.hasNext()) {
             ZenchantedArrow arrow = it.next();

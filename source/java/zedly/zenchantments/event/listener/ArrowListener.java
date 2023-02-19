@@ -23,6 +23,10 @@ public class ArrowListener implements Listener {
             return;
         }
 
+        if(event.getHitBlock() == null) {
+            return;
+        }
+
         final AbstractArrow damager = (AbstractArrow) event.getEntity();
 
         if (!damager.hasMetadata(ZenchantedArrow.ARROW_METADATA_NAME)) {
@@ -30,8 +34,9 @@ public class ArrowListener implements Listener {
         }
 
         List<MetadataValue> metas = damager.getMetadata(ZenchantedArrow.ARROW_METADATA_NAME);
-        for (MetadataValue value : metas) {
-            if (value.value() instanceof ZenchantedArrow arrow) {
+        for (MetadataValue meta : metas) {
+            List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
+            for (ZenchantedArrow arrow : arrowMeta) {
                 arrow.onImpact();
             }
         }
@@ -51,8 +56,10 @@ public class ArrowListener implements Listener {
         }
 
         List<MetadataValue> metas = damager.getMetadata(ZenchantedArrow.ARROW_METADATA_NAME);
-        for (MetadataValue value : metas) {
-            if (value.value() instanceof ZenchantedArrow arrow) {
+        for (MetadataValue meta : metas) {
+            List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
+            for (ZenchantedArrow arrow : arrowMeta) {
+                arrow.onImpact();
                 if (event.getEntity() instanceof LivingEntity) {
                     if (!arrow.onImpact(event)) {
                         event.setDamage(0);
