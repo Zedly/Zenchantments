@@ -85,11 +85,7 @@ public final class Weight extends Zenchantment {
                 .multiply((float) (1 / (level * this.getPower() + 1.5)))
         );
 
-
-        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.HEAD);
-        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.CHEST);
-        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.LEGS);
-        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.FEET);
+        Utilities.damageItemStackRespectUnbreaking(player, 1, slot);
         return true;
     }
 

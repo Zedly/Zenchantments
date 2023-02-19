@@ -62,36 +62,13 @@ public final class Ethereal extends Zenchantment {
     }
 
     @Override
-    public boolean onScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        final ItemStack stack = player.getInventory().getItem(slot);
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
+        ItemStack stack = player.getInventory().getItem(slot);
         final int durability = Utilities.getItemStackDamage(stack);
-
         Utilities.setItemStackDamage(stack, 0);
-
         if (durability != 0) {
             player.getInventory().setItem(slot, stack);
         }
-
-        return durability != 0;
-    }
-
-    @Override
-    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        for (final ItemStack stack : player.getInventory().getArmorContents()) {
-            if (stack == null) {
-                continue;
-            }
-
-            if (
-                Zenchantment.getZenchantmentsOnItemStack(
-                    stack,
-                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
-                ).containsKey(this)
-            ) {
-                Utilities.setItemStackDamage(stack, 0);
-            }
-        }
-
         return true;
     }
 }
