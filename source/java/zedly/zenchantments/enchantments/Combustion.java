@@ -16,7 +16,7 @@ public final class Combustion extends Zenchantment {
 
     private static final String                             NAME        = "Combustion";
     private static final String                             DESCRIPTION = "Lights attacking entities on fire when player is attacked";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Spread.class);
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
     private static final Hand                               HAND_USE    = Hand.NONE;
 
     private final NamespacedKey key;
@@ -85,7 +85,6 @@ public final class Combustion extends Zenchantment {
         if (CompatibilityAdapter.instance().isZombie(event.getCombuster())) {
             event.setDuration(0);
         }
-
         return false;
     }
 }
