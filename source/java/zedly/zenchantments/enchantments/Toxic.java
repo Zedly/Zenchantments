@@ -78,8 +78,8 @@ public final class Toxic extends Zenchantment {
 
     @Override
     public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
-        if (event.getEntity() instanceof LivingEntity &&
-            CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
+        if (!(event.getEntity() instanceof LivingEntity) ||
+            !CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
             return true;
         }
