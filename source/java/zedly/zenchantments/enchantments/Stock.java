@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -71,9 +72,9 @@ public final class Stock extends Zenchantment {
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         final PlayerInventory inventory = event.getPlayer().getInventory();
-        final ItemStack handItem = inventory.getItemInMainHand().clone();
+        final Material handItem = inventory.getItemInMainHand().getType();
 
-        if (handItem.getType() == AIR) {
+        if (handItem == AIR) {
             return false;
         }
 
@@ -91,7 +92,7 @@ public final class Stock extends Zenchantment {
             final ItemStack[] invContents = player.getInventory().getContents();
             for (int i = 0; i < event.getPlayer().getInventory().getContents().length; i++) {
                 final ItemStack stack = invContents[i];
-                if (stack != null && stack.getType() == handItem.getType()) {
+                if (stack != null && stack.getType() == handItem) {
                     current = i;
                     break;
                 }
