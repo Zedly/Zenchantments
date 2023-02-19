@@ -125,37 +125,26 @@ public final class Persephone extends Zenchantment {
         int numPotatoesSown = 0;
         int numBeetrootsSown = 0;
         int numNetherwartsSown = 0;
-        int numWheatAvailable = Utilities.countItems(player.getInventory(), (is) -> {
-            return is != null && is.getType() == WHEAT_SEEDS;
-        });
-        int numCarrotsAvailable = Utilities.countItems(player.getInventory(), (is) -> {
-            return is != null && is.getType() == CARROT;
-        });
-        int numPotatoesAvailable = Utilities.countItems(player.getInventory(), (is) -> {
-            return is != null && is.getType() == POTATO;
-        });
-        int numBeetrootSeedsAvailable = Utilities.countItems(player.getInventory(), (is) -> {
-            return is != null && is.getType() == BEETROOT_SEEDS;
-        });
-        int numNetherwartsAvailable = Utilities.countItems(player.getInventory(), (is) -> {
-            return is != null && is.getType() == NETHER_WART;
-        });
+        int numWheatAvailable = Utilities.countItems(player.getInventory(), (is) -> is != null && is.getType() == WHEAT_SEEDS);
+        int numCarrotsAvailable = Utilities.countItems(player.getInventory(), (is) -> is != null && is.getType() == CARROT);
+        int numPotatoesAvailable = Utilities.countItems(player.getInventory(), (is) -> is != null && is.getType() == POTATO);
+        int numBeetrootSeedsAvailable = Utilities.countItems(player.getInventory(), (is) -> is != null && is.getType() == BEETROOT_SEEDS);
+        int numNetherwartsAvailable = Utilities.countItems(player.getInventory(), (is) -> is != null && is.getType() == NETHER_WART);
 
-        final Block block = location.getBlock();
         for (int x = -radiusXZ; x <= radiusXZ; x++) {
             for (int y = -2; y <= 0; y++) {
                 for (int z = -radiusXZ; z <= radiusXZ; z++) {
-                    Block soilBlock = block.getRelative(x, y, z);
-                    if (damageApplied >= numUsesAvailable || !(block.getRelative(x, y, z).getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
+                    Block soilBlock = clickedBlock.getRelative(x, y, z);
+                    if (damageApplied >= numUsesAvailable || !(soilBlock.getLocation().distanceSquared(location) < radiusXZ * radiusXZ)) {
                         continue;
                     }
 
-                    final Block blockAboveSoil = block.getRelative(BlockFace.UP);
+                    final Block blockAboveSoil = soilBlock.getRelative(BlockFace.UP);
                     if(!MaterialList.AIR.contains(blockAboveSoil.getType())) {
                         continue;
                     }
 
-                    if (block.getRelative(x, y, z).getType() == FARMLAND) {
+                    if (soilBlock.getType() == FARMLAND) {
                         if (numWheatAvailable > numWheatSown) {
                             if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, WHEAT, null)) {
                                 numWheatSown++;
@@ -185,7 +174,7 @@ public final class Persephone extends Zenchantment {
                                 }
                             }
                         }
-                    } else if (block.getRelative(x, y, z).getType() == SOUL_SAND) {
+                    } else if (soilBlock.getType() == SOUL_SAND) {
                         if (numNetherwartsAvailable > numNetherwartsSown) {
                             if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, NETHER_WART, null)) {
                                 numNetherwartsSown++;
