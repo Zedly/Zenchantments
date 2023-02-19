@@ -19,8 +19,7 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.MaterialList.SHRED_PICKS;
-import static zedly.zenchantments.MaterialList.SHRED_SHOVELS;
+import static zedly.zenchantments.MaterialList.*;
 
 public final class Shred extends Zenchantment {
     public static final String KEY = "shred";
@@ -115,7 +114,7 @@ public final class Shred extends Zenchantment {
             return;
         }
 
-        final Material originalType = relativeBlock.getType();
+        Material originalType = relativeBlock.getType();
 
         if ((Tool.PICKAXE.contains(itemType) && !SHRED_PICKS.contains(relativeBlock.getType()))
             || (Tool.SHOVEL.contains(itemType) && !SHRED_SHOVELS.contains(relativeBlock.getType()))
@@ -128,14 +127,17 @@ public final class Shred extends Zenchantment {
         } else {
             final BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
             ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(event);
-
             if (event.isCancelled()) {
                 return;
             }
+            // In case another plugin changed the block
+            originalType = relativeBlock.getType();
 
             if (config.getShredDropType() == 1) {
-                if (relativeBlock.getType() == NETHER_QUARTZ_ORE) {
+                if (NETHER_ORES.contains(originalType)) {
                     relativeBlock.setType(NETHERRACK);
+                } else if (DEEPSLATE_ORES.contains(originalType)) {
+                    relativeBlock.setType(DEEPSLATE);
                 } else if (MaterialList.ORES.contains(relativeBlock.getType())) {
                     relativeBlock.setType(STONE);
                 }
