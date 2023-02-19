@@ -157,7 +157,8 @@ public enum Tool {
             IRON_BOOTS,
             GOLDEN_BOOTS,
             CHAINMAIL_BOOTS,
-            LEATHER_BOOTS
+            LEATHER_BOOTS,
+            TRIDENT
         },
         false
     );
