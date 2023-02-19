@@ -524,50 +524,6 @@ public final class Utilities {
         return strings;
     }
 
-    public static void selfRemovingArea(
-        final @NotNull Material fill,
-        final @NotNull Material check,
-        final int radius,
-        final @NotNull Block center,
-        final @NotNull Player player,
-        final @NotNull Map<Location, Long> placed
-    ) {
-        requireNonNull(fill);
-        requireNonNull(check);
-        requireNonNull(center);
-        requireNonNull(player);
-        requireNonNull(placed);
-
-        for (var x = -radius; x <= radius; x++) {
-            for (var z = -radius; z <= radius; z++) {
-                final var possiblePlatformBlock = center.getRelative(x, -1, z);
-                final var possiblePlatformLocation = possiblePlatformBlock.getLocation();
-
-                if (!(possiblePlatformLocation.distanceSquared(center.getLocation()) < radius * radius - 2)) {
-                    continue;
-                }
-
-                if (placed.containsKey(possiblePlatformLocation)) {
-                    placed.put(possiblePlatformLocation, System.nanoTime());
-                } else if (
-                    possiblePlatformBlock.getType() == check
-                        && MaterialList.AIR.contains(possiblePlatformBlock.getRelative(0, 1, 0).getType())
-                ) {
-                    if (possiblePlatformBlock.getBlockData() instanceof Levelled levelled && levelled.getLevel() != 0) {
-                        continue;
-                    }
-
-                    if (
-                        CompatibilityAdapter.instance()
-                            .formBlock(possiblePlatformBlock, fill, player)
-                    ) {
-                        placed.put(possiblePlatformLocation, System.currentTimeMillis());
-                    }
-                }
-            }
-        }
-    }
-
     public static int countItems(final @NotNull Iterable<ItemStack> stacks, final @NotNull Predicate<ItemStack> predicate) {
         requireNonNull(stacks);
         requireNonNull(predicate);

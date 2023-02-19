@@ -2,8 +2,10 @@ package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 
 public final class NetherStep extends Zenchantment {
@@ -80,9 +83,53 @@ public final class NetherStep extends Zenchantment {
         final Block block = player.getLocation().add(0, 0.2, 0).getBlock();
         final int radius = (int) Math.round(this.getPower() * level + 2);
 
-        Utilities.selfRemovingArea(SOUL_SAND, LAVA, radius, block, player, NETHERSTEP_LOCATIONS);
+        selfRemovingArea(SOUL_SAND, LAVA, radius, block, player, NETHERSTEP_LOCATIONS);
 
         return true;
+    }
+
+    private void selfRemovingArea(
+        final @NotNull Material fill,
+        final @NotNull Material check,
+        final int radius,
+        final @NotNull Block center,
+        final @NotNull Player player,
+        final @NotNull Map<Location, Long> placed
+    ) {
+        requireNonNull(fill);
+        requireNonNull(check);
+        requireNonNull(center);
+        requireNonNull(player);
+        requireNonNull(placed);
+
+        for (var x = -radius; x <= radius; x++) {
+            for (var z = -radius; z <= radius; z++) {
+                final var possiblePlatformBlock = center.getRelative(x, -1, z);
+                final var possiblePlatformLocation = possiblePlatformBlock.getLocation();
+
+                if (!(possiblePlatformLocation.distanceSquared(center.getLocation()) < radius * radius - 2)) {
+                    continue;
+                }
+
+                if (placed.containsKey(possiblePlatformLocation)) {
+                    placed.put(possiblePlatformLocation, System.nanoTime());
+                } else if (
+                    possiblePlatformBlock.getType() == check
+                        && MaterialList.AIR.contains(possiblePlatformBlock.getRelative(0, 1, 0).getType())
+                ) {
+                    if (possiblePlatformBlock.getBlockData() instanceof Levelled levelled && levelled.getLevel() != 0) {
+                        continue;
+                    }
+
+                    if (
+                        CompatibilityAdapter.instance()
+                            .formBlock(possiblePlatformBlock, fill, player)
+                    ) {
+                        placed.put(possiblePlatformLocation, System.currentTimeMillis());
+                    }
+                }
+            }
+        }
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
