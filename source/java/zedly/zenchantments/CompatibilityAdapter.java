@@ -30,6 +30,7 @@ import org.bukkit.craftbukkit.v1_18_R2.entity.CraftCreeper;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftSheep;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -41,10 +42,12 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.event.ZenBlockPlaceEvent;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -472,6 +475,18 @@ public class CompatibilityAdapter {
         );
 
         return true;
+    }
+
+    public Map<Enchantment, Integer> getPrematureEnchantments(ItemMeta meta) {
+        try {
+            Field f = meta.getClass().getDeclaredField("enchantments");
+            f.setAccessible(true);
+            Map enchantments = (Map) (f.get(meta));
+            return enchantments;
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            System.out.println("Unable to handle premature ItemMeta " + meta);
+        }
+        return null;
     }
 
     private boolean showHighlightBlock(final @NotNull Block block, int entityId, final @NotNull Player player) {
