@@ -1,6 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -86,7 +87,7 @@ public final class Burst extends Zenchantment {
         final ItemStack itemInHand = player.getInventory().getItem(slot);
         AbstractArrow originalArrow = (AbstractArrow) event.getProjectile();
 
-        boolean hasInfinity = itemInHand.containsEnchantment(Enchantment.ARROW_INFINITE);
+        boolean hasInfinity = player.getGameMode() == GameMode.CREATIVE || itemInHand.containsEnchantment(Enchantment.ARROW_INFINITE);
 
         // We subtract 1 because this happens before the NMS code removes an arrow
         int maxArrows = hasInfinity ? 64 : Utilities.countItems(player.getInventory(), (i) -> i != null && i.getType() == ARROW) - 1;
