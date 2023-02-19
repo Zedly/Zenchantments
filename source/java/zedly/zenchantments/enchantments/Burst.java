@@ -19,13 +19,15 @@ import zedly.zenchantments.event.ZenEntityShootBowEvent;
 
 import java.util.Set;
 
+import static org.bukkit.Material.ARROW;
+
 public final class Burst extends Zenchantment {
     public static final String KEY = "burst";
 
-    private static final String                             NAME        = "Burst";
-    private static final String                             DESCRIPTION = "Rapidly fires arrows in series";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Spread.class);
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
+    private static final String NAME = "Burst";
+    private static final String DESCRIPTION = "Rapidly fires arrows in series";
+    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
+    private static final Hand HAND_USE = Hand.RIGHT;
 
     private final NamespacedKey key;
 

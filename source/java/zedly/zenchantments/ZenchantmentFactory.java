@@ -74,7 +74,6 @@ public class ZenchantmentFactory {
         addConstructor(builder, Spectral.class, Spectral::new);
         addConstructor(builder, Speed.class, Speed::new);
         addConstructor(builder, Spikes.class, Spikes::new);
-        addConstructor(builder, Spread.class, Spread::new);
         addConstructor(builder, Stationary.class, Stationary::new);
         addConstructor(builder, Stock.class, Stock::new);
         addConstructor(builder, Stream.class, Stream::new);
