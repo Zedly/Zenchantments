@@ -118,7 +118,11 @@ public final class Utilities {
 
         final var inventory = player.getInventory();
         final ItemStack heldItem = inventory.getItem(slot);
-        setItemStackDamage(heldItem, getItemStackDamage(heldItem) + damage);
+        int newDamage = getItemStackDamage(heldItem) + damage;
+        if(heldItem.getType() == Material.ELYTRA && newDamage >= Material.ELYTRA.getMaxDurability()) {
+            newDamage = Material.ELYTRA.getMaxDurability() - 1;
+        }
+        setItemStackDamage(heldItem, newDamage);
 
         final var maxDurability = heldItem.getType().getMaxDurability();
         final var item = getItemStackDamage(heldItem) > maxDurability ? new ItemStack(Material.AIR) : heldItem;
