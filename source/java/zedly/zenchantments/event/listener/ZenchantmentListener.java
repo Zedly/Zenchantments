@@ -327,7 +327,6 @@ public final class ZenchantmentListener implements Listener {
     private void applyZenchantmentForArmorAndHeldItems(Player player, final @NotNull EnchantmentFunction action) {
         final PlayerInventory inventory = player.getInventory();
         for (EquipmentSlot usedSlot : ARMOR_AND_HELD_SLOTS) {
-            ItemStack usedStack = inventory.getItem(usedSlot);
             this.applyZenchantmentForTool(
                 player,
                 usedSlot,
