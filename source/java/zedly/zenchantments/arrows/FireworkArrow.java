@@ -41,10 +41,8 @@ public final class FireworkArrow extends ZenchantedArrow {
         final FireworkMeta fireworkMeta = firework.getFireworkMeta();
         fireworkMeta.setPower(0);
         fireworkMeta.addEffect(builder.build());
-
         firework.setFireworkMeta(fireworkMeta);
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), firework::detonate, 1);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), firework::detonate, 0);
 
         this.die();
     }
