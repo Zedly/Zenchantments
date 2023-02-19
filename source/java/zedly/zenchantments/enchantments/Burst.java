@@ -74,71 +74,95 @@ public final class Burst extends Zenchantment {
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
-        if(event instanceof ZenEntityShootBowEvent) {
+        if (event instanceof ZenEntityShootBowEvent) {
+            return false;
+        }
+
+        if (!(event.getProjectile() instanceof AbstractArrow)) {
             return false;
         }
 
         final Player player = (Player) event.getEntity();
         final ItemStack itemInHand = player.getInventory().getItem(slot);
+        AbstractArrow originalArrow = (AbstractArrow) event.getProjectile();
 
-        boolean result = false;
+        boolean hasInfinity = itemInHand.containsEnchantment(Enchantment.ARROW_INFINITE);
 
-        for (int i = 0; i <= (int) Math.round((this.getPower() * level) + 1); i++) {
-            if (!Utilities.playerHasMaterial(player, Material.ARROW, 1)) {
-                continue;
+        // We subtract 1 because this happens before the NMS code removes an arrow
+        int maxArrows = hasInfinity ? 64 : Utilities.countItems(player.getInventory(), (i) -> i != null && i.getType() == ARROW) - 1;
+        maxArrows = Math.min(maxArrows, (int) Math.round((this.getPower() * level) + 1));
+
+        int unbreakingLevel = Utilities.getUnbreakingLevel(itemInHand);
+        int remainingDurability = Utilities.getUsesRemainingOnTool(itemInHand);
+        int shotArrows = 0;
+        int appliedDamage = 0;
+        for (int i = 0; i < maxArrows && remainingDurability > appliedDamage; i++) {
+            shotArrows++;
+            if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
+                appliedDamage++;
             }
-            if (!itemInHand.containsEnchantment(Enchantment.ARROW_INFINITE) &&
-                !Utilities.removeMaterialsFromPlayer(player, Material.ARROW, 1)) {
-                continue;
-            }
+        }
 
-            result = true;
-            player.getInventory().setItem(slot, itemInHand);
-
+        for (int i = 0; i < shotArrows; i++) {
+            //player.getInventory().setItem(slot, itemInHand);
             ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-                final AbstractArrow arrow = player.getWorld().spawnArrow(
-                    player.getEyeLocation(),
-                    player.getLocation().getDirection(),
-                    1,
-                    0
-                );
-
-                arrow.setShooter(player);
-
-                if (itemInHand.containsEnchantment(Enchantment.ARROW_FIRE)) {
-                    arrow.setFireTicks(Integer.MAX_VALUE);
-                }
-
-                arrow.setVelocity(player.getLocation().getDirection().normalize().multiply(event.getForce()));
-
-                // Some of the parameters below have been added since this class was last updated.
-                // This zenchantment may need more testing to determine whether or not it still works properly.
-                final EntityShootBowEvent shootEvent = new ZenEntityShootBowEvent(
-                    player,
-                    itemInHand,
-                    event.getConsumable(),
-                    arrow,
-                    slot,
-                    1f,
-                    false
-                );
-
-                final ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
-
-                ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(shootEvent);
-                ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(launchEvent);
-
-                if (shootEvent.isCancelled() || launchEvent.isCancelled()) {
-                    arrow.remove();
-                } else {
-                    arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
-                    arrow.setCritical(false);
-                    arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-                    ZenchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
-                    Utilities.damageItemStackRespectUnbreaking(player, 1, slot);
-                }
+                shootMultiArrow(player, originalArrow, itemInHand, event.getConsumable(), slot);
             }, i * 2L);
         }
-        return result;
+
+        if (!hasInfinity) {
+            // Apparently NMS forgets to remove arrows because we interfere with the inventory
+            Utilities.removeMaterialsFromPlayer(player, ARROW, shotArrows + 1);
+        }
+        Utilities.damageItemStackIgnoreUnbreaking(player, shotArrows, slot);
+
+        return maxArrows > 0;
+    }
+
+    private void shootMultiArrow(Player player, AbstractArrow originalArrow, ItemStack itemInHand, ItemStack consumable, EquipmentSlot slot) {
+        float velocity = (float) originalArrow.getVelocity().length();
+        boolean critical = originalArrow.isCritical();
+
+
+        final AbstractArrow arrow = player.getWorld().spawnArrow(
+            player.getEyeLocation(),
+            player.getLocation().getDirection(),
+            velocity,
+            12
+        );
+
+        arrow.setShooter(player);
+
+        if (itemInHand.containsEnchantment(Enchantment.ARROW_FIRE)) {
+            arrow.setFireTicks(Integer.MAX_VALUE);
+        }
+
+
+        // Some of the parameters below have been added since this class was last updated.
+        // This zenchantment may need more testing to determine whether or not it still works properly.
+        final EntityShootBowEvent shootEvent = new ZenEntityShootBowEvent(
+            player,
+            itemInHand,
+            consumable,
+            arrow,
+            slot,
+            1f,
+            false
+        );
+
+        final ProjectileLaunchEvent launchEvent = new ProjectileLaunchEvent(arrow);
+
+        ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(shootEvent);
+        if (!shootEvent.isCancelled()) {
+            ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(launchEvent);
+        }
+
+        if (shootEvent.isCancelled() || launchEvent.isCancelled()) {
+            arrow.remove();
+        } else {
+            arrow.setCritical(critical);
+            arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+            ZenchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
+        }
     }
 }
