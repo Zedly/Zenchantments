@@ -123,25 +123,8 @@ public final class GreenThumb extends Zenchantment {
                             continue;
                         }
 
-                        final ItemStack[] armour = player.getInventory().getArmorContents();
-                        for (int i = 0; i < 4; i++) {
-                            if (armour[i] != null) {
-                                final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
-                                    armour[i],
-                                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
-                                );
-
-                                if (map.containsKey(this)) {
-                                    Utilities.addUnbreaking(player, armour[i], 1);
-                                }
-
-                                if (Utilities.getItemStackDamage(armour[i]) > armour[i].getType().getMaxDurability()) {
-                                    armour[i] = null;
-                                }
-                            }
-                        }
-
-                        player.getInventory().setArmorContents(armour);
+                        Utilities.damageItemStackRespectUnbreaking(player, 1, slot);
+                        //player.getInventory().setArmorContents(armour);
                     }
                 }
             }

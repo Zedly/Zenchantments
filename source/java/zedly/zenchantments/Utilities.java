@@ -152,29 +152,6 @@ public final class Utilities {
         );
     }
 
-    public static void addUnbreaking(
-        final @NotNull Player player,
-        final @NotNull ItemStack itemStack,
-        final int damage
-    ) {
-        requireNonNull(player);
-        requireNonNull(itemStack);
-
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            return;
-        }
-
-        for (var i = 0; i < damage; i++) {
-            if (
-                ThreadLocalRandom
-                    .current()
-                    .nextInt(100) <= (100 / (itemStack.getEnchantmentLevel(Enchantment.DURABILITY) + 1))
-            ) {
-                setItemStackDamage(itemStack, getItemStackDamage(itemStack) + 1);
-            }
-        }
-    }
-
     public static void setItemStackDamage(final @NotNull ItemStack itemStack, final int damage) {
         requireNonNull(itemStack);
 

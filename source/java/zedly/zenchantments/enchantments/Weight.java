@@ -85,19 +85,11 @@ public final class Weight extends Zenchantment {
                 .multiply((float) (1 / (level * this.getPower() + 1.5)))
         );
 
-        final ItemStack[] armour = player.getInventory().getArmorContents();
 
-        for (int i = 0; i < 4; i++) {
-            if (armour[i] != null) {
-                Utilities.addUnbreaking(player, armour[i], 1);
-                if (Utilities.getItemStackDamage(armour[i]) > armour[i].getType().getMaxDurability()) {
-                    armour[i] = null;
-                }
-            }
-        }
-
-        player.getInventory().setArmorContents(armour);
-
+        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.HEAD);
+        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.CHEST);
+        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.LEGS);
+        Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.FEET);
         return true;
     }
 
