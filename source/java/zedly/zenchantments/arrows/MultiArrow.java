@@ -25,20 +25,4 @@ public final class MultiArrow extends ZenchantedArrow {
 
         return true;
     }
-
-    @Override
-    public void onImpact() {
-        final AbstractArrow arrow = this.getArrow().getWorld().spawnArrow(
-            this.getArrow().getLocation(),
-            this.getArrow().getVelocity(),
-            (float) (this.getArrow().getVelocity().length() / 10),
-            0
-        );
-
-        arrow.setFireTicks(this.getArrow().getFireTicks());
-        arrow.getLocation().setDirection(this.getArrow().getLocation().getDirection());
-        arrow.setMetadata("ze.arrow", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), null));
-        arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-        this.getArrow().remove();
-    }
 }
