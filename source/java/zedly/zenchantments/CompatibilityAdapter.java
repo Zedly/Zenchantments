@@ -174,9 +174,6 @@ public class CompatibilityAdapter {
 
         target.damage(damage, attacker);
         target.setLastDamageCause(damageEvent);
-
-        Utilities.damageItemStackRespectUnbreaking(attacker, 1, EquipmentSlot.HAND);
-
         return true;
     }
 
