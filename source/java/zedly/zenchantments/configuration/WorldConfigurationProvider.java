@@ -48,6 +48,12 @@ public class WorldConfigurationProvider implements zedly.zenchantments.api.confi
         return newConfiguration;
     }
 
+    private WorldConfiguration loadDefaultConfigurationForWorld(final @NotNull World world) {
+        WorldConfiguration newConfiguration = GlobalConfiguration.getDefaultWorldConfiguration();
+        this.configMap.put(world.getUID(), newConfiguration);
+        return newConfiguration;
+    }
+
     @Override
     public void resetConfigurationForWorld(final @NotNull World world) {
         // TODO: Load default config, set as configuration for given world.
@@ -64,7 +70,7 @@ public class WorldConfigurationProvider implements zedly.zenchantments.api.confi
             System.err.println("Zenchantments was unable to load the configuration for world: " + world.getName() + ".\n" +
                 "Please check the configuration for this world. Falling back to default configuration!");
             e.printStackTrace();
-            return GlobalConfiguration.getDefaultWorldConfiguration();
+            return loadDefaultConfigurationForWorld(world);
         }
     }
 
