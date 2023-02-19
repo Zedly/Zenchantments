@@ -72,7 +72,7 @@ public final class RainbowSlam extends Zenchantment {
 
     @Override
     public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final EquipmentSlot slot) {
-        if (!(event.getRightClicked() instanceof LivingEntity)
+        if (slot != EquipmentSlot.HAND || !(event.getRightClicked() instanceof LivingEntity)
             || !CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
         ) {
             return false;
