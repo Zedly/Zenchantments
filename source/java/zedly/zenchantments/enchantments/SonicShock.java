@@ -68,8 +68,13 @@ public final class SonicShock extends Zenchantment {
 
         for (final Entity entity : player.getNearbyEntities(2 + 2 * level, 4, 2 + 2 * level)) {
             if (entity instanceof Monster || entity instanceof Slime || entity instanceof ShulkerBullet) {
+                LivingEntity le = (LivingEntity) entity;
                 final double damage = player.getVelocity().length() * 1.5 * level * this.getPower();
+                if(le.getNoDamageTicks() > 0) {
+                    continue;
+                }
                 CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, player, damage);
+                Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.CHEST);
             }
         }
 
