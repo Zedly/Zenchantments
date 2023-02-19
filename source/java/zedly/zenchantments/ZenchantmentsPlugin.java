@@ -72,9 +72,7 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
 
     @Override
     public void onDisable() {
-        for (Location location : NetherStep.NETHERSTEP_LOCATIONS.keySet()) {
-            location.getBlock().setType(LAVA);
-        }
+        NetherStep.cleanUpSoulsandImmediately();
 
         for (Entity entity : Anthropomorphism.IDLE_BLOCKS.keySet()) {
             entity.remove();
