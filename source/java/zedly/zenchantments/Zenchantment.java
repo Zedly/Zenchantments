@@ -435,15 +435,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         return false;
     }
 
-    public boolean onScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        return false;
-    }
-
     public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        return false;
-    }
-
-    public boolean onFastScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         return false;
     }
     //endregion
