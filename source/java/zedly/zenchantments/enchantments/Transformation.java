@@ -359,6 +359,12 @@ public final class Transformation extends Zenchantment {
                 panda.setHiddenGene(Panda.Gene.values()[random.nextInt(Panda.Gene.values().length)]);
                 panda.setMainGene(Panda.Gene.values()[random.nextInt(Panda.Gene.values().length)]);
                 break;
+            case SLIME:
+            case MAGMA_CUBE:
+                final Slime oldSlime = (Slime) entity;
+                final Slime newSlime = (Slime) newEntity;
+                newSlime.setSize(oldSlime.getSize());
+                break;
         }
 
         newEntity.setCustomName(entity.getCustomName());
