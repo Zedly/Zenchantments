@@ -92,7 +92,7 @@ public final class Germination extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
+    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
         pendingOperations.remove(event.getPlayer().getUniqueId());
         return false;
     }
@@ -171,11 +171,5 @@ public final class Germination extends Zenchantment {
             Utilities.removeMaterialsFromPlayer(player, Material.BONE_MEAL, numBoneMealUsed);
             Utilities.damageItemStackIgnoreUnbreaking(player, damageApplied, slot);
         }
-    }
-
-    @Override
-    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
-        event.setCancelled(true);
-        return false;
     }
 }

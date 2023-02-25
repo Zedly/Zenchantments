@@ -98,7 +98,7 @@ public final class Persephone extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockPlace(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
+    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
         pendingOperations.remove(event.getPlayer().getUniqueId());
         return false;
     }
@@ -200,11 +200,4 @@ public final class Persephone extends Zenchantment {
             // damage tool or not
         }
     }
-
-    @Override
-    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
-        event.setCancelled(true);
-        return false;
-    }
-
 }

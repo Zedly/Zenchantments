@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.event.ZenBlockPlaceEvent;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -69,9 +70,8 @@ public final class Plough extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override
@@ -94,7 +94,7 @@ public final class Plough extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockPlace(BlockPlaceEvent evt, final int level, final EquipmentSlot slot) {
+    public boolean onBlockPlaceOtherHand(BlockPlaceEvent evt, final int level, final EquipmentSlot slot) {
         if(!(evt instanceof ZenBlockPlaceEvent)) {
             pendingOperations.remove(evt.getPlayer().getUniqueId());
         }
@@ -148,11 +148,4 @@ public final class Plough extends Zenchantment {
             Utilities.damageItemStackIgnoreUnbreaking(player, damageApplied, slot);
         }
     }
-
-    @Override
-    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
-        event.setCancelled(true);
-        return false;
-    }
-
 }
