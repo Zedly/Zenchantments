@@ -83,6 +83,11 @@ public final class ZenchantmentListener implements Listener {
             event.getHand(),
             (ench, level, slot) -> ench.onBlockPlace(event, level, slot)
         );
+        this.applyZenchantmentForTool(
+            player,
+            event.getHand() == HAND ? OFF_HAND : HAND,
+            (ench, level, slot) -> ench.onBlockPlaceOtherHand(event, level, slot)
+        );
     }
 
 

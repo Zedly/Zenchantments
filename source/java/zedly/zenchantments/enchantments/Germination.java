@@ -172,4 +172,10 @@ public final class Germination extends Zenchantment {
             Utilities.damageItemStackIgnoreUnbreaking(player, damageApplied, slot);
         }
     }
+
+    @Override
+    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
+        event.setCancelled(true);
+        return false;
+    }
 }

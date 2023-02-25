@@ -179,4 +179,10 @@ public final class Harvest extends Zenchantment {
             // damage tool or not
         }
     }
+
+    @Override
+    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
+        event.setCancelled(true);
+        return false;
+    }
 }

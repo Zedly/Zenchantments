@@ -364,6 +364,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         return false;
     }
 
+    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
+        return false;
+    }
+
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
