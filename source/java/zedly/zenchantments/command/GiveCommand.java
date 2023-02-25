@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.*;
 
@@ -58,8 +59,7 @@ public class GiveCommand extends ZenchantmentsCommand {
         }
 
         final var world = recipient.getWorld();
-        final var worldConfiguration = this.plugin
-            .getWorldConfigurationProvider()
+        final var worldConfiguration = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(world);
 
         if (material == null) {

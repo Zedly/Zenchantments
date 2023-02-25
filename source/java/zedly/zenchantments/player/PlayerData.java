@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
     @Override
     public void enableAllZenchantments() {
         World world = this.player.getWorld();
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        WorldConfiguration config = WorldConfigurationProvider.getInstance().getConfigurationForWorld(world);
 
         for (Zenchantment zenchantment : config.getZenchantments()) {
             this.player.setMetadata("ze." + zenchantment.getKey(), new FixedMetadataValue(this.plugin, false));
@@ -47,7 +48,7 @@ public class PlayerData implements zedly.zenchantments.api.player.PlayerData {
     @Override
     public void disableAllZenchantments() {
         World world = this.player.getWorld();
-        WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        WorldConfiguration config = WorldConfigurationProvider.getInstance().getConfigurationForWorld(world);
 
         for (Zenchantment zenchantment : config.getZenchantments()) {
             this.player.setMetadata("ze." + zenchantment.getKey(), new FixedMetadataValue(this.plugin, true));

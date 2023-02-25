@@ -10,6 +10,7 @@ import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +43,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             return;
         }
 
-        final var worldConfiguration = this.plugin
-            .getWorldConfigurationProvider()
+        final var worldConfiguration = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(player.getWorld());
 
         final var zenchantmentName = matcher.group(1);
@@ -87,8 +87,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             return Collections.emptyList();
         }
 
-        final var worldConfiguration = this.plugin
-            .getWorldConfigurationProvider()
+        final var worldConfiguration = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(player.getWorld());
 
         final var zenchantmentName = matcher.group(1);

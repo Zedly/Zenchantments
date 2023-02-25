@@ -26,11 +26,9 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.MaterialList;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.*;
 
 import java.util.*;
@@ -57,7 +55,7 @@ public class GeneralListener implements Listener {
         }
 
         final World world = event.getBlock().getWorld();
-        final WorldConfiguration config = ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final WorldConfiguration config = WorldConfigurationProvider.getInstance().getConfigurationForWorld(world);
         final ItemStack item = event.getItem();
         Laser laser = (Laser) config.getZenchantmentFromName("Laser");
 
@@ -178,8 +176,7 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        this.plugin
-                            .getCompatibilityAdapter()
+                        CompatibilityAdapter.instance()
                             .collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
@@ -200,8 +197,7 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb) {
-                        this.plugin
-                            .getCompatibilityAdapter()
+                        CompatibilityAdapter.instance()
                             .collectExp(Vortex.VORTEX_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
                         entity.remove();
                     }
@@ -228,7 +224,7 @@ public class GeneralListener implements Listener {
             final int entityId = 2000000000 + event.getBlock().getRelative(face).hashCode() % 10000000;
             for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
                 if (player.getWorld().equals(event.getBlock().getWorld())) {
-                    this.plugin.getCompatibilityAdapter().hideShulker(entityId, player);
+                    CompatibilityAdapter.instance().hideShulker(entityId, player);
                 }
             }
 
@@ -244,8 +240,7 @@ public class GeneralListener implements Listener {
 
         final Player player = event.getPlayer();
         final PlayerInventory inventory = player.getInventory();
-        final WorldConfiguration worldConfiguration = this.plugin
-            .getWorldConfigurationProvider()
+        final WorldConfiguration worldConfiguration = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(player.getWorld());
         final boolean zenchantment = !Zenchantment.getZenchantmentsOnItemStack(
             inventory.getItemInMainHand(),
@@ -271,7 +266,7 @@ public class GeneralListener implements Listener {
 
         final ItemStack item = event.getItem();
         final World world = event.getEnchantBlock().getWorld();
-        final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final WorldConfiguration worldConfiguration = WorldConfigurationProvider.getInstance().getConfigurationForWorld(world);
         final Map<Zenchantment, Integer> existingEnchants = Zenchantment.getZenchantmentsOnItemStack(
             item,
             worldConfiguration
@@ -359,7 +354,7 @@ public class GeneralListener implements Listener {
         }
 
         final Player player = (Player) event.getWhoClicked();
-        final WorldConfiguration config = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld());
+        final WorldConfiguration config = WorldConfigurationProvider.getInstance().getConfigurationForWorld(player.getWorld());
         final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             event.getCurrentItem(),
             config

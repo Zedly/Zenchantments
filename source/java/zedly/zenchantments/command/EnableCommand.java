@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.GlobalConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.List;
@@ -42,8 +43,7 @@ public class EnableCommand extends ZenchantmentsCommand {
         }
 
         final var zenchantmentName = matcher.group(1);
-        final var zenchantment = this.plugin
-            .getWorldConfigurationProvider()
+        final var zenchantment = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(player.getWorld())
             .getZenchantmentFromName(zenchantmentName);
 

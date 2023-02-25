@@ -24,6 +24,7 @@ import zedly.zenchantments.CompatibilityAdapter;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.Unrepairable;
 
 import java.util.*;
@@ -91,7 +92,7 @@ public class AnvilMergeListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
             final ItemStack stack = doMerge(
                 anvilInv,
-                this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(
+                WorldConfigurationProvider.getInstance().getConfigurationForWorld(
                     event.getViewers().get(0).getWorld()
                 )
             );

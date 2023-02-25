@@ -20,6 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.Bind;
 import zedly.zenchantments.event.BlockShredEvent;
 import zedly.zenchantments.player.PlayerDataProvider;
@@ -303,7 +304,7 @@ public final class ZenchantmentListener implements Listener {
             if (contents[i] != null &&
                 Zenchantment.getZenchantmentsOnItemStack(
                     contents[i],
-                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(player.getWorld())
+                    WorldConfigurationProvider.getInstance().getConfigurationForWorld(player.getWorld())
                 ).keySet().stream().anyMatch(e -> e instanceof Bind) // TODO: Make this search more efficient
             ) {
                 removed.add(contents[i]);

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.Set;
 
@@ -81,7 +82,7 @@ public class GrindstoneMergeListener implements Listener {
             return;
         }
 
-        final WorldConfiguration worldConfiguration = this.plugin.getWorldConfigurationProvider().getConfigurationForWorld(world);
+        final WorldConfiguration worldConfiguration = WorldConfigurationProvider.getInstance().getConfigurationForWorld(world);
         final Set<Zenchantment> zenchantments = Zenchantment.getZenchantmentsOnItemStack(
             itemStack,
             worldConfiguration

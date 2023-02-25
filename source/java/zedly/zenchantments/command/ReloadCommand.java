@@ -5,6 +5,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -23,7 +24,7 @@ public class ReloadCommand extends ZenchantmentsCommand {
             sender.sendMessage(translateString("message.no_permission"));
             return;
         }
-        this.plugin.getWorldConfigurationProvider().loadWorldConfigurations();
+        WorldConfigurationProvider.getInstance().loadWorldConfigurations();
         sender.sendMessage(translateString("message.plugin_reloaded"));
     }
 

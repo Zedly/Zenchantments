@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +31,7 @@ public class ListCommand extends ZenchantmentsCommand {
 
         player.sendMessage(translateString("message.zenchantment_list_header"));
 
-        this.plugin
-            .getWorldConfigurationProvider()
+        WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(player.getWorld())
             .getZenchantments()
             .stream()
