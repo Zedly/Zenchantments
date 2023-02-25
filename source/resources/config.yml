@@ -523,6 +523,9 @@ explosion-block-break: false
 #  Determines if the enchantment descriptions show up in lore
 description-lore : true
 
+#  Fix old enchantment descriptions
+fix-legacy-description-lore : false
+
 #  Determines the color of enchantment descriptions shown in lore
 description-color: a
 

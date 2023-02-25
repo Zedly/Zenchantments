@@ -25,6 +25,8 @@ public interface WorldConfiguration {
 
     boolean isDescriptionLoreEnabled();
 
+    boolean isLegacyDescriptionLoreEnabled();
+
     boolean isZenchantmentGlowEnabled();
 
     @NotNull

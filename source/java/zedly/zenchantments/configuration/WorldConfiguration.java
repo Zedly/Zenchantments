@@ -19,6 +19,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
     private final int                              shredDrops;
     private final boolean                          explosionBlockBreakEnabled;
     private final boolean                          descriptionLoreEnabled;
+    private final boolean                          legacyDescriptionLoreEnabled;
     private final ChatColor                        descriptionColor;
     private final boolean                          zenchantmentGlowEnabled;
     private final ChatColor                        enchantmentColor;
@@ -30,6 +31,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
         int maxEnchants = (int) yamlConfig.get("max-enchants");
         boolean explosionBlockBreak = (boolean) yamlConfig.get("explosion-block-break");
         boolean descriptionLore = (boolean) yamlConfig.get("description-lore");
+        boolean legacyDescriptionLore = (boolean) yamlConfig.get("fix-legacy-description-lore", true);
         boolean enchantGlow = (boolean) yamlConfig.get("enchantment-glow");
         ChatColor descriptionColor = ChatColor.getByChar("" + yamlConfig.get("description-color"));
         ChatColor enchantColor = ChatColor.getByChar("" + yamlConfig.get("enchantment-color"));
@@ -92,7 +94,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
             }
         }
         return new WorldConfiguration(enchantments, enchantRarity, maxEnchants, shredDrops, explosionBlockBreak,
-            descriptionLore, enchantGlow, descriptionColor, enchantColor, curseColor);
+            descriptionLore, legacyDescriptionLore, enchantGlow, descriptionColor, enchantColor, curseColor);
     }
 
     private WorldConfiguration(
@@ -102,6 +104,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
         final int shredDropsEnabled,
         final boolean explosionBlockBreakEnabled,
         final boolean descriptionLoreEnabled,
+        final boolean legacyDescriptionLoreEnabled,
         final boolean zenchantmentGlowEnabled,
         final @NotNull ChatColor descriptionColor,
         final @NotNull ChatColor enchantmentColor,
@@ -113,6 +116,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
         this.shredDrops = shredDropsEnabled;
         this.explosionBlockBreakEnabled = explosionBlockBreakEnabled;
         this.descriptionLoreEnabled = descriptionLoreEnabled;
+        this.legacyDescriptionLoreEnabled = legacyDescriptionLoreEnabled;
         this.zenchantmentGlowEnabled = zenchantmentGlowEnabled;
         this.descriptionColor = descriptionColor;
         this.enchantmentColor = enchantmentColor;
@@ -158,6 +162,11 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
     @Override
     public boolean isDescriptionLoreEnabled() {
         return this.descriptionLoreEnabled;
+    }
+
+    @Override
+    public boolean isLegacyDescriptionLoreEnabled() {
+        return this.legacyDescriptionLoreEnabled;
     }
 
     @Override
