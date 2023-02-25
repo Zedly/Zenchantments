@@ -232,7 +232,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_BUTTON,
         JUNGLE_BUTTON,
         CRIMSON_BUTTON,
-        WARPED_BUTTON
+        WARPED_BUTTON,
+        MANGROVE_BUTTON
     );
 
     public static final MaterialList WOODEN_DOORS = new MaterialList(
@@ -243,7 +244,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_DOOR,
         JUNGLE_DOOR,
         CRIMSON_DOOR,
-        WARPED_DOOR
+        WARPED_DOOR,
+        MANGROVE_DOOR
     );
 
     public static final MaterialList WOODEN_FENCES = new MaterialList(
@@ -254,7 +256,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_FENCE,
         JUNGLE_FENCE,
         CRIMSON_FENCE,
-        WARPED_FENCE
+        WARPED_FENCE,
+        MANGROVE_FENCE
     );
 
     public static final MaterialList FENCE_GATES = new MaterialList(
@@ -265,7 +268,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_FENCE_GATE,
         JUNGLE_FENCE_GATE,
         CRIMSON_FENCE_GATE,
-        WARPED_FENCE_GATE
+        WARPED_FENCE_GATE,
+        MANGROVE_FENCE_GATE
     );
 
     public static final MaterialList LEAVES = new MaterialList(
@@ -276,7 +280,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_LEAVES,
         JUNGLE_LEAVES,
         AZALEA_LEAVES,
-        FLOWERING_AZALEA_LEAVES
+        FLOWERING_AZALEA_LEAVES,
+        MANGROVE_LEAVES
     );
 
     public static final MaterialList LOGS = new MaterialList(
@@ -289,7 +294,8 @@ public final class MaterialList extends AbstractList<Material> {
         CRIMSON_STEM,
         WARPED_STEM,
         CRIMSON_HYPHAE,
-        WARPED_HYPHAE
+        WARPED_HYPHAE,
+        MANGROVE_LOG
     );
 
     public static final MaterialList WOODEN_PLANKS = new MaterialList(
@@ -300,7 +306,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_PLANKS,
         JUNGLE_PLANKS,
         CRIMSON_PLANKS,
-        WARPED_PLANKS
+        WARPED_PLANKS,
+        MANGROVE_PLANKS
     );
 
     public static final MaterialList WOODEN_PRESSURE_PLATES = new MaterialList(
@@ -311,7 +318,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_PRESSURE_PLATE,
         JUNGLE_PRESSURE_PLATE,
         CRIMSON_PRESSURE_PLATE,
-        WARPED_PRESSURE_PLATE
+        WARPED_PRESSURE_PLATE,
+        MANGROVE_PRESSURE_PLATE
     );
 
     public static final MaterialList SAPLINGS = new MaterialList(
@@ -322,7 +330,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_SAPLING,
         JUNGLE_SAPLING,
         AZALEA,
-        FLOWERING_AZALEA
+        FLOWERING_AZALEA,
+        MANGROVE_PROPAGULE
     );
 
     public static final MaterialList WOODEN_SLABS = new MaterialList(
@@ -333,7 +342,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_SLAB,
         JUNGLE_SLAB,
         CRIMSON_SLAB,
-        WARPED_SLAB
+        WARPED_SLAB,
+        MANGROVE_SLAB
     );
 
     public static final MaterialList WOODEN_STAIRS = new MaterialList(
@@ -344,7 +354,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_STAIRS,
         JUNGLE_STAIRS,
         CRIMSON_STAIRS,
-        WARPED_STAIRS
+        WARPED_STAIRS,
+        MANGROVE_STAIRS
     );
 
     public static final MaterialList WOODEN_TRAPDOORS = new MaterialList(
@@ -355,7 +366,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_TRAPDOOR,
         JUNGLE_TRAPDOOR,
         CRIMSON_TRAPDOOR,
-        WARPED_SIGN
+        WARPED_TRAPDOOR,
+        MANGROVE_TRAPDOOR
     );
 
     public static final MaterialList WOOD = new MaterialList(
@@ -366,7 +378,8 @@ public final class MaterialList extends AbstractList<Material> {
         DARK_OAK_WOOD,
         JUNGLE_WOOD,
         CRIMSON_HYPHAE,
-        WARPED_HYPHAE
+        WARPED_HYPHAE,
+        MANGROVE_WOOD
     );
 
     public static final MaterialList STRIPPED_LOGS = new MaterialList(
@@ -377,7 +390,8 @@ public final class MaterialList extends AbstractList<Material> {
         STRIPPED_DARK_OAK_LOG,
         STRIPPED_JUNGLE_LOG,
         STRIPPED_CRIMSON_STEM,
-        STRIPPED_WARPED_STEM
+        STRIPPED_WARPED_STEM,
+        STRIPPED_MANGROVE_LOG
     );
 
     public static final MaterialList STRIPPED_WOOD = new MaterialList(
@@ -388,7 +402,8 @@ public final class MaterialList extends AbstractList<Material> {
         STRIPPED_DARK_OAK_WOOD,
         STRIPPED_JUNGLE_WOOD,
         STRIPPED_CRIMSON_HYPHAE,
-        STRIPPED_WARPED_HYPHAE
+        STRIPPED_WARPED_HYPHAE,
+        STRIPPED_MANGROVE_WOOD
     );
 
     public static final MaterialList DEADLY_PLANTS = new MaterialList(WITHER_ROSE);
@@ -403,7 +418,8 @@ public final class MaterialList extends AbstractList<Material> {
         ORANGE_TULIP,
         WHITE_TULIP,
         PINK_TULIP,
-        OXEYE_DAISY
+        OXEYE_DAISY,
+        LILY_OF_THE_VALLEY
     );
 
     public static final MaterialList LARGE_FLOWERS = new MaterialList(
@@ -489,8 +505,6 @@ public final class MaterialList extends AbstractList<Material> {
         MUSHROOM_STEM,
         RED_MUSHROOM_BLOCK
     );
-
-    public static final MaterialList CACTUS = new MaterialList(Material.CACTUS);
 
     public static final MaterialList CHORUS_PLANTS = new MaterialList(CHORUS_PLANT, CHORUS_FLOWER);
 
@@ -890,7 +904,8 @@ public final class MaterialList extends AbstractList<Material> {
             RED_SANDSTONE,
             Material.ICE,
             PACKED_ICE,
-            BLUE_ICE
+            BLUE_ICE,
+            MUD
         },
         ORES,
         TERRACOTTA
@@ -908,7 +923,9 @@ public final class MaterialList extends AbstractList<Material> {
             WARPED_NYLIUM,
             GRAVEL,
             SOUL_SAND,
-            CLAY
+            CLAY,
+            MUD,
+            MUDDY_MANGROVE_ROOTS
         },
         SANDS
     );
