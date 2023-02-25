@@ -12,8 +12,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.configuration.WorldConfiguration;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.event.BlockShredEvent;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,9 +69,8 @@ public final class Shred extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.MAIN_HAND;
     }
 
     @Override
@@ -90,7 +91,7 @@ public final class Shred extends Zenchantment {
             4.6 + (level * 0.22),
             new HashSet<>(),
             event.getPlayer(),
-            ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(block.getWorld()),
+            WorldConfigurationProvider.getInstance().getConfigurationForWorld(block.getWorld()),
             hand.getType(),
             slot
         );
@@ -123,7 +124,7 @@ public final class Shred extends Zenchantment {
         }
 
         if (config.getShredDropType() == 0) {
-            ZenchantmentsPlugin.getInstance().getCompatibilityAdapter().breakBlock(relativeBlock, player);
+            CompatibilityAdapter.instance().breakBlock(relativeBlock, player);
         } else {
             final BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
             ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(event);
@@ -148,7 +149,6 @@ public final class Shred extends Zenchantment {
 
                 Zenchantment.applyForTool(
                     player,
-                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider(),
                     usedHand,
                     (ench, level, slot) -> ench.onBlockBreak(event, level, slot)
                 );

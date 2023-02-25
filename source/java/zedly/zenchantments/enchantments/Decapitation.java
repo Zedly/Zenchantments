@@ -10,11 +10,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -85,9 +83,8 @@ public final class Decapitation extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.MAIN_HAND;
     }
 
     @Override

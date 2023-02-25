@@ -13,6 +13,7 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.StationaryArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
+import java.util.Collection;
 import java.util.Set;
 
 public final class Stationary extends Zenchantment {
@@ -61,9 +62,8 @@ public final class Stationary extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

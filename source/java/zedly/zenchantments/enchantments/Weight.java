@@ -5,11 +5,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE;
@@ -60,9 +60,8 @@ public final class Weight extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.ARMOR;
     }
 
     @Override

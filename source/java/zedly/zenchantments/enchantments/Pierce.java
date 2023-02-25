@@ -7,12 +7,14 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,9 +70,8 @@ public final class Pierce extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.MAIN_HAND;
     }
 
     // PIERCE MODES
@@ -201,5 +202,13 @@ public final class Pierce extends Zenchantment {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
+        if(event.getPlayer().isSneaking()) {
+            event.setCancelled(true);
+        }
+        return false;
     }
 }

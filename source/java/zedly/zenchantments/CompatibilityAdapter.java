@@ -101,7 +101,7 @@ public class CompatibilityAdapter {
         );
         final EntityHuman human = ((CraftPlayer) player).getHandle();
         orb.b(human); // XP Orb Entity handles mending. Don't blame me, I didn't code it.
-        human.cb = 0; // Reset XP Pickup Timer.
+        human.ca = 0; // Reset XP Pickup Timer.
     }
 
     public boolean breakBlock(final @NotNull Block block, final @NotNull Player player) {

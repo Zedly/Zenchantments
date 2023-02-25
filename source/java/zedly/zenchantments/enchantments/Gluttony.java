@@ -1,30 +1,29 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
-import org.apache.commons.lang3.tuple.Triple;
+import net.minecraft.util.Tuple;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 import static org.bukkit.Material.*;
 
 public final class Gluttony extends Zenchantment {
     public static final String KEY = "gluttony";
 
-    private static final String                             NAME        = "Gluttony";
-    private static final String                             DESCRIPTION = "Automatically eats for the player";
+    private static final String NAME = "Gluttony";
+    private static final String DESCRIPTION = "Automatically eats for the player";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.NONE;
+    private static final Hand HAND_USE = Hand.NONE;
 
-    private static final LinkedList<Triple<Material, Integer, Double>> GLUTTONY_FOODS = new LinkedList<>();
+    private static final HashMap<Material, Tuple<Integer, Double>> GLUTTONY_FOODS = new HashMap<>();
 
     private final NamespacedKey key;
 
@@ -64,70 +63,99 @@ public final class Gluttony extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.ARMOR;
     }
 
     @Override
     public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        for (int i = 0; i < GLUTTONY_FOODS.size(); i++) {
-            final Material foodMaterial = GLUTTONY_FOODS.get(i).getLeft();
-            final int foodLevel = GLUTTONY_FOODS.get(i).getMiddle();
+        final int needFoodLevel = 20 - player.getFoodLevel();
+        if (needFoodLevel <= 0) {
+            return false;
+        }
+        final double genericMaxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+        boolean needToHeal = player.getHealth() < genericMaxHealth;
 
-            if (!player.getInventory().containsAtLeast(new ItemStack(foodMaterial), 1)
-                || player.getFoodLevel() > 20 - foodLevel
-            ) {
+        Material maxHungerMaterial = AIR;
+        int maxFoodLevel = 0;
+        Material maxNonExcessMaterial = AIR;
+        int maxNonExcessFoodLevel = 0;
+        for (ItemStack item : player.getInventory()) {
+            if (item == null) {
+                continue;
+            }
+            Material mat = item.getType();
+            if (!GLUTTONY_FOODS.containsKey(mat)) {
                 continue;
             }
 
-            Utilities.removeMaterialsFromPlayer(player, foodMaterial, 1);
-
-            player.setFoodLevel(player.getFoodLevel() + foodLevel);
-            player.setSaturation(player.getSaturation() + GLUTTONY_FOODS.get(i).getRight().floatValue());
-
-            if (foodMaterial == RABBIT_STEW
-                || foodMaterial == MUSHROOM_STEW
-                || foodMaterial == BEETROOT_SOUP
-            ) {
-                player.getInventory().addItem(new ItemStack(BOWL));
-            }
-            if (foodMaterial == HONEY_BOTTLE
-            ) {
-                HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(new ItemStack(GLASS_BOTTLE));
-                if(!overflow.isEmpty()) {
-                    player.getWorld().dropItem(player.getLocation(), overflow.get(0));
+            int foodLevelForMat = GLUTTONY_FOODS.get(mat).a();
+            if (foodLevelForMat > maxFoodLevel) {
+                maxHungerMaterial = mat;
+                maxFoodLevel = foodLevelForMat;
+                if (!needToHeal && needFoodLevel < maxFoodLevel) {
+                    return false;
                 }
+            }
+            if (foodLevelForMat <= needFoodLevel && foodLevelForMat > maxNonExcessFoodLevel) {
+                maxNonExcessMaterial = mat;
+                maxNonExcessFoodLevel = foodLevelForMat;
+            }
+        }
+        Material matToEat = needToHeal ? maxNonExcessMaterial : maxHungerMaterial;
+        if(matToEat == AIR) {
+            return false;
+        }
+
+        final int foodLevel = GLUTTONY_FOODS.get(matToEat).a();
+        final float saturationlevel = GLUTTONY_FOODS.get(matToEat).b().floatValue();
+
+        Utilities.removeMaterialsFromPlayer(player, matToEat, 1);
+
+        player.setFoodLevel(player.getFoodLevel() + foodLevel);
+        player.setSaturation(player.getSaturation() + saturationlevel);
+
+        if (matToEat == RABBIT_STEW
+            || matToEat == MUSHROOM_STEW
+            || matToEat == BEETROOT_SOUP
+        ) {
+            player.getInventory().addItem(new ItemStack(BOWL));
+        }
+        if (matToEat == HONEY_BOTTLE
+        ) {
+            HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(new ItemStack(GLASS_BOTTLE));
+            if (!overflow.isEmpty()) {
+                player.getWorld().dropItem(player.getLocation(), overflow.get(0));
             }
         }
         return true;
     }
 
     static {
-        GLUTTONY_FOODS.add(Triple.of(APPLE, 4, 2.4));
-        GLUTTONY_FOODS.add(Triple.of(BAKED_POTATO, 5, 6.0));
-        GLUTTONY_FOODS.add(Triple.of(BEETROOT, 1, 1.2));
-        GLUTTONY_FOODS.add(Triple.of(BEETROOT_SOUP, 6, 7.2));
-        GLUTTONY_FOODS.add(Triple.of(BREAD, 5, 6.0));
-        GLUTTONY_FOODS.add(Triple.of(CARROT, 3, 3.6));
-        GLUTTONY_FOODS.add(Triple.of(COOKED_CHICKEN, 6, 7.2));
-        GLUTTONY_FOODS.add(Triple.of(COOKED_COD, 5, 6.0));
-        GLUTTONY_FOODS.add(Triple.of(COOKED_MUTTON, 6, 9.6));
-        GLUTTONY_FOODS.add(Triple.of(COOKED_PORKCHOP, 8, 12.8));
-        GLUTTONY_FOODS.add(Triple.of(COOKED_RABBIT, 5, 6.0));
-        GLUTTONY_FOODS.add(Triple.of(COOKED_SALMON, 6, 9.6));
-        GLUTTONY_FOODS.add(Triple.of(COOKIE, 2, 0.4));
-        GLUTTONY_FOODS.add(Triple.of(DRIED_KELP, 1, 0.6));
-        GLUTTONY_FOODS.add(Triple.of(GLOW_BERRIES, 2, 0.4));
-        GLUTTONY_FOODS.add(Triple.of(GOLDEN_CARROT, 6, 14.4));
-        GLUTTONY_FOODS.add(Triple.of(HONEY_BOTTLE, 6, 1.2));
-        GLUTTONY_FOODS.add(Triple.of(MELON_SLICE, 2, 1.2));
-        GLUTTONY_FOODS.add(Triple.of(MUSHROOM_STEW, 6, 7.2));
-        GLUTTONY_FOODS.add(Triple.of(POTATO, 1, 0.6));
-        GLUTTONY_FOODS.add(Triple.of(PUMPKIN_PIE, 8, 4.8));
-        GLUTTONY_FOODS.add(Triple.of(RABBIT_STEW, 10, 12.0));
-        GLUTTONY_FOODS.add(Triple.of(COOKED_BEEF, 8, 12.8));
-        GLUTTONY_FOODS.add(Triple.of(SWEET_BERRIES, 2, 0.4));
-        GLUTTONY_FOODS.add(Triple.of(TROPICAL_FISH, 1, 0.2));
+        GLUTTONY_FOODS.put(APPLE, new Tuple<>(4, 2.4));
+        GLUTTONY_FOODS.put(BAKED_POTATO, new Tuple<>(5, 6.0));
+        GLUTTONY_FOODS.put(BEETROOT, new Tuple<>(1, 1.2));
+        GLUTTONY_FOODS.put(BEETROOT_SOUP, new Tuple<>(6, 7.2));
+        GLUTTONY_FOODS.put(BREAD, new Tuple<>(5, 6.0));
+        GLUTTONY_FOODS.put(CARROT, new Tuple<>(3, 3.6));
+        GLUTTONY_FOODS.put(COOKED_CHICKEN, new Tuple<>(6, 7.2));
+        GLUTTONY_FOODS.put(COOKED_COD, new Tuple<>(5, 6.0));
+        GLUTTONY_FOODS.put(COOKED_MUTTON, new Tuple<>(6, 9.6));
+        GLUTTONY_FOODS.put(COOKED_PORKCHOP, new Tuple<>(8, 12.8));
+        GLUTTONY_FOODS.put(COOKED_RABBIT, new Tuple<>(5, 6.0));
+        GLUTTONY_FOODS.put(COOKED_SALMON, new Tuple<>(6, 9.6));
+        GLUTTONY_FOODS.put(COOKIE, new Tuple<>(2, 0.4));
+        GLUTTONY_FOODS.put(DRIED_KELP, new Tuple<>(1, 0.6));
+        GLUTTONY_FOODS.put(GLOW_BERRIES, new Tuple<>(2, 0.4));
+        GLUTTONY_FOODS.put(GOLDEN_CARROT, new Tuple<>(6, 14.4));
+        GLUTTONY_FOODS.put(HONEY_BOTTLE, new Tuple<>(6, 1.2));
+        GLUTTONY_FOODS.put(MELON_SLICE, new Tuple<>(2, 1.2));
+        GLUTTONY_FOODS.put(MUSHROOM_STEW, new Tuple<>(6, 7.2));
+        GLUTTONY_FOODS.put(POTATO, new Tuple<>(1, 0.6));
+        GLUTTONY_FOODS.put(PUMPKIN_PIE, new Tuple<>(8, 4.8));
+        GLUTTONY_FOODS.put(RABBIT_STEW, new Tuple<>(10, 12.0));
+        GLUTTONY_FOODS.put(COOKED_BEEF, new Tuple<>(8, 12.8));
+        GLUTTONY_FOODS.put(SWEET_BERRIES, new Tuple<>(2, 0.4));
+        GLUTTONY_FOODS.put(TROPICAL_FISH, new Tuple<>(1, 0.2));
     }
 }

@@ -8,6 +8,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.FAST_DIGGING;
@@ -58,13 +59,12 @@ public final class Haste extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.MAIN_HAND;
     }
 
     @Override
-    public boolean onScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
+    public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         Utilities.addPotionEffect(player, FAST_DIGGING, 610, (int) Math.round(level * this.getPower()));
         player.setMetadata("ze.haste", new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), System.currentTimeMillis()));
         return false;

@@ -29,7 +29,6 @@ import zedly.zenchantments.player.PlayerData;
 import zedly.zenchantments.player.PlayerDataProvider;
 
 import java.util.*;
-import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,12 +67,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     //region Static Methods
     public static void applyForTool(
         final @NotNull Player player,
-        final @NotNull WorldConfigurationProvider worldConfigurationProvider,
         final @Nullable EquipmentSlot slot,
         final @NotNull EnchantmentFunction action
     ) {
         requireNonNull(player);
-        requireNonNull(worldConfigurationProvider);
         requireNonNull(action);
         ItemStack tool = player.getInventory().getItem(slot);
         if(tool == null) {
@@ -82,11 +79,16 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         final Map<Zenchantment, Integer> zenchantments = getZenchantmentsOnItemStack(
             tool,
-            worldConfigurationProvider.getConfigurationForWorld(player.getWorld())
+            WorldConfigurationProvider.getInstance().getConfigurationForWorld(player.getWorld())
         );
 
         for (final Map.Entry<Zenchantment, Integer> entry : zenchantments.entrySet()) {
             final Zenchantment zenchantment = entry.getKey();
+
+            if(!zenchantment.getApplyToSlots().contains(slot)) {
+                continue;
+            }
+
             final Integer level = entry.getValue(); // Use Integer to prevent unboxing and then re-boxing.
             final PlayerData playerData = PlayerDataProvider.getDataForPlayer(player);
 
@@ -105,15 +107,6 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
                 zenchantment.used = false;
             }
         }
-    }
-
-    @NotNull
-    public static Map<Zenchantment, Integer> getZenchantmentsOnItemStack(
-        final @Nullable ItemStack itemStack,
-        final @NotNull WorldConfiguration worldConfiguration,
-        final @NotNull List<String> outExtraLore
-    ) {
-        return getZenchantmentsOnItemStack(itemStack, false, worldConfiguration, outExtraLore);
     }
 
     @NotNull
@@ -157,8 +150,8 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
             final Map.Entry<Zenchantment, Integer> zenchantment = getZenchantmentFromString(raw, worldConfiguration);
             if (zenchantment != null) {
                 map.put(zenchantment.getKey(), zenchantment.getValue());
-            } else if(!isDescription(raw, worldConfiguration)) {
-                if (outExtraLore != null) {
+            } else if (outExtraLore != null) {
+                if (!isDescription(raw, worldConfiguration)) {
                     outExtraLore.add(raw);
                 }
             }
@@ -215,11 +208,20 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         requireNonNull(string);
 
         for (Zenchantment zen : config.getZenchantments()) {
-            for (String str : zen.getDescription(config)) {
-                if (string.equals(Utilities.reproduceCorruptedInvisibleSequence(str))) {
+            // Match description with only active color codes
+            for (String descriptionLine : zen.getDescription(config)) {
+                if (string.equals(descriptionLine)) {
                     return true;
                 }
             }
+            if(config.isDescriptionLoreEnabled())
+            // Match old description with corrupted invisible color codes
+            for (String descriptionLine : zen.getOldDescription(config)) {
+                if (string.equals(Utilities.reproduceCorruptedInvisibleSequence(descriptionLine))) {
+                    return true;
+                }
+            }
+
         }
         return false;
     }
@@ -249,14 +251,14 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
                     normalLore.add(line);
                 } else if (zenchantmentEntry != null && zenchantmentEntry.getKey() != zenchantment) {
                     isZenchantment = true;
-                    lore.add(zenchantmentEntry.getKey().getShown(zenchantmentEntry.getValue(), worldConfiguration));
+                    lore.add(zenchantmentEntry.getKey().getMainEnchantmentString(zenchantmentEntry.getValue(), worldConfiguration));
                     lore.addAll(zenchantmentEntry.getKey().getDescription(worldConfiguration));
                 }
             }
         }
 
         if (zenchantment != null && level > 0 && level <= zenchantment.maxLevel) {
-            lore.add(zenchantment.getShown(level, worldConfiguration));
+            lore.add(zenchantment.getMainEnchantmentString(level, worldConfiguration));
             lore.addAll(zenchantment.getDescription(worldConfiguration));
             isZenchantment = true;
         }
@@ -365,6 +367,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         return false;
     }
 
+    public boolean onBlockPlaceOtherHand(final @NotNull BlockPlaceEvent event, final int level, final EquipmentSlot slot) {
+        return false;
+    }
+
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }
@@ -429,15 +435,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         return false;
     }
 
-    public boolean onScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        return false;
-    }
-
     public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        return false;
-    }
-
-    public boolean onFastScanHands(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         return false;
     }
     //endregion
@@ -457,7 +455,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
 
     @NotNull
-    public final String getShown(final int level, final @NotNull WorldConfiguration worldConfiguration) {
+    public final String getMainEnchantmentString(final int level, final @NotNull WorldConfiguration worldConfiguration) {
         return (this.cursed ? worldConfiguration.getCurseColor() : worldConfiguration.getEnchantmentColor())
             + this.getName()
             + (this.maxLevel == 1 ? " " : " " + Utilities.convertIntToNumeral(level));
@@ -465,6 +463,43 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     @NotNull
     public final List<String> getDescription(final @NotNull WorldConfiguration worldConfiguration) {
+        if (!worldConfiguration.isDescriptionLoreEnabled()) {
+            return Collections.emptyList();
+        }
+
+        final List<String> description = new LinkedList<>();
+        final String start = ""
+            + worldConfiguration.getDescriptionColor()
+            + ChatColor.ITALIC
+            + " ";
+
+        StringBuilder builder = new StringBuilder();
+        int i = 0;
+
+        for (char c : this.getDescription().toCharArray()) {
+            if (i < 30) {
+                i++;
+                builder.append(c);
+            } else {
+                if (c == ' ') {
+                    description.add(start + builder.toString());
+                    builder = new StringBuilder(" ");
+                    i = 1;
+                } else {
+                    builder.append(c);
+                }
+            }
+        }
+
+        if (i != 0) {
+            description.add(start + builder.toString());
+        }
+
+        return description;
+    }
+
+    @NotNull
+    public final List<String> getOldDescription(final @NotNull WorldConfiguration worldConfiguration) {
         if (!worldConfiguration.isDescriptionLoreEnabled()) {
             return Collections.emptyList();
         }

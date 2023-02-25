@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.player.PlayerDataProvider;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
@@ -67,10 +68,7 @@ public final class Laser extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
-    }
+    public Collection<EquipmentSlot> getApplyToSlots() { return Slots.MAIN_HAND; }
 
     @Override
     public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, final EquipmentSlot slot) {

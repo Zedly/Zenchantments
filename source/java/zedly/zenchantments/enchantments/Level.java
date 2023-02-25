@@ -9,13 +9,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.LevelArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -65,9 +63,8 @@ public final class Level extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

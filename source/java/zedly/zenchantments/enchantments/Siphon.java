@@ -14,6 +14,7 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.SiphonArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
@@ -63,9 +64,8 @@ public final class Siphon extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

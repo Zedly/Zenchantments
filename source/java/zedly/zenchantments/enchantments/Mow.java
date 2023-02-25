@@ -13,6 +13,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
@@ -64,9 +65,8 @@ public final class Mow extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

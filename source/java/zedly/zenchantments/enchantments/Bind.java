@@ -5,11 +5,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.Set;
 
 public final class Bind extends Zenchantment {
@@ -18,7 +16,6 @@ public final class Bind extends Zenchantment {
     private static final String                             NAME        = "Bind";
     private static final String                             DESCRIPTION = "Keeps items with the enchantment in your inventory after death";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.NONE;
 
     private final NamespacedKey key;
 
@@ -58,9 +55,8 @@ public final class Bind extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.ALL;
     }
 
     @Override

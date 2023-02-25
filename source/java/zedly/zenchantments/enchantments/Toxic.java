@@ -15,10 +15,7 @@ import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.bukkit.potion.PotionEffectType.CONFUSION;
 import static org.bukkit.potion.PotionEffectType.HUNGER;
@@ -71,9 +68,8 @@ public final class Toxic extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

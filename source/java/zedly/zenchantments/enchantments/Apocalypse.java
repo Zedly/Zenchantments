@@ -7,14 +7,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.ApocalypseArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
+import java.util.Collection;
 import java.util.Set;
+
+import static org.bukkit.inventory.EquipmentSlot.HAND;
+import static org.bukkit.inventory.EquipmentSlot.OFF_HAND;
 
 public final class Apocalypse extends Zenchantment {
     public static final String KEY = "apocalypse";
@@ -22,7 +23,6 @@ public final class Apocalypse extends Zenchantment {
     private static final String                             NAME        = "Apocalypse";
     private static final String                             DESCRIPTION = "Unleashes hell";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
 
@@ -62,9 +62,8 @@ public final class Apocalypse extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

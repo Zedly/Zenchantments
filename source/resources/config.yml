@@ -419,7 +419,7 @@ enchantments:
               tools: Pickaxe
               name: Switch
               max-level: 1
-              cooldown: 0
+              cooldown: 1
               power: 1.0
       - Terraformer:
               probability: 2.0
@@ -522,6 +522,9 @@ explosion-block-break: false
 
 #  Determines if the enchantment descriptions show up in lore
 description-lore : true
+
+#  Fix old enchantment descriptions
+fix-legacy-description-lore : false
 
 #  Determines the color of enchantment descriptions shown in lore
 description-color: a

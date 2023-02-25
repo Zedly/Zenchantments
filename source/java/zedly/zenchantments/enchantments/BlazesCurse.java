@@ -15,6 +15,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -22,17 +23,17 @@ import static org.bukkit.block.Biome.*;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.*;
+import static org.bukkit.inventory.EquipmentSlot.*;
 
 public final class BlazesCurse extends Zenchantment {
     private static final float SUBMERGE_DAMAGE = 1.5f;
-    private static final float RAIN_DAMAGE     = 0.5f;
+    private static final float RAIN_DAMAGE = 0.5f;
 
     public static final String KEY = "blazes_curse";
 
     private static final String                             NAME        = "Blaze's Curse";
     private static final String                             DESCRIPTION = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.NONE;
 
     private static final EnumSet<Biome> DRY_BIOMES = EnumSet.of(
         DESERT,
@@ -83,9 +84,7 @@ public final class BlazesCurse extends Zenchantment {
 
     @Override
     @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
-    }
+    public Collection<EquipmentSlot> getApplyToSlots() { return Slots.ARMOR; }
 
     @Override
     public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final EquipmentSlot slot) {

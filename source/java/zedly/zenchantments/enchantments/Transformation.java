@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -183,9 +184,8 @@ public final class Transformation extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.MAIN_HAND;
     }
 
     @Override
@@ -358,6 +358,12 @@ public final class Transformation extends Zenchantment {
                 final Panda panda = (Panda) newEntity;
                 panda.setHiddenGene(Panda.Gene.values()[random.nextInt(Panda.Gene.values().length)]);
                 panda.setMainGene(Panda.Gene.values()[random.nextInt(Panda.Gene.values().length)]);
+                break;
+            case SLIME:
+            case MAGMA_CUBE:
+                final Slime oldSlime = (Slime) entity;
+                final Slime newSlime = (Slime) newEntity;
+                newSlime.setSize(oldSlime.getSize());
                 break;
         }
 
