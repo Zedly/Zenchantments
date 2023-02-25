@@ -1,10 +1,12 @@
 package zedly.zenchantments.api;
 
 import org.bukkit.Keyed;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -81,10 +83,10 @@ public interface Zenchantment extends Keyed {
     Set<? extends Class<? extends Zenchantment>> getConflicting();
 
     /**
-     * Gets the hands that this {@link Zenchantment} has actions for.
+     * Gets the EquipmentSlots that this {@link Zenchantment} will be applied to.
+     * Any event will only be observed by the Zenchantment if it is held in an EquipmentSlot listed in this Collection.
      *
-     * @return A {@link Hand} value representing the hands that this {@link Zenchantment} has actions for.
+     * @return A Collection<EquipmentSlot> representing the slots in which the Zenchantment will observe events.
      */
-    @NotNull
-    Hand getHandUse();
+    Collection<EquipmentSlot> getApplyToSlots();
 }

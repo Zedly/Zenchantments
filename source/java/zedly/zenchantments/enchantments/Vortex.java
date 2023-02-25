@@ -13,6 +13,7 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.VortexArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -67,9 +68,8 @@ public final class Vortex extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

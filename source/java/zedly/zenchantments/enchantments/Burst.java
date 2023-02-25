@@ -16,6 +16,7 @@ import zedly.zenchantments.arrows.MultiArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.event.ZenEntityShootBowEvent;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static org.bukkit.Material.ARROW;
@@ -26,7 +27,6 @@ public final class Burst extends Zenchantment {
     private static final String NAME = "Burst";
     private static final String DESCRIPTION = "Rapidly fires arrows in series";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand HAND_USE = Hand.RIGHT;
 
     private final NamespacedKey key;
 
@@ -66,9 +66,8 @@ public final class Burst extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

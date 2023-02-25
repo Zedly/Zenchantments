@@ -7,13 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.BlizzardArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
+import java.util.Collection;
 import java.util.Set;
 
 public final class Blizzard extends Zenchantment {
@@ -22,7 +20,6 @@ public final class Blizzard extends Zenchantment {
     private static final String                             NAME        = "Blizzard";
     private static final String                             DESCRIPTION = "Spawns a blizzard where the arrow strikes freezing nearby entities";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Firestorm.class);
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
 
@@ -62,9 +59,8 @@ public final class Blizzard extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.HANDS;
     }
 
     @Override

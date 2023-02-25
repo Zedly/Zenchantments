@@ -84,6 +84,11 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         for (final Map.Entry<Zenchantment, Integer> entry : zenchantments.entrySet()) {
             final Zenchantment zenchantment = entry.getKey();
+
+            if(!zenchantment.getApplyToSlots().contains(slot)) {
+                continue;
+            }
+
             final Integer level = entry.getValue(); // Use Integer to prevent unboxing and then re-boxing.
             final PlayerData playerData = PlayerDataProvider.getDataForPlayer(player);
 

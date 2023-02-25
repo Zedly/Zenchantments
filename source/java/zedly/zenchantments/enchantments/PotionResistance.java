@@ -8,12 +8,10 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.Hand;
-import zedly.zenchantments.Tool;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,9 +61,8 @@ public final class PotionResistance extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.ARMOR;
     }
 
     @Override

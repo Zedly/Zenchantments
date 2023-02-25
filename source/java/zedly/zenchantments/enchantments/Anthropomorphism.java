@@ -30,7 +30,6 @@ public final class Anthropomorphism extends Zenchantment {
     private static final String                             NAME        = "Anthropomorphism";
     private static final String                             DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
-    private static final Hand                               HAND_USE    = Hand.BOTH;
 
     private static final MaterialList ANTHRO_SOURCES = new MaterialList(MaterialList.STONES, MaterialList.COBBLESTONES, MaterialList.DIRT);
     private static final List<Entity> VORTEX    = new ArrayList<>();
@@ -74,9 +73,8 @@ public final class Anthropomorphism extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.MAIN_HAND;
     }
 
     @EffectTask(Frequency.MEDIUM_HIGH)

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,7 +23,6 @@ public final class Arborist extends Zenchantment {
     private static final String                             NAME        = "Arborist";
     private static final String                             DESCRIPTION = "Drops more apples, sticks, and saplings when used on leaves";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.LEFT;
 
     private final NamespacedKey key;
 
@@ -62,9 +62,8 @@ public final class Arborist extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.MAIN_HAND;
     }
 
     @Override

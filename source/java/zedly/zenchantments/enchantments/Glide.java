@@ -67,9 +67,8 @@ public final class Glide extends Zenchantment {
     }
 
     @Override
-    @NotNull
-    public Hand getHandUse() {
-        return HAND_USE;
+    public Collection<EquipmentSlot> getApplyToSlots() {
+        return Slots.ARMOR;
     }
 
     @Override
