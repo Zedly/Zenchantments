@@ -62,7 +62,7 @@ public final class Conversion extends Zenchantment {
 
     @Override
     public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
+        return Slots.MAIN_HAND;
     }
 
     @Override

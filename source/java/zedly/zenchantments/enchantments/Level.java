@@ -64,7 +64,7 @@ public final class Level extends Zenchantment {
 
     @Override
     public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
+        return Slots.HANDS;
     }
 
     @Override
