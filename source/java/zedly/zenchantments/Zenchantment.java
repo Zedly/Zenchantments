@@ -67,12 +67,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     //region Static Methods
     public static void applyForTool(
         final @NotNull Player player,
-        final @NotNull WorldConfigurationProvider worldConfigurationProvider,
         final @Nullable EquipmentSlot slot,
         final @NotNull EnchantmentFunction action
     ) {
         requireNonNull(player);
-        requireNonNull(worldConfigurationProvider);
         requireNonNull(action);
         ItemStack tool = player.getInventory().getItem(slot);
         if(tool == null) {
@@ -81,7 +79,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         final Map<Zenchantment, Integer> zenchantments = getZenchantmentsOnItemStack(
             tool,
-            worldConfigurationProvider.getConfigurationForWorld(player.getWorld())
+            WorldConfigurationProvider.getInstance().getConfigurationForWorld(player.getWorld())
         );
 
         for (final Map.Entry<Zenchantment, Integer> entry : zenchantments.entrySet()) {

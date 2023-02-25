@@ -347,7 +347,6 @@ public final class ZenchantmentListener implements Listener {
     ) {
         Zenchantment.applyForTool(
             player,
-            this.plugin.getWorldConfigurationProvider(),
             slot,
             action
         );
@@ -382,7 +381,6 @@ public final class ZenchantmentListener implements Listener {
 
             Zenchantment.applyForTool(
                 player,
-                plugin.getWorldConfigurationProvider(),
                 usedHand,
                 (ench, level, slot) -> {
                     consumer.accept(() -> {

@@ -12,6 +12,7 @@ import zedly.zenchantments.Hand;
 import zedly.zenchantments.Tool;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +80,7 @@ public final class PotionResistance extends Zenchantment {
             for (final ItemStack stack : ((Player) entity).getInventory().getArmorContents()) {
                 final Map<Zenchantment, Integer> map = Zenchantment.getZenchantmentsOnItemStack(
                     stack,
-                    ZenchantmentsPlugin.getInstance().getWorldConfigurationProvider().getConfigurationForWorld(entity.getWorld())
+                    WorldConfigurationProvider.getInstance().getConfigurationForWorld(entity.getWorld())
                 );
 
                 for (final Zenchantment zenchantment : map.keySet()) {
