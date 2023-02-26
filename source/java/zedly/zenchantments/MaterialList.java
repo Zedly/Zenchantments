@@ -521,7 +521,8 @@ public final class MaterialList extends AbstractList<Material> {
             MUSHROOM_STEM,
             BROWN_MUSHROOM_BLOCK,
             RED_MUSHROOM_BLOCK,
-            Material.CACTUS
+            Material.CACTUS,
+            MANGROVE_ROOTS
         },
         CHORUS_PLANTS,
         LOGS,
@@ -809,6 +810,7 @@ public final class MaterialList extends AbstractList<Material> {
         new Material[] {
             Material.DIRT,
             GRASS,
+            DEAD_BUSH,
             VINE,
             SNOW,
             COCOA,
@@ -831,7 +833,6 @@ public final class MaterialList extends AbstractList<Material> {
             GRASS_BLOCK,
             PODZOL,
             FERN,
-            GRASS,
             MELON,
             PUMPKIN,
             NETHERRACK,
@@ -851,7 +852,13 @@ public final class MaterialList extends AbstractList<Material> {
             WARPED_HYPHAE,
             SHROOMLIGHT,
             FIRE,
-            END_STONE
+            END_STONE,
+            MOSS_CARPET,
+            MUD,
+            MANGROVE_ROOTS,
+            MUDDY_MANGROVE_ROOTS,
+            ROOTED_DIRT,
+            MANGROVE_PROPAGULE
         },
         TRUNKS,
         LEAVES,
@@ -925,7 +932,8 @@ public final class MaterialList extends AbstractList<Material> {
             SOUL_SAND,
             CLAY,
             MUD,
-            MUDDY_MANGROVE_ROOTS
+            MUDDY_MANGROVE_ROOTS,
+            ROOTED_DIRT
         },
         SANDS
     );

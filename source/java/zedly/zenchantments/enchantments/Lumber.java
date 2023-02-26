@@ -1,8 +1,11 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.world.level.block.MangroveRootsBlock;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
@@ -89,6 +92,11 @@ public final class Lumber extends Zenchantment {
         );
 
         for (final Block block : blocks) {
+            if (block.getType() == Material.MANGROVE_ROOTS) {
+                if (((Waterlogged) block.getBlockData()).isWaterlogged()) {
+                    continue;
+                }
+            }
             if (!CompatibilityAdapter.instance().breakBlock(block, event.getPlayer())) {
                 break;
             }
