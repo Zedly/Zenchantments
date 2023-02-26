@@ -16,6 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.ZenchantedArrow;
@@ -275,7 +276,7 @@ public final class ZenchantmentListener implements Listener {
 
     @EventHandler
     private void onProjectileLaunch(final @NotNull ProjectileLaunchEvent event) {
-        final Entity shooter = (Entity) event.getEntity().getShooter();
+        final ProjectileSource shooter = event.getEntity().getShooter();
 
         if (shooter == null || !(shooter instanceof Player)) {
             return;
