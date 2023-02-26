@@ -2,10 +2,7 @@ package zedly.zenchantments.event.listener;
 
 import org.bukkit.Bukkit;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -17,9 +14,11 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.enchantments.Bind;
 import zedly.zenchantments.event.BlockShredEvent;
@@ -221,13 +220,8 @@ public final class ZenchantmentListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-
         final Player player = event.getPlayer();
-        final PlayerInventory inventory = player.getInventory();
-        final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
-        final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        final EquipmentSlot usedHand = main != Tool.SHEAR && off == Tool.SHEAR ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
-
+        final EquipmentSlot usedHand = event.getHand();
         this.applyZenchantmentForTool(
             player,
             usedHand,
@@ -251,6 +245,17 @@ public final class ZenchantmentListener implements Listener {
             player,
             usedHand,
             (ench, level, slot) -> ench.onEntityShootBow(event, level, slot)
+        );
+    }
+
+    @EventHandler
+    private void onProjectileHit(final @NotNull ProjectileHitEvent event) {
+        if (event.getHitEntity() == null || !(event.getHitEntity() instanceof Player)) {
+            return;
+        }
+        this.applyZenchantmentForArmorAndHeldItems(
+            (Player) event.getHitEntity(),
+            (ench, level, slot) -> ench.onHitByProjectile(event, level, slot)
         );
     }
 
