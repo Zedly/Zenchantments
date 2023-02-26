@@ -415,6 +415,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         return false;
     }
 
+    public boolean onHitByProjectile(final @NotNull ProjectileHitEvent event, final int level, final EquipmentSlot slot) {
+        return false;
+    }
+
     public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final EquipmentSlot slot) {
         return false;
     }

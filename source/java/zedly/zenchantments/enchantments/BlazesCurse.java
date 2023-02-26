@@ -11,6 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -28,6 +29,7 @@ import static org.bukkit.inventory.EquipmentSlot.*;
 public final class BlazesCurse extends Zenchantment {
     private static final float SUBMERGE_DAMAGE = 1.5f;
     private static final float RAIN_DAMAGE = 0.5f;
+    private static final float SNOWBALL_DAMAGE = 1.0f;
 
     public static final String KEY = "blazes_curse";
 
@@ -102,7 +104,20 @@ public final class BlazesCurse extends Zenchantment {
             event.setDamage(0);
             return true;
         }
+        return false;
+    }
 
+    @Override
+    public boolean onHitByProjectile(final @NotNull ProjectileHitEvent event, final int level, final EquipmentSlot slot) {
+        Player target = (Player) event.getHitEntity();
+        if (event.getEntity().getType() == EntityType.SNOWBALL) {
+            if(event.getEntity().getShooter() != null && event.getEntity().getShooter() instanceof Player attacker) {
+                CompatibilityAdapter.instance().attackEntity(target, attacker, SNOWBALL_DAMAGE);
+            } else {
+                CompatibilityAdapter.instance().damagePlayer(target, SNOWBALL_DAMAGE, MELTING);
+            }
+            return true;
+        }
         return false;
     }
 
@@ -112,13 +127,15 @@ public final class BlazesCurse extends Zenchantment {
         Material material = block.getType();
 
         switch(material) {
+            case WATER:
+            case WATER_CAULDRON:
             case ICE:
             case FROSTED_ICE:
             case PACKED_ICE:
             case BLUE_ICE:
             case SNOW_BLOCK:
             case POWDER_SNOW:
-                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, MELTING);
+                CompatibilityAdapter.instance().damagePlayer(player, SUBMERGE_DAMAGE, MELTING);
                 return true;
         }
 
