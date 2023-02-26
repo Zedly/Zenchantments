@@ -317,7 +317,11 @@ public final class ZenchantmentListener implements Listener {
         }
 
         ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-            player.getInventory().setContents(contents);
+            for(int i = 0; i < contents.length; i++) {
+                if(contents[i] != null) {
+                    player.getInventory().setItem(i, contents[i]);
+                }
+            }
             player.setMetadata("ze.force-inv-reload", new FixedMetadataValue(plugin, "Yes"));
         }, 1);
     }
