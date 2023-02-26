@@ -79,6 +79,11 @@ public final class Utilities {
 
         final PlayerInventory inventory = player.getInventory();
         final ItemStack heldItem = inventory.getItem(slot);
+
+        if(heldItem.getItemMeta() != null && heldItem.getItemMeta().isUnbreakable()) {
+            return;
+        }
+
         final int unbreakingLevel = getUnbreakingLevel(heldItem);
         int totalDamageApplied = 0;
 
@@ -95,7 +100,7 @@ public final class Utilities {
         requireNonNull(player);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
-            damage = 0;
+            return;
         }
 
         final var inventory = player.getInventory();
