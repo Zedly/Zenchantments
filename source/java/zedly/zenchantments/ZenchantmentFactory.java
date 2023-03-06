@@ -21,6 +21,7 @@ public class ZenchantmentFactory {
         addConstructor(builder, Apocalypse.class, Apocalypse::new);
         addConstructor(builder, Arborist.class, Arborist::new);
         addConstructor(builder, Bind.class, Bind::new);
+        addConstructor(builder, Blanket.class, Blanket::new);
         addConstructor(builder, BlazesCurse.class, BlazesCurse::new);
         addConstructor(builder, Blizzard.class, Blizzard::new);
         addConstructor(builder, Bounce.class, Bounce::new);
@@ -42,6 +43,7 @@ public class ZenchantmentFactory {
         addConstructor(builder, GreenThumb.class, GreenThumb::new);
         addConstructor(builder, Harvest.class, Harvest::new);
         addConstructor(builder, Haste.class, Haste::new);
+        addConstructor(builder, HelpingHand.class, HelpingHand::new);
         addConstructor(builder, IceAspect.class, IceAspect::new);
         addConstructor(builder, Jump.class, Jump::new);
         addConstructor(builder, Laser.class, Laser::new);
