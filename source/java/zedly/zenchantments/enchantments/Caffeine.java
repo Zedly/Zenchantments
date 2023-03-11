@@ -2,7 +2,9 @@ package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
@@ -12,17 +14,17 @@ import java.util.Set;
 
 import static org.bukkit.potion.PotionEffectType.NIGHT_VISION;
 
-public final class NightVision extends Zenchantment {
-    public static final String KEY = "night_vision";
+public class Caffeine extends Zenchantment {
+    public static final String KEY = "caffeine";
 
-    private static final String                             NAME        = "Night Vision";
-    private static final String                             DESCRIPTION = "Lets the player see in the dark";
+    private static final String                             NAME        = "Caffeine";
+    private static final String                             DESCRIPTION = "Delays the spawning of Phantoms";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
+    private static final Hand HAND_USE    = Hand.RIGHT;
 
     private final NamespacedKey key;
 
-    public NightVision(
+    public Caffeine(
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
@@ -64,11 +66,17 @@ public final class NightVision extends Zenchantment {
 
     @Override
     public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        Utilities.addPotionEffect(player, NIGHT_VISION, 610, 5);
-
-
-
-
+        int insomniaTicks = player.getStatistic(Statistic.TIME_SINCE_REST);
+        if(insomniaTicks > 5) {
+            player.setStatistic(Statistic.TIME_SINCE_REST, insomniaTicks - level - 1);
+        }
         return true;
+    }
+
+    @Override
+    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
+        int insomniaTicks = event.getPlayer().getStatistic(Statistic.TIME_SINCE_REST);
+        event.getPlayer().sendMessage("Sleep ticks: " + insomniaTicks);
+        return false;
     }
 }

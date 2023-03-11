@@ -119,7 +119,7 @@ public final class Reveal extends Zenchantment {
                     }
 
                     ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-                        CompatibilityAdapter.instance().hideShulker(entityId, player);
+                        CompatibilityAdapter.instance().hideFakeEntity(entityId, player);
                         if (GLOWING_BLOCKS.containsKey(block) && GLOWING_BLOCKS.get(block) > 1) {
                             GLOWING_BLOCKS.put(block, GLOWING_BLOCKS.get(block) - 1);
                         } else {

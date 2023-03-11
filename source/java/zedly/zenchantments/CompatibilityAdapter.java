@@ -1,9 +1,7 @@
 package zedly.zenchantments;
 
 import net.minecraft.core.BlockPosition;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
-import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.network.syncher.DataWatcherRegistry;
 import net.minecraft.network.syncher.DataWatcherSerializer;
@@ -15,6 +13,8 @@ import net.minecraft.world.entity.animal.EntityMushroomCow;
 import net.minecraft.world.entity.animal.EntitySheep;
 import net.minecraft.world.entity.monster.EntityCreeper;
 import net.minecraft.world.entity.player.EntityHuman;
+import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.phys.Vec3D;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -24,6 +24,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
 import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftCreeper;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
@@ -40,6 +41,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -252,7 +254,7 @@ public class CompatibilityAdapter {
         return showHighlightBlock(blockToHighlight, entityId, player);
     }
 
-    public boolean hideShulker(final int entityId, final @NotNull Player player) {
+    public boolean hideFakeEntity(final int entityId, final @NotNull Player player) {
         final PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityId);
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
         ep.b.b.a(packet);
@@ -474,7 +476,7 @@ public class CompatibilityAdapter {
 
     public Map<Enchantment, Integer> getPrematureEnchantments(ItemMeta meta) {
         try {
-            Field f = meta.getClass().getDeclaredField("enchantments");
+            Field f = meta.getClass().getDeclaredField((meta instanceof CrossbowMeta) ? "enchants" : "enchantments");
             f.setAccessible(true);
             Map enchantments = (Map) (f.get(meta));
             return enchantments;
@@ -507,23 +509,6 @@ public class CompatibilityAdapter {
         }
     }
 
-    /*
-    NotNull
-    private static PacketPlayOutEntityMetadata generateShulkerGlowPacket(final int entityId) throws InstantiationException {
-        final Class<? extends PacketPlayOutEntityMetadata> clazz = PacketPlayOutEntityMetadata.class;
-        // Build data structure for Entity Metadata. Requires an index, a type and a value.
-        // As of 1.18, an invisible + glowing LivingEntity is set by Index 0 Type Byte Value 0x60
-        final DataWatcherSerializer<Byte> dws = DataWatcherRegistry.a; // Type (Byte)
-        final DataWatcherObject<Byte> dwo = new DataWatcherObject<>(0, dws); // Index (0)
-        final DataWatcher.Item<Byte> dwi = new DataWatcher.Item<>(dwo, (byte) 0x60); // Value (0x60)
-        final List<DataWatcher.Item<?>> list = new ArrayList<>();
-        FakeDataWatcher fdw = new FakeDataWatcher(list);
-        list.add(dwi); // Pack it in a list
-        PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata(entityId, list);
-        return packet;
-    }
-     */
-
     @NotNull
     private static PacketPlayOutEntityMetadata generateShulkerGlowPacket(final int entityId) throws InstantiationException {
         final Class<? extends PacketPlayOutEntityMetadata> clazz = PacketPlayOutEntityMetadata.class;
@@ -544,6 +529,23 @@ public class CompatibilityAdapter {
         final UUID uuid = UUID.randomUUID();
         FakeEntityLiving fel = new FakeEntityLiving(EntityTypes.aC, entityId, uuid, x, y, z);
         PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(fel);
+        return packet;
+    }
+
+    public void showQuakeBlock(Player player, final int entityId, final Block block) {
+        final EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        PacketPlayOutSpawnEntity ppose = generateFallingBlockSpawnPacket(block.getX() + 0.5, block.getY(), block.getZ() + 0.5, entityId, block);
+        PacketPlayOutEntityVelocity ppoev = new PacketPlayOutEntityVelocity(entityId, new Vec3D(0, 0.28, 0));
+        ep.b.b.a(ppose);
+        ep.b.b.a(ppoev);
+    }
+
+    @NotNull
+    private static PacketPlayOutSpawnEntity generateFallingBlockSpawnPacket(
+        final double x, final double y, final double z, final int entityId, final Block block) {
+        final UUID uuid = UUID.randomUUID();
+        IBlockData blockData = ((CraftBlockData) block.getBlockData()).getState();
+        PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(entityId, uuid, x, y, z, 0, 0, EntityTypes.F, net.minecraft.world.level.block.Block.i(blockData), new Vec3D(0, 0, 0), 0);
         return packet;
     }
 
@@ -598,19 +600,6 @@ public class CompatibilityAdapter {
         @Override
         public EnumMainHand eY() {
             return null;
-        }
-    }
-
-    public static class FakeDataWatcher extends DataWatcher {
-        private final List<DataWatcher.b<?>> list;
-
-        public FakeDataWatcher(List<DataWatcher.b<?>> list) {
-            super(null);
-            this.list = list;
-        }
-
-        public List<DataWatcher.b<?>> c() {
-            return list;
         }
     }
 }

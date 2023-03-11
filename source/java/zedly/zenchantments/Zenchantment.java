@@ -137,7 +137,9 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
             return Collections.emptyMap();
         }
 
+        final Map<Zenchantment, Integer> earlyMap = new LinkedHashMap<>();
         final Map<Zenchantment, Integer> map = new LinkedHashMap<>();
+        final Map<Zenchantment, Integer> lateMap = new LinkedHashMap<>();
 
         if ((!acceptBooks && itemStack.getType() == Material.ENCHANTED_BOOK)
             || !itemStack.hasItemMeta()
@@ -149,7 +151,18 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         for (String raw : requireNonNull(itemStack.getItemMeta().getLore())) {
             final Map.Entry<Zenchantment, Integer> zenchantment = getZenchantmentFromString(raw, worldConfiguration);
             if (zenchantment != null) {
-                map.put(zenchantment.getKey(), zenchantment.getValue());
+                switch(zenchantment.getKey().getPriority()) {
+                    case EARLY:
+                        earlyMap.put(zenchantment.getKey(), zenchantment.getValue());
+                        break;
+                    case NORMAL:
+                        map.put(zenchantment.getKey(), zenchantment.getValue());
+                        break;
+                    case LATE:
+                        lateMap.put(zenchantment.getKey(), zenchantment.getValue());
+                        break;
+                }
+
             } else if (outExtraLore != null) {
                 if (!isDescription(raw, worldConfiguration)) {
                     outExtraLore.add(raw);
@@ -157,29 +170,9 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
             }
         }
 
-        final Map<Zenchantment, Integer> finalMap = new LinkedHashMap<>();
-
-        // What does this part even do exactly?
-        // Can it be removed?
-        for (final String key : new String[]{Lumber.KEY, Shred.KEY, Mow.KEY, Pierce.KEY, Plough.KEY}) {
-            Zenchantment zenchantment = null;
-
-            for (final Zenchantment configured : GlobalConfiguration.getConfiguredZenchantments()) {
-                if (configured.getKey().getKey().equals(key)) {
-                    zenchantment = configured;
-                    break;
-                }
-            }
-
-            if (map.containsKey(zenchantment)) {
-                finalMap.put(zenchantment, map.get(zenchantment));
-                map.remove(zenchantment);
-            }
-        }
-
-        finalMap.putAll(map);
-
-        return finalMap;
+        earlyMap.putAll(map);
+        earlyMap.putAll(lateMap);
+        return earlyMap;
     }
 
     @Nullable
@@ -356,6 +349,10 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
     public final float getProbability() {
         return this.probability;
+    }
+
+    public ZenchantmentPriority getPriority() {
+        return ZenchantmentPriority.NORMAL;
     }
 
     //region Enchantment Events

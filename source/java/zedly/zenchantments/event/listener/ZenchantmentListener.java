@@ -91,6 +91,17 @@ public final class ZenchantmentListener implements Listener {
         );
     }
 
+    @EventHandler
+    private void onPhantomSpawn(EntitySpawnEvent event) {
+        if(event.getEntity().getType() != PHANTOM) {
+            return;
+        }
+
+        Phantom p = (Phantom) event.getEntity();
+
+
+    }
+
 
     @EventHandler
     private void onBlockInteract(final @NotNull PlayerInteractEvent event) {

@@ -27,6 +27,8 @@ public class ZenchantmentFactory {
         addConstructor(builder, Bounce.class, Bounce::new);
         addConstructor(builder, Burst.class, Burst::new);
         addConstructor(builder, Combustion.class, Combustion::new);
+        addConstructor(builder, Caffeine.class, Caffeine::new);
+        addConstructor(builder, Chitin.class, Chitin::new);
         addConstructor(builder, Conversion.class, Conversion::new);
         addConstructor(builder, Decapitation.class, Decapitation::new);
         addConstructor(builder, Ethereal.class, Ethereal::new);
@@ -51,6 +53,7 @@ public class ZenchantmentFactory {
         addConstructor(builder, LongCast.class, LongCast::new);
         addConstructor(builder, Lumber.class, Lumber::new);
         addConstructor(builder, Magnetism.class, Magnetism::new);
+        addConstructor(builder, MasterKey.class, MasterKey::new);
         addConstructor(builder, Meador.class, Meador::new);
         addConstructor(builder, Missile.class, Missile::new);
         addConstructor(builder, Mow.class, Mow::new);
@@ -62,6 +65,7 @@ public class ZenchantmentFactory {
         addConstructor(builder, Plough.class, Plough::new);
         addConstructor(builder, Potion.class, Potion::new);
         addConstructor(builder, PotionResistance.class, PotionResistance::new);
+        addConstructor(builder, Quake.class, Quake::new);
         addConstructor(builder, QuickShot.class, QuickShot::new);
         addConstructor(builder, Rainbow.class, Rainbow::new);
         addConstructor(builder, RainbowSlam.class, RainbowSlam::new);
