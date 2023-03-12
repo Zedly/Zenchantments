@@ -338,12 +338,12 @@ enchantments:
               cooldown: 0
               power: 1.0
       - Quake:
-                probability: 1.0
-                tools: Pickaxe
-                name: Quake
-                max-level: 3
-                cooldown: 0
-                power: 1.0
+              probability: 1.0
+              tools: Pickaxe
+              name: Quake
+              max-level: 3
+              cooldown: 0
+              power: 1.0
       - QuickShot:
               probability: 2.0
               tools: Bow
@@ -489,6 +489,13 @@ enchantments:
               tools: Sword
               name: Transformation
               max-level: 3
+              cooldown: 0
+              power: 1.0
+      - Trough:
+              probability: 1.0
+              tools: Chestplate
+              name: Trough
+              max-level: 1
               cooldown: 0
               power: 1.0
       - Variety:

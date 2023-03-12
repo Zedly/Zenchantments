@@ -88,6 +88,7 @@ public class ZenchantmentFactory {
         addConstructor(builder, Toxic.class, Toxic::new);
         addConstructor(builder, Tracer.class, Tracer::new);
         addConstructor(builder, Transformation.class, Transformation::new);
+        addConstructor(builder, Trough.class, Trough::new);
         addConstructor(builder, Unrepairable.class, Unrepairable::new);
         addConstructor(builder, Variety.class, Variety::new);
         addConstructor(builder, Vortex.class, Vortex::new);

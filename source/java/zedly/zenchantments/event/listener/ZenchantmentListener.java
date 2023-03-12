@@ -134,9 +134,8 @@ public final class ZenchantmentListener implements Listener {
 
         final Player player = event.getPlayer();
 
-        this.applyZenchantmentForTool(
+        applyZenchantmentForArmorAndHeldItems(
             player,
-            HAND,
             (ench, level, slot) -> ench.onEntityInteract(event, level, slot)
         );
     }
