@@ -3,8 +3,8 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.animal.EntityAnimal;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -89,8 +89,8 @@ public class Trough extends Zenchantment {
             if (entity.getType() == clickedType && entity instanceof CraftAnimals animal) {
                 if (animal.isAdult()) {
                     EntityAnimal ea = animal.getHandle();
-                    int i = ea.h();
-                    if (!ea.s.y && i == 0 && ea.fP()) {
+                    int i = ea.j();
+                    if (!ea.s.x && i == 0 && ea.fC()) {
                         if (mainHandUsed < mainHandAmount && animal.isBreedItem(mainHandItem)) {
                             mainHandUsed++;
                         } else if (offHandUsed < offHandAmount && animal.isBreedItem(offHandItem)) {
@@ -98,7 +98,7 @@ public class Trough extends Zenchantment {
                         } else {
                             continue;
                         }
-                        ea.f(((CraftPlayer) player).getHandle());
+                        ea.g(((CraftPlayer) player).getHandle());
                     }
                 }
             }
