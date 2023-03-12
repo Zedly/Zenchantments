@@ -1,19 +1,14 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.world.EnumHand;
-import net.minecraft.world.EnumInteractionResult;
 import net.minecraft.world.entity.animal.EntityAnimal;
-import net.minecraft.world.entity.player.EntityHuman;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftAnimals;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
-import org.bukkit.entity.*;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +18,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import static org.bukkit.Material.AIR;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class Trough extends Zenchantment {
     public static final String KEY = "trough";
@@ -77,20 +70,12 @@ public class Trough extends Zenchantment {
     }
 
     @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
-        if (event.getAction() == RIGHT_CLICK_AIR || event.getAction() == RIGHT_CLICK_BLOCK) {
-            return this.feed(event, level, slot);
-        }
-
-        return false;
-    }
-
-    @Override
     public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final EquipmentSlot slot) {
         return this.feed(event, level, slot);
     }
 
-    private boolean feed(final @NotNull PlayerEvent event, final int level, final EquipmentSlot slot) {
+    private boolean feed(final @NotNull PlayerInteractEntityEvent event, final int level, final EquipmentSlot slot) {
+        final EntityType clickedType = event.getRightClicked().getType();
         final int radius = (int) Math.round(level * this.getPower() + 2);
         final Player player = event.getPlayer();
         ItemStack mainHandItem = event.getPlayer().getInventory().getItemInMainHand();
@@ -101,7 +86,7 @@ public class Trough extends Zenchantment {
         int offHandUsed = 0;
 
         for (final Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity instanceof CraftAnimals animal) {
+            if (entity.getType() == clickedType && entity instanceof CraftAnimals animal) {
                 if (animal.isAdult()) {
                     EntityAnimal ea = animal.getHandle();
                     int i = ea.h();
