@@ -78,6 +78,20 @@ enchantments:
               max-level: 5
               cooldown: 0
               power: 2.0
+      - Caffeine:
+              probability: 5.0
+              tools: Helmet
+              name: Caffeine
+              max-level: 3
+              cooldown: 0
+              power: 1.0
+      - Chitin:
+              probability: 5.0
+              tools: Elytra
+              name: Chitin
+              max-level: 4
+              cooldown: 0
+              power: 1.0
       - Combustion:
               probability: 5.0
               tools: Chestplate
@@ -246,6 +260,13 @@ enchantments:
               max-level: 1
               cooldown: 0
               power: 1.0
+      - MasterKey:
+              probability: 4.0
+              tools: Chestplate
+              name: Master Key
+              max-level: 1
+              cooldown: 0
+              power: 1.0
       - Meador:
               probability: 1.0
               tools: Boots
@@ -316,6 +337,13 @@ enchantments:
               max-level: 4
               cooldown: 0
               power: 1.0
+      - Quake:
+                probability: 1.0
+                tools: Pickaxe
+                name: Quake
+                max-level: 3
+                cooldown: 0
+                power: 1.0
       - QuickShot:
               probability: 2.0
               tools: Bow

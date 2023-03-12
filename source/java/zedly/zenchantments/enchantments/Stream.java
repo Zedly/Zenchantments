@@ -73,12 +73,12 @@ public final class Stream extends Zenchantment {
 
     @Override
     public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.ARMOR;
+        return Slots.ALL;
     }
 
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
-        if (event.getItem() == null || event.getItem().getType() != Material.ELYTRA) {
+        if (slot != EquipmentSlot.HAND) {
             return false;
         }
 
@@ -139,9 +139,10 @@ public final class Stream extends Zenchantment {
         return false;
     }
 
+
     @Override
     public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
-        if (!player.isGliding() || !(player.getVelocity().length() >= 0.5)) {
+        if (slot != EquipmentSlot.CHEST || !player.isGliding() || !(player.getVelocity().length() >= 0.5)) {
             return false;
         }
 
@@ -157,7 +158,7 @@ public final class Stream extends Zenchantment {
             case 2:
             case 4:
                 player.getWorld().spawnParticle(TRAIL_TYPES[mode], player.getLocation(), 3);
-                Utilities.displayParticle(player.getLocation(), TRAIL_TYPES[mode], 3, 0.1, 0, 0, 0);
+                Utilities.displayParticle(player.getLocation(), TRAIL_TYPES[mode], 1, 0.05, 1, 1, 1);
                 break;
             case 3:
                 final ThreadLocalRandom random = ThreadLocalRandom.current();

@@ -2,9 +2,7 @@ package zedly.zenchantments;
 
 import net.minecraft.core.BlockPosition;
 import net.minecraft.core.IRegistry;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
-import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.network.syncher.DataWatcherObject;
 import net.minecraft.network.syncher.DataWatcherRegistry;
@@ -17,6 +15,8 @@ import net.minecraft.world.entity.animal.EntityMushroomCow;
 import net.minecraft.world.entity.animal.EntitySheep;
 import net.minecraft.world.entity.monster.EntityCreeper;
 import net.minecraft.world.entity.player.EntityHuman;
+import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.phys.Vec3D;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,6 +26,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftCreeper;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftMushroomCow;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
@@ -42,6 +43,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -254,7 +256,7 @@ public class CompatibilityAdapter {
         return showHighlightBlock(blockToHighlight, entityId, player);
     }
 
-    public boolean hideShulker(final int entityId, final @NotNull Player player) {
+    public boolean hideFakeEntity(final int entityId, final @NotNull Player player) {
         final PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityId);
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
         ep.b.a.a(packet);
@@ -476,7 +478,7 @@ public class CompatibilityAdapter {
 
     public Map<Enchantment, Integer> getPrematureEnchantments(ItemMeta meta) {
         try {
-            Field f = meta.getClass().getDeclaredField("enchantments");
+            Field f = meta.getClass().getDeclaredField((meta instanceof CrossbowMeta) ? "enchants" : "enchantments");
             f.setAccessible(true);
             Map enchantments = (Map) (f.get(meta));
             return enchantments;
@@ -534,6 +536,22 @@ public class CompatibilityAdapter {
         return packet;
     }
 
+    public void showQuakeBlock(Player player, final int entityId, final Block block) {
+        final EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        PacketPlayOutSpawnEntity ppose = generateFallingBlockSpawnPacket(block.getX() + 0.5, block.getY(), block.getZ() + 0.5, entityId, block);
+        PacketPlayOutEntityVelocity ppoev = new PacketPlayOutEntityVelocity(entityId, new Vec3D(0, 0.28, 0));
+        ep.b.a.a(ppose);
+        ep.b.a.a(ppoev);
+    }
+
+    @NotNull
+    private static PacketPlayOutSpawnEntity generateFallingBlockSpawnPacket(
+        final double x, final double y, final double z, final int entityId, final Block block) {
+        final UUID uuid = UUID.randomUUID();
+        IBlockData blockData = ((CraftBlockData) block.getBlockData()).getState();
+        PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(entityId, uuid, x, y, z, 0, 0, EntityTypes.F, net.minecraft.world.level.block.Block.i(blockData), new Vec3D(0, 0, 0));
+        return packet;
+    }
 
     /*
 

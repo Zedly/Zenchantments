@@ -14,6 +14,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -26,10 +27,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.MaterialList;
-import zedly.zenchantments.Utilities;
-import zedly.zenchantments.Zenchantment;
-import zedly.zenchantments.ZenchantmentsPlugin;
+import zedly.zenchantments.*;
 import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.enchantments.*;
 
@@ -177,10 +175,9 @@ public class GeneralListener implements Listener {
                 event.getEntity().setPickupDelay(0);
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
-                    if (entity instanceof ExperienceOrb) {
-                        this.plugin
-                            .getCompatibilityAdapter()
-                            .collectExp(Grab.GRAB_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                    if (entity instanceof ExperienceOrb orb) {
+                        CompatibilityAdapter.instance()
+                            .collectExp(Grab.GRAB_LOCATIONS.get(block), orb.getExperience());
                         entity.remove();
                     }
                 }
@@ -191,7 +188,7 @@ public class GeneralListener implements Listener {
                     continue;
                 }
 
-                if (!(block.getLocation().distance(location) < 2)) {
+                if (block.getLocation().distance(location) >= 2) {
                     continue;
                 }
 
@@ -199,10 +196,9 @@ public class GeneralListener implements Listener {
                 event.getEntity().setPickupDelay(0);
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
-                    if (entity instanceof ExperienceOrb) {
-                        this.plugin
-                            .getCompatibilityAdapter()
-                            .collectExp(Vortex.VORTEX_LOCATIONS.get(block), ((ExperienceOrb) entity).getExperience());
+                    if (entity instanceof ExperienceOrb orb) {
+                        CompatibilityAdapter.instance()
+                            .collectExp(Vortex.VORTEX_LOCATIONS.get(block), orb.getExperience());
                         entity.remove();
                     }
                 }
@@ -228,7 +224,7 @@ public class GeneralListener implements Listener {
             final int entityId = 2000000000 + event.getBlock().getRelative(face).hashCode() % 10000000;
             for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
                 if (player.getWorld().equals(event.getBlock().getWorld())) {
-                    this.plugin.getCompatibilityAdapter().hideShulker(entityId, player);
+                    CompatibilityAdapter.instance().hideFakeEntity(entityId, player);
                 }
             }
 

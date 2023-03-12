@@ -73,6 +73,11 @@ public final class Vortex extends Zenchantment {
     }
 
     @Override
+    public ZenchantmentPriority getPriority() {
+        return ZenchantmentPriority.LATE;
+    }
+
+    @Override
     public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final EquipmentSlot slot) {
         final Block deathBlock = event.getEntity().getLocation().getBlock();
         final Player killer = event.getEntity().getKiller();
@@ -80,7 +85,6 @@ public final class Vortex extends Zenchantment {
         VORTEX_LOCATIONS.put(deathBlock, killer);
 
         final int experience = event.getDroppedExp();
-
         event.setDroppedExp(0);
 
         CompatibilityAdapter.instance().collectExp(requireNonNull(killer), experience);
