@@ -741,8 +741,8 @@ public final class MaterialList extends AbstractList<Material> {
             BLAST_FURNACE
         },
         BEDS,
-        DOORS,
-        TRAPDOORS,
+        WOODEN_DOORS,
+        WOODEN_TRAPDOORS,
         FENCE_GATES,
         COMMAND_BLOCKS,
         BUTTONS,
@@ -890,7 +890,10 @@ public final class MaterialList extends AbstractList<Material> {
             RED_SANDSTONE,
             Material.ICE,
             PACKED_ICE,
-            BLUE_ICE
+            BLUE_ICE,
+            MAGMA_BLOCK,
+            BLACKSTONE,
+            CRIMSON_NYLIUM,
         },
         ORES,
         TERRACOTTA
@@ -904,7 +907,6 @@ public final class MaterialList extends AbstractList<Material> {
             MYCELIUM,
             SOUL_SAND,
             SOUL_SOIL,
-            CRIMSON_NYLIUM,
             WARPED_NYLIUM,
             GRAVEL,
             SOUL_SAND,
