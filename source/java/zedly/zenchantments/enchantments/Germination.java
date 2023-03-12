@@ -114,9 +114,7 @@ public final class Germination extends Zenchantment {
         int unbreakingLevel = Utilities.getUnbreakingLevel(toolUsed);
         int damageApplied = 0;
         int numBoneMealUsed = 0;
-        int numBoneMealAvailable = Utilities.countItems(player.getInventory(), (is) -> {
-            return is != null && is.getType() == Material.BONE_MEAL;
-        });
+        int numBoneMealAvailable = Utilities.countItems(player.getInventory(), (is) -> is != null && is.getType() == Material.BONE_MEAL);
 
         for (int x = -(radiusXZ); x <= radiusXZ; x++) {
             for (int y = -(radiusY) - 1; y <= radiusY - 1; y++) {

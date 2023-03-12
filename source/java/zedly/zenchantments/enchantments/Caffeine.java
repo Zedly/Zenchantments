@@ -72,11 +72,4 @@ public class Caffeine extends Zenchantment {
         }
         return true;
     }
-
-    @Override
-    public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
-        int insomniaTicks = event.getPlayer().getStatistic(Statistic.TIME_SINCE_REST);
-        event.getPlayer().sendMessage("Sleep ticks: " + insomniaTicks);
-        return false;
-    }
 }

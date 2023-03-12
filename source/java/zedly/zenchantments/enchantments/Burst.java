@@ -1,7 +1,9 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
@@ -90,6 +92,13 @@ public final class Burst extends Zenchantment {
         int maxArrows = hasInfinity ? 64 : Utilities.countItems(player.getInventory(), (i) -> i != null && i.getType() == ARROW) - 1;
         maxArrows = Math.min(maxArrows, (int) Math.round((this.getPower() * level) + 1));
 
+        if(itemInHand.getType() == Material.CROSSBOW) {
+            if(itemInHand.getEnchantmentLevel(Enchantment.MULTISHOT) != 0) {
+                maxArrows /= 3;
+            }
+        }
+
+
         int unbreakingLevel = Utilities.getUnbreakingLevel(itemInHand);
         int remainingDurability = Utilities.getUsesRemainingOnTool(itemInHand);
         int shotArrows = 0;
@@ -112,7 +121,10 @@ public final class Burst extends Zenchantment {
             // Apparently NMS forgets to remove arrows because we interfere with the inventory
             Utilities.removeMaterialsFromPlayer(player, ARROW, shotArrows + 1);
         }
-        Utilities.damageItemStackIgnoreUnbreaking(player, shotArrows, slot);
+
+        final int finalAppliedDamage = appliedDamage;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () ->
+        Utilities.damageItemStackIgnoreUnbreaking(player, finalAppliedDamage, slot), 0);
 
         return maxArrows > 0;
     }

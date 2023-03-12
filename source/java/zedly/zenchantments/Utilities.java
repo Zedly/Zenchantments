@@ -109,11 +109,11 @@ public final class Utilities {
         damageItemStackIgnoreUnbreaking(player, totalDamageApplied, slot);
     }
 
-    public static void damageItemStackIgnoreUnbreaking(final @NotNull Player player, final int damage, final EquipmentSlot slot) {
+    public static void damageItemStackIgnoreUnbreaking(final @NotNull Player player, int damage, final EquipmentSlot slot) {
         requireNonNull(player);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
-            return;
+            damage = 0;
         }
 
         final var inventory = player.getInventory();
@@ -180,8 +180,16 @@ public final class Utilities {
         final @NotNull Material material,
         int amount
     ) {
+        return removeMaterialsFromPlayer(player, (is) -> is != null && is.getType() == material, amount);
+    }
+
+    public static boolean removeMaterialsFromPlayer(
+        final @NotNull Player player,
+        final @NotNull Predicate<ItemStack> predicate,
+        int amount
+    ) {
         requireNonNull(player);
-        requireNonNull(material);
+        requireNonNull(predicate);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
             return true;
@@ -189,14 +197,14 @@ public final class Utilities {
 
         final var inventory = player.getInventory();
 
-        if (!playerHasMaterial(player, material, amount)) {
+        if (!playerHasMaterial(player, predicate, amount)) {
             return false;
         }
 
         for (var i = 0; i < inventory.getSize(); i++) {
             final var item = inventory.getItem(i);
 
-            if (item == null || item.getType() != material) {
+            if (!predicate.test(item)) {
                 continue;
             }
 
@@ -215,11 +223,11 @@ public final class Utilities {
 
     public static boolean playerHasMaterial(
         final @NotNull Player player,
-        final @NotNull Material material,
+        final @NotNull Predicate<ItemStack> predicate,
         int amount
     ) {
         requireNonNull(player);
-        requireNonNull(material);
+        requireNonNull(predicate);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
             return true;
@@ -230,7 +238,7 @@ public final class Utilities {
         for (var i = 0; i < inventory.getSize(); i++) {
             final var item = inventory.getItem(i);
 
-            if (item == null || item.getType() != material) {
+            if (!predicate.test(item)) {
                 continue;
             }
 
