@@ -9,6 +9,7 @@ import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -81,9 +82,10 @@ public class MasterKey extends Zenchantment {
 
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
-        if (event.getAction() == RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == RIGHT_CLICK_BLOCK && !event.getPlayer().isSneaking()) {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.IRON_DOOR || block.getType() == Material.IRON_TRAPDOOR) {
+                event.setCancelled(true);
 
                 MockBlock mockBlock = new MockBlock(block, block.getType() == Material.IRON_DOOR ? Material.OAK_DOOR : Material.OAK_TRAPDOOR);
                 PlayerInteractEvent mockEvent = new PlayerInteractEvent(event.getPlayer(), event.getAction(), event.getItem(), mockBlock, event.getBlockFace());
