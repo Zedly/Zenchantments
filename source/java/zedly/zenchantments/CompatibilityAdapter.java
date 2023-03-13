@@ -9,6 +9,7 @@ import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.EnumInteractionResult;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.EntityAnimal;
 import net.minecraft.world.entity.animal.EntityMushroomCow;
 import net.minecraft.world.entity.animal.EntitySheep;
 import net.minecraft.world.entity.monster.EntityCreeper;
@@ -25,10 +26,7 @@ import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
 import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftCreeper;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftMushroomCow;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftSheep;
+import org.bukkit.craftbukkit.v1_19_R2.entity.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
@@ -175,6 +173,21 @@ public class CompatibilityAdapter {
         target.damage(damage, attacker);
         target.setLastDamageCause(damageEvent);
         return true;
+    }
+
+    public boolean canAnimalEnterLoveMode(Animals animal) {
+        if (animal.isAdult()) {
+            EntityAnimal ea = ((CraftAnimals)animal).getHandle();
+            int i = ea.h();
+            if (!ea.s.y && i == 0 && ea.fP()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void animalEnterLoveMode(Animals animal, Player feeder) {
+        ((CraftAnimals)animal).getHandle().f(((CraftPlayer) feeder).getHandle());;
     }
 
     public boolean shearEntityNMS(
