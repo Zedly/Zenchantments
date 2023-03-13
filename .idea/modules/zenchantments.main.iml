@@ -4,8 +4,9 @@
     <facet type="minecraft" name="Minecraft">
       <configuration>
         <autoDetectTypes>
-          <platformType>SPIGOT</platformType>
           <platformType>MCP</platformType>
+          <platformType>SPIGOT</platformType>
+          <platformType>BUKKIT</platformType>
         </autoDetectTypes>
       </configuration>
     </facet>
