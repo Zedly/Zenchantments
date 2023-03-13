@@ -44,7 +44,7 @@ enchantments:
               cooldown: 0
               power: 1.0
       - Blanket:
-              probability: 1.0
+              probability: 3.0
               tools: Axe, Shovel, Sword, Pickaxe, Hoe
               name: Blanket
               max-level: 3
@@ -79,7 +79,7 @@ enchantments:
               cooldown: 0
               power: 2.0
       - Caffeine:
-              probability: 5.0
+              probability: 4.0
               tools: Helmet
               name: Caffeine
               max-level: 3
@@ -205,7 +205,7 @@ enchantments:
               cooldown: 0
               power: 1.0
       - HelpingHand:
-              probability: 1.0
+              probability: 3.0
               tools: Chestplate
               name: Helping Hand
               max-level: 1
@@ -335,13 +335,6 @@ enchantments:
               tools: Helmet, Chestplate, Leggings, Boots
               name: Potion Resistance
               max-level: 4
-              cooldown: 0
-              power: 1.0
-      - Quake:
-              probability: 1.0
-              tools: Pickaxe
-              name: Quake
-              max-level: 3
               cooldown: 0
               power: 1.0
       - QuickShot:
@@ -492,8 +485,8 @@ enchantments:
               cooldown: 0
               power: 1.0
       - Trough:
-              probability: 1.0
-              tools: Chestplate
+              probability: 5.0
+              tools: Chestplate, Leggings
               name: Trough
               max-level: 1
               cooldown: 0
