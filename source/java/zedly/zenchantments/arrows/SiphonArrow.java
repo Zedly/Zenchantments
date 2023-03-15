@@ -24,14 +24,15 @@ public final class SiphonArrow extends ZenchantedArrow {
         ) {
             Entity shooter = event.getDamager();
             if (shooter == null || !(shooter instanceof Player)) {
-                die(true);
+                die(false);
                 return;
             }
             final Player player = (Player) shooter;
             int difference = (int) Math.round(0.17 * this.getLevel() * this.getPower() * event.getFinalDamage());
             player.setHealth(Math.min(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), player.getHealth() + difference));
+            this.die(true);
         }
 
-        this.die(true);
+        this.die(false);
     }
 }

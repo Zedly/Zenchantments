@@ -41,8 +41,8 @@ public final class StationaryArrow extends ZenchantedArrow {
                     event.getEntity().remove();
                 }
             }
+            die(true);
         }
-
-        die(true);
+        die(false);
     }
 }

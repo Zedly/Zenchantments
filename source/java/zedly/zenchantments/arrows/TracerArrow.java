@@ -24,18 +24,14 @@ public final class TracerArrow extends ZenchantedArrow {
 
     @Override
     public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
-        if (event.isCancelled()) {
-            Tracer.TRACERS.remove(this.getArrow());
-            die(true);
-        }
+        Tracer.TRACERS.remove(this.getArrow());
+        die(false);
     }
 
     @Override
     public void onImpact(ProjectileHitEvent event) {
-        if (event.isCancelled()) {
-            Tracer.TRACERS.remove(this.getArrow());
-            die(true);
-        }
+        Tracer.TRACERS.remove(this.getArrow());
+        die(false);
     }
 
 

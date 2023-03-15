@@ -22,6 +22,6 @@ public final class MultiArrow extends ZenchantedArrow {
         entity.setNoDamageTicks(0);
         entity.setMaximumNoDamageTicks(temp);
 
-        die(true);
+        die(false);
     }
 }
