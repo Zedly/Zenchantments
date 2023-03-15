@@ -50,6 +50,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.BAMBOO;
 
 public class CompatibilityAdapter {
@@ -245,12 +246,6 @@ public class CompatibilityAdapter {
 
         player.setLastDamageCause(event);
         player.damage(damage);
-        return true;
-    }
-
-    public boolean explodeCreeper(final @NotNull Creeper creeper, final boolean damage) {
-        final EntityCreeper nmsCreeper = ((CraftCreeper) creeper).getHandle();
-        nmsCreeper.fP();
         return true;
     }
 
