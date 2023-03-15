@@ -249,12 +249,6 @@ public class CompatibilityAdapter {
         return true;
     }
 
-    public boolean explodeCreeper(final @NotNull Creeper creeper, final boolean damage) {
-        final EntityCreeper nmsCreeper = ((CraftCreeper) creeper).getHandle();
-        nmsCreeper.fB();
-        return true;
-    }
-
     public boolean formBlock(final @NotNull Block block, final @NotNull Material material, final @NotNull Player player) {
         final BlockState state = block.getState();
         state.setType(material);
