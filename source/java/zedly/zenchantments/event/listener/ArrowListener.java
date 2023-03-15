@@ -13,6 +13,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
+import zedly.zenchantments.ZenchantmentPriority;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
@@ -61,7 +62,13 @@ public class ArrowListener implements Listener {
         for (MetadataValue meta : metas) {
             List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
             for (ZenchantedArrow zenchantedArrow : arrowMeta) {
-                consumer.accept(zenchantedArrow);
+                if(zenchantedArrow.getPriority() == ZenchantmentPriority.EARLY) consumer.accept(zenchantedArrow);
+            }
+            for (ZenchantedArrow zenchantedArrow : arrowMeta) {
+                if(zenchantedArrow.getPriority() == ZenchantmentPriority.NORMAL)consumer.accept(zenchantedArrow);
+            }
+            for (ZenchantedArrow zenchantedArrow : arrowMeta) {
+                if(zenchantedArrow.getPriority() == ZenchantmentPriority.LATE) consumer.accept(zenchantedArrow);
             }
         }
     }
