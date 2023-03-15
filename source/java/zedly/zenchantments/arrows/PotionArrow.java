@@ -3,6 +3,7 @@ package zedly.zenchantments.arrows;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Utilities;
@@ -40,7 +41,7 @@ public final class PotionArrow extends ZenchantedArrow {
     }
 
     @Override
-    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
+    public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
         if (ThreadLocalRandom.current().nextInt((int) Math.round(10 / (this.getLevel() * this.getPower() + 1))) == 1) {
             Utilities.addPotionEffect(
                 (LivingEntity) Objects.requireNonNull(this.getArrow().getShooter()),
@@ -49,8 +50,6 @@ public final class PotionArrow extends ZenchantedArrow {
                 (int) Math.round(this.getLevel() * this.getPower())
             );
         }
-
-        this.die();
-        return true;
+        die(true);
     }
 }

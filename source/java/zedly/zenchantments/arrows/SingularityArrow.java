@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.AbstractArrow;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
@@ -19,7 +20,7 @@ public final class SingularityArrow extends ZenchantedArrow {
     }
 
     @Override
-    public void onImpact() {
+    public void onImpact(ProjectileHitEvent event) {
         final Location location = this.getArrow().getLocation().clone();
 
         Singularity.SINGULARITIES.put(location, true);
@@ -47,6 +48,6 @@ public final class SingularityArrow extends ZenchantedArrow {
             );
         }
 
-        this.die();
+        die(true);
     }
 }

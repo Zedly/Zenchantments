@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -30,34 +31,29 @@ public final class FuseArrow extends ZenchantedArrow {
     }
 
     @Override
-    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
-        if (!CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
-            this.die();
-            return true;
+    public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
+        if (!CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getHitEntity(), (Player) this.getArrow().getShooter(), 0)) {
+             die(true);
         }
 
-        if (event.getEntity().getType() == EntityType.CREEPER) {
-            final Creeper creeper = (Creeper) event.getEntity();
-            CompatibilityAdapter.instance().explodeCreeper(
-                creeper,
-                    WorldConfigurationProvider.getInstance()
-                        .getConfigurationForWorld(event.getDamager().getWorld())
-                    .isExplosionBlockBreakEnabled()
-            );
-        } else if (event.getEntity().getType() == EntityType.MUSHROOM_COW) {
-            final MushroomCow mooshroom = (MushroomCow) event.getEntity();
+        if (event.getHitEntity().getType() == EntityType.CREEPER) {
+            final Creeper creeper = (Creeper) event.getHitEntity();
+            creeper.explode();
+            event.setCancelled(true);
+        } else if (event.getHitEntity().getType() == EntityType.MUSHROOM_COW) {
+            final MushroomCow mooshroom = (MushroomCow) event.getHitEntity();
 
             if (mooshroom.isAdult()) {
-                final Location location = event.getEntity().getLocation();
+                final Location location = event.getHitEntity().getLocation();
 
                 Utilities.displayParticle(location, Particle.EXPLOSION_LARGE, 1, 1f, 0, 0, 0);
-                event.getEntity().remove();
+                event.getHitEntity().remove();
                 location.getWorld().spawnEntity(location, EntityType.COW);
                 location.getWorld().dropItemNaturally(location, new ItemStack(Material.RED_MUSHROOM, 5));
+                event.setCancelled(true);
             }
         }
 
-        this.die();
-        return true;
+        die(true);
     }
 }

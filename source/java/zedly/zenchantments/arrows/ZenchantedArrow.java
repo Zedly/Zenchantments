@@ -3,11 +3,12 @@ package zedly.zenchantments.arrows;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zedly.zenchantments.Zenchantment;
+import zedly.zenchantments.ZenchantmentPriority;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
@@ -84,8 +85,8 @@ public class ZenchantedArrow {
         return this.tick;
     }
 
-    protected final void die() {
-        this.die(true);
+    public ZenchantmentPriority getPriority() {
+        return ZenchantmentPriority.NORMAL;
     }
 
     protected final void die(boolean removeArrow) {
@@ -109,16 +110,18 @@ public class ZenchantedArrow {
 
     protected void onTick() { }
 
-    public void onImpact() {
-        this.die(true);
+    public void onImpact(ProjectileHitEvent event) {
+        die(false);
     }
+    public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
+        die(false);
+    }
+
+    public void onDamageEntity(final @NotNull EntityDamageByEntityEvent event) { }
 
     public void onKill(final @NotNull EntityDeathEvent event) { }
 
-    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
-        this.onImpact();
-        return true;
-    }
+
 
     protected void onDie() {
     }
