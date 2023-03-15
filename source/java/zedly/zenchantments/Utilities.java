@@ -405,12 +405,6 @@ public final class Utilities {
     }
 
     @NotNull
-    public static String reproduceCorruptedInvisibleSequence(final @NotNull String original) {
-        requireNonNull(original);
-        return CraftChatMessage.fromJSONComponent(CraftChatMessage.fromStringToJSON(original, false));
-    }
-
-    @NotNull
     public static String makeStringInvisible(@NotNull String string) {
         requireNonNull(string);
 

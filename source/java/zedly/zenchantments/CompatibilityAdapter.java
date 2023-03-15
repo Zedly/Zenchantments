@@ -90,6 +90,13 @@ public class CompatibilityAdapter {
         );
     }
 
+    @NotNull
+    public static String reproduceCorruptedInvisibleSequence(final @NotNull String original) {
+        requireNonNull(original);
+        return CraftChatMessage.fromJSONComponent(CraftChatMessage.fromStringToJSON(original, false));
+    }
+
+
     public void collectExp(final @NotNull Player player, final int amount) {
         final EntityExperienceOrb orb = new EntityExperienceOrb(
             ((CraftWorld) player.getWorld()).getHandle(),
