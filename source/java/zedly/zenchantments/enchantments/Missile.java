@@ -70,7 +70,7 @@ public final class Missile extends Zenchantment {
         final MissileArrow arrow = new MissileArrow((AbstractArrow) event.getProjectile());
         final Player player = (Player) event.getEntity();
 
-        ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, player);
+        ZenchantedArrow.addZenchantedArrowToArrowEntity((AbstractArrow) event.getProjectile(), arrow, player);
 
         event.setCancelled(true);
 

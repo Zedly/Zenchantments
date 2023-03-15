@@ -14,9 +14,6 @@ import zedly.zenchantments.arrows.ZenchantedArrow;
 import java.util.Collection;
 import java.util.Set;
 
-import static org.bukkit.inventory.EquipmentSlot.HAND;
-import static org.bukkit.inventory.EquipmentSlot.OFF_HAND;
-
 public final class Apocalypse extends Zenchantment {
     public static final String KEY = "apocalypse";
 
@@ -69,7 +66,7 @@ public final class Apocalypse extends Zenchantment {
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final ApocalypseArrow arrow = new ApocalypseArrow((AbstractArrow) event.getProjectile());
-        ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        ZenchantedArrow.addZenchantedArrowToArrowEntity((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
         return true;
     }
 }

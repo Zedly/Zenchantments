@@ -172,7 +172,7 @@ public final class Burst extends Zenchantment {
         } else {
             arrow.setCritical(critical);
             arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-            ZenchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
+            ZenchantedArrow.addZenchantedArrowToArrowEntity(arrow, new MultiArrow(arrow), player);
         }
     }
 }

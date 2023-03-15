@@ -3,7 +3,6 @@ package zedly.zenchantments.enchantments;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -76,7 +75,7 @@ public final class QuickShot extends Zenchantment {
         ItemStack bow = inv.getItem(slot);
 
         final QuickArrow arrow = new QuickArrow((AbstractArrow) event.getProjectile());
-        ZenchantedArrow.putArrow((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
+        ZenchantedArrow.addZenchantedArrowToArrowEntity((AbstractArrow) event.getProjectile(), arrow, (Player) event.getEntity());
 
         if (bow.getType() == Material.CROSSBOW) {
             CrossbowMeta meta = (CrossbowMeta) bow.getItemMeta();
