@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.ZenchantmentPriority;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 import static java.util.Objects.requireNonNull;
@@ -14,6 +15,10 @@ import static zedly.zenchantments.enchantments.Vortex.VORTEX_LOCATIONS;
 public final class VortexArrow extends ZenchantedArrow {
     public VortexArrow(final @NotNull AbstractArrow entity) {
         super(entity);
+    }
+
+    public ZenchantmentPriority getPriority() {
+        return ZenchantmentPriority.LATE;
     }
 
     @Override
