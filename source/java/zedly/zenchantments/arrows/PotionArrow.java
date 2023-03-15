@@ -49,7 +49,8 @@ public final class PotionArrow extends ZenchantedArrow {
                 150 + (int) Math.round(this.getLevel() * this.getPower() * 50),
                 (int) Math.round(this.getLevel() * this.getPower())
             );
+            die(true);
         }
-        die(true);
+        die(false);
     }
 }

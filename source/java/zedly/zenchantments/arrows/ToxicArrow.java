@@ -44,8 +44,9 @@ public final class ToxicArrow extends ZenchantedArrow {
 
                 Toxic.HUNGER_PLAYERS.put((Player) event.getHitEntity(), (1 + value) * 100);
             }
+            die(true);
         }
 
-        die(true);
+        die(false);
     }
 }

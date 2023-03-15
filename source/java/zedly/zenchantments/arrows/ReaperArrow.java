@@ -27,8 +27,8 @@ public final class ReaperArrow extends ZenchantedArrow {
             final int duration = (int) Math.round(20 + this.getLevel() * 10 * this.getPower());
             Utilities.addPotionEffect(entity, PotionEffectType.WITHER, duration, power);
             Utilities.addPotionEffect(entity, PotionEffectType.BLINDNESS, duration, power);
+            die(true);
         }
-
-        die(true);
+        die(false);
     }
 }

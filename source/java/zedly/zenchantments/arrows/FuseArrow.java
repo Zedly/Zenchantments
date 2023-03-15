@@ -40,6 +40,7 @@ public final class FuseArrow extends ZenchantedArrow {
             final Creeper creeper = (Creeper) event.getHitEntity();
             creeper.explode();
             event.setCancelled(true);
+            die(true);
         } else if (event.getHitEntity().getType() == EntityType.MUSHROOM_COW) {
             final MushroomCow mooshroom = (MushroomCow) event.getHitEntity();
 
@@ -51,9 +52,10 @@ public final class FuseArrow extends ZenchantedArrow {
                 location.getWorld().spawnEntity(location, EntityType.COW);
                 location.getWorld().dropItemNaturally(location, new ItemStack(Material.RED_MUSHROOM, 5));
                 event.setCancelled(true);
+                die(true);
             }
         }
 
-        die(true);
+        die(false);
     }
 }
