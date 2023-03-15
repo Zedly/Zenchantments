@@ -47,14 +47,25 @@ public class ZenchantedArrow {
         this(arrow, 0);
     }
 
-    public static void putArrow(
+    public static void addZenchantedArrowToArrowEntity(
         final @NotNull AbstractArrow arrow,
         final @NotNull ZenchantedArrow zenchantedArrow,
         final @NotNull Player player
     ) {
+        addZenchantedArrowToEntity(arrow, ARROW_METADATA_NAME, zenchantedArrow);
+        ZENCHANTED_ARROWS.add(zenchantedArrow);
+        zenchantedArrow.onLaunch(player, null);
+    }
+
+    public static void addZenchantedArrowToEntity(
+        final @NotNull Entity maybeKilledEntity,
+        final @NotNull String metadataName,
+        final @NotNull ZenchantedArrow zenchantedArrow
+    ) {
+
         List<ZenchantedArrow> arrowMeta;
-        if(arrow.hasMetadata(ARROW_METADATA_NAME)) {
-            MetadataValue m = arrow.getMetadata(ARROW_METADATA_NAME).get(0);
+        if(maybeKilledEntity.hasMetadata(metadataName)) {
+            MetadataValue m = maybeKilledEntity.getMetadata(metadataName).get(0);
             if(m.getOwningPlugin() != ZenchantmentsPlugin.getInstance()) {
                 return;
             }
@@ -63,9 +74,7 @@ public class ZenchantedArrow {
             arrowMeta = new LinkedList<>();
         }
         arrowMeta.add(zenchantedArrow);
-        arrow.setMetadata(ARROW_METADATA_NAME, new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), arrowMeta));
-        ZENCHANTED_ARROWS.add(zenchantedArrow);
-        zenchantedArrow.onLaunch(player, null);
+        maybeKilledEntity.setMetadata(metadataName, new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), arrowMeta));
     }
 
     @NotNull

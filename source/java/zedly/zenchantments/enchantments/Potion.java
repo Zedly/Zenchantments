@@ -68,7 +68,7 @@ public final class Potion extends Zenchantment {
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         final AbstractArrow eventArrow = (AbstractArrow) event.getProjectile();
         final PotionArrow arrow = new PotionArrow(eventArrow, level, this.getPower());
-        ZenchantedArrow.putArrow(eventArrow, arrow, (Player) event.getEntity());
+        ZenchantedArrow.addZenchantedArrowToArrowEntity(eventArrow, arrow, (Player) event.getEntity());
         return true;
     }
 }
