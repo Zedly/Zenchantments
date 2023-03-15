@@ -3,6 +3,7 @@ package zedly.zenchantments.arrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,7 @@ public final class ApocalypseArrow extends ZenchantedArrow {
     }
 
     @Override
-    public void onImpact() {
+    public void onImpact(ProjectileHitEvent event) {
         final WorldConfiguration config = WorldConfigurationProvider.getInstance()
             .getConfigurationForWorld(this.getArrow().getWorld());
 
@@ -77,6 +78,6 @@ public final class ApocalypseArrow extends ZenchantedArrow {
             }
         }
 
-        this.die();
+        die(true);
     }
 }

@@ -1,5 +1,6 @@
 package zedly.zenchantments.event.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -23,57 +24,52 @@ public class ArrowListener implements Listener {
             return;
         }
 
-        if(event.getHitBlock() == null) {
+        final AbstractArrow arrowEntity = (AbstractArrow) event.getEntity();
+
+        if (!arrowEntity.hasMetadata(ZenchantedArrow.ARROW_METADATA_NAME)) {
             return;
         }
 
-        final AbstractArrow damager = (AbstractArrow) event.getEntity();
+        List<MetadataValue> metas = arrowEntity.getMetadata(ZenchantedArrow.ARROW_METADATA_NAME);
 
-        if (!damager.hasMetadata(ZenchantedArrow.ARROW_METADATA_NAME)) {
-            return;
-        }
+        if (event.getHitBlock() != null) {
+            for (MetadataValue meta : metas) {
+                List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
+                for (ZenchantedArrow zenchantedArrow : arrowMeta) {
+                    zenchantedArrow.onImpact(event);
+                }
+            }
+        } else if (event.getHitEntity() != null) {
+            Entity hitEntity = event.getHitEntity();
+            for (MetadataValue meta : metas) {
+                List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
+                for (ZenchantedArrow zenchantedArrow : arrowMeta) {
+                    if (hitEntity instanceof LivingEntity) {
+                        zenchantedArrow.onImpactEntity(event);
+                    }
+                    if (hitEntity instanceof LivingEntity) {
+                        hitEntity.setMetadata(ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME, new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), zenchantedArrow));
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> hitEntity.removeMetadata(ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance()), 0);
+                    }
 
-        List<MetadataValue> metas = damager.getMetadata(ZenchantedArrow.ARROW_METADATA_NAME);
-        for (MetadataValue meta : metas) {
-            List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
-            for (ZenchantedArrow arrow : arrowMeta) {
-                arrow.onImpact();
+                }
             }
         }
-        damager.removeMetadata(ZenchantedArrow.ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance());
+        arrowEntity.removeMetadata(ZenchantedArrow.ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance());
     }
 
     @EventHandler
-    private void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof AbstractArrow)) {
+    private void onEntityHurtByArrow(EntityDamageByEntityEvent event) {
+        final Entity entity = event.getEntity();
+        if (!entity.hasMetadata(ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME)) {
             return;
         }
-
-        final AbstractArrow damager = (AbstractArrow) event.getDamager();
-
-        if (!damager.hasMetadata(ZenchantedArrow.ARROW_METADATA_NAME)) {
-            return;
-        }
-
-        List<MetadataValue> metas = damager.getMetadata(ZenchantedArrow.ARROW_METADATA_NAME);
-        for (MetadataValue meta : metas) {
-            List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
-            for (ZenchantedArrow arrow : arrowMeta) {
-                arrow.onImpact();
-                if (event.getEntity() instanceof LivingEntity) {
-                    if (!arrow.onImpact(event)) {
-                        event.setDamage(0);
-                    }
-                }
-
-                if (event.getEntity() instanceof LivingEntity
-                    && event.getDamage() >= ((LivingEntity) event.getEntity()).getHealth()
-                ) {
-                    event.getEntity().setMetadata(ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME, new FixedMetadataValue(ZenchantmentsPlugin.getInstance(), arrow));
-                }
+        List<MetadataValue> metas = entity.getMetadata(ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME);
+        for (MetadataValue value : metas) {
+            if (value.value() instanceof ZenchantedArrow arrow) {
+                arrow.onDamageEntity(event);
             }
         }
-        damager.removeMetadata(ZenchantedArrow.ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance());
     }
 
     @EventHandler
@@ -90,6 +86,5 @@ public class ArrowListener implements Listener {
                 arrow.onKill(event);
             }
         }
-        entity.removeMetadata(ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance());
     }
 }

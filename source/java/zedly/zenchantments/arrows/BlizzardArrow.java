@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.CompatibilityAdapter;
 import zedly.zenchantments.Utilities;
@@ -21,7 +22,7 @@ public final class BlizzardArrow extends ZenchantedArrow {
     }
 
     @Override
-    public void onImpact() {
+    public void onImpact(ProjectileHitEvent event) {
         Utilities.displayParticle(
             Utilities.getCenter(this.getArrow().getLocation()),
             Particle.CLOUD,
@@ -49,6 +50,6 @@ public final class BlizzardArrow extends ZenchantedArrow {
             );
         }
 
-        this.die();
+        die(true);
     }
 }
