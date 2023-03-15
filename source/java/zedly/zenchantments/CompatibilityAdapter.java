@@ -24,9 +24,10 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_19_R2.entity.*;
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_19_R3.entity.*;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftChatMessage;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
@@ -98,7 +99,7 @@ public class CompatibilityAdapter {
             amount
         );
         final EntityHuman human = ((CraftPlayer) player).getHandle();
-        orb.c_(human); // XP Orb Entity handles mending. Don't blame me, I didn't code it.
+        orb.b_(human); // XP Orb Entity handles mending. Don't blame me, I didn't code it.
         human.bZ = 0; // Reset XP Pickup Timer.
     }
 
@@ -179,7 +180,7 @@ public class CompatibilityAdapter {
         if (animal.isAdult()) {
             EntityAnimal ea = ((CraftAnimals)animal).getHandle();
             int i = ea.h();
-            if (!ea.s.y && i == 0 && ea.fP()) {
+            if (!ea.H.B && i == 0 && ea.fT()) {
                 return true;
             }
         }
@@ -197,11 +198,11 @@ public class CompatibilityAdapter {
     ) {
         if (target instanceof CraftSheep) {
             final EntitySheep entitySheep = ((CraftSheep) target).getHandle();
-            final EnumInteractionResult result = entitySheep.a(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
+            final EnumInteractionResult result = entitySheep.b(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
             return result == EnumInteractionResult.a;
         } else if (target instanceof CraftMushroomCow) {
             final EntityMushroomCow entityMushroomCow = ((CraftMushroomCow) target).getHandle();
-            final EnumInteractionResult result = entityMushroomCow.a(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
+            final EnumInteractionResult result = entityMushroomCow.b(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
             return result == EnumInteractionResult.a;
         }
 
@@ -270,7 +271,7 @@ public class CompatibilityAdapter {
     public boolean hideFakeEntity(final int entityId, final @NotNull Player player) {
         final PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityId);
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ep.b.b.a(packet);
+        ep.b.a(packet);
         return true;
     }
 
@@ -514,8 +515,8 @@ public class CompatibilityAdapter {
             final PacketPlayOutSpawnEntity spawnPacket = generateShulkerSpawnPacket(x, y, z, entityId);
             final PacketPlayOutEntityMetadata metadataPacket = generateShulkerGlowPacket(entityId);
             final EntityPlayer ep = ((CraftPlayer) player).getHandle();
-            ep.b.b.a(spawnPacket);
-            ep.b.b.a(metadataPacket);
+            ep.b.a(spawnPacket);
+            ep.b.a(metadataPacket);
             return true;
         } catch (InstantiationException ex) {
             return false;
@@ -540,7 +541,7 @@ public class CompatibilityAdapter {
     private static PacketPlayOutSpawnEntity generateShulkerSpawnPacket(
         final int x, final int y, final int z, final int entityId) throws InstantiationException {
         final UUID uuid = UUID.randomUUID();
-        FakeEntityLiving fel = new FakeEntityLiving(EntityTypes.aC, entityId, uuid, x, y, z);
+        FakeEntityLiving fel = new FakeEntityLiving(EntityTypes.aG, entityId, uuid, x, y, z);
         PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(fel);
         return packet;
     }
@@ -549,8 +550,8 @@ public class CompatibilityAdapter {
         final EntityPlayer ep = ((CraftPlayer) player).getHandle();
         PacketPlayOutSpawnEntity ppose = generateFallingBlockSpawnPacket(block.getX() + 0.5, block.getY(), block.getZ() + 0.5, entityId, block);
         PacketPlayOutEntityVelocity ppoev = new PacketPlayOutEntityVelocity(entityId, new Vec3D(0, 0.28, 0));
-        ep.b.b.a(ppose);
-        ep.b.b.a(ppoev);
+        ep.b.a(ppose);
+        ep.b.a(ppoev);
     }
 
     @NotNull
@@ -582,7 +583,7 @@ public class CompatibilityAdapter {
         }
 
         @Override
-        public int ah() {
+        public int af() {
             return entityId;
         }
 
@@ -611,7 +612,7 @@ public class CompatibilityAdapter {
         }
 
         @Override
-        public EnumMainHand eY() {
+        public EnumMainHand fd() {
             return null;
         }
     }
