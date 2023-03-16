@@ -15,7 +15,7 @@ public final class MultiArrow extends ZenchantedArrow {
 
     @Override
     public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
-        final LivingEntity entity = (LivingEntity) event.getHitEntity();
+        final LivingEntity entity = (LivingEntity) event.getEntity();
         final int temp = entity.getMaximumNoDamageTicks();
 
         entity.setMaximumNoDamageTicks(0);
