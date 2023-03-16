@@ -110,6 +110,7 @@ public final class Burst extends Zenchantment {
             }
         }
 
+        ZenchantedArrow.addZenchantedArrowToArrowEntity(originalArrow, new MultiArrow(originalArrow), player);
         for (int i = 0; i < shotArrows; i++) {
             //player.getInventory().setItem(slot, itemInHand);
             ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
