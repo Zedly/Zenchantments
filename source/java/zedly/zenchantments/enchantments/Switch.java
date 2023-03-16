@@ -21,46 +21,16 @@ import static org.bukkit.Material.AIR;
 public final class Switch extends Zenchantment {
     public static final String KEY = "switch";
 
-    private static final String                             NAME        = "Switch";
-    private static final String                             DESCRIPTION = "Replaces the clicked block with the leftmost block in your hotbar when sneaking";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Shred.class, Anthropomorphism.class, Fire.class, Pierce.class, Reveal.class);
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private final NamespacedKey key;
 
     public Switch(
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

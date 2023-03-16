@@ -10,6 +10,8 @@ import zedly.zenchantments.ZenchantmentFactory;
 
 import java.util.*;
 
+import static zedly.zenchantments.I18n.translateString;
+
 public class WorldConfiguration implements zedly.zenchantments.api.configuration.WorldConfiguration {
     private final Set<Zenchantment>                zenchantments;
     private final Map<String, Zenchantment>        nameToEnch;
@@ -124,7 +126,7 @@ public class WorldConfiguration implements zedly.zenchantments.api.configuration
 
         this.nameToEnch = new HashMap<>();
         for (Zenchantment ench : this.zenchantments) {
-            this.nameToEnch.put(ChatColor.stripColor(ench.getName().toLowerCase()), ench);
+            this.nameToEnch.put(ChatColor.stripColor(Zenchantment.getNameOf(ench).toLowerCase()), ench);
         }
 
         this.keyToEnch = new HashMap<>();

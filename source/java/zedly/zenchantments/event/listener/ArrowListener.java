@@ -34,7 +34,7 @@ public class ArrowListener implements Listener {
             Entity hitEntity = event.getHitEntity();
             if (hitEntity instanceof LivingEntity) {
                 forEachZenchatedArrow(arrowEntity, ZenchantedArrow.ARROW_METADATA_NAME, (za) -> {
-                    za.onImpact(event);
+                    za.onImpactEntity(event);
                     ZenchantedArrow.addZenchantedArrowToEntity(hitEntity, ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME, za);
                 });
                 Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> hitEntity.removeMetadata(ZenchantedArrow.KILLED_BY_ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance()), 0);

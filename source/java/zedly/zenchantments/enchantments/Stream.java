@@ -21,10 +21,7 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 public final class Stream extends Zenchantment {
     public static final String KEY = "stream";
 
-    private static final String                             NAME        = "Stream";
-    private static final String                             DESCRIPTION = "Creates a trail of particles when in flight";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.NONE;
 
     private static final Particle[] TRAIL_TYPES = {
         Particle.CLOUD,
@@ -34,8 +31,6 @@ public final class Stream extends Zenchantment {
         Particle.HEART
     };
 
-    private final NamespacedKey key;
-
     public Stream(
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
@@ -43,32 +38,7 @@ public final class Stream extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

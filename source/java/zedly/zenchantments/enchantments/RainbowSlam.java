@@ -23,12 +23,7 @@ public final class RainbowSlam extends Zenchantment {
 
     public static final Set<Entity> RAINBOW_SLAM_ENTITIES = new HashSet<>();
 
-    private static final String                             NAME        = "Rainbow Slam";
-    private static final String                             DESCRIPTION = "Attacks enemy mobs with a powerful swirling slam";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Force.class);
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private final NamespacedKey key;
 
     public RainbowSlam(
         final @NotNull Set<Tool> enchantable,
@@ -37,32 +32,7 @@ public final class RainbowSlam extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

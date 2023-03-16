@@ -17,12 +17,7 @@ import java.util.Set;
 public final class Firestorm extends Zenchantment {
     public static final String KEY = "firestorm";
 
-    private static final String                             NAME        = "Firestorm";
-    private static final String                             DESCRIPTION = "Spawns a firestorm where the arrow strikes burning nearby entities";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Blizzard.class);
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private final NamespacedKey key;
 
     public Firestorm(
         final @NotNull Set<Tool> enchantable,
@@ -31,32 +26,7 @@ public final class Firestorm extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

@@ -14,14 +14,12 @@ import zedly.zenchantments.arrows.ZenchantedArrow;
 import java.util.Collection;
 import java.util.Set;
 
+import static zedly.zenchantments.I18n.translateString;
+
 public final class Apocalypse extends Zenchantment {
     public static final String KEY = "apocalypse";
 
-    private static final String                             NAME        = "Apocalypse";
-    private static final String                             DESCRIPTION = "Unleashes hell";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    private final NamespacedKey key;
 
     public Apocalypse(
         final @NotNull Set<Tool> enchantable,
@@ -30,32 +28,7 @@ public final class Apocalypse extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override
