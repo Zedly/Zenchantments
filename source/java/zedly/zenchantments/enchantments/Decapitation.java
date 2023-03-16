@@ -23,10 +23,7 @@ import static org.bukkit.entity.EntityType.*;
 public final class Decapitation extends Zenchantment {
     public static final String KEY = "decapitation";
 
-    private static final String                             NAME        = "Decapitation";
-    private static final String                             DESCRIPTION = "Increases the chance for dropping the enemy's head on death";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.LEFT;
 
     private static final int          BASE_PLAYER_DROP_CHANCE = 150;
     private static final int          BASE_MOB_DROP_CHANCE    = 150;
@@ -45,8 +42,6 @@ public final class Decapitation extends Zenchantment {
         CREEPER_HEAD
     };
 
-    private final NamespacedKey key;
-
     public Decapitation(
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
@@ -54,32 +49,7 @@ public final class Decapitation extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

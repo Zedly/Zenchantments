@@ -122,6 +122,7 @@ public class ZenchantedArrow {
     public void onImpact(ProjectileHitEvent event) {
         die(false);
     }
+
     public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
         die(false);
     }

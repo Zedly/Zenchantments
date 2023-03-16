@@ -25,6 +25,7 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.*;
 import static org.bukkit.inventory.EquipmentSlot.*;
+import static zedly.zenchantments.I18n.translateString;
 
 public final class BlazesCurse extends Zenchantment {
     private static final float SUBMERGE_DAMAGE = 1.5f;
@@ -33,8 +34,6 @@ public final class BlazesCurse extends Zenchantment {
 
     public static final String KEY = "blazes_curse";
 
-    private static final String                             NAME        = "Blaze's Curse";
-    private static final String                             DESCRIPTION = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
 
     private static final EnumSet<Biome> DRY_BIOMES = EnumSet.of(
@@ -47,8 +46,6 @@ public final class BlazesCurse extends Zenchantment {
         ERODED_BADLANDS
     );
 
-    private final NamespacedKey key;
-
     public BlazesCurse(
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
@@ -56,32 +53,7 @@ public final class BlazesCurse extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

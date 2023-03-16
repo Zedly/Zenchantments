@@ -22,15 +22,12 @@ import java.util.Collection;
 import java.util.Set;
 
 import static org.bukkit.Material.ARROW;
+import static zedly.zenchantments.I18n.translateString;
 
 public final class Burst extends Zenchantment {
     public static final String KEY = "burst";
 
-    private static final String NAME = "Burst";
-    private static final String DESCRIPTION = "Rapidly fires arrows in series";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    private final NamespacedKey key;
 
     public Burst(
         final @NotNull Set<Tool> enchantable,
@@ -39,32 +36,7 @@ public final class Burst extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

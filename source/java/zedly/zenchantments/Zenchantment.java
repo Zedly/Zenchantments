@@ -3,6 +3,7 @@ package zedly.zenchantments;
 import org.bukkit.ChatColor;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -28,6 +29,7 @@ import zedly.zenchantments.event.listener.EnchantmentFunction;
 import zedly.zenchantments.player.PlayerData;
 import zedly.zenchantments.player.PlayerDataProvider;
 
+import javax.naming.Name;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,17 +37,21 @@ import java.util.regex.Pattern;
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.ENCHANTED_BOOK;
+import static zedly.zenchantments.I18n.translateString;
 
 public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zenchantment {
     private static final Pattern ZENCHANTMENT_LORE_PATTERN = Pattern.compile(
         "§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)"
     );
 
+    private final Set<Class<? extends Zenchantment>> conflicting;
     private final Set<Tool> enchantable;
     private final int maxLevel;
     private final int cooldown;
     private final double power;
     private final float probability;
+    private final String translationKey;
+    private final NamespacedKey key;
 
     private boolean used;
     private boolean cursed;
@@ -55,13 +61,18 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         final int maxLevel,
         final int cooldown,
         final double power,
-        final float probability
+        final float probability,
+        final Set<Class<? extends Zenchantment>> conflicting,
+        String translationKey
     ) {
         this.enchantable = enchantable;
         this.maxLevel = maxLevel;
         this.cooldown = cooldown;
         this.power = power;
         this.probability = probability;
+        this.conflicting = conflicting;
+        this.translationKey = translationKey;
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), translationKey);
     }
 
     //region Static Methods
@@ -330,6 +341,32 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     }
     //endregion
 
+    public static String getNameOf(Zenchantment ench) {
+        return translateString("zenchantment." + ench.getTranslateStringName() + ".name");
+    }
+
+    public static String getDescriptionOf(Zenchantment ench) {
+        return translateString("zenchantment." + ench.getTranslateStringName() + ".description");
+    }
+
+    public final String getName() {
+        return Zenchantment.getNameOf(this);
+    }
+
+    public final String getDescription() {
+        return Zenchantment.getDescriptionOf(this);
+    }
+
+    public final NamespacedKey getKey() {
+        return key;
+    }
+
+    public final String getTranslateStringName() { return translationKey; }
+
+    public final Set<Class<? extends Zenchantment>> getConflicting() {
+        return conflicting;
+    }
+
     @NotNull
     public final Set<Tool> getEnchantable() {
         return this.enchantable;
@@ -458,7 +495,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     @NotNull
     public final String getMainEnchantmentString(final int level, final @NotNull WorldConfiguration worldConfiguration) {
         return (this.cursed ? worldConfiguration.getCurseColor() : worldConfiguration.getEnchantmentColor())
-            + this.getName()
+            + translateString("zenchantment." + getKey() + ".name")
             + (this.maxLevel == 1 ? " " : " " + Utilities.convertIntToNumeral(level));
     }
 

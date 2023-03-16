@@ -20,6 +20,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
+import static zedly.zenchantments.I18n.translateString;
 
 public final class Anthropomorphism extends Zenchantment {
     public static final String KEY = "anthropomorphism";
@@ -27,15 +28,11 @@ public final class Anthropomorphism extends Zenchantment {
     public static final Map<FallingBlock, Pair<Double, Vector>> ATTACK_BLOCKS = new HashMap<>();
     public static final Map<FallingBlock, Entity>               IDLE_BLOCKS   = new HashMap<>();
 
-    private static final String                             NAME        = "Anthropomorphism";
-    private static final String                             DESCRIPTION = "Spawns blocks to protect you when right sneak clicking, and attacks entities when left clicking";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
 
     private static final MaterialList ANTHRO_SOURCES = new MaterialList(MaterialList.STONES, MaterialList.COBBLESTONES, MaterialList.DIRT);
     private static final List<Entity> VORTEX    = new ArrayList<>();
     private static boolean fallBool = false;
-
-    private final NamespacedKey key;
 
     public Anthropomorphism(
         final @NotNull Set<Tool> enchantable,
@@ -44,32 +41,7 @@ public final class Anthropomorphism extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

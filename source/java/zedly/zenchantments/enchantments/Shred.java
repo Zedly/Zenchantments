@@ -26,46 +26,16 @@ import static zedly.zenchantments.MaterialList.*;
 public final class Shred extends Zenchantment {
     public static final String KEY = "shred";
 
-    private static final String                             NAME        = "Shred";
-    private static final String                             DESCRIPTION = "Breaks the blocks within a radius of the original block mined";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
-    private static final Hand                               HAND_USE    = Hand.LEFT;
-
-    private final NamespacedKey key;
 
     public Shred(
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
         final int cooldown,
-        final double power,
-        final float probability
+        final double probability,
+        final float power
     ) {
-        super(enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

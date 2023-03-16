@@ -20,17 +20,12 @@ import static org.bukkit.entity.EntityType.*;
 public final class MysteryFish extends Zenchantment {
     public static final String KEY = "mystery_fish";
 
-    private static final String                             NAME        = "Mystery Fish";
-    private static final String                             DESCRIPTION = "Catches water mobs like Squid and Guardians";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
 
     private static final Map<Entity, Player> ENTITIES_ATTRACTED_TO_PLAYERS = new HashMap<>();
 
     private static final Map<Integer, EntityType> MYSTERY_SPAWN_RATES = new LinkedHashMap<>();
     private static final int RANDOM_RANGE;
-
-    private final NamespacedKey key;
 
     public MysteryFish(
         final @NotNull Set<Tool> enchantable,
@@ -39,32 +34,7 @@ public final class MysteryFish extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override

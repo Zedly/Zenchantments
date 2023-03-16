@@ -19,30 +19,7 @@ public final class Fire extends Zenchantment {
     // BlockBreakEvent is not cancelled but the original item drop is not desired.
     public static final HashMap<Block, AtomicInteger> ITEM_DROP_REPLACEMENTS = new HashMap<>();
 
-    private static final String NAME = "Fire";
-    private static final String DESCRIPTION = "Drops the smelted version of the block broken";
     private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Switch.class, Variety.class);
-    private static final Hand HAND_USE = Hand.LEFT;
-
-    private static final int MAX_BLOCKS = 256;
-    private static final int[][] SEARCH_FACES_CACTUS = new int[][]{{0, 1, 0}};
-    private static final int[][] SEARCH_FACES_CHORUS = new int[][]{
-        {-1, 0, 0},
-        {1, 0, 0},
-        {0, 1, 0},
-        {0, 0, -1},
-        {0, 0, 1}
-    };
-    private static final Map<Material, Integer> ORE_EXPERIENCE_MAP = Map.of(
-        Material.IRON_ORE, 1,
-        Material.GOLD_ORE, 3,
-        Material.COPPER_ORE, 2,
-        Material.DEEPSLATE_IRON_ORE, 1,
-        Material.DEEPSLATE_GOLD_ORE, 3,
-        Material.DEEPSLATE_COPPER_ORE, 2
-    );
-
-    private final NamespacedKey key;
 
     public Fire(
         final @NotNull Set<Tool> enchantable,
@@ -51,37 +28,12 @@ public final class Fire extends Zenchantment {
         final double probability,
         final float power
     ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
+        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
     }
 
     @Override
     public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
+        return Slots.HANDS;
     }
 
     @Override
