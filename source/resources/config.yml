@@ -493,7 +493,7 @@ enchantments:
               power: 1.0
       - Variety:
               probability: 4.0
-              tools: Axe
+              tools: Hoe
               name: Variety
               max-level: 1
               cooldown: 0
