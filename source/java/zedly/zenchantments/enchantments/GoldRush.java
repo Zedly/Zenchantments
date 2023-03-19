@@ -18,6 +18,7 @@ public final class GoldRush extends Zenchantment {
         final Block block = event.getBlock();
 
         if ((block.getType() == SAND || block.getType() == RED_SAND) && ThreadLocalRandom.current().nextInt(100) >= (100 - (level * this.getPower() * 3))) {
+            event.setDropItems(false);
             block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(GOLD_NUGGET));
             return true;
         }
