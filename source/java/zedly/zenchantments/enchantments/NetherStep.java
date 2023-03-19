@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
@@ -18,27 +16,9 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 
+@AZenchantment(runInSlots = Slots.ARMOR, conflicting = {})
 public final class NetherStep extends Zenchantment {
-    public static final String KEY = "nether_step";
-
     public static final Map<Location, Long> NETHERSTEP_LOCATIONS = new HashMap<>();
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public NetherStep(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.ARMOR;
-    }
 
     @Override
     public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {

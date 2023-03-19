@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,26 +14,18 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.Set;
 
 import static org.bukkit.block.Biome.*;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.*;
-import static org.bukkit.inventory.EquipmentSlot.*;
-import static zedly.zenchantments.I18n.translateString;
 
+@AZenchantment(runInSlots = Slots.ARMOR , conflicting = {})
 public final class BlazesCurse extends Zenchantment {
     private static final float SUBMERGE_DAMAGE = 1.5f;
     private static final float RAIN_DAMAGE = 0.5f;
     private static final float SNOWBALL_DAMAGE = 1.0f;
-
-    public static final String KEY = "blazes_curse";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
     private static final EnumSet<Biome> DRY_BIOMES = EnumSet.of(
         DESERT,
         SAVANNA,
@@ -45,20 +35,6 @@ public final class BlazesCurse extends Zenchantment {
         WOODED_BADLANDS,
         ERODED_BADLANDS
     );
-
-    public BlazesCurse(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    @NotNull
-    public Collection<EquipmentSlot> getApplyToSlots() { return Slots.ARMOR; }
 
     @Override
     public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final EquipmentSlot slot) {

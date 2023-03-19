@@ -168,12 +168,12 @@ public class AnvilMergeListener implements Listener {
         );
 
         for (final Zenchantment enchantment : leftZenchantments.keySet()) {
-            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
+            if (enchantment.getClass() == Unrepairable.class) {
                 return new ItemStack(AIR);
             }
         }
         for (final Zenchantment enchantment : rightZenchantments.keySet()) {
-            if (enchantment.getKey().getKey().equals(Unrepairable.KEY)) {
+            if (enchantment.getClass() == Unrepairable.class) {
                 return new ItemStack(AIR);
             }
         }

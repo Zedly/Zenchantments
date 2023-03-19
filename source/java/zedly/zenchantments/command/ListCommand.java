@@ -36,7 +36,7 @@ public class ListCommand extends ZenchantmentsCommand {
             .getZenchantments()
             .stream()
             .filter(zenchantment -> zenchantment.isValidMaterial(player.getInventory().getItemInMainHand()))
-            .map(zenchantment -> translateString("zenchantment." + zenchantment.getKey().getKey() + ".name"))
+            .map(zenchantment -> translateString("zenchantment." + zenchantment.getI18nKey() + ".name"))
             .sorted()
             .forEach(name -> player.sendMessage("- " + name));
     }

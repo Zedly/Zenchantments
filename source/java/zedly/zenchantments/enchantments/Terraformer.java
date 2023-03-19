@@ -1,8 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -11,34 +9,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
-import java.util.Set;
-
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {})
 public final class Terraformer extends Zenchantment {
-    public static final String KEY = "terraformer";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
     private static final int[][] SEARCH_FACES = { { -1, 0, 0 }, { 1, 0, 0 }, { 0, 0, -1 }, { 0, 0, 1 } };
-
-    public Terraformer(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
 
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {

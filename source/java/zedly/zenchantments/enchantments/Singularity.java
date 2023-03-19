@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -17,35 +15,15 @@ import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.task.EffectTask;
 import zedly.zenchantments.task.Frequency;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.requireNonNull;
 
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class Singularity extends Zenchantment {
-    public static final String KEY = "singularity";
-
     public static final Map<Location, Boolean> SINGULARITIES = new HashMap<>();
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public Singularity(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
 
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {

@@ -1,8 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -10,34 +8,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
-import static zedly.zenchantments.I18n.translateString;
 import static zedly.zenchantments.MaterialList.*;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND , conflicting = {})
 public final class Arborist extends Zenchantment {
-    public static final String KEY = "arborist";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public Arborist(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
-
     @Override
     public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         final Block block = event.getBlock();

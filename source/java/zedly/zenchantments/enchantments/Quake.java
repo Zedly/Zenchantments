@@ -1,25 +1,17 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.task.EffectTask;
-import zedly.zenchantments.task.Frequency;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,29 +20,9 @@ import static java.util.Objects.checkIndex;
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.event.block.Action.*;
-import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {Pierce.class, Switch.class})
 public class Quake extends Zenchantment {
-    public static final String KEY = "quake";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
-
-    public Quake(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
-
-
     int delay = 5;
 
     @Override

@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.DyeColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
@@ -15,148 +13,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.entity.EntityType.*;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {})
 public final class Transformation extends Zenchantment {
-    public static final String KEY = "transformation";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    private static final List<EntityType> ENTITY_TYPES_FROM = ImmutableList.<EntityType>builder().add(
-        HUSK,
-        WITCH,
-        EntityType.COD,
-        PHANTOM,
-        HORSE,
-        SKELETON,
-        EntityType.CHICKEN,
-        SQUID,
-        OCELOT,
-        POLAR_BEAR,
-        COW,
-        PIG,
-        SPIDER,
-        SLIME,
-        GUARDIAN,
-        ENDERMITE,
-        SKELETON_HORSE,
-        EntityType.RABBIT,
-        SHULKER,
-        SNOWMAN,
-        DROWNED,
-        VINDICATOR,
-        EntityType.SALMON,
-        BLAZE,
-        DONKEY,
-        STRAY,
-        PARROT,
-        DOLPHIN,
-        WOLF,
-        SHEEP,
-        MUSHROOM_COW,
-        ZOMBIFIED_PIGLIN,
-        CAVE_SPIDER,
-        MAGMA_CUBE,
-        ELDER_GUARDIAN,
-        SILVERFISH,
-        ZOMBIE_HORSE,
-        EntityType.RABBIT,
-        ENDERMAN,
-        IRON_GOLEM,
-        ZOMBIE,
-        EVOKER,
-        PUFFERFISH,
-        VEX,
-        MULE,
-        WITHER_SKELETON,
-        BAT,
-        TURTLE,
-        ZOMBIE_VILLAGER,
-        VILLAGER,
-        EntityType.TROPICAL_FISH,
-        GHAST,
-        LLAMA,
-        CREEPER
-    ).build();
-
-    private static final List<EntityType> ENTITY_TYPES_TO = ImmutableList.<EntityType>builder().add(
-        DROWNED,
-        VINDICATOR,
-        EntityType.SALMON,
-        BLAZE,
-        DONKEY,
-        STRAY,
-        PARROT,
-        DOLPHIN,
-        WOLF,
-        SHEEP,
-        MUSHROOM_COW,
-        ZOMBIFIED_PIGLIN,
-        CAVE_SPIDER,
-        MAGMA_CUBE,
-        ELDER_GUARDIAN,
-        SILVERFISH,
-        ZOMBIE_HORSE,
-        EntityType.RABBIT,
-        ENDERMAN,
-        IRON_GOLEM,
-        ZOMBIE,
-        EVOKER,
-        PUFFERFISH,
-        VEX,
-        MULE,
-        WITHER_SKELETON,
-        BAT,
-        TURTLE,
-        OCELOT,
-        POLAR_BEAR,
-        COW,
-        PIG,
-        SPIDER,
-        SLIME,
-        GUARDIAN,
-        ENDERMITE,
-        SKELETON_HORSE,
-        EntityType.RABBIT,
-        SHULKER,
-        SNOWMAN,
-        ZOMBIE_VILLAGER,
-        VILLAGER,
-        EntityType.TROPICAL_FISH,
-        GHAST,
-        LLAMA,
-        SKELETON,
-        EntityType.CHICKEN,
-        SQUID,
-        HUSK,
-        WITCH,
-        EntityType.COD,
-        PHANTOM,
-        HORSE,
-        CREEPER
-    ).build();
-
-    public Transformation(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
+    private static final List<EntityType> ENTITY_TYPES_FROM;
+    private static final List<EntityType> ENTITY_TYPES_TO;
 
     @Override
     public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
@@ -341,5 +208,121 @@ public final class Transformation extends Zenchantment {
         newEntity.setCustomNameVisible(entity.isCustomNameVisible());
 
         return entity;
+    }
+
+    static {
+        ENTITY_TYPES_FROM = ImmutableList.<EntityType>builder().add(
+            HUSK,
+            WITCH,
+            EntityType.COD,
+            PHANTOM,
+            HORSE,
+            SKELETON,
+            EntityType.CHICKEN,
+            SQUID,
+            OCELOT,
+            POLAR_BEAR,
+            COW,
+            PIG,
+            SPIDER,
+            SLIME,
+            GUARDIAN,
+            ENDERMITE,
+            SKELETON_HORSE,
+            EntityType.RABBIT,
+            SHULKER,
+            SNOWMAN,
+            DROWNED,
+            VINDICATOR,
+            EntityType.SALMON,
+            BLAZE,
+            DONKEY,
+            STRAY,
+            PARROT,
+            DOLPHIN,
+            WOLF,
+            SHEEP,
+            MUSHROOM_COW,
+            ZOMBIFIED_PIGLIN,
+            CAVE_SPIDER,
+            MAGMA_CUBE,
+            ELDER_GUARDIAN,
+            SILVERFISH,
+            ZOMBIE_HORSE,
+            EntityType.RABBIT,
+            ENDERMAN,
+            IRON_GOLEM,
+            ZOMBIE,
+            EVOKER,
+            PUFFERFISH,
+            VEX,
+            MULE,
+            WITHER_SKELETON,
+            BAT,
+            TURTLE,
+            ZOMBIE_VILLAGER,
+            VILLAGER,
+            EntityType.TROPICAL_FISH,
+            GHAST,
+            LLAMA,
+            CREEPER
+        ).build();
+
+        ENTITY_TYPES_TO = ImmutableList.<EntityType>builder().add(
+            DROWNED,
+            VINDICATOR,
+            EntityType.SALMON,
+            BLAZE,
+            DONKEY,
+            STRAY,
+            PARROT,
+            DOLPHIN,
+            WOLF,
+            SHEEP,
+            MUSHROOM_COW,
+            ZOMBIFIED_PIGLIN,
+            CAVE_SPIDER,
+            MAGMA_CUBE,
+            ELDER_GUARDIAN,
+            SILVERFISH,
+            ZOMBIE_HORSE,
+            EntityType.RABBIT,
+            ENDERMAN,
+            IRON_GOLEM,
+            ZOMBIE,
+            EVOKER,
+            PUFFERFISH,
+            VEX,
+            MULE,
+            WITHER_SKELETON,
+            BAT,
+            TURTLE,
+            OCELOT,
+            POLAR_BEAR,
+            COW,
+            PIG,
+            SPIDER,
+            SLIME,
+            GUARDIAN,
+            ENDERMITE,
+            SKELETON_HORSE,
+            EntityType.RABBIT,
+            SHULKER,
+            SNOWMAN,
+            ZOMBIE_VILLAGER,
+            VILLAGER,
+            EntityType.TROPICAL_FISH,
+            GHAST,
+            LLAMA,
+            SKELETON,
+            EntityType.CHICKEN,
+            SQUID,
+            HUSK,
+            WITCH,
+            EntityType.COD,
+            PHANTOM,
+            HORSE,
+            CREEPER
+        ).build();
     }
 }

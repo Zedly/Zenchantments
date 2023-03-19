@@ -40,8 +40,8 @@ public class InfoCommand extends ZenchantmentsCommand {
                 player.sendMessage(
                     translateString(
                         playerData.isDisabled(zenchantment.getKey()) ? "message.disabled_zenchantment_info" : "message.zenchantment_info",
-                        translateString("zenchantment." + zenchantment.getKey().getKey() + ".name"),
-                        translateString("zenchantment." + zenchantment.getKey().getKey() + ".description")
+                        translateString("zenchantment." + zenchantment.getI18nKey() + ".name"),
+                        translateString("zenchantment." + zenchantment.getI18nKey() + ".description")
                     )
                 );
             }
@@ -64,8 +64,8 @@ public class InfoCommand extends ZenchantmentsCommand {
             player.sendMessage(
                 translateString(
                     playerData.isDisabled(zenchantment.getKey()) ? "message.disabled_zenchantment_info" : "message.zenchantment_info",
-                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".name"),
-                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".description")
+                    translateString("zenchantment." + zenchantment.getI18nKey() + ".name"),
+                    translateString("zenchantment." + zenchantment.getI18nKey() + ".description")
                 )
             );
         }

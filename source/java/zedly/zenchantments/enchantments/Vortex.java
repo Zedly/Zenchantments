@@ -1,7 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
@@ -13,34 +11,13 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.VortexArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class Vortex extends Zenchantment {
-    public static final String KEY = "vortex";
-
     public static final Map<Block, Player> VORTEX_LOCATIONS = new HashMap<>();
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public Vortex(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
 
     @Override
     public ZenchantmentPriority getPriority() {

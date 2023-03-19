@@ -1,7 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -13,29 +11,8 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.StationaryArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
-import java.util.Collection;
-import java.util.Set;
-
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class Stationary extends Zenchantment {
-    public static final String KEY = "stationary";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public Stationary(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
-
     @Override
     public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         if (event.getEntity() instanceof LivingEntity

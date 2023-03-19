@@ -29,6 +29,7 @@ import org.bukkit.block.data.type.Leaves;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_18_R2.entity.*;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftChatMessage;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
@@ -51,6 +52,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.BAMBOO;
 
 public class CompatibilityAdapter {
@@ -78,7 +80,7 @@ public class CompatibilityAdapter {
         final double y,
         final double z
     ) {
-        Objects.requireNonNull(location.getWorld()).spawnParticle(
+        requireNonNull(location.getWorld()).spawnParticle(
             particle,
             location.getX(),
             location.getY(),
@@ -96,7 +98,6 @@ public class CompatibilityAdapter {
         requireNonNull(original);
         return CraftChatMessage.fromJSONComponent(CraftChatMessage.fromStringToJSON(original, false));
     }
-
 
     public void collectExp(final @NotNull Player player, final int amount) {
         final EntityExperienceOrb orb = new EntityExperienceOrb(

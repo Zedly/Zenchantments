@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -16,30 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.player.PlayerDataProvider;
 
-import java.util.Collection;
-import java.util.Set;
-
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {})
 public final class Laser extends Zenchantment {
-    public static final String KEY = "laser";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public Laser(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() { return Slots.MAIN_HAND; }
-
     @Override
     public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, final EquipmentSlot slot) {
         if (slot == EquipmentSlot.HAND && !event.getPlayer().isSneaking()) {
@@ -66,7 +46,7 @@ public final class Laser extends Zenchantment {
         // Avoid conflicting with Lumber zenchantment.
         PlayerDataProvider
             .getDataForPlayer(player)
-            .setCooldown(new NamespacedKey(ZenchantmentsPlugin.getInstance(), Lumber.KEY), 5);
+            .setCooldown(new NamespacedKey(ZenchantmentsPlugin.getInstance(), Zenchantment.keyForClass(Laser.class)), 5);
 
         final Block block = player.getTargetBlock(null, 6 + (int) Math.round(level * this.getPower() * 3));
         final Location playerLocation = player.getLocation();
