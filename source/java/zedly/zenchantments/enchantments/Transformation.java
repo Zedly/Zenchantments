@@ -47,7 +47,7 @@ public final class Transformation extends Zenchantment {
             return true;
         }
 
-        if (!CompatibilityAdapter.instance().attackEntity(entity, (Player) event.getDamager(), 0)) {
+        if (!WorldInteractionUtil.attackEntity(entity, (Player) event.getDamager(), 0)) {
             return true;
         }
 

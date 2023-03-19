@@ -18,7 +18,7 @@ public final class Spikes extends Zenchantment {
         for (final Entity entity : player.getNearbyEntities(1, 2, 1)) {
             final double fall = Math.min(player.getFallDistance(), 20.0);
             if (entity instanceof LivingEntity) {
-                CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, player, this.getPower() * level * fall * 0.25);
+                WorldInteractionUtil.attackEntity((LivingEntity) entity, player, this.getPower() * level * fall * 0.25);
                 Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.FEET);
             }
         }

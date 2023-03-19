@@ -219,7 +219,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
             if (config.isDescriptionLoreEnabled())
                 // Match old description with corrupted invisible color codes
                 for (String descriptionLine : zen.getOldDescription(config)) {
-                    if (string.equals(CompatibilityAdapter.reproduceCorruptedInvisibleSequence(descriptionLine))) {
+                    if (string.equals(WorldInteractionUtil.reproduceCorruptedInvisibleSequence(descriptionLine))) {
                         return true;
                     }
                 }

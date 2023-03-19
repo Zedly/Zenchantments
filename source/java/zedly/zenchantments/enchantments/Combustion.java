@@ -25,12 +25,11 @@ public final class Combustion extends Zenchantment {
             entity = event.getDamager();
         }
 
-        return CompatibilityAdapter.instance()
-            .igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
+        return WorldInteractionUtil.igniteEntity(entity, (Player) event.getEntity(), (int) (50 * level * this.getPower()));
     }
 
     public boolean onCombust(final @NotNull EntityCombustByEntityEvent event, final int level, final EquipmentSlot slot) {
-        if (CompatibilityAdapter.instance().isZombie(event.getCombuster())) {
+        if (WorldInteractionUtil.isZombie(event.getCombuster())) {
             event.setDuration(0);
         }
         return false;

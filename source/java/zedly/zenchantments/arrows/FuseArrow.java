@@ -1,29 +1,14 @@
 package zedly.zenchantments.arrows;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.type.Campfire;
-import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.Utilities;
-import zedly.zenchantments.configuration.WorldConfigurationProvider;
-
-import java.util.Objects;
-
-import static org.bukkit.Material.*;
 
 public final class FuseArrow extends ZenchantedArrow {
     public FuseArrow(final @NotNull AbstractArrow entity) {
@@ -32,7 +17,7 @@ public final class FuseArrow extends ZenchantedArrow {
 
     @Override
     public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
-        if (!CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getHitEntity(), (Player) this.getArrow().getShooter(), 0)) {
+        if (!WorldInteractionUtil.attackEntity((LivingEntity) event.getHitEntity(), (Player) this.getArrow().getShooter(), 0)) {
              die(true);
         }
 

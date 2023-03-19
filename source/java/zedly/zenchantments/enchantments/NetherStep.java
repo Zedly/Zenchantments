@@ -69,8 +69,7 @@ public final class NetherStep extends Zenchantment {
                         continue;
                     }
                     if (
-                        CompatibilityAdapter.instance()
-                            .formBlock(possiblePlatformBlock, fill, player)
+                        WorldInteractionUtil.formBlock(possiblePlatformBlock, fill, player)
                     ) {
                         NETHERSTEP_LOCATIONS.put(possiblePlatformLocation, millis);
                     }

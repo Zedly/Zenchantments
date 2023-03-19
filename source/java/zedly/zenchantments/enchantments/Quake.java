@@ -69,14 +69,14 @@ public class Quake extends Zenchantment {
                 final int entityId = 2000000000 + (sourceBlock.hashCode()) % 10000000;
                 for(Player q : quakeViewers) {
                     q.sendBlockChange(sourceBlock.getLocation(), Material.AIR, (byte) 0);
-                    CompatibilityAdapter.instance().showQuakeBlock(q, entityId, sourceBlock);
+                    WorldInteractionUtil.showQuakeBlock(q, entityId, sourceBlock);
                 }
             }
         }
         for(LivingEntity m : nearbyMonsters) {
             double r = m.getLocation().distance(center);
             if(r < radius + 1 && m.getNoDamageTicks() == 0) {
-                CompatibilityAdapter.instance().attackEntity(m, attacker, 1);
+                WorldInteractionUtil.attackEntity(m, attacker, 1);
                 m.setVelocity(m.getLocation().clone().subtract(center).toVector().normalize().multiply(1).add(new Vector(0, 0.5, 0)));
             }
         }
@@ -90,7 +90,7 @@ public class Quake extends Zenchantment {
                 final int entityId = 2000000000 + (sourceBlock.hashCode()) % 10000000;
                 for(Player q : quakeViewers) {
                     q.sendBlockChange(sourceBlock.getLocation(), sourceBlock.getBlockData());
-                    CompatibilityAdapter.instance().hideFakeEntity(entityId, q);
+                    WorldInteractionUtil.hideFakeEntity(entityId, q);
                 }
             }
         }

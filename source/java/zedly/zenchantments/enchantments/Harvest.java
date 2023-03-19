@@ -98,9 +98,9 @@ public final class Harvest extends Zenchantment {
 
                     final boolean blockAltered;
                     if (block.getType() == Material.SWEET_BERRY_BUSH) {
-                        blockAltered = CompatibilityAdapter.instance().pickBerries(block, player);
+                        blockAltered = WorldInteractionUtil.pickBerries(block, player);
                     } else {
-                        blockAltered = CompatibilityAdapter.instance().breakBlock(block, player);
+                        blockAltered = WorldInteractionUtil.breakBlock(block, player);
                     }
 
                     if (!blockAltered) {

@@ -66,7 +66,7 @@ public final class Laser extends Zenchantment {
 
             for (final Entity entity : player.getWorld().getNearbyEntities(particleLocation, 0.3, 0.3, 0.3)) {
                 if (entity instanceof LivingEntity && entity != player) {
-                    if(CompatibilityAdapter.instance()
+                    if(WorldInteractionUtil
                         .attackEntity((LivingEntity) entity, player, 1 + (level + this.getPower() * 2))) {
                         Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.HAND);
                     }
@@ -75,10 +75,10 @@ public final class Laser extends Zenchantment {
             }
         }
 
-        if (CompatibilityAdapter.instance().isBlockSafeToBreak(block)
+        if (WorldInteractionUtil.isBlockSafeToBreak(block)
             && !MaterialList.LASER_BLACKLIST_BLOCKS.contains(block.getType())
         ) {
-            CompatibilityAdapter.instance().breakBlock(block, player);
+            WorldInteractionUtil.breakBlock(block, player);
         }
     }
 }

@@ -5,7 +5,7 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.ZenchantmentPriority;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
@@ -36,7 +36,7 @@ public final class VortexArrow extends ZenchantedArrow {
         final int experience = event.getDroppedExp();
         event.setDroppedExp(0);
 
-        CompatibilityAdapter.instance().collectExp(requireNonNull(killer), experience);
+        WorldInteractionUtil.collectExp(requireNonNull(killer), experience);
         ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
             ZenchantmentsPlugin.getInstance(),
             () -> VORTEX_LOCATIONS.remove(deathBlock),

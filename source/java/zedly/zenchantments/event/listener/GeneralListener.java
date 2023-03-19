@@ -182,8 +182,7 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb orb) {
-                        CompatibilityAdapter.instance()
-                            .collectExp(Grab.GRAB_LOCATIONS.get(block), orb.getExperience());
+                        WorldInteractionUtil.collectExp(Grab.GRAB_LOCATIONS.get(block), orb.getExperience());
                         entity.remove();
                     }
                 }
@@ -203,7 +202,7 @@ public class GeneralListener implements Listener {
 
                 for (final Entity entity : event.getEntity().getNearbyEntities(1, 1, 1)) {
                     if (entity instanceof ExperienceOrb orb) {
-                        CompatibilityAdapter.instance()
+                        WorldInteractionUtil
                             .collectExp(Vortex.VORTEX_LOCATIONS.get(block), orb.getExperience());
                         entity.remove();
                     }
@@ -230,7 +229,7 @@ public class GeneralListener implements Listener {
             final int entityId = 2000000000 + event.getBlock().getRelative(face).hashCode() % 10000000;
             for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
                 if (player.getWorld().equals(event.getBlock().getWorld())) {
-                    CompatibilityAdapter.instance().hideFakeEntity(entityId, player);
+                    WorldInteractionUtil.hideFakeEntity(entityId, player);
                 }
             }
 

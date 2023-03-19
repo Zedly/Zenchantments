@@ -20,7 +20,7 @@ public final class SonicShock extends Zenchantment {
                 if(le.getNoDamageTicks() > 0) {
                     continue;
                 }
-                CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, player, damage);
+                WorldInteractionUtil.attackEntity((LivingEntity) entity, player, damage);
                 Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.CHEST);
             }
         }

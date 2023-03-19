@@ -4,10 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.Utilities;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.enchantments.Toxic;
@@ -26,7 +25,7 @@ public final class ToxicArrow extends ZenchantedArrow {
 
     @Override
     public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
-        if (CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getHitEntity(), (Player) this.getArrow().getShooter(), 0)) {
+        if (WorldInteractionUtil.attackEntity((LivingEntity) event.getHitEntity(), (Player) this.getArrow().getShooter(), 0)) {
             final int value = (int) Math.round(this.getLevel() * this.getPower());
 
             Utilities.addPotionEffect((LivingEntity) event.getHitEntity(), CONFUSION, 80 + 60 * value, 4);

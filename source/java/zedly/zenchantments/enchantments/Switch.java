@@ -27,7 +27,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Make sure clicked block is okay to break.
-        if (!CompatibilityAdapter.instance().isBlockSafeToBreak(clickedBlock)) {
+        if (!WorldInteractionUtil.isBlockSafeToBreak(clickedBlock)) {
             return false;
         }
 
@@ -56,7 +56,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Block has been selected, attempt breaking.
-        if (!CompatibilityAdapter.instance().breakBlock(clickedBlock, event.getPlayer())) {
+        if (!WorldInteractionUtil.breakBlock(clickedBlock, event.getPlayer())) {
             return false;
         }
 
@@ -73,7 +73,7 @@ public final class Switch extends Zenchantment {
         );
 
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-            CompatibilityAdapter.instance().placeBlock(clickedBlock, player, material, null);
+            WorldInteractionUtil.placeBlock(clickedBlock, player, material, null);
         }, 1);  // TODO: Check item availability again in next tick, then place, then consume.
 
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);

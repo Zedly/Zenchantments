@@ -2,7 +2,6 @@ package zedly.zenchantments.event.listener.merge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,7 +11,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -20,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.Zenchantment;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.configuration.WorldConfiguration;
@@ -226,7 +224,7 @@ public class AnvilMergeListener implements Listener {
         }
 
         if (rightItem.getType() == ENCHANTED_BOOK && !anyZenchantmentsAdded) {
-            Map<Enchantment, Integer> prematureEnchants = CompatibilityAdapter.instance().getPrematureEnchantments(newOutMeta);
+            Map<Enchantment, Integer> prematureEnchants = WorldInteractionUtil.getPrematureEnchantments(newOutMeta);
             if (prematureEnchants == null || prematureEnchants.equals(leftVanillaEnchantments)) {
                 return new ItemStack(AIR);
             }

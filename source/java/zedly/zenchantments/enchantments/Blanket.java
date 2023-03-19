@@ -68,7 +68,7 @@ public class Blanket extends Zenchantment {
                         continue;
                     }
 
-                    final boolean blockAltered = CompatibilityAdapter.instance().breakBlock(block, player);
+                    final boolean blockAltered = WorldInteractionUtil.breakBlock(block, player);
                     if (!blockAltered) {
                         continue;
                     }

@@ -3,10 +3,8 @@ package zedly.zenchantments.arrows;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 
 public final class SiphonArrow extends ZenchantedArrow {
     public SiphonArrow(
@@ -20,7 +18,7 @@ public final class SiphonArrow extends ZenchantedArrow {
     @Override
     public void onDamageEntity(final @NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof LivingEntity
-            && CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
+            && WorldInteractionUtil.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)
         ) {
             Entity shooter = event.getDamager();
             if (shooter == null || !(shooter instanceof Player)) {

@@ -43,7 +43,7 @@ public final class Lumber extends Zenchantment {
                     continue;
                 }
             }
-            if (!CompatibilityAdapter.instance().breakBlock(block, event.getPlayer())) {
+            if (!WorldInteractionUtil.breakBlock(block, event.getPlayer())) {
                 break;
             }
         }

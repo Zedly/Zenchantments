@@ -33,7 +33,7 @@ public class Trough extends Zenchantment {
 
         for (final Entity entity : player.getNearbyEntities(radius, radius, radius)) {
             if (entity.getType() == clickedType && entity instanceof Animals animal) {
-                if (CompatibilityAdapter.instance().canAnimalEnterLoveMode(animal)) {
+                if (WorldInteractionUtil.canAnimalEnterLoveMode(animal)) {
                     if (mainHandUsed < mainHandAmount && animal.isBreedItem(mainHandItem)) {
                         mainHandUsed++;
                     } else if (offHandUsed < offHandAmount && animal.isBreedItem(offHandItem)) {
@@ -41,7 +41,7 @@ public class Trough extends Zenchantment {
                     } else {
                         continue;
                     }
-                    CompatibilityAdapter.instance().animalEnterLoveMode(animal, player);
+                    WorldInteractionUtil.animalEnterLoveMode(animal, player);
                 }
             }
         }

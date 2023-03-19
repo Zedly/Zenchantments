@@ -4,9 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class StationaryArrow extends ZenchantedArrow {
@@ -16,7 +15,7 @@ public final class StationaryArrow extends ZenchantedArrow {
 
     @Override
     public void onDamageEntity(final @NotNull EntityDamageByEntityEvent event) {
-        if (CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
+        if (WorldInteractionUtil.attackEntity((LivingEntity) event.getEntity(), (Player) this.getArrow().getShooter(), 0)) {
             final LivingEntity entity = (LivingEntity) event.getEntity();
             if (event.getDamage() < entity.getHealth()) {
                 event.setCancelled(true);
@@ -29,7 +28,7 @@ public final class StationaryArrow extends ZenchantedArrow {
                     if (!combustByEntityEvent.isCancelled()) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(
                             ZenchantmentsPlugin.getInstance(),
-                            () -> CompatibilityAdapter.instance().igniteEntity(entity, (Player) this.getArrow().getShooter(), 300),
+                            () -> WorldInteractionUtil.igniteEntity(entity, (Player) this.getArrow().getShooter(), 300),
                             1
                         );
                     }

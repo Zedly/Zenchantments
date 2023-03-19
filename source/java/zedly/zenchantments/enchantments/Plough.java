@@ -84,7 +84,7 @@ public final class Plough extends Zenchantment {
                         continue;
                     }
 
-                    CompatibilityAdapter.instance().placeBlock(relativeBlock, player, Material.FARMLAND, null);
+                    WorldInteractionUtil.placeBlock(relativeBlock, player, Material.FARMLAND, null);
 
                     if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                         damageApplied++;

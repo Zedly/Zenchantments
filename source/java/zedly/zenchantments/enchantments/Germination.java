@@ -77,7 +77,7 @@ public final class Germination extends Zenchantment {
                         continue;
                     }
 
-                    if (CompatibilityAdapter.instance().grow(relativeBlock, player)) {
+                    if (WorldInteractionUtil.grow(relativeBlock, player)) {
                         numBoneMealUsed++;
                         if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                             damageApplied++;
@@ -91,7 +91,7 @@ public final class Germination extends Zenchantment {
                         break;
                     }
                     if (ThreadLocalRandom.current().nextBoolean()) {
-                        if (CompatibilityAdapter.instance().grow(relativeBlock, player)) {
+                        if (WorldInteractionUtil.grow(relativeBlock, player)) {
                             numBoneMealUsed++;
                             if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                 damageApplied++;

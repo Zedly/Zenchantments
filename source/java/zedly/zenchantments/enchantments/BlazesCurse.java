@@ -60,9 +60,9 @@ public final class BlazesCurse extends Zenchantment {
         Player target = (Player) event.getHitEntity();
         if (event.getEntity().getType() == EntityType.SNOWBALL) {
             if(event.getEntity().getShooter() != null && event.getEntity().getShooter() instanceof Player attacker) {
-                CompatibilityAdapter.instance().attackEntity(target, attacker, SNOWBALL_DAMAGE);
+                WorldInteractionUtil.attackEntity(target, attacker, SNOWBALL_DAMAGE);
             } else {
-                CompatibilityAdapter.instance().damagePlayer(target, SNOWBALL_DAMAGE, MELTING);
+                WorldInteractionUtil.damagePlayer(target, SNOWBALL_DAMAGE, MELTING);
             }
             return true;
         }
@@ -83,7 +83,7 @@ public final class BlazesCurse extends Zenchantment {
             case BLUE_ICE:
             case SNOW_BLOCK:
             case POWDER_SNOW:
-                CompatibilityAdapter.instance().damagePlayer(player, SUBMERGE_DAMAGE, MELTING);
+                WorldInteractionUtil.damagePlayer(player, SUBMERGE_DAMAGE, MELTING);
                 return true;
         }
 
@@ -96,14 +96,14 @@ public final class BlazesCurse extends Zenchantment {
             case BLUE_ICE:
             case SNOW_BLOCK:
             case POWDER_SNOW:
-                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, MELTING);
+                WorldInteractionUtil.damagePlayer(player, RAIN_DAMAGE, MELTING);
                 return true;
         }
 
         if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
             final Location checkLocation = player.getLocation();
             if (checkLocation.getWorld().getHighestBlockAt(checkLocation).getY() <= checkLocation.getY() + 1) {
-                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
+                WorldInteractionUtil.damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
             }
         }
 

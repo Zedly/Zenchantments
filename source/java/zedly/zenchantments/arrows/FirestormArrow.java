@@ -7,7 +7,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.Utilities;
 
 public final class FirestormArrow extends ZenchantedArrow {
@@ -35,7 +35,7 @@ public final class FirestormArrow extends ZenchantedArrow {
         for (final Entity entity : this.getArrow().getNearbyEntities(radius, radius, radius)) {
             if (!(entity instanceof LivingEntity)
                 || entity.equals(this.getArrow().getShooter())
-                || !CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, (Player) this.getArrow().getShooter(), 0)
+                || !WorldInteractionUtil.attackEntity((LivingEntity) entity, (Player) this.getArrow().getShooter(), 0)
             ) {
                 continue;
             }

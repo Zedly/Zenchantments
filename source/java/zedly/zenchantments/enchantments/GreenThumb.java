@@ -36,7 +36,7 @@ public final class GreenThumb extends Zenchantment {
 
                     boolean applied = false;
                     if (relativeBlock.getType() != DIRT) {
-                        applied = CompatibilityAdapter.instance().grow(relativeBlock, player);
+                        applied = WorldInteractionUtil.grow(relativeBlock, player);
                     } else {
                         if (MaterialList.AIR.contains(relativeBlock.getRelative(0, 1, 0).getType())) {
                             final Material material;
@@ -48,7 +48,7 @@ public final class GreenThumb extends Zenchantment {
                                     material = GRASS_BLOCK;
                             }
 
-                            applied = CompatibilityAdapter.instance().placeBlock(relativeBlock, player, material, null);
+                            applied = WorldInteractionUtil.placeBlock(relativeBlock, player, material, null);
                         }
                     }
 

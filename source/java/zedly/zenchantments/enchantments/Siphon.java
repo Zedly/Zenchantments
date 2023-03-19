@@ -19,7 +19,7 @@ public final class Siphon extends Zenchantment {
     @Override
     public boolean onEntityHit(final @NotNull EntityDamageByEntityEvent event, final int level, final EquipmentSlot slot) {
         if (event.getEntity() instanceof LivingEntity
-            && CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
+            && WorldInteractionUtil.attackEntity((LivingEntity) event.getEntity(), (Player) event.getDamager(), 0)
         ) {
             final Player player = (Player) event.getDamager();
             int difference = (int) Math.round(0.17 * level * this.getPower() * event.getDamage());

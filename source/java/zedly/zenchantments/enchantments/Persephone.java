@@ -93,28 +93,28 @@ public final class Persephone extends Zenchantment {
 
                     if (soilBlock.getType() == FARMLAND) {
                         if (numWheatAvailable > numWheatSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, WHEAT, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, WHEAT, null)) {
                                 numWheatSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
                                 }
                             }
                         } else if (numCarrotsAvailable > numCarrotsSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, CARROTS, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, CARROTS, null)) {
                                 numCarrotsSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
                                 }
                             }
                         } else if (numPotatoesAvailable > numPotatoesSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, POTATOES, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, POTATOES, null)) {
                                 numPotatoesSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
                                 }
                             }
                         } else if (numBeetrootSeedsAvailable > numBeetrootsSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, BEETROOTS, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, BEETROOTS, null)) {
                                 numBeetrootsSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
@@ -123,7 +123,7 @@ public final class Persephone extends Zenchantment {
                         }
                     } else if (soilBlock.getType() == SOUL_SAND) {
                         if (numNetherwartsAvailable > numNetherwartsSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, NETHER_WART, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, NETHER_WART, null)) {
                                 numNetherwartsSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
