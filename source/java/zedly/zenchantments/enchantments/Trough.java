@@ -1,13 +1,8 @@
 package zedly.zenchantments.enchantments;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.world.entity.animal.EntityAnimal;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -75,6 +70,10 @@ public class Trough extends Zenchantment {
     }
 
     private boolean feed(final @NotNull PlayerInteractEntityEvent event, final int level, final EquipmentSlot slot) {
+        if(!(event.getRightClicked() instanceof Breedable)) {
+            return false;
+        }
+
         final EntityType clickedType = event.getRightClicked().getType();
         final int radius = (int) Math.round(level * this.getPower() + 2);
         final Player player = event.getPlayer();
@@ -86,32 +85,28 @@ public class Trough extends Zenchantment {
         int offHandUsed = 0;
 
         for (final Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity.getType() == clickedType && entity instanceof CraftAnimals animal) {
-                if (animal.isAdult()) {
-                    EntityAnimal ea = animal.getHandle();
-                    int i = ea.j();
-                    if (!ea.s.x && i == 0 && ea.fC()) {
-                        if (mainHandUsed < mainHandAmount && animal.isBreedItem(mainHandItem)) {
-                            mainHandUsed++;
-                        } else if (offHandUsed < offHandAmount && animal.isBreedItem(offHandItem)) {
-                            offHandUsed++;
-                        } else {
-                            continue;
-                        }
-                        ea.g(((CraftPlayer) player).getHandle());
+            if (entity.getType() == clickedType && entity instanceof Animals animal) {
+                if (CompatibilityAdapter.instance().canAnimalEnterLoveMode(animal)) {
+                    if (mainHandUsed < mainHandAmount && animal.isBreedItem(mainHandItem)) {
+                        mainHandUsed++;
+                    } else if (offHandUsed < offHandAmount && animal.isBreedItem(offHandItem)) {
+                        offHandUsed++;
+                    } else {
+                        continue;
                     }
+                    CompatibilityAdapter.instance().animalEnterLoveMode(animal, player);
                 }
             }
         }
 
-        if(mainHandAmount == mainHandUsed) {
+        if (mainHandAmount == mainHandUsed) {
             mainHandItem.setAmount(mainHandAmount - mainHandUsed);
             player.getInventory().setItemInMainHand(new ItemStack(AIR));
         } else {
             mainHandItem.setAmount(mainHandAmount - mainHandUsed);
             player.getInventory().setItemInMainHand(mainHandItem);
         }
-        if(offHandAmount == offHandUsed) {
+        if (offHandAmount == offHandUsed) {
             player.getInventory().setItemInOffHand(new ItemStack(AIR));
         } else {
             offHandItem.setAmount(offHandAmount - offHandUsed);
