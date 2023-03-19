@@ -207,11 +207,11 @@ public class CompatibilityAdapter {
     ) {
         if (target instanceof CraftSheep) {
             final EntitySheep entitySheep = ((CraftSheep) target).getHandle();
-            final EnumInteractionResult result = entitySheep.a(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
+            final EnumInteractionResult result = entitySheep.b(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
             return result == EnumInteractionResult.a;
         } else if (target instanceof CraftMushroomCow) {
             final EntityMushroomCow entityMushroomCow = ((CraftMushroomCow) target).getHandle();
-            final EnumInteractionResult result = entityMushroomCow.a(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
+            final EnumInteractionResult result = entityMushroomCow.b(((CraftPlayer) player).getHandle(), isUsingMainHand ? EnumHand.a : EnumHand.b);
             return result == EnumInteractionResult.a;
         }
 
