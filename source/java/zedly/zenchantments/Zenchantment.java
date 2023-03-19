@@ -350,17 +350,21 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     //endregion
 
     public boolean checkIfDisabledAndLoadConfig(LinkedHashMap<String, Object> data) {
-        if (probability != -1) {
+        if (probability == -1) {
             return false;
         }
 
         AZenchantment az = this.getClass().getAnnotation(AZenchantment.class);
+        this.name = translateString("zenchantment." + getI18nKey() + ".name");
+        this.description = translateString("zenchantment." + getI18nKey() + ".description");
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), getI18nKey());
         this.applyToSlots = az.runInSlots();
         this.conflicting = Set.of(az.conflicting());
         this.probability = (float) (double) data.getOrDefault("probability", 0.0);
         this.cooldown = (int) data.get("cooldown");
         this.maxLevel = (int) data.get("max-level");
         this.power = (double) data.get("power");
+        this.enchantable = new HashSet<>();
         for (String s : ((String) data.get("tools")).split("\\W*,\\W*")) { // comma surrounded by arbitrary whitespaces
             this.enchantable.add(Tool.fromString(s));
         }
