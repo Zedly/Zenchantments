@@ -1,7 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -13,30 +11,10 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.LevelArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
-import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class Level extends Zenchantment {
-    public static final String KEY = "level";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public Level(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
-
     @Override
     public boolean onEntityKill(final @NotNull EntityDeathEvent event, final int level, final EquipmentSlot slot) {
         if (ThreadLocalRandom.current().nextBoolean()) {

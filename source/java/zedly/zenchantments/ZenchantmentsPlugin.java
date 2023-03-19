@@ -31,7 +31,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     private static ZenchantmentsPlugin instance;
 
     private final WorldConfigurationProvider worldConfigurationProvider = WorldConfigurationProvider.getInstance();
-    private final ZenchantmentFactory        zenchantmentFactory        = new ZenchantmentFactory(this);
     private final I18n                       i18n                       = new I18n(this);
 
     @NotNull
@@ -97,12 +96,6 @@ public class ZenchantmentsPlugin extends JavaPlugin implements Zenchantments {
     @NotNull
     public WorldConfigurationProvider getWorldConfigurationProvider() {
         return this.worldConfigurationProvider;
-    }
-
-    @NotNull
-    @Deprecated
-    public ZenchantmentFactory getZenchantmentFactory() {
-        return this.zenchantmentFactory;
     }
 
     @NotNull

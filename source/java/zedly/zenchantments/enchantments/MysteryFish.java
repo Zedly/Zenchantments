@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -17,30 +15,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.entity.EntityType.*;
 
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class MysteryFish extends Zenchantment {
-    public static final String KEY = "mystery_fish";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
     private static final Map<Entity, Player> ENTITIES_ATTRACTED_TO_PLAYERS = new HashMap<>();
-
     private static final Map<Integer, EntityType> MYSTERY_SPAWN_RATES = new LinkedHashMap<>();
     private static final int RANDOM_RANGE;
-
-    public MysteryFish(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
 
     @Override
     public boolean onPlayerFish(final @NotNull PlayerFishEvent event, final int level, final EquipmentSlot slot) {

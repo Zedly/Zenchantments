@@ -1,7 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -11,30 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
+@AZenchantment(runInSlots = Slots.ARMOR, conflicting = {})
 public final class PotionResistance extends Zenchantment {
-    public static final String KEY = "potion_resistance";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public PotionResistance(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.ARMOR;
-    }
-
     @Override
     public boolean onPotionSplash(final @NotNull PotionSplashEvent event, final int level, final EquipmentSlot slot) {
         for (final LivingEntity entity : event.getAffectedEntities()) {

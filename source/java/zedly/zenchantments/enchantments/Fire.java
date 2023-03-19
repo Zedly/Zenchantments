@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -12,29 +11,11 @@ import zedly.zenchantments.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {Switch.class, Variety.class})
 public final class Fire extends Zenchantment {
-    public static final String KEY = "fire";
-
     // Locations where Fire has been used on a block and the drop was changed.
     // BlockBreakEvent is not cancelled but the original item drop is not desired.
     public static final HashMap<Block, AtomicInteger> ITEM_DROP_REPLACEMENTS = new HashMap<>();
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Switch.class, Variety.class);
-
-    public Fire(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
 
     @Override
     public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {

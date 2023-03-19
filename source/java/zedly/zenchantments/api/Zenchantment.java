@@ -4,6 +4,7 @@ import org.bukkit.Keyed;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Hand;
+import zedly.zenchantments.Slots;
 import zedly.zenchantments.Tool;
 
 import java.util.Collection;
@@ -88,5 +89,5 @@ public interface Zenchantment extends Keyed {
      *
      * @return A Collection<EquipmentSlot> representing the slots in which the Zenchantment will observe events.
      */
-    Collection<EquipmentSlot> getApplyToSlots();
+    Slots getApplyToSlots();
 }

@@ -21,15 +21,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zedly.zenchantments.configuration.GlobalConfiguration;
 import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
-import zedly.zenchantments.enchantments.*;
 import zedly.zenchantments.event.listener.EnchantmentFunction;
 import zedly.zenchantments.player.PlayerData;
 import zedly.zenchantments.player.PlayerDataProvider;
 
-import javax.naming.Name;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,18 +42,21 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         "§[a-fA-F0-9]([^§]+?)(?:$| $| (I|II|III|IV|V|VI|VII|VIII|IX|X)$)"
     );
 
-    private final Set<Class<? extends Zenchantment>> conflicting;
-    private final Set<Tool> enchantable;
-    private final int maxLevel;
-    private final int cooldown;
-    private final double power;
-    private final float probability;
-    private final String translationKey;
-    private final NamespacedKey key;
+    private Set<Class<? extends Zenchantment>> conflicting;
+    private Set<Tool> enchantable;
+    private String name;
+    private String description;
+    private Slots applyToSlots;
+    private int maxLevel;
+    private int cooldown;
+    private double power;
+    private float probability;
+    private NamespacedKey key;
 
-    private boolean used;
-    private boolean cursed;
+    private boolean recursionLock;
+    private boolean cursed = false;
 
+    /*
     protected Zenchantment(
         final @NotNull Set<Tool> enchantable,
         final int maxLevel,
@@ -63,17 +64,20 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         final double power,
         final float probability,
         final Set<Class<? extends Zenchantment>> conflicting,
-        String translationKey
+        final Collection<EquipmentSlot> applyToSlots
     ) {
         this.enchantable = enchantable;
+        this.name = translateString("zenchantment." + getI18nKey() + ".name");
+        this.description = translateString("zenchantment." + getI18nKey() + ".description");
         this.maxLevel = maxLevel;
         this.cooldown = cooldown;
         this.power = power;
         this.probability = probability;
         this.conflicting = conflicting;
-        this.translationKey = translationKey;
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), translationKey);
+        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), getI18nKey());
+        this.applyToSlots = applyToSlots;
     }
+    */
 
     //region Static Methods
     public static void applyForTool(
@@ -84,7 +88,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         requireNonNull(player);
         requireNonNull(action);
         ItemStack tool = player.getInventory().getItem(slot);
-        if(tool == null) {
+        if (tool == null) {
             return;
         }
 
@@ -96,26 +100,20 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         for (final Map.Entry<Zenchantment, Integer> entry : zenchantments.entrySet()) {
             final Zenchantment zenchantment = entry.getKey();
 
-            if(!zenchantment.getApplyToSlots().contains(slot)) {
+            if (!zenchantment.getApplyToSlots().contains(slot)) {
                 continue;
             }
 
             final Integer level = entry.getValue(); // Use Integer to prevent unboxing and then re-boxing.
             final PlayerData playerData = PlayerDataProvider.getDataForPlayer(player);
 
-            if (!zenchantment.used && Utilities.playerCanUseZenchantment(player, playerData, zenchantment.getKey())) {
-                try {
-                    zenchantment.used = true;
-                    if (action.run(zenchantment, level, slot)) {
-                        playerData.setCooldown(zenchantment.getKey(), zenchantment.cooldown);
-                    }
-                } catch (Exception ex) {
-                    // This is absolutely terrible.
-                    // TODO: Fix this monstrosity.
-                    ex.printStackTrace();
+            if (!zenchantment.recursionLock && Utilities.playerCanUseZenchantment(player, playerData, zenchantment.getKey())) {
+                zenchantment.recursionLock = true;
+                if (action.run(zenchantment, level, slot)) {
+                    playerData.setCooldown(zenchantment.getKey(), zenchantment.cooldown);
                 }
-
-                zenchantment.used = false;
+                // Fixed it
+                zenchantment.recursionLock = false;
             }
         }
     }
@@ -144,7 +142,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         final @NotNull WorldConfiguration worldConfiguration,
         final @Nullable List<String> outExtraLore
     ) {
-        if(itemStack == null) {
+        if (itemStack == null) {
             return Collections.emptyMap();
         }
 
@@ -162,7 +160,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         for (String raw : requireNonNull(itemStack.getItemMeta().getLore())) {
             final Map.Entry<Zenchantment, Integer> zenchantment = getZenchantmentFromString(raw, worldConfiguration);
             if (zenchantment != null) {
-                switch(zenchantment.getKey().getPriority()) {
+                switch (zenchantment.getKey().getPriority()) {
                     case EARLY:
                         earlyMap.put(zenchantment.getKey(), zenchantment.getValue());
                         break;
@@ -218,13 +216,13 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
                     return true;
                 }
             }
-            if(config.isDescriptionLoreEnabled())
-            // Match old description with corrupted invisible color codes
-            for (String descriptionLine : zen.getOldDescription(config)) {
-                if (string.equals(CompatibilityAdapter.reproduceCorruptedInvisibleSequence(descriptionLine))) {
-                    return true;
+            if (config.isDescriptionLoreEnabled())
+                // Match old description with corrupted invisible color codes
+                for (String descriptionLine : zen.getOldDescription(config)) {
+                    if (string.equals(CompatibilityAdapter.reproduceCorruptedInvisibleSequence(descriptionLine))) {
+                        return true;
+                    }
                 }
-            }
 
         }
         return false;
@@ -339,32 +337,58 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
 
         stack.setItemMeta(book ? bookMeta : itemMeta);
     }
-    //endregion
 
-    public static String getNameOf(Zenchantment ench) {
-        return translateString("zenchantment." + ench.getTranslateStringName() + ".name");
+    public static String keyForClass(Class<? extends Zenchantment> enchClazz) {
+        return enchClazz.getSimpleName().toLowerCase(Locale.ROOT);
     }
 
-    public static String getDescriptionOf(Zenchantment ench) {
-        return translateString("zenchantment." + ench.getTranslateStringName() + ".description");
+    public static <T extends Zenchantment> T forFlass(Class<T> clazz) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        T ench = clazz.getConstructor().newInstance();
+        return ench;
+    }
+
+    //endregion
+
+    public boolean checkIfDisabledAndLoadConfig(LinkedHashMap<String, Object> data) {
+        if (probability != -1) {
+            return false;
+        }
+
+        AZenchantment az = this.getClass().getAnnotation(AZenchantment.class);
+        this.applyToSlots = az.runInSlots();
+        this.conflicting = Set.of(az.conflicting());
+        this.probability = (float) (double) data.getOrDefault("probability", 0.0);
+        this.cooldown = (int) data.get("cooldown");
+        this.maxLevel = (int) data.get("max-level");
+        this.power = (double) data.get("power");
+        for (String s : ((String) data.get("tools")).split("\\W*,\\W*")) { // comma surrounded by arbitrary whitespaces
+            this.enchantable.add(Tool.fromString(s));
+        }
+        return true;
     }
 
     public final String getName() {
-        return Zenchantment.getNameOf(this);
+        return name;
     }
 
     public final String getDescription() {
-        return Zenchantment.getDescriptionOf(this);
+        return description;
     }
 
     public final NamespacedKey getKey() {
         return key;
     }
 
-    public final String getTranslateStringName() { return translationKey; }
+    public final String getI18nKey() {
+        return keyForClass(this.getClass());
+    }
 
     public final Set<Class<? extends Zenchantment>> getConflicting() {
         return conflicting;
+    }
+
+    public final Slots getApplyToSlots() {
+        return applyToSlots;
     }
 
     @NotNull
@@ -495,7 +519,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
     @NotNull
     public final String getMainEnchantmentString(final int level, final @NotNull WorldConfiguration worldConfiguration) {
         return (this.cursed ? worldConfiguration.getCurseColor() : worldConfiguration.getEnchantmentColor())
-            + translateString("zenchantment." + getKey() + ".name")
+            + translateString("zenchantment." + getI18nKey() + ".name")
             + (this.maxLevel == 1 ? " " : " " + Utilities.convertIntToNumeral(level));
     }
 
@@ -543,7 +567,7 @@ public abstract class Zenchantment implements Keyed, zedly.zenchantments.api.Zen
         }
 
         final List<String> description = new LinkedList<>();
-        final String start = Utilities.makeStringInvisible("ze.desc." + this.getKey())
+        final String start = Utilities.makeStringInvisible("ze.desc." + this.getI18nKey())
             + worldConfiguration.getDescriptionColor()
             + ChatColor.ITALIC
             + " ";

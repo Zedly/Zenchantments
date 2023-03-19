@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,32 +9,12 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.*;
 
+@AZenchantment(runInSlots = Slots.ARMOR, conflicting = {})
 public final class GreenThumb extends Zenchantment {
-    public static final String KEY = "green_thumb";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public GreenThumb(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.ARMOR;
-    }
-
     @Override
     public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {
         final Location location = player.getLocation().clone();

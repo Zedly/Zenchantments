@@ -130,7 +130,7 @@ public class EnchantCommand extends ZenchantmentsCommand {
             player.sendMessage(
                 translateString(
                     "message.zenchantment_illegal_for_item",
-                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".name")
+                    translateString("zenchantment." + zenchantment.getI18nKey() + ".name")
                 )
             );
             return itemStack;
@@ -150,14 +150,14 @@ public class EnchantCommand extends ZenchantmentsCommand {
             player.sendMessage(
                 translateString(
                     "message.zenchantment_added",
-                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".name")
+                    translateString("zenchantment." + zenchantment.getI18nKey() + ".name")
                 )
             );
         } else {
             player.sendMessage(
                 translateString(
                     "message.zenchantment_removed",
-                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".name")
+                    translateString("zenchantment." + zenchantment.getI18nKey() + ".name")
                 )
             );
         }

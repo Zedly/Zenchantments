@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -18,27 +16,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
 
+@AZenchantment(runInSlots = Slots.ARMOR, conflicting = {})
 public final class Glide extends Zenchantment {
-    public static final String KEY = "glide";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public static final Map<UUID, Double> GLIDE_USERS = new HashMap<>();
-
-    public Glide(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.ARMOR;
-    }
+    private static final Map<UUID, Double> GLIDE_USERS = new HashMap<>();
 
     @Override
     public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {

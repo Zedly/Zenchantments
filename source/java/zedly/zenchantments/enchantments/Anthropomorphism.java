@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -20,34 +18,14 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.*;
-import static zedly.zenchantments.I18n.translateString;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {Pierce.class, Switch.class})
 public final class Anthropomorphism extends Zenchantment {
-    public static final String KEY = "anthropomorphism";
-
     public static final Map<FallingBlock, Pair<Double, Vector>> ATTACK_BLOCKS = new HashMap<>();
     public static final Map<FallingBlock, Entity>               IDLE_BLOCKS   = new HashMap<>();
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
-
     private static final MaterialList ANTHRO_SOURCES = new MaterialList(MaterialList.STONES, MaterialList.COBBLESTONES, MaterialList.DIRT);
     private static final List<Entity> VORTEX    = new ArrayList<>();
     private static boolean fallBool = false;
-
-    public Anthropomorphism(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
 
     @EffectTask(Frequency.MEDIUM_HIGH)
     public static void removeOldBlocks() {
@@ -231,14 +209,7 @@ public final class Anthropomorphism extends Zenchantment {
         return false;
     }
 
-    private static class Pair<K, V> {
-        private final K key;
-        private final V value;
-
-        public Pair(final K key, final V value) {
-            this.key = key;
-            this.value = value;
-        }
+    private record Pair<K, V>(K key, V value) {
 
         public K getKey() {
             return key;

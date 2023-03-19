@@ -1,8 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -15,29 +13,8 @@ import zedly.zenchantments.*;
 import zedly.zenchantments.arrows.QuickArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
-import java.util.Collection;
-import java.util.Set;
-
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class QuickShot extends Zenchantment {
-    public static final String KEY = "quick_shot";
-
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    public QuickShot(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power, CONFLICTING, KEY);
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
-
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         Player player = (Player) event.getEntity();
