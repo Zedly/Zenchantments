@@ -25,7 +25,7 @@ import java.util.UUID;
 public class ObfuscationUtil {
 
     public static void experienceOrbPickup(EntityExperienceOrb orb, EntityHuman human) {
-        orb.b_(human);
+        orb.c_(human);
     }
 
     public static void resetXPPickupTimer(EntityHuman human) {
@@ -41,11 +41,11 @@ public class ObfuscationUtil {
     }
 
     public static boolean isInAnimalsWorldBreedingDisabled(EntityAnimal ea) {
-        return ea.H.B;
+        return ea.s.y;
     }
 
     public static boolean isAnimalNotInLove(EntityAnimal ea) {
-        return ea.fT();
+        return ea.fP();
     }
 
     public static void animalEnterLoveMode(EntityAnimal animal, EntityHuman feeder) {
@@ -77,7 +77,7 @@ public class ObfuscationUtil {
     }
 
     public static EntityTypes getShulkerEntityType() {
-        return EntityTypes.aG;
+        return EntityTypes.aC;
     }
 
     public static EntityTypes getFallingBlockEntityType() {
@@ -121,7 +121,7 @@ public class ObfuscationUtil {
         }
 
         @Override
-        public int af() {
+        public int ah() {
             return entityId;
         }
 
@@ -150,7 +150,7 @@ public class ObfuscationUtil {
         }
 
         @Override
-        public EnumMainHand fd() {
+        public EnumMainHand eY() {
             return null;
         }
     }
