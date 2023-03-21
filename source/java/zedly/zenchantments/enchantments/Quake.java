@@ -1,25 +1,17 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
-import zedly.zenchantments.task.EffectTask;
-import zedly.zenchantments.task.Frequency;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,58 +20,9 @@ import static java.util.Objects.checkIndex;
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.event.block.Action.*;
-import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {Pierce.class, Switch.class})
 public class Quake extends Zenchantment {
-    public static final String KEY = "quake";
-
-    private static final String NAME = "Quake";
-    private static final String DESCRIPTION = "Creates a shockwave that damages hostile Mobs";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
-
-    private final NamespacedKey key;
-
-    public Quake(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
-
-
     int delay = 5;
 
     @Override
@@ -126,14 +69,14 @@ public class Quake extends Zenchantment {
                 final int entityId = 2000000000 + (sourceBlock.hashCode()) % 10000000;
                 for(Player q : quakeViewers) {
                     q.sendBlockChange(sourceBlock.getLocation(), Material.AIR, (byte) 0);
-                    CompatibilityAdapter.instance().showQuakeBlock(q, entityId, sourceBlock);
+                    WorldInteractionUtil.showQuakeBlock(q, entityId, sourceBlock);
                 }
             }
         }
         for(LivingEntity m : nearbyMonsters) {
             double r = m.getLocation().distance(center);
             if(r < radius + 1 && m.getNoDamageTicks() == 0) {
-                CompatibilityAdapter.instance().attackEntity(m, attacker, 1);
+                WorldInteractionUtil.attackEntity(m, attacker, 1);
                 m.setVelocity(m.getLocation().clone().subtract(center).toVector().normalize().multiply(1).add(new Vector(0, 0.5, 0)));
             }
         }
@@ -147,7 +90,7 @@ public class Quake extends Zenchantment {
                 final int entityId = 2000000000 + (sourceBlock.hashCode()) % 10000000;
                 for(Player q : quakeViewers) {
                     q.sendBlockChange(sourceBlock.getLocation(), sourceBlock.getBlockData());
-                    CompatibilityAdapter.instance().hideFakeEntity(entityId, q);
+                    WorldInteractionUtil.hideFakeEntity(entityId, q);
                 }
             }
         }

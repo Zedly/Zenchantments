@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.Tuple;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -15,57 +13,9 @@ import java.util.*;
 
 import static org.bukkit.Material.*;
 
+@AZenchantment(runInSlots = Slots.ARMOR, conflicting = {})
 public final class Gluttony extends Zenchantment {
-    public static final String KEY = "gluttony";
-
-    private static final String NAME = "Gluttony";
-    private static final String DESCRIPTION = "Automatically eats for the player";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand HAND_USE = Hand.NONE;
-
     private static final HashMap<Material, Tuple<Integer, Double>> GLUTTONY_FOODS = new HashMap<>();
-
-    private final NamespacedKey key;
-
-    public Gluttony(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.ARMOR;
-    }
 
     @Override
     public boolean onScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {

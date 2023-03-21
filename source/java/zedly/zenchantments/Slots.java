@@ -7,15 +7,24 @@ import java.util.*;
 
 import static org.bukkit.inventory.EquipmentSlot.*;
 
-public class Slots {
+public enum Slots {
+    ALL(HAND, OFF_HAND, HEAD, CHEST, LEGS, FEET),
+    ARMOR(HEAD, CHEST, LEGS, FEET),
+    HANDS(HAND, OFF_HAND),
+    MAIN_HAND(HAND),
+    NONE();
 
-    public static final Collection<EquipmentSlot> ALL = of(HAND, OFF_HAND, HEAD, CHEST, LEGS, FEET);
-    public static final Collection<EquipmentSlot> ARMOR = of(HEAD, CHEST, LEGS, FEET);
-    public static final Collection<EquipmentSlot> HANDS = of(HAND, OFF_HAND);
-    public static final Collection<EquipmentSlot> MAIN_HAND = of(HAND);
+    private final Collection<EquipmentSlot> slots;
 
     public static Collection<EquipmentSlot> of(EquipmentSlot... slots) {
         return Sets.newHashSet(slots);
     }
 
+    Slots(EquipmentSlot... slots) {
+        this.slots = Sets.newHashSet(slots);
+    }
+
+    public boolean contains(EquipmentSlot slot) {
+        return slots.contains(slot);
+    }
 }

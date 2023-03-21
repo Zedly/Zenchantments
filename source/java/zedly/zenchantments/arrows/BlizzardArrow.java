@@ -5,8 +5,9 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
-import zedly.zenchantments.CompatibilityAdapter;
+import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.Utilities;
 
 import static org.bukkit.potion.PotionEffectType.SLOW;
@@ -21,7 +22,7 @@ public final class BlizzardArrow extends ZenchantedArrow {
     }
 
     @Override
-    public void onImpact() {
+    public void onImpact(ProjectileHitEvent event) {
         Utilities.displayParticle(
             Utilities.getCenter(this.getArrow().getLocation()),
             Particle.CLOUD,
@@ -36,7 +37,7 @@ public final class BlizzardArrow extends ZenchantedArrow {
         for (final Entity entity : this.getArrow().getNearbyEntities(radius, radius, radius)) {
             if (!(entity instanceof LivingEntity)
                 || entity.equals(this.getArrow().getShooter())
-                || !CompatibilityAdapter.instance().attackEntity((LivingEntity) entity, (Player) this.getArrow().getShooter(), 0)
+                || !WorldInteractionUtil.attackEntity((LivingEntity) entity, (Player) this.getArrow().getShooter(), 0)
             ) {
                 continue;
             }
@@ -49,6 +50,6 @@ public final class BlizzardArrow extends ZenchantedArrow {
             );
         }
 
-        this.die();
+        die(true);
     }
 }

@@ -88,7 +88,7 @@ public class GiveCommand extends ZenchantmentsCommand {
                     sender.sendMessage(
                         translateString(
                             "message.zenchantment_illegal_with_item",
-                            translateString("zenchantment." + zenchantment.getKey().getKey() + ".name")
+                            translateString("zenchantment." + zenchantment.getI18nKey() + ".name")
                         )
                     );
                 }
@@ -110,10 +110,10 @@ public class GiveCommand extends ZenchantmentsCommand {
 
         final var enchantmentList = new StringBuilder();
 
-        for (final var zenchantment : zenchantmentsToAdd.entrySet()) {
-            zenchantment.getKey().setForItemStack(itemStack, zenchantment.getValue(), worldConfiguration);
+        for (final var entry : zenchantmentsToAdd.entrySet()) {
+            entry.getKey().setForItemStack(itemStack, entry.getValue(), worldConfiguration);
             enchantmentList
-                .append(translateString("zenchantment." + zenchantment.getKey().getKey().getKey() + ".name"))
+                .append(translateString("zenchantment." + entry.getKey().getI18nKey() + ".name"))
                 .append(", ");
         }
 

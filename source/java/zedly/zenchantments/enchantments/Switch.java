@@ -1,8 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -12,62 +10,11 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import static org.bukkit.Material.AIR;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {Shred.class, Anthropomorphism.class, Fire.class, Pierce.class, Reveal.class})
 public final class Switch extends Zenchantment {
-    public static final String KEY = "switch";
-
-    private static final String                             NAME        = "Switch";
-    private static final String                             DESCRIPTION = "Replaces the clicked block with the leftmost block in your hotbar when sneaking";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Shred.class, Anthropomorphism.class, Fire.class, Pierce.class, Reveal.class);
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private final NamespacedKey key;
-
-    public Switch(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double power,
-        final float probability
-    ) {
-        super(enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
-
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !event.getPlayer().isSneaking()) {
@@ -80,7 +27,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Make sure clicked block is okay to break.
-        if (!CompatibilityAdapter.instance().isBlockSafeToBreak(clickedBlock)) {
+        if (!WorldInteractionUtil.isBlockSafeToBreak(clickedBlock)) {
             return false;
         }
 
@@ -109,7 +56,7 @@ public final class Switch extends Zenchantment {
         }
 
         // Block has been selected, attempt breaking.
-        if (!CompatibilityAdapter.instance().breakBlock(clickedBlock, event.getPlayer())) {
+        if (!WorldInteractionUtil.breakBlock(clickedBlock, event.getPlayer())) {
             return false;
         }
 
@@ -126,7 +73,7 @@ public final class Switch extends Zenchantment {
         );
 
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
-            CompatibilityAdapter.instance().placeBlock(clickedBlock, player, material, null);
+            WorldInteractionUtil.placeBlock(clickedBlock, player, material, null);
         }, 1);  // TODO: Check item availability again in next tick, then place, then consume.
 
         Utilities.removeMaterialsFromPlayer(event.getPlayer(), material, 1);

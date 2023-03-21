@@ -50,7 +50,7 @@ public class EnableCommand extends ZenchantmentsCommand {
         if (zenchantment != null) {
             playerData.enableZenchantment(zenchantment.getKey());
             player.sendMessage(
-                translateString("message.zenchantment_enabled", translateString("zenchantment." + zenchantment.getKey().getKey() + ".name"))
+                translateString("message.zenchantment_enabled", translateString("zenchantment." + zenchantment.getI18nKey() + ".name"))
             );
         } else if (args[0].equalsIgnoreCase("all")) {
             playerData.enableAllZenchantments();

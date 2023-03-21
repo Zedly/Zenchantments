@@ -1,10 +1,8 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
@@ -18,60 +16,10 @@ import zedly.zenchantments.arrows.MultiArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 import zedly.zenchantments.event.ZenEntityShootBowEvent;
 
-import java.util.Collection;
-import java.util.Set;
-
 import static org.bukkit.Material.ARROW;
 
+@AZenchantment(runInSlots = Slots.HANDS , conflicting = {})
 public final class Burst extends Zenchantment {
-    public static final String KEY = "burst";
-
-    private static final String NAME = "Burst";
-    private static final String DESCRIPTION = "Rapidly fires arrows in series";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
-    private final NamespacedKey key;
-
-    public Burst(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
-
     @Override
     public boolean onEntityShootBow(final @NotNull EntityShootBowEvent event, final int level, final EquipmentSlot slot) {
         if (event instanceof ZenEntityShootBowEvent) {
@@ -110,6 +58,7 @@ public final class Burst extends Zenchantment {
             }
         }
 
+        ZenchantedArrow.addZenchantedArrowToArrowEntity(originalArrow, new MultiArrow(originalArrow), player);
         for (int i = 0; i < shotArrows; i++) {
             //player.getInventory().setItem(slot, itemInHand);
             ZenchantmentsPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
@@ -171,8 +120,8 @@ public final class Burst extends Zenchantment {
             arrow.remove();
         } else {
             arrow.setCritical(critical);
-            arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-            ZenchantedArrow.putArrow(arrow, new MultiArrow(arrow), player);
+            arrow.setPickupStatus(AbstractArrow.PickupStatus.ALLOWED);
+            ZenchantedArrow.addZenchantedArrowToArrowEntity(arrow, new MultiArrow(arrow), player);
         }
     }
 }

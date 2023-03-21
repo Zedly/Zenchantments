@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -14,65 +12,16 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {Anthropomorphism.class, Switch.class, Shred.class})
 public final class Pierce extends Zenchantment {
-    public static final String KEY = "pierce";
-
-    private static final String                             NAME        = "Pierce";
-    private static final String                             DESCRIPTION = "Lets the player mine in several modes which can be changed by shift clicking";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Anthropomorphism.class, Switch.class, Shred.class);
-    private static final Hand                               HAND_USE    = Hand.BOTH;
-
     private static final int     MAX_BLOCKS   = 128;
     private static final int[][] SEARCH_FACES = Utilities.DEFAULT_SEARCH_FACES;
-
-    private final NamespacedKey key;
-
-    public Pierce(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
 
     // PIERCE MODES
     // 1 = normal
@@ -196,8 +145,8 @@ public final class Pierce extends Zenchantment {
         }
 
        for (final Block block : total) {
-            if (CompatibilityAdapter.instance().isBlockSafeToBreak(block)) {
-                CompatibilityAdapter.instance().breakBlock(block, event.getPlayer());
+            if (WorldInteractionUtil.isBlockSafeToBreak(block)) {
+                WorldInteractionUtil.breakBlock(block, event.getPlayer());
             }
         }
 

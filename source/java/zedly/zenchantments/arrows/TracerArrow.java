@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.enchantments.Tracer;
@@ -22,14 +23,17 @@ public final class TracerArrow extends ZenchantedArrow {
     }
 
     @Override
-    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
-        if (event.isCancelled()) {
-            Tracer.TRACERS.remove(this.getArrow());
-            this.die();
-        }
-
-        return true;
+    public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
+        Tracer.TRACERS.remove(this.getArrow());
+        die(false);
     }
+
+    @Override
+    public void onImpact(ProjectileHitEvent event) {
+        Tracer.TRACERS.remove(this.getArrow());
+        die(false);
+    }
+
 
     public void onTick() {
         Entity closestEntity = null;

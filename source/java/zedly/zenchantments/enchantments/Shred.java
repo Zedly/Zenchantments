@@ -1,8 +1,6 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,7 +13,6 @@ import zedly.zenchantments.configuration.WorldConfiguration;
 import zedly.zenchantments.configuration.WorldConfigurationProvider;
 import zedly.zenchantments.event.BlockShredEvent;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,56 +20,8 @@ import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static zedly.zenchantments.MaterialList.*;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {Pierce.class, Switch.class})
 public final class Shred extends Zenchantment {
-    public static final String KEY = "shred";
-
-    private static final String                             NAME        = "Shred";
-    private static final String                             DESCRIPTION = "Breaks the blocks within a radius of the original block mined";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Pierce.class, Switch.class);
-    private static final Hand                               HAND_USE    = Hand.LEFT;
-
-    private final NamespacedKey key;
-
-    public Shred(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double power,
-        final float probability
-    ) {
-        super(enchantable, maxLevel, cooldown, power, probability);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
-
     @Override
     public boolean onBlockBreak(final @NotNull BlockBreakEvent event, final int level, final EquipmentSlot slot) {
         final Block block = event.getBlock();
@@ -124,7 +73,7 @@ public final class Shred extends Zenchantment {
         }
 
         if (config.getShredDropType() == 0) {
-            CompatibilityAdapter.instance().breakBlock(relativeBlock, player);
+            WorldInteractionUtil.breakBlock(relativeBlock, player);
         } else {
             final BlockShredEvent event = new BlockShredEvent(relativeBlock, player);
             ZenchantmentsPlugin.getInstance().getServer().getPluginManager().callEvent(event);

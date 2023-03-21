@@ -1,5 +1,6 @@
 package zedly.zenchantments.task;
 
+import zedly.zenchantments.ZenchantmentClassStorage;
 import zedly.zenchantments.ZenchantmentFactory;
 import zedly.zenchantments.ZenchantmentsPlugin;
 import zedly.zenchantments.arrows.ZenchantedArrow;
@@ -21,7 +22,7 @@ public class TaskRunner implements Runnable {
     private final Set<Method>         tasks;
 
     static {
-        TASK_CLASSES.addAll(ZenchantmentFactory.getZenchantmentClasses());
+        TASK_CLASSES.addAll(Set.of(ZenchantmentClassStorage.LIST));
         TASK_CLASSES.add(ZenchantmentListener.class);
         TASK_CLASSES.add(ZenchantedArrow.class);
     }

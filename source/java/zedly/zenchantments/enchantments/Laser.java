@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -16,60 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 import zedly.zenchantments.player.PlayerDataProvider;
 
-import java.util.Collection;
-import java.util.Set;
-
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {})
 public final class Laser extends Zenchantment {
-    public static final String KEY = "laser";
-
-    private static final String                             NAME        = "Laser";
-    private static final String                             DESCRIPTION = "Breaks blocks and damages mobs using a powerful beam of light";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private final NamespacedKey key;
-
-    public Laser(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() { return Slots.MAIN_HAND; }
-
     @Override
     public boolean onEntityInteract(@NotNull PlayerInteractEntityEvent event, int level, final EquipmentSlot slot) {
         if (slot == EquipmentSlot.HAND && !event.getPlayer().isSneaking()) {
@@ -96,7 +46,7 @@ public final class Laser extends Zenchantment {
         // Avoid conflicting with Lumber zenchantment.
         PlayerDataProvider
             .getDataForPlayer(player)
-            .setCooldown(new NamespacedKey(ZenchantmentsPlugin.getInstance(), Lumber.KEY), 5);
+            .setCooldown(new NamespacedKey(ZenchantmentsPlugin.getInstance(), Zenchantment.keyForClass(Laser.class)), 5);
 
         final Block block = player.getTargetBlock(null, 6 + (int) Math.round(level * this.getPower() * 3));
         final Location playerLocation = player.getLocation();
@@ -116,7 +66,7 @@ public final class Laser extends Zenchantment {
 
             for (final Entity entity : player.getWorld().getNearbyEntities(particleLocation, 0.3, 0.3, 0.3)) {
                 if (entity instanceof LivingEntity && entity != player) {
-                    if(CompatibilityAdapter.instance()
+                    if(WorldInteractionUtil
                         .attackEntity((LivingEntity) entity, player, 1 + (level + this.getPower() * 2))) {
                         Utilities.damageItemStackRespectUnbreaking(player, 1, EquipmentSlot.HAND);
                     }
@@ -125,10 +75,10 @@ public final class Laser extends Zenchantment {
             }
         }
 
-        if (CompatibilityAdapter.instance().isBlockSafeToBreak(block)
+        if (WorldInteractionUtil.isBlockSafeToBreak(block)
             && !MaterialList.LASER_BLACKLIST_BLOCKS.contains(block.getType())
         ) {
-            CompatibilityAdapter.instance().breakBlock(block, player);
+            WorldInteractionUtil.breakBlock(block, player);
         }
     }
 }

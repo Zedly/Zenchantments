@@ -1,8 +1,10 @@
 package zedly.zenchantments.arrows;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
@@ -13,16 +15,16 @@ public final class MultiArrow extends ZenchantedArrow {
     }
 
     @Override
-    public boolean onImpact(final @NotNull EntityDamageByEntityEvent event) {
-        final LivingEntity entity = (LivingEntity) event.getEntity();
+    public void onImpactEntity(final @NotNull ProjectileHitEvent event) {
+        final LivingEntity entity = (LivingEntity) event.getHitEntity();
         final int temp = entity.getMaximumNoDamageTicks();
 
-        entity.setMaximumNoDamageTicks(0);
-        entity.setNoDamageTicks(0);
-        entity.setMaximumNoDamageTicks(temp);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), () -> {
+            entity.setMaximumNoDamageTicks(0);
+            entity.setNoDamageTicks(0);
+            entity.setMaximumNoDamageTicks(temp); // Apparently resetting the damage ticks doesn't always work unless I do this
+        }, 0);
 
-        this.die();
-
-        return true;
+        die(false);
     }
 }

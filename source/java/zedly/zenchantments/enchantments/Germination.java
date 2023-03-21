@@ -1,6 +1,5 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,66 +10,16 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class Germination extends Zenchantment {
-    public static final String KEY = "germination";
-
-    private static final String NAME = "Germination";
-    private static final String DESCRIPTION = "Uses bone meal from the player's inventory to grow nearby plants";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand HAND_USE = Hand.RIGHT;
-
-    private final NamespacedKey key;
-
     private final HashSet<UUID> pendingOperations = new HashSet<>();
-
-    public Germination(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
 
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
@@ -128,7 +77,7 @@ public final class Germination extends Zenchantment {
                         continue;
                     }
 
-                    if (CompatibilityAdapter.instance().grow(relativeBlock, player)) {
+                    if (WorldInteractionUtil.grow(relativeBlock, player)) {
                         numBoneMealUsed++;
                         if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                             damageApplied++;
@@ -142,7 +91,7 @@ public final class Germination extends Zenchantment {
                         break;
                     }
                     if (ThreadLocalRandom.current().nextBoolean()) {
-                        if (CompatibilityAdapter.instance().grow(relativeBlock, player)) {
+                        if (WorldInteractionUtil.grow(relativeBlock, player)) {
                             numBoneMealUsed++;
                             if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                 damageApplied++;

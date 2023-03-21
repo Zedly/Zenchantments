@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -15,66 +13,16 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 import static org.bukkit.Material.*;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
+@AZenchantment(runInSlots = Slots.HANDS, conflicting = {})
 public final class Persephone extends Zenchantment {
-    public static final String KEY = "persephone";
-
-    private static final String                             NAME = "Persephone";
-    private static final String                             DESCRIPTION = "Plants seeds from the player's inventory around them";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE = Hand.RIGHT;
-
-    private final NamespacedKey key;
-
     private final HashSet<UUID> pendingOperations = new HashSet<>();
-
-    public Persephone(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.HANDS;
-    }
 
     @Override
     public boolean onBlockInteract(final @NotNull PlayerInteractEvent event, final int level, final EquipmentSlot slot) {
@@ -145,28 +93,28 @@ public final class Persephone extends Zenchantment {
 
                     if (soilBlock.getType() == FARMLAND) {
                         if (numWheatAvailable > numWheatSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, WHEAT, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, WHEAT, null)) {
                                 numWheatSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
                                 }
                             }
                         } else if (numCarrotsAvailable > numCarrotsSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, CARROTS, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, CARROTS, null)) {
                                 numCarrotsSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
                                 }
                             }
                         } else if (numPotatoesAvailable > numPotatoesSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, POTATOES, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, POTATOES, null)) {
                                 numPotatoesSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
                                 }
                             }
                         } else if (numBeetrootSeedsAvailable > numBeetrootsSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, BEETROOTS, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, BEETROOTS, null)) {
                                 numBeetrootsSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;
@@ -175,7 +123,7 @@ public final class Persephone extends Zenchantment {
                         }
                     } else if (soilBlock.getType() == SOUL_SAND) {
                         if (numNetherwartsAvailable > numNetherwartsSown) {
-                            if (CompatibilityAdapter.instance().placeBlock(blockAboveSoil, player, NETHER_WART, null)) {
+                            if (WorldInteractionUtil.placeBlock(blockAboveSoil, player, NETHER_WART, null)) {
                                 numNetherwartsSown++;
                                 if (Utilities.decideRandomlyIfDamageToolRespectUnbreaking(unbreakingLevel)) {
                                     damageApplied++;

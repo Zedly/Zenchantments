@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.ZenchantmentsPlugin;
@@ -24,7 +25,7 @@ public final class FireworkArrow extends ZenchantedArrow {
     }
 
     @Override
-    public void onImpact() {
+    public void onImpact(ProjectileHitEvent event) {
         final FireworkEffect.Type[] type = { BALL, BURST, STAR, BALL_LARGE };
         final FireworkEffect.Builder builder = FireworkEffect.builder();
         if(ThreadLocalRandom.current().nextBoolean()) {
@@ -61,6 +62,6 @@ public final class FireworkArrow extends ZenchantedArrow {
         firework.setFireworkMeta(fireworkMeta);
         Bukkit.getScheduler().scheduleSyncDelayedTask(ZenchantmentsPlugin.getInstance(), firework::detonate, 0);
 
-        this.die();
+        die(true);
     }
 }

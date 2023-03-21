@@ -52,7 +52,7 @@ public class DisableCommand extends ZenchantmentsCommand {
             player.sendMessage(
                 translateString(
                     "message.zenchantment_disabled",
-                    translateString("zenchantment." + zenchantment.getKey().getKey() + ".name")
+                    translateString("zenchantment." + zenchantment.getI18nKey() + ".name")
                 )
             );
         } else if (args[0].equalsIgnoreCase("all")) {

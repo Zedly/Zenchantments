@@ -2,6 +2,7 @@ package zedly.zenchantments.arrows;
 
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 
 public final class LevelArrow extends ZenchantedArrow {
@@ -15,11 +16,7 @@ public final class LevelArrow extends ZenchantedArrow {
 
     @Override
     public void onKill(final @NotNull EntityDeathEvent event) {
+        event.setDroppedExp((int) (event.getDroppedExp() * (1.3 + (getLevel() * this.getPower() * .5))));
         this.die(true);
-    }
-
-    @Override
-    public void onImpact() {
-        this.die(false);
     }
 }

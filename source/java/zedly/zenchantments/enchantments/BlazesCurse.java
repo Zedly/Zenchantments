@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,27 +14,18 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.Set;
 
 import static org.bukkit.block.Biome.*;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.LAVA;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.*;
-import static org.bukkit.inventory.EquipmentSlot.*;
 
+@AZenchantment(runInSlots = Slots.ARMOR , conflicting = {})
 public final class BlazesCurse extends Zenchantment {
     private static final float SUBMERGE_DAMAGE = 1.5f;
     private static final float RAIN_DAMAGE = 0.5f;
     private static final float SNOWBALL_DAMAGE = 1.0f;
-
-    public static final String KEY = "blazes_curse";
-
-    private static final String                             NAME        = "Blaze's Curse";
-    private static final String                             DESCRIPTION = "Causes the player to be unharmed in lava and fire, but damages them in water and rain";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-
     private static final EnumSet<Biome> DRY_BIOMES = EnumSet.of(
         DESERT,
         SAVANNA,
@@ -46,47 +35,6 @@ public final class BlazesCurse extends Zenchantment {
         WOODED_BADLANDS,
         ERODED_BADLANDS
     );
-
-    private final NamespacedKey key;
-
-    public BlazesCurse(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    @NotNull
-    public Collection<EquipmentSlot> getApplyToSlots() { return Slots.ARMOR; }
 
     @Override
     public boolean onEntityDamage(final @NotNull EntityDamageEvent event, final int level, final EquipmentSlot slot) {
@@ -112,9 +60,9 @@ public final class BlazesCurse extends Zenchantment {
         Player target = (Player) event.getHitEntity();
         if (event.getEntity().getType() == EntityType.SNOWBALL) {
             if(event.getEntity().getShooter() != null && event.getEntity().getShooter() instanceof Player attacker) {
-                CompatibilityAdapter.instance().attackEntity(target, attacker, SNOWBALL_DAMAGE);
+                WorldInteractionUtil.attackEntity(target, attacker, SNOWBALL_DAMAGE);
             } else {
-                CompatibilityAdapter.instance().damagePlayer(target, SNOWBALL_DAMAGE, MELTING);
+                WorldInteractionUtil.damagePlayer(target, SNOWBALL_DAMAGE, MELTING);
             }
             return true;
         }
@@ -135,7 +83,7 @@ public final class BlazesCurse extends Zenchantment {
             case BLUE_ICE:
             case SNOW_BLOCK:
             case POWDER_SNOW:
-                CompatibilityAdapter.instance().damagePlayer(player, SUBMERGE_DAMAGE, MELTING);
+                WorldInteractionUtil.damagePlayer(player, SUBMERGE_DAMAGE, MELTING);
                 return true;
         }
 
@@ -148,14 +96,14 @@ public final class BlazesCurse extends Zenchantment {
             case BLUE_ICE:
             case SNOW_BLOCK:
             case POWDER_SNOW:
-                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, MELTING);
+                WorldInteractionUtil.damagePlayer(player, RAIN_DAMAGE, MELTING);
                 return true;
         }
 
         if (player.getWorld().hasStorm() && !DRY_BIOMES.contains(player.getLocation().getBlock().getBiome())) {
             final Location checkLocation = player.getLocation();
             if (checkLocation.getWorld().getHighestBlockAt(checkLocation).getY() <= checkLocation.getY() + 1) {
-                CompatibilityAdapter.instance().damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
+                WorldInteractionUtil.damagePlayer(player, RAIN_DAMAGE, EntityDamageEvent.DamageCause.CUSTOM);
             }
         }
 

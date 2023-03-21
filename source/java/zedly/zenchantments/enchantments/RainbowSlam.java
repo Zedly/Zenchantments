@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,68 +10,19 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@AZenchantment(runInSlots = Slots.MAIN_HAND, conflicting = {Force.class})
 public final class RainbowSlam extends Zenchantment {
-    public static final String KEY = "rainbow_slam";
-
     public static final Set<Entity> RAINBOW_SLAM_ENTITIES = new HashSet<>();
-
-    private static final String                             NAME        = "Rainbow Slam";
-    private static final String                             DESCRIPTION = "Attacks enemy mobs with a powerful swirling slam";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of(Force.class);
-    private static final Hand                               HAND_USE    = Hand.RIGHT;
-
-    private final NamespacedKey key;
-
-    public RainbowSlam(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.MAIN_HAND;
-    }
 
     @Override
     public boolean onEntityInteract(final @NotNull PlayerInteractEntityEvent event, final int level, final EquipmentSlot slot) {
         if (slot != EquipmentSlot.HAND || !(event.getRightClicked() instanceof LivingEntity)
-            || !CompatibilityAdapter.instance().attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
+            || !WorldInteractionUtil.attackEntity((LivingEntity) event.getRightClicked(), event.getPlayer(), 0)
         ) {
             return false;
         }
@@ -132,7 +81,7 @@ public final class RainbowSlam extends Zenchantment {
 
                 RAINBOW_SLAM_ENTITIES.remove(entity);
 
-                CompatibilityAdapter.instance().attackEntity(entity, event.getPlayer(), level * this.getPower());
+                WorldInteractionUtil.attackEntity(entity, event.getPlayer(), level * this.getPower());
 
                 int numParticleGroups = (int) Math.pow(10, getPower());
                 for (int c = 0; c < numParticleGroups; c++) {

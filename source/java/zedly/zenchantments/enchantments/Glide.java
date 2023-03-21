@@ -1,9 +1,7 @@
 package zedly.zenchantments.enchantments;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -18,58 +16,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.bukkit.Material.AIR;
 
+@AZenchantment(runInSlots = Slots.ARMOR, conflicting = {})
 public final class Glide extends Zenchantment {
-    private static final EquipmentSlot[] ARMOR_SLOTS = new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    public static final String KEY = "glide";
-
-    private static final String                             NAME        = "Glide";
-    private static final String                             DESCRIPTION = "Gently brings the player back to the ground when sneaking";
-    private static final Set<Class<? extends Zenchantment>> CONFLICTING = ImmutableSet.of();
-    private static final Hand                               HAND_USE    = Hand.NONE;
-
-    public static final Map<UUID, Double> GLIDE_USERS = new HashMap<>();
-
-    private final NamespacedKey key;
-
-    public Glide(
-        final @NotNull Set<Tool> enchantable,
-        final int maxLevel,
-        final int cooldown,
-        final double probability,
-        final float power
-    ) {
-        super(enchantable, maxLevel, cooldown, probability, power);
-        this.key = new NamespacedKey(ZenchantmentsPlugin.getInstance(), KEY);
-    }
-
-    @Override
-    @NotNull
-    public NamespacedKey getKey() {
-        return this.key;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    @NotNull
-    public Set<Class<? extends Zenchantment>> getConflicting() {
-        return CONFLICTING;
-    }
-
-    @Override
-    public Collection<EquipmentSlot> getApplyToSlots() {
-        return Slots.ARMOR;
-    }
+    private static final Map<UUID, Double> GLIDE_USERS = new HashMap<>();
 
     @Override
     public boolean onFastScan(final @NotNull Player player, final int level, final EquipmentSlot slot) {

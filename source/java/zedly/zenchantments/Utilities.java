@@ -3,8 +3,6 @@ package zedly.zenchantments;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Levelled;
-import org.bukkit.craftbukkit.v1_19_R2.util.CraftChatMessage;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -56,22 +54,6 @@ public final class Utilities {
         final var i = ThreadLocalRandom.current().nextInt(clazz.getEnumConstants().length);
         return clazz.getEnumConstants()[i];
     }
-
-    /*
-    @NotNull
-    public static List<ItemStack> getArmorAndHandItems(final @NotNull Player player, final boolean mainHand) {
-        requireNonNull(player);
-
-        final var stacks = new ArrayList<ItemStack>(5); // Full armor + one hand = max 5 ItemStacks.
-        final var inventory = player.getInventory();
-
-        stacks.addAll(Arrays.asList(inventory.getArmorContents()));
-        stacks.add(mainHand ? inventory.getItemInMainHand() : inventory.getItemInOffHand());
-        stacks.removeIf(itemStack -> itemStack == null || itemStack.getType() == Material.AIR);
-
-        return stacks;
-    }
-    */
 
     public static int getUnbreakingLevel(ItemStack is) {
         return is.getEnchantmentLevel(Enchantment.DURABILITY);
@@ -405,12 +387,6 @@ public final class Utilities {
     }
 
     @NotNull
-    public static String reproduceCorruptedInvisibleSequence(final @NotNull String original) {
-        requireNonNull(original);
-        return CraftChatMessage.fromJSONComponent(CraftChatMessage.fromStringToJSON(original, false));
-    }
-
-    @NotNull
     public static String makeStringInvisible(@NotNull String string) {
         requireNonNull(string);
 
@@ -424,116 +400,6 @@ public final class Utilities {
         }
 
         return builder.toString();
-    }
-
-    @NotNull
-    public static Map<String, Boolean> fromInvisibleString(final @NotNull String string) {
-        requireNonNull(string);
-
-        final var strings = new HashMap<String, Boolean>();
-
-        // Reassigned in the loop below when a section is completed.
-        var builder = new StringBuilder();
-
-        var state = 0;
-
-        for (final var c : string.toCharArray()) {
-            switch (state) {
-                // Visible, waiting for '§'.
-                case 0:
-                    if (c == COLOR_CHAR) {
-                        state = 1;
-                    } else {
-                        builder.append(c);
-                    }
-                    break;
-                // Got a '§', waiting for '\'.
-                case 1:
-                    if (c == '\\') {
-                        state = 2;
-                    } else if (c == COLOR_CHAR) {
-                        builder.append(COLOR_CHAR);
-                    } else {
-                        builder.append(COLOR_CHAR);
-                        builder.append(c);
-                        state = 0;
-                    }
-                    break;
-                // Got a '\', waiting for '§'.
-                case 2:
-                    if (c == COLOR_CHAR) {
-                        state = 3;
-                    } else {
-                        builder.append(COLOR_CHAR);
-                        builder.append('\\');
-                        builder.append(c);
-                        state = 0;
-                    }
-                    break;
-                // Got a '§', waiting for '<'.
-                case 3:
-                    if (c == '<') {
-                        state = 4;
-                        if (builder.length() != 0) {
-                            strings.put(builder.toString(), true);
-                            builder = new StringBuilder();
-                        }
-                    } else if (c == COLOR_CHAR) {
-                        builder.append(COLOR_CHAR);
-                        builder.append('\\');
-                        state = 1;
-                    } else {
-                        builder.append(COLOR_CHAR);
-                        builder.append('\\');
-                        builder.append(COLOR_CHAR);
-                        builder.append(c);
-                        state = 0;
-                    }
-                    break;
-                // Invisible, ignore '§'.
-                case 4:
-                    state = 5;
-                    break;
-                // Invisible, waiting for '\'.
-                case 5:
-                    if (c == '\\') {
-                        state = 6;
-                    } else {
-                        builder.append(c);
-                        state = 4;
-                    }
-                    break;
-                // Got '\', waiting for '§'.
-                case 6:
-                    if (c == COLOR_CHAR) {
-                        state = 7;
-                    } else {
-                        builder.append('\\');
-                        state = 5;
-                    }
-                    break;
-                // Got '§', waiting for '>'.
-                case 7:
-                    if (c == '>') {
-                        state = 0;
-                        if (builder.length() != 0) {
-                            strings.put(builder.toString(), false);
-                            builder = new StringBuilder();
-                        }
-                    } else {
-                        builder.append('\\');
-                        builder.append(c);
-                        state = 4;
-                    }
-                    break;
-            }
-        }
-
-        if (builder.length() != 0) {
-            strings.put(builder.toString(), true);
-        }
-
-        return strings;
     }
 
     public static int countItems(final @NotNull Iterable<ItemStack> stacks, final @NotNull Predicate<ItemStack> predicate) {
