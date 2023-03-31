@@ -1,10 +1,7 @@
 package zedly.zenchantments.arrows;
 
 import org.bukkit.Particle;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.WorldInteractionUtil;
@@ -12,11 +9,16 @@ import zedly.zenchantments.Utilities;
 
 public final class FirestormArrow extends ZenchantedArrow {
     public FirestormArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level,
         final double power
     ) {
         super(entity, level, power);
+    }
+
+    @Override
+    public void onImpactEntity(ProjectileHitEvent event) {
+        onImpact(event);
     }
 
     @Override

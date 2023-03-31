@@ -9,7 +9,7 @@ import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.ZenchantmentsPlugin;
 
 public final class StationaryArrow extends ZenchantedArrow {
-    public StationaryArrow(final @NotNull AbstractArrow entity) {
+    public StationaryArrow(final @NotNull Projectile entity) {
         super(entity);
     }
 

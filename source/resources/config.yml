@@ -59,7 +59,7 @@ enchantments:
               power: 1.0
       - Blizzard:
               probability: 4.0
-              tools: Bow
+              tools: Bow, Trident
               name: Blizzard
               max-level: 3
               cooldown: 0
@@ -122,14 +122,14 @@ enchantments:
               power: 1.0
       - Firestorm:
               probability: 5.0
-              tools: Bow
+              tools: Bow, Trident
               name: Firestorm
               max-level: 3
               cooldown: 0
               power: 1.0
       - Fireworks:
               probability: 6.0
-              tools: Bow
+              tools: Bow, Trident
               name: Fireworks
               max-level: 4
               cooldown: 0
@@ -143,7 +143,7 @@ enchantments:
               power: 1.0
       - Fuse:
               probability: 6.0
-              tools: Bow
+              tools: Bow, Trident
               name: Fuse
               max-level: 1
               cooldown: 0
@@ -213,7 +213,7 @@ enchantments:
               power: 1.0
       - IceAspect:
               probability: 6.0
-              tools: Sword
+              tools: Sword, Trident
               name: Ice Aspect
               max-level: 2
               cooldown: 0
@@ -234,7 +234,7 @@ enchantments:
               power: 1.0
       - Level:
               probability: 4.0
-              tools: Bow, Sword, Pickaxe
+              tools: Bow, Sword, Pickaxe, Trident
               name: Level
               max-level: 3
               cooldown: 0
@@ -325,7 +325,7 @@ enchantments:
               power: 1.0
       - Potion:
               probability: 5.0
-              tools: Bow
+              tools: Bow, Trident
               name: Potion
               max-level: 3
               cooldown: 0
@@ -339,7 +339,7 @@ enchantments:
               power: 1.0
       - QuickShot:
               probability: 2.0
-              tools: Bow
+              tools: Bow, Trident
               name: Quick Shot
               max-level: 1
               cooldown: 0
@@ -360,7 +360,7 @@ enchantments:
               power: 1.0
       - Reaper:
               probability: 4.0
-              tools: Bow, Sword
+              tools: Bow, Sword, Trident
               name: Reaper
               max-level: 4
               cooldown: 0
@@ -395,7 +395,7 @@ enchantments:
               power: 1.0
       - Siphon:
               probability: 3.0
-              tools: Sword, Bow
+              tools: Sword, Bow, Trident
               name: Siphon
               max-level: 4
               cooldown: 0
@@ -430,7 +430,7 @@ enchantments:
               power: 1.0
       - Stationary:
               probability: 5.0
-              tools: Bow, Sword
+              tools: Bow, Sword, Trident
               name: Stationary
               max-level: 1
               cooldown: 0
@@ -465,14 +465,14 @@ enchantments:
               power: 1.0
       - Toxic:
               probability: 0.0
-              tools: Bow, Sword
+              tools: Bow, Sword, Trident
               name: Toxic
               max-level: 4
               cooldown: 0
               power: 1.0
       - Tracer:
               probability: 1.0
-              tools: Bow
+              tools: Bow, Trident
               name: Tracer
               max-level: 4
               cooldown: 0
@@ -500,7 +500,7 @@ enchantments:
               power: 1.0
       - Vortex:
               probability: 6.0
-              tools: Sword, Bow
+              tools: Sword, Bow, Trident
               name: Vortex
               max-level: 1
               cooldown: 0
@@ -515,7 +515,7 @@ enchantments:
       # Admin Enchantments
       - Apocalypse:
               probability: 0.0
-              tools: Bow
+              tools: Bow, Trident
               name: Apocalypse
               max-level: 1
               cooldown: 0
@@ -536,7 +536,7 @@ enchantments:
               power: 1.0
       - Singularity:
               probability: 0.0
-              tools: Bow
+              tools: Bow, Trident
               name: Singularity
               max-level: 1
               cooldown: 0

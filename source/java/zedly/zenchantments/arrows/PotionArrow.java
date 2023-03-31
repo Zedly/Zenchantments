@@ -2,6 +2,7 @@ package zedly.zenchantments.arrows;
 
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -33,7 +34,7 @@ public final class PotionArrow extends ZenchantedArrow {
     };
 
     public PotionArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level,
         final double power
     ) {

@@ -3,6 +3,7 @@ package zedly.zenchantments.arrows;
 import org.bukkit.block.Block;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.WorldInteractionUtil;
@@ -13,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 import static zedly.zenchantments.enchantments.Vortex.VORTEX_LOCATIONS;
 
 public final class VortexArrow extends ZenchantedArrow {
-    public VortexArrow(final @NotNull AbstractArrow entity) {
+    public VortexArrow(final @NotNull Projectile entity) {
         super(entity);
     }
 

@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
@@ -14,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 
 public final class TracerArrow extends ZenchantedArrow {
     public TracerArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level,
         final double power
     ) {

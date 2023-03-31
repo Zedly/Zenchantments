@@ -8,7 +8,7 @@ import zedly.zenchantments.WorldInteractionUtil;
 
 public final class SiphonArrow extends ZenchantedArrow {
     public SiphonArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level,
         final double power
     ) {

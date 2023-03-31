@@ -17,7 +17,7 @@ import static org.bukkit.potion.PotionEffectType.ABSORPTION;
 import static org.bukkit.potion.PotionEffectType.HARM;
 
 public final class ApocalypseArrow extends ZenchantedArrow {
-    public ApocalypseArrow(final @NotNull AbstractArrow entity) {
+    public ApocalypseArrow(final @NotNull Projectile entity) {
         super(entity);
     }
 
