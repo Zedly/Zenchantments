@@ -19,10 +19,10 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.block.data.type.Leaves;
-import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_19_R3.entity.*;
-import org.bukkit.craftbukkit.v1_19_R3.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_19_R1.entity.*;
+import org.bukkit.craftbukkit.v1_19_R1.util.CraftChatMessage;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
@@ -474,6 +474,7 @@ public class WorldInteractionUtil {
             ObfuscationUtil.sendPacketToPlayer(ep, metadataPacket);
             return true;
         } catch (InstantiationException ex) {
+            ex.printStackTrace();
             return false;
         }
     }

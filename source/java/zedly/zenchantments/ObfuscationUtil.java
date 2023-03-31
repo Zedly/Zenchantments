@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPosition;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
 import net.minecraft.network.syncher.DataWatcher;
+import net.minecraft.network.syncher.DataWatcherObject;
 import net.minecraft.network.syncher.DataWatcherRegistry;
 import net.minecraft.network.syncher.DataWatcherSerializer;
 import net.minecraft.server.level.EntityPlayer;
@@ -29,7 +30,7 @@ public class ObfuscationUtil {
     }
 
     public static void resetXPPickupTimer(EntityHuman human) {
-        human.bZ = 0;
+        human.ca = 0;
     }
 
     public static boolean breakBlockAsPlayer(EntityPlayer ep, BlockPosition bp) {
@@ -37,15 +38,15 @@ public class ObfuscationUtil {
     }
 
     public static int getAnimalsLoveModeTimer(EntityAnimal ea) {
-        return ea.h();
+        return ea.j();
     }
 
     public static boolean isInAnimalsWorldBreedingDisabled(EntityAnimal ea) {
-        return ea.H.B;
+        return ea.s.y;
     }
 
     public static boolean isAnimalNotInLove(EntityAnimal ea) {
-        return ea.fT();
+        return ea.fM();
     }
 
     public static void animalEnterLoveMode(EntityAnimal animal, EntityHuman feeder) {
@@ -77,11 +78,11 @@ public class ObfuscationUtil {
     }
 
     public static EntityTypes getShulkerEntityType() {
-        return EntityTypes.aG;
+        return EntityTypes.aB;
     }
 
     public static EntityTypes getFallingBlockEntityType() {
-        return EntityTypes.F;
+        return EntityTypes.E;
     }
 
     public static int getNumericalBlockType(IBlockData blockData) {
@@ -91,13 +92,17 @@ public class ObfuscationUtil {
     @NotNull
     public static PacketPlayOutEntityMetadata generateShulkerGlowPacket(final int entityId) {
         final DataWatcherSerializer<Byte> byteSerializer = ObfuscationUtil.getDataWatcherByte(); // Type (Byte)
-        final List<DataWatcher.b<?>> list = new ArrayList<>();
+        final DataWatcherObject<Byte> dwo = new DataWatcherObject<>(0, byteSerializer); // Index (0)
+        final List<DataWatcher.Item<?>> list = new ArrayList<>();
+        final DataWatcher.Item<Byte> dwi = new DataWatcher.Item<>(dwo, (byte) 0x60); // Value (0x60)
+        FakeDataWatcher fdw = new FakeDataWatcher(list);
+        list.add(dwi); // Pack it in a list
 
         // Add a record of Entity Metadata. Requires an id, a Serializer and a value.
         // As of 1.19, setting a LivingEntity to be glowing and invisible is done via a bitmask in a single record.
         // This record is at id 0, is of type Byte (uses the Byte Serializer) and has a value of 0x60
-        list.add(new DataWatcher.b<>(0, byteSerializer, (byte) 0x60));
-        PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata(entityId, list);
+        list.add(new DataWatcher.Item<>(dwo, (byte) 0x60));
+        PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata(entityId, fdw, true);
         return packet;
     }
 
@@ -117,16 +122,16 @@ public class ObfuscationUtil {
             this.entityId = entityId;
             this.uuid = uuid;
             this.entityType = entityType;
-            super.p(x, y, z);
+            super.o(x, y, z);
         }
 
         @Override
-        public int af() {
+        public int ae() {
             return entityId;
         }
 
         @Override
-        public UUID cs() {
+        public UUID co() {
             return uuid;
         }
 
@@ -136,7 +141,7 @@ public class ObfuscationUtil {
 
         // Useless abstract methods we need to implement to appease the compiler
         @Override
-        public Iterable<net.minecraft.world.item.ItemStack> bI() {
+        public Iterable<net.minecraft.world.item.ItemStack> bF() {
             return null;
         }
 
@@ -150,8 +155,21 @@ public class ObfuscationUtil {
         }
 
         @Override
-        public EnumMainHand fd() {
+        public EnumMainHand eS() {
             return null;
+        }
+    }
+
+    public static class FakeDataWatcher extends DataWatcher {
+        private final List<DataWatcher.Item<?>> list;
+
+        public FakeDataWatcher(List<DataWatcher.Item<?>> list) {
+            super(null);
+            this.list = list;
+        }
+
+        public List<Item<?>> c() {
+            return list;
         }
     }
 }

@@ -287,12 +287,6 @@ public class MockBlock implements Block {
         return original.canPlace(blockData);
     }
 
-    @NotNull
-    @Override
-    public String getTranslationKey() {
-        return original.getTranslationKey();
-    }
-
     @Override
     public void setMetadata(@NotNull String s, @NotNull MetadataValue metadataValue) {
         original.setMetadata(s, metadataValue);
