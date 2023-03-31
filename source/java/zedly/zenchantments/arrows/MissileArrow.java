@@ -6,6 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zedly.zenchantments.Utilities;
@@ -18,7 +19,7 @@ import java.util.List;
 import static org.bukkit.Material.AIR;
 
 public final class MissileArrow extends ZenchantedArrow {
-    public MissileArrow(final @NotNull AbstractArrow entity) {
+    public MissileArrow(final @NotNull Projectile entity) {
         super(entity);
     }
 

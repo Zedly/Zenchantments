@@ -23,10 +23,7 @@ import java.util.function.Consumer;
 public class ArrowListener implements Listener {
     @EventHandler
     private void onProjectileHit(final @NotNull ProjectileHitEvent event) {
-        if (!(event.getEntity() instanceof AbstractArrow)) {
-            return;
-        }
-        final AbstractArrow arrowEntity = (AbstractArrow) event.getEntity();
+        final Projectile arrowEntity = event.getEntity();
 
         if (event.getHitBlock() != null) {
             forEachZenchatedArrow(arrowEntity, ZenchantedArrow.ARROW_METADATA_NAME, (za) -> za.onImpact(event));

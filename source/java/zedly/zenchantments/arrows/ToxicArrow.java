@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.WorldInteractionUtil;
@@ -16,7 +17,7 @@ import static org.bukkit.potion.PotionEffectType.HUNGER;
 
 public final class ToxicArrow extends ZenchantedArrow {
     public ToxicArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level,
         final double power
     ) {

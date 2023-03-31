@@ -23,14 +23,14 @@ public class ZenchantedArrow {
 
     private static final Set<ZenchantedArrow> DIE_QUEUE = new HashSet<>();
 
-    private final AbstractArrow arrow;
+    private final Projectile arrow;
     private final int level;
     private final double power;
 
     private int tick;
 
     public ZenchantedArrow(
-        final @NotNull AbstractArrow arrow,
+        final @NotNull Projectile arrow,
         final int level,
         final double power
     ) {
@@ -39,16 +39,16 @@ public class ZenchantedArrow {
         this.power = power;
     }
 
-    public ZenchantedArrow(final @NotNull AbstractArrow arrow, final int level) {
+    public ZenchantedArrow(final @NotNull Projectile arrow, final int level) {
         this(arrow, level, 1);
     }
 
-    public ZenchantedArrow(final @NotNull AbstractArrow arrow) {
+    public ZenchantedArrow(final @NotNull Projectile arrow) {
         this(arrow, 0);
     }
 
     public static void addZenchantedArrowToArrowEntity(
-        final @NotNull AbstractArrow arrow,
+        final @NotNull Projectile arrow,
         final @NotNull ZenchantedArrow zenchantedArrow,
         final @NotNull Player player
     ) {
@@ -78,7 +78,7 @@ public class ZenchantedArrow {
     }
 
     @NotNull
-    public final AbstractArrow getArrow() {
+    public final Projectile getArrow() {
         return this.arrow;
     }
 
@@ -105,7 +105,7 @@ public class ZenchantedArrow {
         // However in practice they all begin and die at the same time, so we just wipe the metadata
         arrow.removeMetadata(ARROW_METADATA_NAME, ZenchantmentsPlugin.getInstance());
 
-        if (removeArrow) {
+        if (removeArrow && arrow.getType() != EntityType.TRIDENT) {
             arrow.remove();
         }
     }

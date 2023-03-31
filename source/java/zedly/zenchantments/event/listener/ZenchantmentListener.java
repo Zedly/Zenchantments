@@ -296,7 +296,7 @@ public final class ZenchantmentListener implements Listener {
         final PlayerInventory inventory = player.getInventory();
         final Tool main = Tool.fromItemStack(inventory.getItemInMainHand());
         final Tool off = Tool.fromItemStack(inventory.getItemInOffHand());
-        final EquipmentSlot usedHand = main != BOW && main != Tool.ROD && (off == BOW || off == Tool.ROD) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
+        final EquipmentSlot usedHand = main != BOW && main != Tool.ROD && main != Tool.TRIDENT && (off == BOW || off == Tool.ROD || off == Tool.TRIDENT) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
         this.applyZenchantmentForTool(
             player,

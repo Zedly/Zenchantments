@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +19,15 @@ import static org.bukkit.FireworkEffect.Type.*;
 
 public final class FireworkArrow extends ZenchantedArrow {
     public FireworkArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level
     ) {
         super(entity, level);
+    }
+
+    @Override
+    public void onImpactEntity(ProjectileHitEvent event) {
+        onImpact(event);
     }
 
     @Override

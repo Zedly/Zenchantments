@@ -1,13 +1,16 @@
 package zedly.zenchantments.enchantments;
 
 import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.arrows.BlizzardArrow;
 import zedly.zenchantments.arrows.LevelArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
@@ -44,5 +47,15 @@ public final class Level extends Zenchantment {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final EquipmentSlot slot) {
+        if(event.getEntity().getType() != EntityType.TRIDENT) {
+            return false;
+        }
+        final LevelArrow arrow = new LevelArrow(event.getEntity(), level, getPower());
+        ZenchantedArrow.addZenchantedArrowToArrowEntity(event.getEntity(), arrow, (Player) event.getEntity().getShooter());
+        return true;
     }
 }

@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.Utilities;
@@ -13,10 +14,15 @@ import zedly.zenchantments.enchantments.Singularity;
 
 public final class SingularityArrow extends ZenchantedArrow {
     public SingularityArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level
     ) {
         super(entity, level);
+    }
+
+    @Override
+    public void onImpactEntity(ProjectileHitEvent event) {
+        onImpact(event);
     }
 
     @Override

@@ -11,7 +11,7 @@ import zedly.zenchantments.WorldInteractionUtil;
 import zedly.zenchantments.Utilities;
 
 public final class FuseArrow extends ZenchantedArrow {
-    public FuseArrow(final @NotNull AbstractArrow entity) {
+    public FuseArrow(final @NotNull Projectile entity) {
         super(entity);
     }
 

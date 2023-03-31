@@ -3,6 +3,7 @@ package zedly.zenchantments.arrows;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,7 @@ import zedly.zenchantments.Utilities;
 
 public final class ReaperArrow extends ZenchantedArrow {
     public ReaperArrow(
-        final @NotNull AbstractArrow entity,
+        final @NotNull Projectile entity,
         final int level,
         final double power
     ) {

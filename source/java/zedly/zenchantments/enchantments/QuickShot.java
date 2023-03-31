@@ -2,14 +2,17 @@ package zedly.zenchantments.enchantments;
 
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CrossbowMeta;
 import org.jetbrains.annotations.NotNull;
 import zedly.zenchantments.*;
+import zedly.zenchantments.arrows.PotionArrow;
 import zedly.zenchantments.arrows.QuickArrow;
 import zedly.zenchantments.arrows.ZenchantedArrow;
 
@@ -38,6 +41,16 @@ public final class QuickShot extends Zenchantment {
                 Utilities.damageItemStackRespectUnbreaking(player, 1, slot);
             }
         }
+        return true;
+    }
+
+    @Override
+    public boolean onProjectileLaunch(final @NotNull ProjectileLaunchEvent event, final int level, final EquipmentSlot slot) {
+        if(event.getEntity().getType() != EntityType.TRIDENT) {
+            return false;
+        }
+        final QuickArrow arrow = new QuickArrow(event.getEntity());
+        ZenchantedArrow.addZenchantedArrowToArrowEntity(event.getEntity(), arrow, (Player) event.getEntity().getShooter());
         return true;
     }
 }

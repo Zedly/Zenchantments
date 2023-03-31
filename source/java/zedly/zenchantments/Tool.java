@@ -12,53 +12,47 @@ import static org.bukkit.Material.*;
 public enum Tool {
     AXE(
         "Axe",
-        new Material[] { WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE, NETHERITE_AXE },
-        false
+        new Material[] { WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE, NETHERITE_AXE }
     ),
     SHOVEL(
         "Shovel",
-        new Material[] { WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL },
-        false
+        new Material[] { WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL }
     ),
     SWORD(
         "Sword",
-        new Material[] { WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD },
-        false
+        new Material[] { WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD }
     ),
     PICKAXE(
         "Pickaxe",
-        new Material[] { WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE },
-        false
+        new Material[] { WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE }
     ),
     ROD(
         "Rod",
-        new Material[] { FISHING_ROD },
-        true
+        new Material[] { FISHING_ROD }
     ),
     SHEAR(
         "Shears",
-        new Material[] { SHEARS },
-        true
+        new Material[] { SHEARS }
     ),
     BOW(
         "Bow",
-        new Material[] { Material.BOW, CROSSBOW },
-        true
+        new Material[] { Material.BOW, CROSSBOW }
+    ),
+    TRIDENT(
+        "Trident",
+        new Material[] {Material.TRIDENT}
     ),
     LIGHTER(
         "Lighter",
-        new Material[] { FLINT_AND_STEEL },
-        true
+        new Material[] { FLINT_AND_STEEL }
     ),
     HOE(
         "Hoe",
-        new Material[] { WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE },
-        true
+        new Material[] { WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE }
     ),
     HELMET(
         "Helmet",
-        new Material[] { NETHERITE_HELMET, DIAMOND_HELMET, IRON_HELMET, GOLDEN_HELMET, CHAINMAIL_HELMET, LEATHER_HELMET, TURTLE_HELMET },
-        false
+        new Material[] { NETHERITE_HELMET, DIAMOND_HELMET, IRON_HELMET, GOLDEN_HELMET, CHAINMAIL_HELMET, LEATHER_HELMET, TURTLE_HELMET }
     ),
     CHESTPLATE(
         "Chestplate",
@@ -70,8 +64,7 @@ public enum Tool {
             CHAINMAIL_CHESTPLATE,
             LEATHER_CHESTPLATE,
             ELYTRA
-        },
-        false
+        }
     ),
     LEGGINGS(
         "Leggings",
@@ -82,18 +75,15 @@ public enum Tool {
             GOLDEN_LEGGINGS,
             CHAINMAIL_LEGGINGS,
             LEATHER_LEGGINGS
-        },
-        false
+        }
     ),
     BOOTS(
         "Boots",
-        new Material[] { NETHERITE_BOOTS, DIAMOND_BOOTS, IRON_BOOTS, GOLDEN_BOOTS, CHAINMAIL_BOOTS, LEATHER_BOOTS },
-        false
+        new Material[] { NETHERITE_BOOTS, DIAMOND_BOOTS, IRON_BOOTS, GOLDEN_BOOTS, CHAINMAIL_BOOTS, LEATHER_BOOTS }
     ),
     WINGS(
         "Elytra",
-        new Material[] { ELYTRA },
-        false
+        new Material[] { ELYTRA }
     ),
     ALL(
         "All",
@@ -158,19 +148,16 @@ public enum Tool {
             GOLDEN_BOOTS,
             CHAINMAIL_BOOTS,
             LEATHER_BOOTS,
-            TRIDENT
-        },
-        false
+            Material.TRIDENT
+        }
     );
 
     private final String     id;
     private final Material[] materials;
-    private final boolean    rightClickAction;
 
-    Tool(final @NotNull String id, final @NotNull Material[] materials, final boolean rightClickAction) {
+    Tool(final @NotNull String id, final @NotNull Material[] materials) {
         this.id = id;
         this.materials = materials;
-        this.rightClickAction = rightClickAction;
     }
 
     @Nullable
@@ -209,10 +196,6 @@ public enum Tool {
     @NotNull
     public Material[] getMaterials() {
         return this.materials;
-    }
-
-    public boolean hasRightClickAction() {
-        return this.rightClickAction;
     }
 
     public boolean contains(final @NotNull Material material) {
