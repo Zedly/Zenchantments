@@ -35,7 +35,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -445,7 +444,9 @@ public class WorldInteractionUtil {
 
     public static Map<Enchantment, Integer> getPrematureEnchantments(ItemMeta meta) {
         try {
-            Field f = meta.getClass().getDeclaredField((meta instanceof CrossbowMeta) ? "enchants" : "enchantments");
+            Field f = meta.getClass().getSimpleName().equals("CraftMetaItem") ?
+                meta.getClass().getDeclaredField("enchantments")  :
+                meta.getClass().getSuperclass().getDeclaredField("enchantments");
             f.setAccessible(true);
             Map enchantments = (Map) (f.get(meta));
             return enchantments;
