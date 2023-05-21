@@ -59,13 +59,25 @@ public class ArrowListener implements Listener {
         for (MetadataValue meta : metas) {
             List<ZenchantedArrow> arrowMeta = (List<ZenchantedArrow>) meta.value();
             for (ZenchantedArrow zenchantedArrow : arrowMeta) {
-                if(zenchantedArrow.getPriority() == ZenchantmentPriority.EARLY) consumer.accept(zenchantedArrow);
+                if(!zenchantedArrow.recursionLock && zenchantedArrow.getPriority() == ZenchantmentPriority.EARLY) {
+                    zenchantedArrow.recursionLock = true;
+                    consumer.accept(zenchantedArrow);
+                    zenchantedArrow.recursionLock = false;
+                }
             }
             for (ZenchantedArrow zenchantedArrow : arrowMeta) {
-                if(zenchantedArrow.getPriority() == ZenchantmentPriority.NORMAL)consumer.accept(zenchantedArrow);
+                if(zenchantedArrow.recursionLock && zenchantedArrow.getPriority() == ZenchantmentPriority.NORMAL) {
+                    zenchantedArrow.recursionLock = true;
+                    consumer.accept(zenchantedArrow);
+                    zenchantedArrow.recursionLock = false;
+                }
             }
             for (ZenchantedArrow zenchantedArrow : arrowMeta) {
-                if(zenchantedArrow.getPriority() == ZenchantmentPriority.LATE) consumer.accept(zenchantedArrow);
+                if(zenchantedArrow.recursionLock && zenchantedArrow.getPriority() == ZenchantmentPriority.LATE) {
+                    zenchantedArrow.recursionLock = true;
+                    consumer.accept(zenchantedArrow);
+                    zenchantedArrow.recursionLock = false;
+                }
             }
         }
     }

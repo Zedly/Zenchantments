@@ -28,6 +28,7 @@ public class ZenchantedArrow {
     private final double power;
 
     private int tick;
+    public boolean recursionLock = false;
 
     public ZenchantedArrow(
         final @NotNull Projectile arrow,
