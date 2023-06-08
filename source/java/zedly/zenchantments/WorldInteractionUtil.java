@@ -444,9 +444,16 @@ public class WorldInteractionUtil {
 
     public static Map<Enchantment, Integer> getPrematureEnchantments(ItemMeta meta) {
         try {
-            Field f = meta.getClass().getSimpleName().equals("CraftMetaItem") ?
-                meta.getClass().getDeclaredField("enchantments")  :
-                meta.getClass().getSuperclass().getDeclaredField("enchantments");
+            Field f;
+            switch(meta.getClass().getSimpleName()) {
+                case "CraftMetaItem":
+                case "CraftMetaEnchantedBook":
+                    f = meta.getClass().getDeclaredField("enchantments");
+                    break;
+                default:
+                    f = meta.getClass().getSuperclass().getDeclaredField("enchantments");
+                    break;
+            }
             f.setAccessible(true);
             Map enchantments = (Map) (f.get(meta));
             return enchantments;
