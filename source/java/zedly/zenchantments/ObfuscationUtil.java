@@ -29,11 +29,11 @@ public class ObfuscationUtil {
     }
 
     public static void resetXPPickupTimer(EntityHuman human) {
-        human.bZ = 0;
+        human.bW = 0;
     }
 
     public static boolean breakBlockAsPlayer(EntityPlayer ep, BlockPosition bp) {
-        return ep.d.a(bp);
+        return ep.e.a(bp);
     }
 
     public static int getAnimalsLoveModeTimer(EntityAnimal ea) {
@@ -41,15 +41,15 @@ public class ObfuscationUtil {
     }
 
     public static boolean isInAnimalsWorldBreedingDisabled(EntityAnimal ea) {
-        return ea.H.B;
+        return ea.dI().B;
     }
 
     public static boolean isAnimalNotInLove(EntityAnimal ea) {
-        return ea.fT();
+        return ea.fZ();
     }
 
     public static void animalEnterLoveMode(EntityAnimal animal, EntityHuman feeder) {
-        animal.f(feeder);
+        animal.g(feeder);
     }
 
     public static EnumHand getNMSEnumHand(EquipmentSlot slot) {
@@ -69,7 +69,7 @@ public class ObfuscationUtil {
     }
 
     public static void sendPacketToPlayer(EntityPlayer ep, Packet<?> packet) {
-        ep.b.a(packet);
+        ep.c.a(packet);
     }
 
     public static DataWatcherSerializer<Byte> getDataWatcherByte() {
@@ -81,7 +81,7 @@ public class ObfuscationUtil {
     }
 
     public static EntityTypes getFallingBlockEntityType() {
-        return EntityTypes.F;
+        return EntityTypes.L;
     }
 
     public static int getNumericalBlockType(IBlockData blockData) {
@@ -126,7 +126,7 @@ public class ObfuscationUtil {
         }
 
         @Override
-        public UUID cs() {
+        public UUID ct() {
             return uuid;
         }
 
@@ -136,7 +136,7 @@ public class ObfuscationUtil {
 
         // Useless abstract methods we need to implement to appease the compiler
         @Override
-        public Iterable<net.minecraft.world.item.ItemStack> bI() {
+        public Iterable<net.minecraft.world.item.ItemStack> bJ() {
             return null;
         }
 
@@ -150,7 +150,7 @@ public class ObfuscationUtil {
         }
 
         @Override
-        public EnumMainHand fd() {
+        public EnumMainHand fh() {
             return null;
         }
     }
