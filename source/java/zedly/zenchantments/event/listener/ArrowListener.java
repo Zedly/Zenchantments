@@ -66,14 +66,14 @@ public class ArrowListener implements Listener {
                 }
             }
             for (ZenchantedArrow zenchantedArrow : arrowMeta) {
-                if(zenchantedArrow.recursionLock && zenchantedArrow.getPriority() == ZenchantmentPriority.NORMAL) {
+                if(!zenchantedArrow.recursionLock && zenchantedArrow.getPriority() == ZenchantmentPriority.NORMAL) {
                     zenchantedArrow.recursionLock = true;
                     consumer.accept(zenchantedArrow);
                     zenchantedArrow.recursionLock = false;
                 }
             }
             for (ZenchantedArrow zenchantedArrow : arrowMeta) {
-                if(zenchantedArrow.recursionLock && zenchantedArrow.getPriority() == ZenchantmentPriority.LATE) {
+                if(!zenchantedArrow.recursionLock && zenchantedArrow.getPriority() == ZenchantmentPriority.LATE) {
                     zenchantedArrow.recursionLock = true;
                     consumer.accept(zenchantedArrow);
                     zenchantedArrow.recursionLock = false;
