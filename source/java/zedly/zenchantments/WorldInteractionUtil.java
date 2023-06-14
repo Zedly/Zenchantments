@@ -458,7 +458,7 @@ public class WorldInteractionUtil {
             Map enchantments = (Map) (f.get(meta));
             return enchantments;
         } catch (NoSuchFieldException | IllegalAccessException ex) {
-            System.out.println("Unable to handle premature ItemMeta " + meta);
+            System.out.println("Unable to handle premature ItemMeta " + meta.getClass().getName());
         }
         return null;
     }
