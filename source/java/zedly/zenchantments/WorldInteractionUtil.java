@@ -450,6 +450,9 @@ public class WorldInteractionUtil {
                 case "CraftMetaEnchantedBook":
                     f = meta.getClass().getDeclaredField("enchantments");
                     break;
+                case "CraftMetaColorableArmor":
+                    f = meta.getClass().getSuperclass().getSuperclass().getDeclaredField("enchantments");
+                    break;
                 default:
                     f = meta.getClass().getSuperclass().getDeclaredField("enchantments");
                     break;
