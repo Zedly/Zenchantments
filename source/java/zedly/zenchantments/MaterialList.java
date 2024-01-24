@@ -540,7 +540,7 @@ public final class MaterialList extends AbstractList<Material> {
 
     public static final MaterialList CHORUS_PLANTS = new MaterialList(CHORUS_PLANT, CHORUS_FLOWER);
 
-    public static final MaterialList SHORT_GRASS = new MaterialList(GRASS, DEAD_BUSH, FERN);
+    public static final MaterialList SHORT_GRASS = new MaterialList(Material.SHORT_GRASS, DEAD_BUSH, FERN);
 
     public static final MaterialList BUTTONS = new MaterialList(new Material[] { STONE_BUTTON }, WOODEN_BUTTONS);
 
@@ -839,7 +839,7 @@ public final class MaterialList extends AbstractList<Material> {
     public static final MaterialList LUMBER_WHITELIST = new MaterialList(
         new Material[] {
             Material.DIRT,
-            GRASS,
+            Material.SHORT_GRASS,
             DEAD_BUSH,
             VINE,
             SNOW,

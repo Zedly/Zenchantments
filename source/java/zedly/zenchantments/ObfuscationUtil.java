@@ -29,7 +29,7 @@ public class ObfuscationUtil {
     }
 
     public static void resetXPPickupTimer(EntityHuman human) {
-        human.bW = 0;
+        human.bX = 0;
     }
 
     public static boolean breakBlockAsPlayer(EntityPlayer ep, BlockPosition bp) {
@@ -41,11 +41,11 @@ public class ObfuscationUtil {
     }
 
     public static boolean isInAnimalsWorldBreedingDisabled(EntityAnimal ea) {
-        return ea.dI().B;
+        return ea.dM().B;
     }
 
     public static boolean isAnimalNotInLove(EntityAnimal ea) {
-        return ea.fZ();
+        return ea.gf();
     }
 
     public static void animalEnterLoveMode(EntityAnimal animal, EntityHuman feeder) {
@@ -69,7 +69,7 @@ public class ObfuscationUtil {
     }
 
     public static void sendPacketToPlayer(EntityPlayer ep, Packet<?> packet) {
-        ep.c.a(packet);
+        ep.c.b(packet);
     }
 
     public static DataWatcherSerializer<Byte> getDataWatcherByte() {
@@ -77,11 +77,11 @@ public class ObfuscationUtil {
     }
 
     public static EntityTypes getShulkerEntityType() {
-        return EntityTypes.aG;
+        return EntityTypes.aH;
     }
 
     public static EntityTypes getFallingBlockEntityType() {
-        return EntityTypes.L;
+        return EntityTypes.M;
     }
 
     public static int getNumericalBlockType(IBlockData blockData) {
@@ -121,12 +121,12 @@ public class ObfuscationUtil {
         }
 
         @Override
-        public int af() {
+        public int aj() {
             return entityId;
         }
 
         @Override
-        public UUID ct() {
+        public UUID cw() {
             return uuid;
         }
 
@@ -136,7 +136,7 @@ public class ObfuscationUtil {
 
         // Useless abstract methods we need to implement to appease the compiler
         @Override
-        public Iterable<net.minecraft.world.item.ItemStack> bJ() {
+        public Iterable<net.minecraft.world.item.ItemStack> bL() {
             return null;
         }
 
@@ -150,7 +150,7 @@ public class ObfuscationUtil {
         }
 
         @Override
-        public EnumMainHand fh() {
+        public EnumMainHand fm() {
             return null;
         }
     }
