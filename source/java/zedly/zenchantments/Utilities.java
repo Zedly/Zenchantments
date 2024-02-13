@@ -381,7 +381,7 @@ public final class Utilities {
                 continue;
             }
 
-            if (effect.getAmplifier() >= intensity || effect.getDuration() > length) {
+            if ((effect.getAmplifier() > intensity) || (effect.getDuration() > length)) {
                 return;
             }
 
